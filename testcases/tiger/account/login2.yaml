@@ -1,0 +1,17 @@
+- config:
+    name: login-account
+    request:
+        base_url: $tiger_api_host
+        headers:
+            Content-Type: $content_type
+- test:
+    name: login-success
+    request:
+        url: /tiger/accounts/login
+        method: POST
+        json:
+            identity: $user_username
+            password: $password
+            pid: 65edCTyg
+        validate:
+            - eq: [status_code, 200]

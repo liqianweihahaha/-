@@ -1,0 +1,11 @@
+- api:
+    def: api_account_login($identity, $password)
+    request:
+        url: /tiger/accounts/login
+        method: POST
+        json:
+            identity: $identity
+            password: $password
+            pid: 65edCTyg
+    validate:
+        - eq: [status_code, 200]

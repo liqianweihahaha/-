@@ -1,0 +1,102 @@
+- config:
+    request:
+      base_url: $tiger_api_host
+      headers:
+          Content-Type: $content_type
+
+- test:
+    name: 获取用户信息资料-未登录
+    request:
+        url: /tiger/account
+        method: GET
+    validate:
+        - eq: [status_code, 204]
+- test:
+    name: 获取用户信息资料-已登录
+    request:
+        url: /tiger/account
+        method: GET
+        headers:
+            Authorization: $user_login_token
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.id, $user_id]
+
+- test:
+    name: 获取用户信息-未登录
+    request:
+        url: /tiger/user
+        method: GET
+    validate:
+        - eq: [status_code, 204]
+- test:
+    name: 获取用户信息-已登录
+    request:
+        url: /tiger/user
+        method: GET
+        headers:
+            Authorization: $user_login_token
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.id, $user_id]
+
+- test:
+    name: 获取用户基本认证信息-未登录
+    request:
+        url: /tiger/accounts/basic_auth
+        method: GET
+    validate:
+        - eq: [status_code, 403]
+        - eq: [content.error_code, 'E_0']
+- test:
+    name: 获取用户基本认证信息-已登录
+    request:
+        url: /tiger/accounts/basic_auth
+        method: GET
+        headers:
+            Authorization: $user_login_token
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.user_id, $user_id]
+
+- test:
+    name: 获取用户资料-未登录
+    request:
+        url: /tiger/profile
+        method: GET
+    validate:
+        - eq: [status_code, 403]
+        - eq: [content.error_code, 'E_0']
+- test:
+    name: 获取用户资料-已登录
+    request:
+        url: /tiger/profile
+        method: GET
+        headers:
+            Authorization: $user_login_token
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.id, $user_id]
+
+- test:
+    name: 修改用户信息-未登录
+    request:
+        url: /tiger/accounts/user_info/update
+        method: PATCH
+        json:
+            qq: '123456'
+    validate:
+        - eq: [status_code, 403]
+        - eq: [content.error_code, 'E_0']
+- test:
+    name: 修改用户信息-已登录
+    request:
+        url: /tiger/accounts/user_info/update
+        method: PATCH
+        headers:
+            Authorization: $user_login_token
+        json:
+            qq: '123456'
+    validate:
+        - eq: [status_code, 204]
+

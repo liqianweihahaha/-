@@ -1,0 +1,40 @@
+- config:
+    name: 更新用户信息
+    request:
+        base_url: $platform_tiger_api_host
+        method: PUT
+        headers:
+            Content-Type: $content_type
+    variables:
+        - unsupport_sex: 2
+
+- test:
+    name: 用户存在-传递内容为空
+    request:
+        url: /accounts/$user_id
+    validate:
+        - eq: [status_code, 204]
+- test:
+    name: 用户存在-sex为0
+    request:
+        url: /accounts/$user_id
+        json:
+            sex: 0
+    validate:
+        - eq: [status_code, 204]
+- test:
+    name: 用户存在-sex为1
+    request:
+        url: /accounts/$user_id
+        json:
+            sex: 1
+    validate:
+        - eq: [status_code, 204]
+- test:
+    name: 用户存在-sex为1
+    request:
+        url: /accounts/$user_id
+        json:
+            sex: 2
+    validate:
+        - eq: [status_code, 400]

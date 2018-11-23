@@ -1,0 +1,56 @@
+- config:
+    name: 获取用户代表精灵信息(Public)
+    request:
+        base_url: $tiger_api_host
+        method: GET
+        headers:
+            Content-Type: $content_type
+
+- test:
+    name: 用户未登录-用户id存在
+    request:
+        url: /tiger/ar/familiar/$user_id
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.0.user_id, $user_id]
+        - length_equals: [content, 1]
+        - contains: [content.0, familiar_sprite]
+        - contains: [content.0, name]
+- test:
+    name: 用户未登录-用户id不存在
+    request:
+        url: /tiger/ar/familiar/$unexist_user_id
+    validate:
+        - eq: [status_code, 403]
+        - eq: [content.error_code, R_1]
+- test:
+    name: 用户未登录-用户id格式错误
+    request:
+        url: /tiger/ar/familiar/$wrong_type_user_id
+    validate:
+        - eq: [status_code, 400]
+        - eq: [content.error_code, A_5]
+- test:
+    name: 用户已登录-个人user_id
+    request:
+        url: /tiger/ar/familiar/$user_id
+        headers:
+            Authorization: $user_login_token
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.0.user_id, $user_id]
+        - length_equals: [content, 1]
+        - contains: [content.0, familiar_sprite]
+        - contains: [content.0, name]
+- test:
+    name: 用户已登录-他人user_id
+    request:
+        url: /tiger/ar/familiar/$other_user_id
+        headers:
+            Authorization: $user_login_token
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.0.user_id, $other_user_id]
+        - length_equals: [content, 1]
+        - contains: [content.0, familiar_sprite]
+        - contains: [content.0, name]

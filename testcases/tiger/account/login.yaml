@@ -1,0 +1,9 @@
+- config:
+    name: login-account
+    request:
+        base_url: $tiger_api_host
+        headers:
+            Content-Type: application/json
+- test:
+    name: login-success
+    api: api_account_login($user_username, $password)

@@ -1,0 +1,142 @@
+- config:
+    name: 批量搜索用户信息
+    request:
+        base_url: $platform_tiger_api_host
+        method: POST
+        url: /accounts/batch/search
+        headers:
+            Content-Type: $content_type
+
+- test:
+    name: 用户id存在-不传递fields
+    request:
+        json:
+            target_type: id
+            target_values: [$user_id]
+    validate:
+        - eq: [status_code, 200]
+        - length_equals: [content.0, 15]
+        - contains: [content.0, id]
+        - contains: [content.0, username]
+- test:
+    name: 用户id存在-fields为空数组
+    request:
+        json:
+            target_type: id
+            target_values: [$user_id]
+            fields: '[]'
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.0.id, $user_id]
+        - length_equals: [content, 1]
+        - length_equals: [content.0, 15]
+        - contains: [content.0, id]
+        - contains: [content.0, username]
+- test:
+    name: 用户id存在-fields包含所有支持字段
+    request:
+        json:
+            target_type: id
+            target_values: [$user_id]
+            fields: '["id", "bcmid", "nickname", "sex", "username", "email", "phone_number", "birthday", "avatar_url", "fullname", "qq", "description", "familiar_sprite", "doing", "mlz_name", "level", "preview_work_id", "grade", "user_id"]'
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.0.id, $user_id]
+        - length_equals: [content.0, 19]
+        - contains: [content.0, username]
+        - contains: [content.0, email]
+        - contains: [content.0, phone_number]
+- test:
+    name: 用户id存在-fields只包含id
+    request:
+        json:
+            target_type: id
+            target_values: [$user_id]
+            fields: '["id"]'
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.0.id, $user_id]
+        - length_equals: [content.0, 1]
+        - contains: [content.0, id]
+- test:
+    name: 用户id存在-fields只包含nickname
+    request:
+        json:
+            target_type: id
+            target_values: [$user_id]
+            fields: '["nickname"]'
+    validate:
+        - eq: [status_code, 200]
+        - length_equals: [content.0, 2]
+        - contains: [content.0, id]
+        - contains: [content.0, nickname]
+- test:
+    name: 用户id存在-fields只包含id和nickname
+    request:
+        json:
+            target_type: id
+            target_values: [$user_id]
+            fields: '["id", "nickname"]'
+    validate:
+        - eq: [status_code, 200]
+        - length_equals: [content.0, 2]
+        - contains: [content.0, id]
+        - contains: [content.0, nickname]
+- test:
+    name: 用户id存在-fields包含不支持的字段
+    request:
+        json:
+            target_type: id
+            target_values: [$user_id]
+            fields: '["id", $unsupport_fields_element]'
+    validate:
+        - eq: [status_code, 400]
+- test:
+    name: 用户id存在-fields格式错误
+    request:
+        json:
+            target_type: id
+            target_values: '[$user_id]'
+            fields: $wrong_type_fields
+    validate:
+        - eq: [status_code, 400]
+- test:
+    name: 用户id不存在
+    request:
+        json:
+            target_type: id
+            target_values: [$unexist_user_id]
+            fields: '["id"]'
+    validate:
+        - eq: [status_code, 200]
+        - length_equals: [content, 0]
+- test:
+    name: 用户id格式错误
+    request:
+        json:
+            target_type: id
+            target_values: '[$wrong_type_user_id]'
+            fields: '["id"]'
+    validate:
+        - eq: [status_code, 400]
+- test:
+    name: username存在-fields不传递
+    request:
+        json:
+            target_type: username
+            target_values: [$user_username]
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.0.id, $user_id]
+        - length_equals: [content.0, 15]
+- test:
+    name: 用户username存在-fields只包含id
+    request:
+        json:
+            target_type: username
+            target_values: [$user_username]
+            fields: '["id"]'
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.0.id, $user_id]
+        - length_equals: [content.0, 1]

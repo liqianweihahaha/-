@@ -1,0 +1,29 @@
+- config:
+    name: 获取某段时间内的作品数
+    request:
+        base_url: $platform_tiger_api_host
+        method: GET
+        headers:
+            Content-Type: $content_type
+
+- test:
+    name: 传递start_time，传递end_time
+    request:
+        url: /works/statistics/count?start_time=$start_time&end_time=$end_time
+    validate:
+        - eq: [status_code, 200]
+        - contains: [content, n_works]
+- test:
+    name: 传递start_time，不传递end_time
+    request:
+        url: /works/statistics/count?start_time=$start_time
+    validate:
+        - eq: [status_code, 400]
+        - contains: [content.error_code, A_5]
+- test:
+    name: 不传递start_time，传递end_time
+    request:
+        url: /works/statistics/count?end_time=$end_time
+    validate:
+        - eq: [status_code, 400]
+        - contains: [content.error_code, A_5]

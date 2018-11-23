@@ -1,0 +1,25 @@
+- config:
+    name: 获取用户代表精灵信息
+    request:
+        base_url: $tiger_api_host
+        url: /tiger/ar/familiar
+        method: GET
+        headers:
+            Content-Type: $content_type
+
+- test:
+    name: 用户未登录
+    validate:
+        - eq: [status_code, 403]
+        - eq: [content.error_code, E_0]
+- test:
+    name: 用户已登录
+    request:
+        headers:
+            Authorization: $user_login_token
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.0.user_id, $user_id]
+        - length_equals: [content, 1]
+        - contains: [content.0, familiar_sprite]
+        - contains: [content.0, name]

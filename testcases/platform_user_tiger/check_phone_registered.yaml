@@ -1,0 +1,44 @@
+- config:
+    name: 检查手机号在编程猫平台账号的注册情况
+    request:
+        base_url: $platform_tiger_api_host
+        method: GET
+        headers:
+            Content-Type: $content_type
+    variables:
+        - unregister_phone_number: 14000000000
+        - registered_phone_number: 13000000000
+        - wrong_phone_number: 1000
+- test:
+    name: 不传递phone_number
+    request:
+        url: /accounts/phone/check
+    validate:
+        - eq: [status_code, 400]
+- test:
+    name: phone_number格式正确且不存在
+    request:
+        url: /accounts/phone/check?phone_number=$unregister_phone_number
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.existed, false]
+        - eq: [content.info, null]
+- test:
+    name: phone_number格式正确且已存在
+    request:
+        url: /accounts/phone/check?phone_number=$registered_phone_number
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.existed, true]
+- test:
+    name: phone_number为空
+    request:
+        url: /accounts/phone/check?phone_number=
+    validate:
+        - eq: [status_code, 400]
+- test:
+    name: phone_number格式错误
+    request:
+        url: /accounts/phone/check?phone_number=$wrong_phone_number
+    validate:
+        - eq: [status_code, 400]

@@ -1,0 +1,22 @@
+- config:
+    name: 批量创建用户
+    request:
+        base_url: $platform_tiger_api_host
+        method: POST
+        url: /accounts/batch
+        headers:
+            Content-Type: $content_type
+
+- test:
+    name: prefix格式正确-password格式正确
+    request:
+        json:
+            prefix: testbatch
+            users: [{"password": "m1234567"}]
+            pid: $pc_pid
+    validate:
+        - eq: [status_code, 200]
+        - length_equals: [content, 1]
+        - contains: [content.0, id]
+        - contains: [content.0, bcmid]
+        - contains: [content.0, username]

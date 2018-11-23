@@ -1,0 +1,104 @@
+- config:
+    name: 通过批量id获取用户信息
+    request:
+      base_url: $platform_tiger_api_host
+      headers:
+          Content-Type: $content_type
+      method: GET
+
+- test:
+    name: 不传递user_ids-不传递fields
+    request:
+        url: /accounts
+    validate:
+        - eq: [status_code, 200]
+        - length_equals: [content, 0]
+- test:
+    name: user_ids只包含存在用户-不传递fields
+    request:
+        url: /accounts?user_ids=[$user_id]
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.0.id, $user_id]
+        - length_equals: [content, 1]
+        - length_equals: [content.0, 15]
+        - contains: [content.0, bcmid]
+        - contains: [content.0, nickname]
+- test:
+    name: user_ids只包含存在用户-fields只包含id
+    request:
+        url: /accounts?user_ids=[$user_id]&fields=["id"]
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.0.id, $user_id]
+        - length_equals: [content, 1]
+        - length_equals: [content.0, 1]
+- test:
+    name: user_ids只包含存在用户-fields只包含nickname
+    request:
+        url: /accounts?user_ids=[$user_id]&fields=["nickname"]
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.0.id, $user_id]
+        - length_equals: [content, 1]
+        - length_equals: [content.0, 2]
+- test:
+    name: user_ids只包含存在用户-fields只包含id和nickname
+    request:
+        url: /accounts?user_ids=[$user_id]&fields=["id", "nickname"]
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.0.id, $user_id]
+        - length_equals: [content, 1]
+        - length_equals: [content.0, 2]
+        
+- test:
+    name: user_ids只包含存在用户-fields为空数组
+    request:
+        url: /accounts?user_ids=[$user_id]&fields=[]
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.0.id, $user_id]
+        - length_equals: [content, 1]
+        - length_equals: [content.0, 15]
+        - contains: [content.0, bcmid]
+        - contains: [content.0, nickname]
+- test:
+    name: user_ids只包含存在用户-fields只包含不支持的字段
+    request:
+        url: /accounts?user_ids=[$user_id]&fields=$unsupport_fields_element
+    validate:
+        - eq: [status_code, 400]
+- test:
+    name: user_ids只包含存在用户-fields格式错误
+    request:
+        url: /accounts?user_ids=[$user_id]&fields=$wrong_type_fields
+    validate:
+        - eq: [status_code, 400]
+- test:
+    name: user_ids包含存在用户和不存在用户
+    request:
+        url: /accounts?user_ids=[$user_id, $unexist_user_id]
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.0.id, $user_id]
+        - length_equals: [content, 1]
+- test:
+    name: user_ids只包含不存在用户
+    request:
+        url: /accounts?user_ids=[$unexist_user_id]
+    validate:
+        - eq: [status_code, 200]
+        - length_equals: [content, 0]
+- test:
+    name: user_ids为空数组
+    request:
+        url: /accounts?user_ids=[]
+    validate:
+        - eq: [status_code, 400]
+- test:
+    name: user_ids格式错误
+    request:
+        url: /accounts?user_ids=$wrong_type_user_ids
+    validate:
+        - eq: [status_code, 400]
