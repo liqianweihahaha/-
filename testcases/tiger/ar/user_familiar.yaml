@@ -19,7 +19,7 @@
             Authorization: $user_login_token
     validate:
         - eq: [status_code, 200]
-        - eq: [content.0.user_id, $user_id]
+        - eq: [content.0.user_id, $source_user_id]
         - length_equals: [content, 1]
         - contains: [content.0, familiar_sprite]
         - contains: [content.0, name]

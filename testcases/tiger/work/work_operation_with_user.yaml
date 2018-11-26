@@ -1,0 +1,100 @@
+- config:
+    name: 获取作品tree信息（Public）
+    request:
+        base_url: $tiger_api_host
+        method: GET
+        headers:
+            Content-Type: $content_type
+
+- test:
+    name: 未登录-已发布作品
+    request:
+        url: /tiger/work/$ide_published_work_id/operation
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.is_owner, false]
+        - length_equals: [content, 5]
+- test:
+    name: 未登录-已发布作品
+    request:
+        url: /tiger/work/$ide_published_work_id/operation
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.is_owner, false]
+        - length_equals: [content, 5]
+- test:
+    name: 未登录-未发布作品
+    request:
+        url: /tiger/work/$ide_unpublish_work_id/operation
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.is_owner, false]
+        - length_equals: [content, 5]
+- test:
+    name: 未登录-临时删除的作品
+    request:
+        url: /tiger/work/$ide_deleted_temporarily_work_id/operation
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.is_owner, false]
+        - length_equals: [content, 5]
+- test:
+    name: 未登录-永久删除的作品
+    request:
+        url: /tiger/work/$ide_deleted_permanently_work_id/operation
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.is_owner, false]
+        - length_equals: [content, 5]
+- test:
+    name: 未登录-不存在的作品id
+    request:
+        url: /tiger/work/$unexist_work_id/operation
+    validate:
+        - eq: [status_code, 404]
+        - eq: [content.error_code, W_0]
+- test:
+    name: 未登录-格式错误的作品id
+    request:
+        url: /tiger/work/$wrong_type_work_id/operation
+    validate:
+        - eq: [status_code, 400]
+        - eq: [content.error_code, A_5]
+- test:
+    name: 未登录-永久删除的作品
+    request:
+        url: /tiger/work/$ide_deleted_permanently_work_id/operation
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.is_owner, false]
+        - length_equals: [content, 5]
+- test:
+    name: 已登录-个人已发布作品
+    request:
+        url: /tiger/work/$ide_published_work_id/operation
+        headers:
+            Authorization: $user_login_token
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.is_owner, true]
+        - length_equals: [content, 5]
+- test:
+    name: 已登录-他人已发布作品
+    request:
+        url: /tiger/work/$other_published_work_id/operation
+        headers:
+            Authorization: $user_login_token
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.is_owner, false]
+        - length_equals: [content, 5]
+- test:
+    name: 已登录-他人未发布作品
+    request:
+        url: /tiger/work/$other_unpublish_work_id/operation
+        headers:
+            Authorization: $user_login_token
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.is_owner, false]
+        - length_equals: [content, 5]

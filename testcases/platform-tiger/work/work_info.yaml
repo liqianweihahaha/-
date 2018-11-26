@@ -23,7 +23,7 @@
     validate:
         - eq: [status_code, 200]
         - eq: [content.id, $ide_published_work_id]
-        - eq: [content.user_id, $user_id]
+        - eq: [content.user_id, $source_user_id]
         - eq: [content.is_published, true]
         - length_equals: [content, 22]
 - test:
@@ -42,7 +42,7 @@
     validate:
         - eq: [status_code, 200]
         - eq: [content.id, $ide_published_work_id]
-        - eq: [content.user_id, $user_id]
+        - eq: [content.user_id, $source_user_id]
         - eq: [content.is_published, true]
         - length_equals: [content, 10]
 - test:

@@ -1,0 +1,43 @@
+- config:
+    name: 购买作品
+    request:
+        base_url: $tiger_api_host
+        method: PATCH
+        headers:
+            Content-Type: $content_type
+
+- test:
+    name: 未登录-购买已发布作品
+    request:
+        url: /tiger/work/$ide_published_work_id/fork
+    validate:
+        - eq: [status_code, 403]
+        - eq: [content.error_code, E_0]
+- test:
+    name: 已登录-购买个人已发布作品(可购买)
+    request:
+        url: /tiger/work/$ide_published_work_id/fork
+    validate:
+        - eq: [status_code, 403]
+        - eq: [content.error_code, W_9]
+- test:
+    name: 已登录-购买他人已发布作品(可购买)
+    request:
+        url: /tiger/work/$other_published_work_id/fork
+    validate:
+        - eq: [status_code, 200]
+        - contains: [content, id]
+- test:
+    name: 已登录-购买他人已发布作品(不可购买)
+    request:
+        url: /tiger/work/$other_published_unfork_work_id/fork
+    validate:
+        - eq: [status_code, 403]
+        - eq: [content.error_code, W_5]
+- test:
+    name: 已登录-购买他人未发布作品
+    request:
+        url: /tiger/work/$other_unpublish_work_id/fork
+    validate:
+        - eq: [status_code, 200]
+        - contains: [content, id]

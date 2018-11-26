@@ -9,10 +9,10 @@
 - test:
     name: 用户未登录-用户id存在
     request:
-        url: /tiger/ar/familiar/$user_id
+        url: /tiger/ar/familiar/$source_user_id
     validate:
         - eq: [status_code, 200]
-        - eq: [content.0.user_id, $user_id]
+        - eq: [content.0.user_id, $source_user_id]
         - length_equals: [content, 1]
         - contains: [content.0, familiar_sprite]
         - contains: [content.0, name]
@@ -33,24 +33,24 @@
 - test:
     name: 用户已登录-个人user_id
     request:
-        url: /tiger/ar/familiar/$user_id
+        url: /tiger/ar/familiar/$source_user_id
         headers:
             Authorization: $user_login_token
     validate:
         - eq: [status_code, 200]
-        - eq: [content.0.user_id, $user_id]
+        - eq: [content.0.user_id, $source_user_id]
         - length_equals: [content, 1]
         - contains: [content.0, familiar_sprite]
         - contains: [content.0, name]
 - test:
     name: 用户已登录-他人user_id
     request:
-        url: /tiger/ar/familiar/$other_user_id
+        url: /tiger/ar/familiar/$target_user_id
         headers:
             Authorization: $user_login_token
     validate:
         - eq: [status_code, 200]
-        - eq: [content.0.user_id, $other_user_id]
+        - eq: [content.0.user_id, $target_user_id]
         - length_equals: [content, 1]
         - contains: [content.0, familiar_sprite]
         - contains: [content.0, name]

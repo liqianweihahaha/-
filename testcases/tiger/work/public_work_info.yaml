@@ -1,0 +1,54 @@
+- config:
+    name: 获取公开作品信息（Public）
+    request:
+        base_url: $tiger_api_host
+        method: GET
+        headers:
+            Content-Type: $content_type
+
+- test:
+    name: 已发布作品
+    request:
+        url: /tiger/work/source/public/$ide_published_work_id
+    validate:
+        - eq: [status_code, 200]
+        - length_equals: [content, 5]
+        - contains: [content, preview]
+        - contains: [content, source_urls]
+- test:
+    name: 未发布作品
+    request:
+        url: /tiger/work/source/public/$ide_unpublish_work_id
+    validate:
+        - eq: [status_code, 200]
+        - length_equals: [content, 5]
+        - contains: [content, preview]
+        - contains: [content, source_urls]
+- test:
+    name: 临时删除的作品
+    request:
+        url: /tiger/work/source/public/$ide_deleted_temporarily_work_id
+    validate:
+        - eq: [status_code, 410]
+        - eq: [content.error_code, W_1]
+- test:
+    name: 永久删除的作品
+    request:
+        url: /tiger/work/source/public/$ide_deleted_permanently_work_id
+    validate:
+        - eq: [status_code, 410]
+        - eq: [content.error_code, W_1]
+- test:
+    name: 不存在的作品id
+    request:
+        url: /tiger/work/source/public/$unexist_work_id
+    validate:
+        - eq: [status_code, 404]
+        - eq: [content.error_code, W_0]
+- test:
+    name: 格式错误的作品id
+    request:
+        url: /tiger/work/source/public/$wrong_type_work_id
+    validate:
+        - eq: [status_code, 400]
+        - eq: [content.error_code, A_5]

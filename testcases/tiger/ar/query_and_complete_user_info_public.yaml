@@ -9,7 +9,7 @@
 - test:
     name: 用户未登录-用户id存在
     request:
-        url: /tiger/ar/user/$user_id
+        url: /tiger/ar/user/$source_user_id
     validate:
         - eq: [status_code, 204]
 - test:
@@ -29,7 +29,7 @@
 - test:
     name: 用户已登录-个人user_id
     request:
-        url: /tiger/ar/user/$user_id
+        url: /tiger/ar/user/$source_user_id
         headers:
             Authorization: $user_login_token
     validate:
@@ -37,7 +37,7 @@
 - test:
     name: 用户已登录-他人user_id
     request:
-        url: /tiger/ar/user/$other_user_id
+        url: /tiger/ar/user/$target_user_id
         headers:
             Authorization: $user_login_token
     validate:

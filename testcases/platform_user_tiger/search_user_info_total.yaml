@@ -11,7 +11,7 @@
     name: 用户id存在-不传递fields
     request:
         json:
-            id: $user_id
+            id: $source_user_id
             pid: "ZD7Ac2gq"
     validate:
         - eq: [status_code, 400]
@@ -19,7 +19,7 @@
     name: 用户id存在-fields为空数组
     request:
         json:
-            id: $user_id
+            id: $source_user_id
             fields: []
             pid: "ZD7Ac2gq"
     validate:
@@ -29,12 +29,12 @@
     name: 用户id存在-fields包含所有支持字段
     request:
         json:
-            id: $user_id
+            id: $source_user_id
             fields: ["id", "bcmid", "username", "nickname", "email", "phone_number", "avatar_url", "fullname", "qq"]
             pid: "ZD7Ac2gq"
     validate:
         - eq: [status_code, 200]
-        - eq: [content.items.0.id, $user_id_str]
+        - eq: [content.items.0.id, $source_user_id_str]
         - eq: [content.total, 1]
         - length_equals: [content.items.0, 9]
         - contains: [content, total]
@@ -45,20 +45,20 @@
     name: 用户id存在-fields只包含id
     request:
         json:
-            id: $user_id
+            id: $source_user_id
             fields: ["id"]
             pid: "ZD7Ac2gq"
     validate:
         - eq: [status_code, 200]
         - eq: [content.total, 1]
-        - eq: [content.items.0.id, $user_id_str]
+        - eq: [content.items.0.id, $source_user_id_str]
         - length_equals: [content.items.0, 1]
         - contains: [content.items.0, id]
 - test:
     name: 用户id存在-fields只包含nickname
     request:
         json:
-            id: $user_id
+            id: $source_user_id
             fields: ["nickname"]
             pid: "ZD7Ac2gq"
     validate:
@@ -71,19 +71,19 @@
     name: 用户id存在-fields只包含id和nickname
     request:
         json:
-            id: $user_id
+            id: $source_user_id
             fields: ["id", "nickname"]
             pid: "ZD7Ac2gq"
     validate:
         - eq: [status_code, 200]
-        - eq: [content.items.0.id, $user_id_str]
+        - eq: [content.items.0.id, $source_user_id_str]
         - eq: [content.total, 1]
         - length_equals: [content.items.0, 2]
 - test:
     name: 用户id存在-fields包含不支持的字段
     request:
         json:
-            id: $user_id
+            id: $source_user_id
             fields: ["id", $unsupport_fields_element]
             pid: "ZD7Ac2gq"
     validate:
@@ -92,7 +92,7 @@
     name: 用户id存在-fields格式错误
     request:
         json:
-            id: $user_id
+            id: $source_user_id
             fields: $wrong_type_fields
             pid: "ZD7Ac2gq"
     validate:

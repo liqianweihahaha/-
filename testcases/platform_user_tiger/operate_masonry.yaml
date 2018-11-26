@@ -19,7 +19,7 @@
 - test:
     name: 用户id存在-event_id正确-offset正确
     request:
-        url: /accounts/$user_id/masonry
+        url: /accounts/$source_user_id/masonry
         json:
             event_id: $event_id_add
             offset: $offset
@@ -28,7 +28,7 @@
 - test:
     name: 用户id存在-event_id正确-offset正确（用户钻石不足）
     request:
-        url: /accounts/$user_id/masonry
+        url: /accounts/$source_user_id/masonry
         json:
             event_id: $event_id_decrease
             offset: $large_offset_masonry
@@ -38,7 +38,7 @@
 - test:
     name: 用户id存在-event_id不支持-offset正确
     request:
-        url: /accounts/$user_id/masonry
+        url: /accounts/$source_user_id/masonry
         json:
             event_id: $unsupport_event_id_masonry
             offset: $offset
@@ -48,13 +48,13 @@
 - test:
     name: 用户id存在-event_id不传递-offset不传递
     request:
-        url: /accounts/$user_id/masonry
+        url: /accounts/$source_user_id/masonry
     validate:
         - eq: [status_code, 400]
 - test:
     name: 用户id存在-event_id不传递-offse正确
     request:
-        url: /accounts/$user_id/masonry
+        url: /accounts/$source_user_id/masonry
         json:
             offset: $offset
     validate:
@@ -62,7 +62,7 @@
 - test:
     name: 用户id存在-event_id正确-offse不传递
     request:
-        url: /accounts/$user_id/masonry
+        url: /accounts/$source_user_id/masonry
         json:
             event_id: $event_id_add
     validate:
@@ -70,7 +70,7 @@
 - test:
     name: 用户id存在-event_id正确-offse不传递
     request:
-        url: /accounts/$user_id/masonry
+        url: /accounts/$source_user_id/masonry
         json:
             event_id: $event_id_add
     validate:

@@ -20,7 +20,7 @@
             Authorization: $user_login_token
     validate:
         - eq: [status_code, 200]
-        - eq: [content.id, $user_id]
+        - eq: [content.id, $source_user_id]
 
 - test:
     name: 获取用户信息-未登录
@@ -38,7 +38,7 @@
             Authorization: $user_login_token
     validate:
         - eq: [status_code, 200]
-        - eq: [content.id, $user_id]
+        - eq: [content.id, $source_user_id]
 
 - test:
     name: 获取用户基本认证信息-未登录
@@ -57,7 +57,7 @@
             Authorization: $user_login_token
     validate:
         - eq: [status_code, 200]
-        - eq: [content.user_id, $user_id]
+        - eq: [content.user_id, $source_user_id]
 
 - test:
     name: 获取用户资料-未登录
@@ -76,7 +76,7 @@
             Authorization: $user_login_token
     validate:
         - eq: [status_code, 200]
-        - eq: [content.id, $user_id]
+        - eq: [content.id, $source_user_id]
 
 - test:
     name: 修改用户信息-未登录

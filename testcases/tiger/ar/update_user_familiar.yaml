@@ -9,14 +9,14 @@
 - test:
     name: 用户未登录-精灵id存在
     request:
-        url: /tiger/ar/familiar/$user_owned_sprite_id
+        url: /tiger/ar/familiar/$source_user_owned_sprite_id
     validate:
         - eq: [status_code, 403]
         - eq: [content.error_code, E_0]
 - test:
     name: 用户已登录-用户拥有的精灵id
     request:
-        url: /tiger/ar/familiar/$user_owned_sprite_id
+        url: /tiger/ar/familiar/$source_user_owned_sprite_id
         headers:
             Authorization: $user_login_token
     validate:
@@ -24,7 +24,7 @@
 - test:
     name: 用户已登录-用户不拥有的精灵id
     request:
-        url: /tiger/ar/familiar/$user_unown_sprite_id
+        url: /tiger/ar/familiar/$source_user_unown_sprite_id
         headers:
             Authorization: $user_login_token
     validate:

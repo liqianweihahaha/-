@@ -1,0 +1,27 @@
+- config:
+    name: 搜索作品（Public）
+    request:
+        base_url: $tiger_api_host
+        method: GET
+        headers:
+            Content-Type: $content_type
+    variables:
+        - query_text: 天空
+
+- test:
+    name: 不传递任何参数
+    request:
+        url: /tiger/work/search
+    validate:
+        - eq: [status_code, 400]
+        - eq: [content.error_code, A_5]
+- test:
+    name: 只传递query
+    request:
+        url: /tiger/work/search?query=$query_text
+    validate:
+        - eq: [status_code, 200]
+        - length_equals: [content, 3]
+        - contains: [content, searchtime]
+        - contains: [content, total]
+        - contains: [content, items]

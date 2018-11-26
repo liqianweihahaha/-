@@ -11,7 +11,7 @@
     name: 用户id存在-work_ids为用户已发布作品
     request:
         json:
-          user_id: $user_id
+          user_id: $source_user_id
           work_ids: [$ide_published_work_id]
     validate:
         - eq: [status_code, 200]
@@ -21,7 +21,7 @@
     name: 用户id存在-work_ids为用户未发布作品
     request:
         json:
-          user_id: $user_id
+          user_id: $source_user_id
           work_ids: [$ide_unpublish_work_id]
     validate:
         - eq: [status_code, 200]
@@ -31,7 +31,7 @@
     name: 用户id存在-work_ids为用户临时删除作品
     request:
         json:
-          user_id: $user_id
+          user_id: $source_user_id
           work_ids: [$ide_deleted_temporarily_work_id]
     validate:
         - eq: [status_code, 200]
@@ -41,7 +41,7 @@
     name: 用户id存在-work_ids为用户永久删除作品
     request:
         json:
-          user_id: $user_id
+          user_id: $source_user_id
           work_ids: [$ide_deleted_permanently_work_id]
     validate:
         - eq: [status_code, 200]
@@ -51,7 +51,7 @@
     name: 用户id存在-work_ids为不存在的作品
     request:
         json:
-          user_id: $user_id
+          user_id: $source_user_id
           work_ids: [$unexist_work_id]
     validate:
         - eq: [status_code, 200]
@@ -61,7 +61,7 @@
     name: 用户id存在-work_ids格式错误
     request:
         json:
-          user_id: $user_id
+          user_id: $source_user_id
           work_ids: $wrong_type_work_ids
     validate:
         - eq: [status_code, 400]
@@ -70,7 +70,7 @@
     name: 用户id存在-work_ids不传递
     request:
         json:
-          user_id: $user_id
+          user_id: $source_user_id
           work_ids: $wrong_type_work_ids
     validate:
         - eq: [status_code, 400]
