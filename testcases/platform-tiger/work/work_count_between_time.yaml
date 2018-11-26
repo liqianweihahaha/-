@@ -5,6 +5,9 @@
         method: GET
         headers:
             Content-Type: $content_type
+    variables:
+        - start_time: ${get_timeslot('2018-11-22')}
+        - end_time: ${get_timeslot('2018-11-23')}
 
 - test:
     name: 传递start_time，传递end_time

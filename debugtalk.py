@@ -1,8 +1,8 @@
 import requests
 import time
 import os
-
 from common import read_config
+from common.util import *
 
 env = 'dev'
 
@@ -27,45 +27,6 @@ target_user = read_config.target_user(env)
 target_user_id = target_user.get('id')
 
 
-
-# 个人信息
-# user_username = 'mxq111'
-# user_password = 'm1234567'
-# user_wrong_password = '123'
-# user_id = 1000002450
-# user_id_str = "1000002450"
-# ide_published_work_id = 2675933
-# ide_unpublish_work_id = 2675934
-# ide_deleted_temporarily_work_id = 2675935
-# ide_deleted_permanently_work_id = 2675938
-# wood_work_id = 2676059
-
-# user_username = 'sandy123456'
-# user_password = 'm1234567'
-# user_wrong_password = '123'
-# user_id = 956856
-# user_id_str = "956856"
-# ide_published_work_id = 2675933
-# ide_unpublish_work_id = 2675934
-# ide_deleted_temporarily_work_id = 2675935
-# ide_deleted_permanently_work_id = 2675938
-# wood_work_id = 2676059
-
-
-
-
-# 另一人信息
-other_user_id = 1000002872
-other_user_username = 'mxq121'
-other_published_work_id = 2675915
-other_published_unfork_work_id = 2676251
-other_unpublish_work_id = 2676253
-other_deleted_temporarily_work_id = 2676255
-other_deleted_permanently_work_id = 2676257
-
-
-
-
 # 异常信息：不存在、格式错误
 unexist_user_id = 100
 unexist_user_username = 'a00000'
@@ -80,10 +41,6 @@ wrong_type_fields_element = ''
 wrong_type_sprite_id = 'aaa'
 unsupport_fields_element = 'aaa'
 
-
-
-start_time = int(time.mktime(time.strptime('2018-11-22', '%Y-%m-%d')))
-end_time = int(time.mktime(time.strptime('2018-11-23', '%Y-%m-%d')))
 
 # pid信息
 pc_pid = 'UvOFXx2tfv'
@@ -107,14 +64,7 @@ def login_token(identity, password, pid='UvOFXx2tfv'):
         bearer_token = 'Bearer '+ token
         return bearer_token
 
-
 user_login_token = login_token(source_user_username, source_user_password)
-
-
-def get_value(content, key):
-    if isinstance(content, dict):
-        return content.get(key)
-
 
 # 获取用户的某ide作品的详细信息
 def work_info(work_id, work_type_id=1):
@@ -134,8 +84,3 @@ def work_info(work_id, work_type_id=1):
                     "publish_time": i["publish_time"]
                 }
                 return work_info
-
-def eval_content(content):
-    return eval(content)
-
-
