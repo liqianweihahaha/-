@@ -1,0 +1,26 @@
+source_user:
+  id: 771783
+  str_id: "771783"
+  username: sandy000
+  password: m1234567
+  work:
+    ide:
+      published_work_id: 4781713
+      unpublish_work_id: 4781733
+      deleted_temporarily_work_id: 4781751
+      deleted_permanently_work_id: 3433227
+    wood:
+      work_id: 4781867
+  sprite:
+    owned: 50
+    unown: 1
+target_user:
+  id: 1855538
+  username: sandy001
+  work:
+    ide:
+      published_work_id: 4781921
+      published_unfork_work_id: 4781927
+      unpublish_work_id: 4781940
+      deleted_temporarily_work_id: 4781940
+      deleted_permanently_work_id: 2676257

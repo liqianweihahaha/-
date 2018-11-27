@@ -10,11 +10,13 @@ def read_user(file_name, file_dir=conf_dir):
         return data
 
 def source_user(env):
-    source_user_data = read_user('user.yaml')[env]['source_user']
+    file_name = str(env)+'_user.yaml'
+    source_user_data = read_user(file_name)['source_user']
     return source_user_data
 
 def target_user( env):
-    target_user_data = read_user('user.yaml')[env]['target_user']
+    file_name = str(env)+'_user.yaml'
+    target_user_data = read_user(file_name)['target_user']
     return target_user_data
 
 if __name__ == '__main__':
