@@ -1,0 +1,47 @@
+- config:
+    name: 获取用户收藏作品列表（Public）
+    request:
+        base_url: $tiger_api_host
+        method: GET
+    variables:
+        unexist_user_id: 100
+        wrong_type_user_id: aaa
+
+
+- test:
+    name: 未登录-传递user_id用户存在
+    request:
+        url: /api/user/works/published?user_id=$source_user_id
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.code, 200]
+        - eq: [content.msg, 成功]
+        - contains: [content.data, works]
+        - contains: [content.data, total_page]
+        - contains: [content.data, total_num]
+        - type_match: [content.data.works, list]
+- test:
+    name: 未登录-传递的user_id用户不存在
+    request:
+        url: /api/user/works/published?user_id=$unexist_user_id
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.code, 7001]
+        - eq: [content.msg, 空数据]
+        - length_equals: [content.data, 0]
+- test:
+    name: 未登录-不传递user_id
+    request:
+        url: /api/user/works/published
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.code, 2010]
+        - eq: [content.msg, 参数错误]
+- test:
+    name: 未登录-传递格式错误的user_id
+    request:
+        url: /api/user/works/published?user_id=$wrong_type_user_id
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.code, 2010]
+        - eq: [content.msg, 参数错误]

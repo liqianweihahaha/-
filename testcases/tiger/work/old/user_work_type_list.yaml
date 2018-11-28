@@ -1,0 +1,55 @@
+- config:
+    name: 获取用户某类型作品列表
+    request:
+        base_url: $tiger_api_host
+        method: GET
+    variables:
+        - ide_work_type_id: 1
+        - box_work_type_id: 3
+        - box2_work_type_id: 5
+        - unexist_work_type_id: 100
+
+
+- test:
+    name: 未登录-type=1
+    request:
+        url: /api/work/list/type/$ide_work_type_id
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.code, 2002]
+        - eq: [content.msg, 用户未登陆]
+        - length_equals: [content.data, 0]
+- test:
+    name: 已登录-只传递type=3
+    request:
+        url: /api/work/list/type/$box_work_type_id
+        headers:
+            Authorization: $user_login_token
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.code, 200]
+        - eq: [content.msg, 成功]
+        - contains: [content.data, workList]
+- test:
+    name: 已登录-只传递type=5
+    request:
+        url: /api/work/list/type/$box2_work_type_id
+        headers:
+            Authorization: $user_login_token
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.code, 200]
+        - eq: [content.msg, 成功]
+        - contains: [content.data, workList]
+- test:
+    name: 已登录-只传递type=5
+    request:
+        url: /api/work/list/type/$unexist_work_type_id
+        headers:
+            Authorization: $user_login_token
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.code, 200]
+        - eq: [content.msg, 成功]
+        - contains: [content.data, workList]
+        - length_equals: [content.data.workList, 0]

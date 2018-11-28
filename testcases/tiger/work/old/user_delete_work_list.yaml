@@ -1,0 +1,25 @@
+- config:
+    name: 获取用户垃圾篓作品列表
+    request:
+        base_url: $tiger_api_host
+        url: /api/work/delete/list
+        method: GET
+
+
+- test:
+    name: 未登录
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.code, 2002]
+        - eq: [content.msg, 用户未登陆]
+        - length_equals: [content.data, 0]
+- test:
+    name: 已登录
+    request:
+        headers:
+            Authorization: $user_login_token
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.code, 200]
+        - eq: [content.msg, 成功]
+        - contains: [content.data, workList]

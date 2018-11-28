@@ -6,6 +6,8 @@
         url: /accounts/batch
         headers:
             Content-Type: $content_type
+    variables:
+        pc_pid: UvOFXx2tfv
 
 - test:
     name: prefix格式正确-password格式正确

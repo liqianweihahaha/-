@@ -5,6 +5,8 @@
         method: GET
         headers:
             Content-Type: $content_type
+    variables:
+        ide_work_type: 1
 
 - test:
     name: 未登录

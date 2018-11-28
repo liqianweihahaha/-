@@ -1,11 +1,13 @@
 - config:
     name: 搜索用户信息（包含总数），目前只供猫老祖和CRM
     request:
-      base_url: $platform_tiger_api_host
-      method: POST
-      url: /accounts/list/search
-      headers:
-          Content-Type: $content_type
+        base_url: $platform_tiger_api_host
+        method: POST
+        url: /accounts/list/search
+        headers:
+            Content-Type: $content_type
+    pc_pid:
+        UvOFXx2tfv
 
 - test:
     name: 用户id存在-不传递fields

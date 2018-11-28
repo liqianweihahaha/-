@@ -34,7 +34,11 @@ source_user_owned_sprite_id = source_user.get('sprite').get('owned')
 source_user_unown_sprite_id = source_user.get('sprite').get('unown')
 target_user = read_config.target_user(env)
 target_user_id = target_user.get('id')
-
+target_user_ide_published_work_id = target_user.get('work').get('ide').get('published_work_id')
+target_user_ide_published_unfork_work_id = target_user.get('work').get('ide').get('published_unfork_work_id')
+target_user_ide_unpublish_work_id = target_user.get('work').get('ide').get('unpublish_work_id')
+target_user_ide_deleted_temporarily_work_id = target_user.get('work').get('ide').get('deleted_temporarily_work_id')
+target_user_ide_deleted_permanently_work_id = target_user.get('work').get('ide').get('deleted_permanently_work_id')
 
 # 异常信息：不存在、格式错误
 unexist_user_id = 100
@@ -50,11 +54,6 @@ wrong_type_fields_element = ''
 wrong_type_sprite_id = 'aaa'
 unsupport_fields_element = 'aaa'
 
-
-# pid信息
-pc_pid = 'UvOFXx2tfv'
-web_pid = '65edCTyg'
-ide_work_type = 1
 
 content_type = 'application/json'
 
@@ -93,3 +92,29 @@ def work_info(work_id, work_type_id=1):
                     "publish_time": i["publish_time"]
                 }
                 return work_info
+
+# 取消收藏作品
+def uncollection_work(work_id):
+    res = requests.delete(tiger_api_host+'/api/work/collection/'+str(work_id), headers={'Authorization': user_login_token})
+    if res.status_code == 200:
+        if res.json()['code'] == 200:
+            return True
+        elif res.json()['code'] == 500:
+            print('用户未收藏此作品')
+            return False
+    else:
+        print('用户取消收藏作品失败，返回状态码：%s' % res.status_code)
+        return False
+
+# 收藏作品
+def collection_work(work_id):
+    res = requests.post(tiger_api_host+'/api/work/collection/'+str(work_id), headers={'Authorization': user_login_token})
+    if res.status_code == 200:
+        if res.json()['code'] == 200:
+            return True
+        elif res.json()['code'] == 2001:
+            print('用户已收藏此作品')
+            return False
+    else:
+        print('用户收藏作品失败，返回状态码：%s' % res.status_code)
+        return False

@@ -1,0 +1,14 @@
+- config:
+    name: 百度语音tts的token（Public）
+    request:
+        base_url: $tiger_api_host
+        url: /api/work/tts/token
+        method: GET
+
+- test:
+    name: 未登录
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.code, 200]
+        - eq: [content.msg, 成功]
+        - contains: [content.data, token]
