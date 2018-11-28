@@ -1,0 +1,31 @@
+- config:
+    name: 获取Nemo作品（云端cdn作品）
+    request:
+        base_url: $tiger_api_host
+        method: GET
+
+- test:
+    name: 未登录
+    request:
+        url: /tiger/nemo/user/works
+    validate:
+        - eq: [status_code, 403]
+        - eq: [content.error_code, E_0]
+- test:
+    name: 已登录
+    request:
+        url: /tiger/nemo/user/works
+        headers:
+            Authorization: $user_login_token
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, list]
+- test:
+    name: 已登录-传递page和limit
+    request:
+        url: /tiger/nemo/user/works?page=1&limit=5
+        headers:
+            Authorization: $user_login_token
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, list]

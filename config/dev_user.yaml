@@ -10,6 +10,8 @@ source_user:
       deleted_permanently_work_id: 2675938
     wood:
       work_id: 2676059
+    nemo:
+      work_id: 2674264
   sprite:
     owned: 50    # 象牙螺
     unown: 1     # 编程猫

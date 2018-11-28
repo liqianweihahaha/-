@@ -29,6 +29,7 @@ source_user_ide_unpublish_work_id = source_user.get('work').get('ide').get('unpu
 source_user_ide_deleted_temporarily_work_id = source_user.get('work').get('ide').get('deleted_temporarily_work_id')
 source_user_ide_deleted_permanently_work_id = source_user.get('work').get('ide').get('deleted_permanently_work_id')
 source_user_wood_work_id = source_user.get('work').get('wood').get('work_id')
+source_user_nemo_work_id = source_user.get('work').get('nemo').get('work_id')
 # 用户拥有的精灵，不拥有的精灵
 source_user_owned_sprite_id = source_user.get('sprite').get('owned')
 source_user_unown_sprite_id = source_user.get('sprite').get('unown')

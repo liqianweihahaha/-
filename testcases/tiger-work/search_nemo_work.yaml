@@ -1,0 +1,42 @@
+- config:
+    name: 搜索Nemo作品
+    request:
+        base_url: $tiger_api_host
+        method: GET
+    variables:
+        - query_text: 哈哈
+
+- test:
+    name: 未登录-传递query和query_type=1
+    request:
+        url: /tiger/nemo/user/works/search?query=$query_text&query_type=1
+    validate:
+        - eq: [status_code, 403]
+        - eq: [content.error_code, E_0]
+- test:
+    name: 已登录-传递query和query_type=1
+    request:
+        url: /tiger/nemo/user/works/search?query=$query_text&query_type=1
+        headers:
+            Authorization: $user_login_token
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, list]
+- test:
+    name: 已登录-只传递query
+    request:
+        url: /tiger/nemo/user/works/search?query=$query_text
+        headers:
+            Authorization: $user_login_token
+    validate:
+        - eq: [status_code, 400]
+        - eq: [content.error_code, A_5]
+- test:
+    name: 已登录-只传递query_type
+    request:
+        url: /tiger/nemo/user/works/search?query_type=1
+        headers:
+            Authorization: $user_login_token
+    validate:
+        - eq: [status_code, 400]
+        - eq: [content.error_code, A_5]
