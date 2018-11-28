@@ -1,11 +1,16 @@
 - config:
     name: 搜索用户信息（不包含总数）
     request:
-      base_url: $platform_tiger_api_host
-      method: POST
-      url: /accounts/search
-      headers:
-          Content-Type: $content_type
+        base_url: $platform_tiger_api_host
+        method: POST
+        url: /accounts/search
+        headers:
+            Content-Type: $content_type
+    variables:
+        - unexist_user_id: 100
+        - wrong_type_user_id: aaa
+        - unsupport_fields_element: aaa
+        - wrong_type_fields: '{}'
 
 - test:
     name: 用户id存在-不传递fields

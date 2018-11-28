@@ -9,6 +9,8 @@
     variables:
         - unexisted_user_id: 100
         - wrong_type_user_ids: '{}'
+        - wrong_type_user_ids: aaa
+        
 - test:
     name: 不传递user_ids
     validate:

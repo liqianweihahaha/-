@@ -1,10 +1,16 @@
 - config:
     name: 通过批量id获取用户业务数据
     request:
-      base_url: $platform_tiger_api_host
-      headers:
-          Content-Type: $content_type
-      method: GET
+        base_url: $platform_tiger_api_host
+        headers:
+            Content-Type: $content_type
+        method: GET
+    variables:
+        - unexist_user_id: 100
+        - wrong_type_user_ids: aaa
+        - unsupport_fields_element: aaa
+        - wrong_type_fields_element: ''
+        - wrong_type_fields: '{}'
 
 - test:
     name: 不传递user_ids，不传递fields

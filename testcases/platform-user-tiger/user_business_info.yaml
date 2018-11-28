@@ -1,10 +1,15 @@
 - config:
     name: 获取单个用户业务资料
     request:
-      base_url: $platform_tiger_api_host
-      headers:
-          Content-Type: $content_type
-      method: GET
+        base_url: $platform_tiger_api_host
+        headers:
+            Content-Type: $content_type
+        method: GET
+    variables:
+        - unexist_user_id: 100
+        - wrong_type_user_id: aaa
+        - unsupport_fields_element: aaa
+        - wrong_type_fields: '{}'
 
 - test:
     name: 用户存在-不传递fields

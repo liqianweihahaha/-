@@ -6,6 +6,9 @@
         method: PUT
         headers:
             Content-Type: $content_type
+    variables:
+        - wrong_type_work_ids: '{}'
+        - unexist_work_id: 100
 
 - test:
     name: 用户id存在-work_ids为用户已发布作品

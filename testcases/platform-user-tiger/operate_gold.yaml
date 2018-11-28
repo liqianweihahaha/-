@@ -15,6 +15,7 @@
         - wrong_type_offset: aaa
         - wrong_type_event_id: aaa
         - large_offset_gold: 10000
+        - wrong_type_user_id: aaa
 
 - test:
     name: 用户id存在-event_id正确-offset正确

@@ -5,11 +5,14 @@
         method: GET
         headers:
             Content-Type: $content_type
+    variables:
+        - unexist_work_id: 100
+        - wrong_type_work_id: aaa
 
 - test:
     name: 已发布作品
     request:
-        url: /tiger/work/source/public/$ide_published_work_id
+        url: /tiger/work/source/public/$source_user_ide_published_work_id
     validate:
         - eq: [status_code, 200]
         - length_equals: [content, 5]
@@ -18,7 +21,7 @@
 - test:
     name: 未发布作品
     request:
-        url: /tiger/work/source/public/$ide_unpublish_work_id
+        url: /tiger/work/source/public/$source_user_ide_unpublish_work_id
     validate:
         - eq: [status_code, 200]
         - length_equals: [content, 5]
@@ -27,14 +30,14 @@
 - test:
     name: 临时删除的作品
     request:
-        url: /tiger/work/source/public/$ide_deleted_temporarily_work_id
+        url: /tiger/work/source/public/$source_user_ide_deleted_temporarily_work_id
     validate:
         - eq: [status_code, 410]
         - eq: [content.error_code, W_1]
 - test:
     name: 永久删除的作品
     request:
-        url: /tiger/work/source/public/$ide_deleted_permanently_work_id
+        url: /tiger/work/source/public/$source_user_ide_deleted_permanently_work_id
     validate:
         - eq: [status_code, 410]
         - eq: [content.error_code, W_1]

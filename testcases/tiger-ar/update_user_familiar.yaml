@@ -5,6 +5,9 @@
         method: POST
         headers:
             Content-Type: $content_type
+    variables:
+        - wrong_type_sprite_id: aaa
+        - unexist_sprite_id: 100
 
 - test:
     name: 用户未登录-精灵id存在

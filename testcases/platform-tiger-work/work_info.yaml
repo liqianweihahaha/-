@@ -5,6 +5,9 @@
         method: GET
         headers:
             Content-Type: $content_type
+    variables:
+        - wrong_type_fields_element: ''
+        - wrong_type_fields: '{}'
 
 - test:
     name: 未登录-已发布作品-不传递fields

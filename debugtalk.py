@@ -6,7 +6,7 @@ from common.util import *
 
 
 
-env = 'production'
+env = 'dev'
 
 if env == 'dev':
     tiger_api_host = 'https://backend-dev.codemao.cn'
@@ -18,9 +18,9 @@ elif env == 'production':
     tiger_api_host = 'https://api.codemao.cn'
     platform_tiger_api_host = 'http://internal.platform.codemao.cn'
 
+# 源用户信息
 source_user = read_config.source_user(env)
 source_user_id = source_user.get('id')
-source_user_id_str = str(source_user_id)
 source_user_username = source_user.get('username')
 source_user_password = source_user.get('password')
 # 作品信息
@@ -32,6 +32,8 @@ source_user_wood_work_id = source_user.get('work').get('wood').get('work_id')
 # 用户拥有的精灵，不拥有的精灵
 source_user_owned_sprite_id = source_user.get('sprite').get('owned')
 source_user_unown_sprite_id = source_user.get('sprite').get('unown')
+
+# 目标用户信息
 target_user = read_config.target_user(env)
 target_user_id = target_user.get('id')
 target_user_ide_published_work_id = target_user.get('work').get('ide').get('published_work_id')
@@ -39,20 +41,6 @@ target_user_ide_published_unfork_work_id = target_user.get('work').get('ide').ge
 target_user_ide_unpublish_work_id = target_user.get('work').get('ide').get('unpublish_work_id')
 target_user_ide_deleted_temporarily_work_id = target_user.get('work').get('ide').get('deleted_temporarily_work_id')
 target_user_ide_deleted_permanently_work_id = target_user.get('work').get('ide').get('deleted_permanently_work_id')
-
-# 异常信息：不存在、格式错误
-unexist_user_id = 100
-unexist_user_username = 'a00000'
-unexist_work_id = 100
-unexist_sprite_id = 100
-wrong_type_user_id = 'aaa'
-wrong_type_work_id = 'aaa'
-wrong_type_user_ids = 'aaa'
-wrong_type_fields= '{}'
-wrong_type_work_ids = '{}'
-wrong_type_fields_element = ''
-wrong_type_sprite_id = 'aaa'
-unsupport_fields_element = 'aaa'
 
 
 content_type = 'application/json'

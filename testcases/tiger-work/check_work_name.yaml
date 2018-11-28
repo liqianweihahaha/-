@@ -7,6 +7,7 @@
             Content-Type: $content_type
     variables:
         work_name: aaa
+        unexist_work_id: 100
 
 - test:
     name: 未登录-name不传递-work_id不传递
@@ -34,7 +35,7 @@
 - test:
     name: 已登录-name传递-work_id为个人已发布作品
     request:
-        url: /tiger/work/checkname?name=$work_name&work_id=ide_published_work_id
+        url: /tiger/work/checkname?name=$work_name&work_id=$source_user_ide_published_work_id
         headers:
             Authorization: $user_login_token
     validate:

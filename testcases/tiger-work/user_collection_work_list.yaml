@@ -3,6 +3,9 @@
     request:
         base_url: $tiger_api_host
         method: GET
+    variables:
+        - unexist_user_id: 100
+        - wrong_type_user_id: aaa
 
 - test:
     name: 未登录-用户id存在

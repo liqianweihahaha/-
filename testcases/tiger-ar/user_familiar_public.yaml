@@ -5,6 +5,9 @@
         method: GET
         headers:
             Content-Type: $content_type
+    variables:
+        - unexist_user_id: 100
+        - wrong_type_user_id: aaa
 
 - test:
     name: 用户未登录-用户id存在

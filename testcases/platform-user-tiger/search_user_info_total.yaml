@@ -6,8 +6,14 @@
         url: /accounts/list/search
         headers:
             Content-Type: $content_type
-    pc_pid:
-        UvOFXx2tfv
+    variables:
+        - source_user_id_str: '$source_user_id'
+        - unexist_user_id: 100
+        - wrong_type_user_id: aaa
+        - pc_pid: UvOFXx2tfv
+        - unsupport_fields_element: aaa
+        - wrong_type_fields: '{}'
+
 
 - test:
     name: 用户id存在-不传递fields

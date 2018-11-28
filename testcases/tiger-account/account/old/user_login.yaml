@@ -7,7 +7,8 @@
         headers:
             Content-Type: $content_type
     variables:
-        source_user_wrong_password: 00
+        - source_user_wrong_password: 00
+        - unexist_user_username: a00000
 
 - test:
     name: 用户名正确-密码正确

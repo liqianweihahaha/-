@@ -6,6 +6,9 @@
         method: POST
         headers:
             Content-Type: $content_type
+    variables:
+        - wrong_type_fields_element: ''
+        - wrong_type_fields: '{}'
 
 # - test:
 #     name: 未登录-work_ids只包含已发布作品-fields不传递

@@ -6,6 +6,9 @@
     variables:
         unexist_user_id: 100
         wrong_type_user_id: aaa
+    variables:
+        - unexist_user_id: 100
+        - wrong_type_user_id: aaa
 
 
 - test:

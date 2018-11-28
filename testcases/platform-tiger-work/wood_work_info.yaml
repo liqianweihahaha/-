@@ -5,6 +5,9 @@
         method: GET
         headers:
             Content-Type: $content_type
+    variables:
+        - unexist_work_id: 100
+        - wrong_type_work_id: aaa
 
 - test:
     name: 未登录-wood作品
