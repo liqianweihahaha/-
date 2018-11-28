@@ -10,7 +10,7 @@
         url: /tiger/accounts/login
         method: POST
         json:
-            identity: $user_username
+            identity: $source_user_username
             password: $password
             pid: 65edCTyg
         validate:

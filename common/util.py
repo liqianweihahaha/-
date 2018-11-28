@@ -7,8 +7,8 @@ def get_value(content, key):
         return content.get(key)
 
 # 获取时间戳
-def get_timeslot(time):
-    return int(time.mktime(time.strptime(time, '%Y-%m-%d')))
+def get_timeslot(str_time):
+    return int(time.mktime(time.strptime(str_time, '%Y-%m-%d')))
 
 
 def eval_content(content):

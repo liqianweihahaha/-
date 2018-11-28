@@ -106,7 +106,7 @@
     name: 用户username存在-fields包含所有支持字段
     request:
         json:
-            username: $user_username
+            username: $source_user_username
             fields: '["id", "bcmid", "username", "nickname", "email", "phone_number", "avatar_url", "fullname", "qq"]'
     validate:
         - eq: [status_code, 200]

@@ -11,22 +11,22 @@
 #     name: 未登录-work_ids只包含已发布作品-fields不传递
 #     request:
 #         json:
-#             work_ids: [$ide_published_work_id]
+#             work_ids: [$source_user_ide_published_work_id]
 #             fields: ["id"]
 #     validate:
 #         - eq: [status_code, 200]
-#         - eq: [content.id, $ide_published_work_id]
+#         - eq: [content.id, $source_user_ide_published_work_id]
 #         - eq: [content.is_published, true]
 #         - length_equals: [content, 9]
 - test:
     name: 未登录-work_ids只包含已发布作品-fields包含所有支持字段
     request:
         json:
-            work_ids: [$ide_published_work_id]
+            work_ids: [$source_user_ide_published_work_id]
             fields: ["id", "user_id", "name", "description", "type", "n_forks", "work_urls", "root_id", "parent_id", "preview", "latest_work_url", "view_times", "praise_times", "language_type", "operation_instruction", "publish_time"]
     validate:
         - eq: [status_code, 200]
-        - eq: [content.0.id, $ide_published_work_id]
+        - eq: [content.0.id, $source_user_ide_published_work_id]
         - eq: [content.0.user_id, $source_user_id]
         - eq: [content.0.is_published, true]
         - length_equals: [content.0, 23]
@@ -35,22 +35,22 @@
     name: 未登录-work_ids只包含已发布作品-fields只包含id
     request:
         json:
-            work_ids: [$ide_published_work_id]
+            work_ids: [$source_user_ide_published_work_id]
             fields: ["id"]
     validate:
         - eq: [status_code, 200]
-        - eq: [content.0.id, $ide_published_work_id]
+        - eq: [content.0.id, $source_user_ide_published_work_id]
         - eq: [content.0.is_published, true]
         - length_equals: [content.0, 9]
 - test:
     name: 未登录-work_ids只包含已发布作品-fields只包含id和user_id
     request:
         json:
-            work_ids: [$ide_published_work_id]
+            work_ids: [$source_user_ide_published_work_id]
             fields: ["id", "user_id"]
     validate:
         - eq: [status_code, 200]
-        - eq: [content.0.id, $ide_published_work_id]
+        - eq: [content.0.id, $source_user_ide_published_work_id]
         - eq: [content.0.user_id, $source_user_id]
         - eq: [content.0.is_published, true]
         - length_equals: [content.0, 10]
@@ -58,17 +58,17 @@
     name: 未登录-work_ids只包含已发布作品-fields为空数组
     request:
         json:
-          work_ids: [$ide_published_work_id]
+          work_ids: [$source_user_ide_published_work_id]
           fields: []
     validate:
         - eq: [status_code, 200]
-        - eq: [content.0.id, $ide_published_work_id]
+        - eq: [content.0.id, $source_user_ide_published_work_id]
         - length_equals: [content.0, 9]
 - test:
     name: 未登录-work_ids只包含已发布作品-fields包含不支持字段
     request:
         json: 
-            work_ids: [$ide_published_work_id]
+            work_ids: [$source_user_ide_published_work_id]
             fields: ["id", $wrong_type_fields_element]
     validate:
         - eq: [status_code, 400]
@@ -77,7 +77,7 @@
     name: 未登录-work_ids只包含已发布作品-fields格式错误
     request:
         json:
-            work_ids: [$ide_published_work_id]
+            work_ids: [$source_user_ide_published_work_id]
             fields: $wrong_type_fields
     validate:
         - eq: [status_code, 400]
@@ -86,22 +86,21 @@
     name: 未登录-work_ids只包含未发布作品-fields只包含user_id
     request:
         json:
-            work_ids: [$ide_unpublish_work_id]
+            work_ids: [$source_user_ide_unpublish_work_id]
             fields: ["user_id"]
     validate:
         - eq: [status_code, 200]
-        - eq: [content.0.id, $ide_unpublish_work_id]
+        - eq: [content.0.id, $source_user_ide_unpublish_work_id]
         - eq: [content.0.is_published, false]
         - length_equals: [content.0, 10]
 - test:
     name: 未登录-work_ids包含临时删除和永久删除的作品-fields只包含user_id
     request:
         json:
-            work_ids: [$ide_deleted_temporarily_work_id, $ide_deleted_permanently_work_id]
+            work_ids: [$source_user_ide_deleted_temporarily_work_id, $source_user_ide_deleted_permanently_work_id]
             fields: ["user_id"]
     validate:
         - eq: [status_code, 200]
-        - eq: [content.0.id, $ide_deleted_temporarily_work_id]
         - eq: [content.0.is_published, false]
         - length_equals: [content.0, 10]
         - length_equals: [content, 2]

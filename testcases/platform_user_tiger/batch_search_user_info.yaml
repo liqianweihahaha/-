@@ -124,7 +124,7 @@
     request:
         json:
             target_type: username
-            target_values: [$user_username]
+            target_values: [$source_user_username]
     validate:
         - eq: [status_code, 200]
         - eq: [content.0.id, $source_user_id]
@@ -134,7 +134,7 @@
     request:
         json:
             target_type: username
-            target_values: [$user_username]
+            target_values: [$source_user_username]
             fields: '["id"]'
     validate:
         - eq: [status_code, 200]

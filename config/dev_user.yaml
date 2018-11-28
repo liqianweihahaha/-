@@ -1,6 +1,5 @@
 source_user:
   id: 1000002450
-  str_id: "1000002450"
   username: mxq111
   password: m1234567
   work:
@@ -12,11 +11,12 @@ source_user:
     wood:
       work_id: 2676059
   sprite:
-    owned: 50
-    unown: 1
+    owned: 50    # 象牙螺
+    unown: 1     # 编程猫
 target_user:
   id: 1000002872
   username: mxq121
+  password: m1234567
   work:
     ide:
       published_work_id: 2675915

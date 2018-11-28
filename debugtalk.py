@@ -4,7 +4,9 @@ import os
 from common import read_config
 from common.util import *
 
-env = 'dev'
+
+
+env = 'production'
 
 if env == 'dev':
     tiger_api_host = 'https://backend-dev.codemao.cn'
@@ -18,8 +20,15 @@ elif env == 'production':
 
 source_user = read_config.source_user(env)
 source_user_id = source_user.get('id')
+source_user_id_str = str(source_user_id)
 source_user_username = source_user.get('username')
 source_user_password = source_user.get('password')
+# 作品信息
+source_user_ide_published_work_id = source_user.get('work').get('ide').get('published_work_id')
+source_user_ide_unpublish_work_id = source_user.get('work').get('ide').get('unpublish_work_id')
+source_user_ide_deleted_temporarily_work_id = source_user.get('work').get('ide').get('deleted_temporarily_work_id')
+source_user_ide_deleted_permanently_work_id = source_user.get('work').get('ide').get('deleted_permanently_work_id')
+source_user_wood_work_id = source_user.get('work').get('wood').get('work_id')
 # 用户拥有的精灵，不拥有的精灵
 source_user_owned_sprite_id = source_user.get('sprite').get('owned')
 source_user_unown_sprite_id = source_user.get('sprite').get('unown')

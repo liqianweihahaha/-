@@ -121,7 +121,7 @@
     name: 用户username存在-fields包含所有支持字段
     request:
         json:
-            username: $user_username
+            username: $source_user_username
             page: 1
             per_page: 20
             fields: ["id", "bcmid", "username", "nickname", "email", "phone_number", "avatar_url", "fullname", "qq"]
@@ -135,7 +135,7 @@
     name: username存在-pid不传递
     request:
         json:
-            username: $user_username
+            username: $source_user_username
             page: 1
             per_page: 20
             fields: ["id", "bcmid", "username", "nickname", "email", "phone_number", "avatar_url", "fullname", "qq"]
@@ -145,7 +145,7 @@
     name: username存在-pid非猫老祖和CRM
     request:
         json:
-            username: $user_username
+            username: $source_user_username
             page: 1
             per_page: 20
             fields: ["id", "bcmid", "username", "nickname", "email", "phone_number", "avatar_url", "fullname", "qq"]

@@ -11,8 +11,8 @@ source_user:
     wood:
       work_id: 4817480
   sprite:
-    owned: 50  # 象牙螺
-    unown: 1   # 编程猫
+    owned: 50   # 象牙螺
+    unown: 1    # 编程猫
 target_user:
   id: 1855538
   username: sandy001
