@@ -5,6 +5,7 @@
         method: GET
     variables:
         - unexist_work_id: 100
+        - wrong_type_work_id: aaa
 
 - test:
     name: 未登录-nemo作品
@@ -22,10 +23,10 @@
     validate:
         - eq: [status_code, 200]
         - eq: [content.work_id, $source_user_nemo_work_id]
-        - eq: [conten.user_id, $source_user_id]
+        - eq: [content.user_id, $source_user_id]
         - eq: [content.status, 1]
         - eq: [content.type, 8]
-        - length_equals: [content, 14]
+        - length_equals: [content, 15]
 - test:
     name: 已登录-个人已发布ide作品
     request:
@@ -94,7 +95,7 @@
 - test:
     name: 已登录-格式错误的作品id
     request:
-        url: /tiger/nemo/works/$unexist_work_id/source
+        url: /tiger/nemo/works/$wrong_type_work_id/source
         headers:
             Authorization: $user_login_token
     validate:
