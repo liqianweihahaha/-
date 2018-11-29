@@ -37,3 +37,10 @@
     validate:
         - eq: [status_code, 400]
         - contains: [content.error_code, A_5]
+- test:
+    name: 不传递参数
+    request:
+        url: /works/statistics/count
+    validate:
+        - eq: [status_code, 400]
+        - contains: [content.error_code, A_5]
