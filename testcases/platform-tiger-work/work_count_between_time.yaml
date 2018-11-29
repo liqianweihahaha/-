@@ -6,11 +6,14 @@
         headers:
             Content-Type: $content_type
     variables:
-        - start_time: ${get_timeslot(2018-11-22)}
-        - end_time: ${get_timeslot(2018-11-23)}
+        - start_time_date: '2018-11-22'
+        - end_time_date: '2018-11-23'
 
 - test:
     name: 传递start_time，传递end_time
+    variables:
+        - start_time: ${get_timeslot($start_time_date)}
+        - end_time: ${get_timeslot($end_time_date)}
     request:
         url: /works/statistics/count?start_time=$start_time&end_time=$end_time
     validate:
@@ -18,6 +21,8 @@
         - contains: [content, n_works]
 - test:
     name: 传递start_time，不传递end_time
+    variables:
+        - start_time: ${get_timeslot($start_time_date)}
     request:
         url: /works/statistics/count?start_time=$start_time
     validate:
@@ -25,6 +30,8 @@
         - contains: [content.error_code, A_5]
 - test:
     name: 不传递start_time，传递end_time
+    variables:
+        - end_time: ${get_timeslot($end_time_date)}
     request:
         url: /works/statistics/count?end_time=$end_time
     validate:
