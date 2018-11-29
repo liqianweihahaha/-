@@ -7,7 +7,7 @@
         headers:
             Content-Type: $content_type
     variables:
-        - source_user_id_str: '$source_user_id'
+        - source_user_id_str: ${str($source_user_id)}
         - unexist_user_id: 100
         - wrong_type_user_id: aaa
         - pc_pid: UvOFXx2tfv
