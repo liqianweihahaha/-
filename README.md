@@ -22,3 +22,5 @@
 #### 经验总结
 1. ${p1(${p2})}函数嵌套会解析失败
 2. variables定义多个变量时，前一个定义的变量并不能并同级后一个变量引用到
+3. python语法报错或者yaml的KeyError导致生成html报告失败时，错误提示无法定位出错的地方
+`from builtins import *`报错，改成 `from builtins import str,eval`

@@ -1,6 +1,6 @@
-- config:
-    name: 保存作品（创建或者修改）
-    request:
-        base_url: $tiger_api_host
-        url: /api/v2/work
-        method: POST
+# - config:
+#     name: 保存作品（创建或者修改）
+#     request:
+#         base_url: $tiger_api_host
+#         url: /api/v2/work
+#         method: POST

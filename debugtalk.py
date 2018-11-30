@@ -1,12 +1,12 @@
 import requests
-import time
 import os
 from common import read_config
 from common.util import *
+from builtins import str,eval
 
 
-
-env = 'dev'
+# 读取 .env 配置
+env = os.environ['environment']
 
 if env == 'dev':
     tiger_api_host = 'https://backend-dev.codemao.cn'
@@ -43,9 +43,7 @@ target_user_ide_unpublish_work_id = target_user.get('work').get('ide').get('unpu
 target_user_ide_deleted_temporarily_work_id = target_user.get('work').get('ide').get('deleted_temporarily_work_id')
 target_user_ide_deleted_permanently_work_id = target_user.get('work').get('ide').get('deleted_permanently_work_id')
 
-
 content_type = 'application/json'
-
 
 # 获取登录token
 def login_token(identity, password, pid='UvOFXx2tfv'):

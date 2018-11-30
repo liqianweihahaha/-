@@ -1,0 +1,21 @@
+# - config:
+#     name: 删除作品关系标志位（Public）
+#     request:
+#         base_url: $tiger_api_host
+#         method: DELETE
+#     variables:
+#         - business_contest: CONTEST
+#         - unsupport_business: aaa
+
+
+# - test:
+#     name: 未登录
+#     variables:
+#         - timestamp: ${timestamp_3minutes()}
+#         - user_id: $source_user_id
+#         - work_id: $source_user_ide_published_work_id
+#         - signature: ${generate_signature($timestamp, $user_id, $work_id)}
+#     request:
+#         url: /tiger/work/business/relation?business=$business_contest&timestamp=$timestamp&user_id=$user_id&work_id=$work_id&signature=$signature
+#     validate:
+#         - eq: [status_code, 204]

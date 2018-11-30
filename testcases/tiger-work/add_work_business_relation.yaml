@@ -1,0 +1,41 @@
+# - config:
+#     name: 添加作品业务标志位
+#     request:
+#         base_url: $tiger_api_host
+#         url: /tiger/work/business/relation
+#         method: POST
+#         headers:
+#             Content-Type: $content_type
+#     variables:
+#         - business_contest: CONTEST
+#         - unsupport_business: aaa
+
+# - test:
+#     name: 未登录-work_id为已发布ide作品-business为CONTEST
+#     request:
+#         json:
+#             work_id: $source_user_ide_published_work_id
+#             business: $business_contest
+#     validate:
+#         - eq: [status_code, 403]
+#         - eq: [content.error_code, E_0]
+# - test:
+#     name: 已登录-work_id为已发布ide作品(无业务标志位)-business为CONTEST
+#     request:
+#         headers:
+#             Authorization: $user_login_token
+#         json:
+#             work_id: $source_user_ide_published_work_id
+#             business: $business_contest
+#     validate:
+#         - eq: [status_code, 204]
+# # - test:
+# #     name: 已登录-work_id为已发布ide作品(有业务标志位)-business为CONTEST
+# #     request:
+# #         headers:
+# #             Authorization: $user_login_token
+# #         json:
+# #             work_id: $source_user_ide_published_work_id
+# #             business: $business_contest
+# #     validate:
+# #         - eq: [status_code, 204]
