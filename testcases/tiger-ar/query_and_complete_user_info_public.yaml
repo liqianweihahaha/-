@@ -34,7 +34,7 @@
     request:
         url: /tiger/ar/user/$source_user_id
         headers:
-            Authorization: $user_login_token
+            Authorization: $source_user_login_token
     validate:
         - eq: [status_code, 204]
 - test:
@@ -42,6 +42,6 @@
     request:
         url: /tiger/ar/user/$target_user_id
         headers:
-            Authorization: $user_login_token
+            Authorization: $source_user_login_token
     validate:
         - eq: [status_code, 204]

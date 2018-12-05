@@ -2,8 +2,14 @@
     name: login-account
     request:
         base_url: $tiger_api_host
+        method: GET
         headers:
             Content-Type: application/json
 - test:
-    name: login-success
-    api: api_account_login($source_user_username, $password)
+    name: 登录成功后获取用户信息
+    api: api_account_login($source_user_username, $source_user_password)
+    request:
+        url: /tiger/user
+    validate:
+        - eq: [status_code, 200]
+        # - eq: [content.id, $source_user_id]

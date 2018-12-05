@@ -1,0 +1,64 @@
+- config:
+    name: 搜索Nemo作品
+    request:
+        base_url: $tiger_api_host
+        method: GET
+    variables:
+        - query_text: 哈哈
+        - default_query_type: name
+        - unsupport_query_type: aaa
+
+
+- test:
+    name: 未登录-传递query-传递query_type=name
+    request:
+        url: /tiger/nemo/user/works/search?query=$query_text&query_type=$default_query_type
+    validate:
+        - eq: [status_code, 403]
+        - eq: [content.error_code, E_0]
+- test:
+    name: 已登录-不传递参数
+    request:
+        url: /tiger/nemo/user/works/search
+        headers:
+            Authorization: $source_user_login_token
+    validate:
+        - eq: [status_code, 400]
+        - eq: [content.error_code, A_5]
+- test:
+    name: 已登录-传递query-传递query_type=name
+    request:
+        url: /tiger/nemo/user/works/search?query=$query_text&query_type=$default_query_type
+        headers:
+            Authorization: $source_user_login_token
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, list]
+- test:
+    name: 已登录-传递query-传递query_type为不支持的aaa
+    request:
+        url: /tiger/nemo/user/works/search?query=$query_text&query_type=$default_query_type
+        headers:
+            Authorization: $source_user_login_token
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, list]
+        - length_equals: [content, 0]
+- test:
+    name: 已登录-只传递query
+    request:
+        url: /tiger/nemo/user/works/search?query=$query_text
+        headers:
+            Authorization: $source_user_login_token
+    validate:
+        - eq: [status_code, 400]
+        - eq: [content.error_code, A_5]
+- test:
+    name: 已登录-只传递query_type
+    request:
+        url: /tiger/nemo/user/works/search?query_type=$default_query_type
+        headers:
+            Authorization: $source_user_login_token
+    validate:
+        - eq: [status_code, 400]
+        - eq: [content.error_code, A_5]

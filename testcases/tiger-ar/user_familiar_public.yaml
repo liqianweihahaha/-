@@ -38,7 +38,7 @@
     request:
         url: /tiger/ar/familiar/$source_user_id
         headers:
-            Authorization: $user_login_token
+            Authorization: $source_user_login_token
     validate:
         - eq: [status_code, 200]
         - eq: [content.0.user_id, $source_user_id]
@@ -50,7 +50,7 @@
     request:
         url: /tiger/ar/familiar/$target_user_id
         headers:
-            Authorization: $user_login_token
+            Authorization: $source_user_login_token
     validate:
         - eq: [status_code, 200]
         - type_match: [content, list]

@@ -1,0 +1,49 @@
+- config:
+    name: 保存 Box 作品（创建或者修改）
+    request:
+        base_url: $tiger_api_host
+        url: /tiger/work/box
+        method: POST
+        headers:
+            Content-Type: $content_type
+
+- test:
+    name: 未登录-保存代码岛2.0作品(创建作品)
+    request:
+        json: 
+            name: 测试创建代码岛2.0作品
+            work_url: $source_user_boxv2_work_url
+            preview: $source_user_boxv2_preview_url
+            bcmc_url: $source_user_boxv2_bcmc_url
+    validate:
+        - eq: [status_code, 403]
+        - eq: [content.error_code, E_0]
+- test:
+    name: 已登录-保存代码岛2.0作品(创建作品)
+    request:
+        headers:
+            Authorization: $source_user_login_token
+        json: 
+            name: 测试创建代码岛2.0作品
+            work_url: $source_user_boxv2_work_url
+            preview: $source_user_boxv2_preview_url
+            bcmc_url: $source_user_boxv2_bcmc_url
+    validate:
+        - eq: [status_code, 200]
+        - contains: [content, id]
+    extract:
+        - boxv2_work_id: content.id
+- test:
+    name: 已登录-保存代码岛2.0作品(修改作品)
+    request:
+        headers:
+            Authorization: $source_user_login_token
+        json: 
+            name: 测试修改代码岛2.0作品
+            work_url: $source_user_boxv2_work_url
+            preview: $source_user_boxv2_preview_url
+            bcmc_url: $source_user_boxv2_bcmc_url
+            work_id: $boxv2_work_id
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.id, $boxv2_work_id]  

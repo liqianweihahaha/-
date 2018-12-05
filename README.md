@@ -20,7 +20,11 @@
 
 
 #### 经验总结
-1. ${p1(${p2})}函数嵌套会解析失败
-2. variables定义多个变量时，前一个定义的变量并不能并同级后一个变量引用到
-3. python语法报错或者yaml的KeyError导致生成html报告失败时，错误提示无法定位出错的地方
-`from builtins import *`报错，改成 `from builtins import str,eval`
+- ${p1(${p2})}函数嵌套会解析失败
+- variables定义多个变量时，前一个定义的变量并不能被同级后一个变量立马引用到
+```
+variables:
+    - content: aaa
+    - work_content: print($content)
+```
+- python语法报错或者TypeError(例如读取配置文件的字段不存在)或者测试文件的KeyError(例如引用不存在的变量)导致生成html报告失败时，错误提示无法定位出错的地方，例如：`from builtins import *`报错，改成 `from builtins import str,eval`

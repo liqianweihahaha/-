@@ -16,7 +16,7 @@
     name: 用户已登录
     request:
         headers:
-            Authorization: $user_login_token
+            Authorization: $source_user_login_token
     validate:
         - eq: [status_code, 200]
         - eq: [content.0.user_id, $source_user_id]

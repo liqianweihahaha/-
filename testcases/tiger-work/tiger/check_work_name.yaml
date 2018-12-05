@@ -1,0 +1,52 @@
+- config:
+    name: 检查作品名称
+    request:
+        base_url: $tiger_api_host
+        method: GET
+        headers:
+            Content-Type: $content_type
+    variables:
+        work_name: aaa
+        unexist_work_id: 100
+
+- test:
+    name: 未登录-name不传递-work_id不传递
+    request:
+        url: /tiger/work/checkname
+    validate:
+        - eq: [status_code, 400]
+        - eq: [content.error_code, A_5]
+- test:
+    name: 未登录-name传递-work_id不传递
+    request:
+        url: /tiger/work/checkname?name=$work_name
+    validate:
+        - eq: [status_code, 403]
+        - eq: [content.error_code, E_0]
+- test:
+    name: 已登录-name传递-work_id不传递
+    request:
+        url: /tiger/work/checkname?name=$work_name
+        headers:
+            Authorization: $source_user_login_token
+    validate:
+        - eq: [status_code, 200]
+        - contains: [content.name, $work_name]
+- test:
+    name: 已登录-name传递-work_id为个人已发布作品
+    request:
+        url: /tiger/work/checkname?name=$work_name&work_id=$source_user_ide_published_work_id
+        headers:
+            Authorization: $source_user_login_token
+    validate:
+        - eq: [status_code, 200]
+        - contains: [content.name, $work_name]
+- test:
+    name: 已登录-name传递-work_id为不存在的作品id
+    request:
+        url: /tiger/work/checkname?name=$work_name&work_id=$unexist_work_id
+        headers:
+            Authorization: $source_user_login_token
+    validate:
+        - eq: [status_code, 200]
+        - contains: [content.name, $work_name]

@@ -18,6 +18,6 @@
         url: /tiger/accounts/logout
         method: POST
         headers:
-            Authorization: $user_login_token
+            Authorization: $source_user_login_token
     validate:
         - eq: [status_code, 204]

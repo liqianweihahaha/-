@@ -1,0 +1,87 @@
+- config:
+    name: 保存作品（创建或者修改）
+    request:
+        base_url: $tiger_api_host
+        url: /api/v2/work
+        method: POST
+
+- test:
+    name: 未登录-保存代码岛1.0作品(创建作品)
+    request:
+        json: 
+            name: 测试创建代码岛1.0作品
+            work_url: $source_user_boxv1_work_url
+            preview: $source_user_boxv1_preview_url
+            type: 3
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.code, 2002]
+        - eq: [content.msg, 用户未登陆]
+- test:
+    name: 已登录-保存代码岛1.0作品(创建作品)
+    request:
+        headers:
+            Authorization: $source_user_login_token
+        json: 
+            name: 测试创建代码岛1.0作品
+            work_url: $source_user_boxv1_work_url
+            preview: $source_user_boxv1_preview_url
+            type: 3
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.code, 200]
+        - eq: [content.msg, 成功]
+        - contains: [content.data, id]
+    extract:
+        - boxv1_work_id: content.data.id
+- test:
+    name: 已登录-保存代码岛1.0作品(修改作品)
+    request:
+        headers:
+            Authorization: $source_user_login_token
+        json: 
+            name: 测试修改代码岛1.0作品
+            work_url: $source_user_boxv1_work_url
+            preview: $source_user_boxv1_preview_url
+            type: 3
+            work_id: $boxv1_work_id
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.code, 200]
+        - eq: [content.msg, 成功]
+        - eq: [content.data.id, $boxv1_work_id]
+- test:
+    name: 已登录-保存IDE作品(创建作品)
+    request:
+        headers:
+            Authorization: $source_user_login_token
+        json: 
+            name: 测试创建Kitten作品
+            work_url: $source_user_ide_work_url
+            preview: $source_user_ide_preview_url
+            type: 1
+            isOld: 0
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.code, 200]
+        - eq: [content.msg, 成功]
+        - contains: [content.data, id]
+    extract:
+        - ide_work_id: content.data.id
+- test:
+    name: 已登录-保存IDE作品(修改作品)
+    request:
+        headers:
+            Authorization: $source_user_login_token
+        json: 
+            name: 测试修改Kitten作品
+            work_url: $source_user_ide_work_url
+            preview: $source_user_ide_preview_url
+            type: 1
+            isOld: 0
+            work_id: $ide_work_id
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.code, 200]
+        - eq: [content.msg, 成功]
+        - eq: [content.data.id, $ide_work_id]

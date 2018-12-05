@@ -17,7 +17,7 @@
         url: /tiger/account
         method: GET
         headers:
-            Authorization: $user_login_token
+            Authorization: $source_user_login_token
     validate:
         - eq: [status_code, 200]
         - eq: [content.id, $source_user_id]
@@ -35,7 +35,7 @@
         url: /tiger/user
         method: GET
         headers:
-            Authorization: $user_login_token
+            Authorization: $source_user_login_token
     validate:
         - eq: [status_code, 200]
         - eq: [content.id, $source_user_id]
@@ -54,7 +54,7 @@
         url: /tiger/accounts/basic_auth
         method: GET
         headers:
-            Authorization: $user_login_token
+            Authorization: $source_user_login_token
     validate:
         - eq: [status_code, 200]
         - eq: [content.user_id, $source_user_id]
@@ -73,7 +73,7 @@
         url: /tiger/profile
         method: GET
         headers:
-            Authorization: $user_login_token
+            Authorization: $source_user_login_token
     validate:
         - eq: [status_code, 200]
         - eq: [content.id, $source_user_id]
@@ -94,7 +94,7 @@
         url: /tiger/accounts/user_info/update
         method: PATCH
         headers:
-            Authorization: $user_login_token
+            Authorization: $source_user_login_token
         json:
             qq: '123456'
     validate:

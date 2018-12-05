@@ -21,7 +21,7 @@
     request:
         url: /tiger/ar/familiar/$source_user_owned_sprite_id
         headers:
-            Authorization: $user_login_token
+            Authorization: $source_user_login_token
     validate:
         - eq: [status_code, 204]
 - test:
@@ -29,7 +29,7 @@
     request:
         url: /tiger/ar/familiar/$source_user_unown_sprite_id
         headers:
-            Authorization: $user_login_token
+            Authorization: $source_user_login_token
     validate:
         - eq: [status_code, 403]
         - eq: [content.error_code, R_3]
@@ -38,7 +38,7 @@
     request:
         url: /tiger/ar/familiar/$unexist_sprite_id
         headers:
-            Authorization: $user_login_token
+            Authorization: $source_user_login_token
     validate:
         - eq: [status_code, 403]
         - eq: [content.error_code, R_3]
@@ -47,7 +47,7 @@
     request:
         url: /tiger/ar/familiar/$wrong_type_sprite_id
         headers:
-            Authorization: $user_login_token
+            Authorization: $source_user_login_token
     validate:
         - eq: [status_code, 400]
         - eq: [content.error_code, A_5]
@@ -56,6 +56,6 @@
     request:
         url: /tiger/ar/familiar/
         headers:
-            Authorization: $user_login_token
+            Authorization: $source_user_login_token
     validate:
         - eq: [status_code, 404]

@@ -2,11 +2,8 @@ import requests
 import time
 import hmac
 import hashlib
+import json
 
-
-def get_value(content, key):
-    if isinstance(content, dict):
-        return content.get(key)
 
 # 获取某具体时间的时间戳
 def get_timeslot(time_date):
@@ -23,7 +20,28 @@ def generate_signature(timestamp, user_id, work_id):
     signature = hmac.new(key.encode('utf-8'), msg.encode('utf-8'), digestmod=hashlib.sha256).hexdigest()
     return signature
 
+# 判断两个值是否相等
+def eval_equal(source, target):
+    return source == target
+
+# 测试国家数字教育资源接入：获取ticket
+# www.codemao.cn?ticket={ticket}即可登录对应账号
+def get_eduyun_ticket(account='test_account', password='123456'):
+    host = 'http://system.eduyun.cn/bmp-web'
+    user = {
+        'account': account,
+        'password': password
+    }
+    res = requests.post(host+'/debugTool/createTicket', data=user)
+    ticket = ''
+    if res.status_code == 200 and 'application/json' in res.headers['Content-Type']:
+        # 注意返回的res.json()['data']['data']，格式为str，需要转为dict
+        ticket = json.loads(res.json()['data']['data'])['data']['ticket']
+    else:
+        print('获取国家数字教育资源账号的ticket失败，状态码：%s' % res.status_code)
+    return ticket
 
 if __name__ == '__main__':
-    timestamp = int(time.time()+180)
-    print(generate_signature(timestamp, 1000002450, 2675933))
+    # timestamp = int(time.time()+180)
+    # print(generate_signature(timestamp, 1000002450, 2675933))
+    print(get_eduyun_ticket())

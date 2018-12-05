@@ -1,0 +1,82 @@
+- config:
+    name: 获取指定类型可参赛作品（B端）
+    request:
+        base_url: $tiger_api_host
+        method: GET
+    variables:
+        - unsupport_work_type: 9
+
+- test:
+    name: 未登录-work_type为1-limit为5
+    request:
+        url: /tiger/work/business/contestable?work_type=1&limit=5
+    validate:
+        - eq: [status_code, 403]
+        - eq: [content.error_code, E_0]
+- test:
+    name: 已登录-work_type为1-limit为5
+    request:
+        url: /tiger/work/business/contestable?work_type=1&limit=5
+        headers:
+            Authorization: $source_user_login_token
+    validate:
+        - eq: [status_code, 200]
+        - contains: [content, total]
+        - contains: [content, items]
+        - type_match: [content.items, list]
+- test:
+    name: 已登录-work_type为3-limit为5
+    request:
+        url: /tiger/work/business/contestable?work_type=3&limit=5
+        headers:
+            Authorization: $source_user_login_token
+    validate:
+        - eq: [status_code, 200]
+        - contains: [content, total]
+        - contains: [content, items]
+        - type_match: [content.items, list]
+- test:
+    name: 已登录-不支持的work_type-limit为5
+    request:
+        url: /tiger/work/business/contestable?work_type=$unsupport_work_type&limit=5
+        headers:
+            Authorization: $source_user_login_token
+    validate:
+        - eq: [status_code, 400]
+        - eq: [content.error_code, A_5]
+- test:
+    name: 已登录-work_type为1-limit小于5
+    request:
+        url: /tiger/work/business/contestable?work_type=1&limit=4
+        headers:
+            Authorization: $source_user_login_token
+    validate:
+        - eq: [status_code, 400]
+        - eq: [content.error_code, A_5]
+- test:
+    name: 已登录-只传递work_type为1
+    request:
+        url: /tiger/work/business/contestable?work_type=1
+        headers:
+            Authorization: $source_user_login_token
+    validate:
+        - eq: [status_code, 400]
+        - eq: [content.error_code, A_5]
+- test:
+    name: 已登录-只传递limit为5
+    request:
+        url: /tiger/work/business/contestable?limit=5
+        headers:
+            Authorization: $source_user_login_token
+    validate:
+        - eq: [status_code, 400]
+        - eq: [content.error_code, A_5]
+- test:
+    name: 已登录-传递参数为空
+    request:
+        url: /tiger/work/business/contestable
+        headers:
+            Authorization: $source_user_login_token
+    validate:
+        - eq: [status_code, 400]
+        - eq: [content.error_code, A_5]
