@@ -1,7 +1,8 @@
 - api:
     def: api_account_login($identity, $password)
     request:
-        url: /tiger/accounts/login
+        # 完整的url路径
+        url: $tiger_api_host/tiger/accounts/login
         method: POST
         json:
             identity: $identity
@@ -9,3 +10,5 @@
             pid: 65edCTyg
     validate:
         - eq: [status_code, 200]
+        - length_equals: [content, 4]
+        - contains: [content, token]

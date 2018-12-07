@@ -7,19 +7,34 @@
         headers:
             Content-Type: $content_type
     variables:
-        pc_pid: UvOFXx2tfv
+        - pc_pid: UvOFXx2tfv
+        - password: m1234567
 
 - test:
-    name: prefix格式正确-password格式正确
+    name: prefix格式正确-password格式正确(创建2个账号)
     request:
         json:
             prefix: testbatch
-            users: [{"password": "m1234567"}]
+            users: [{"password": $password}, {"password": $password}]
             pid: $pc_pid
+    extract:
+        - user1_id: content.0.id
+        - user1_username: content.0.username
+        - user2_id: content.1.id
+        - user2_username: content.1.username
     validate:
         - eq: [status_code, 200]
-        - length_equals: [content, 1]
+        - length_equals: [content, 2]
         - length_equals: [content.0, 3]
         - contains: [content.0, id]
-        - contains: [content.0, bcmid]
         - contains: [content.0, username]
+        # 确保返回的user_id,username是升序排列
+        - less_than: [$user1_id, $user2_id]
+        - less_than: [$user1_username, $user2_username]
+        
+- test:
+    name: 批量创建的用户1应可以正常登录
+    api: api_account_login($user1_username, $password)
+- test:
+    name: 批量创建的用户2应可以正常登录
+    api: api_account_login($user2_username, $password)
