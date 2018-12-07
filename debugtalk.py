@@ -50,11 +50,15 @@ source_user_unown_sprite_id = source_user.get('sprite').get('unown')
 # 目标用户信息
 target_user = read_config.target_user(env)
 target_user_id = target_user.get('id')
+# Kitten作品
 target_user_ide_published_work_id = target_user.get('work').get('ide').get('published_work_id')
 target_user_ide_published_unfork_work_id = target_user.get('work').get('ide').get('published_unfork_work_id')
 target_user_ide_unpublish_work_id = target_user.get('work').get('ide').get('unpublish_work_id')
 target_user_ide_deleted_temporarily_work_id = target_user.get('work').get('ide').get('deleted_temporarily_work_id')
 target_user_ide_deleted_permanently_work_id = target_user.get('work').get('ide').get('deleted_permanently_work_id')
+# nemo作品
+target_user_nemo_work_id = target_user.get('work').get('nemo').get('work_id')
+
 
 content_type = 'application/json'
 

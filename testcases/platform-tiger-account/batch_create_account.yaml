@@ -19,6 +19,7 @@
     validate:
         - eq: [status_code, 200]
         - length_equals: [content, 1]
+        - length_equals: [content.0, 3]
         - contains: [content.0, id]
         - contains: [content.0, bcmid]
         - contains: [content.0, username]
