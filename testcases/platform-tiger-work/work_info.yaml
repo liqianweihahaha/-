@@ -10,17 +10,21 @@
         - wrong_type_fields: '{}'
 
 - test:
-    name: 未登录-已发布作品-不传递fields
+    name: 已发布作品-不传递fields
     request:
         url: /works/$source_user_ide_published_work_id
     validate:
         - eq: [status_code, 200]
         - eq: [content.id, $source_user_ide_published_work_id]
         - eq: [content.is_published, true]
+        - eq: [content.is_fork_allowed, true]
+        - eq: [content.is_deleted, false]
+        - greater_than: [content.publish_time, 0]
         - length_equals: [content, 9]
+        - contains: [content, is_share_allowed]
         - contains: [content, created_at]
 - test:
-    name: 未登录-已发布作品-fields包含所有支持字段
+    name: 已发布ide作品-fields包含所有支持字段
     request:
         url: /works/$source_user_ide_published_work_id?fields=["id", "user_id", "name", "description", "type", "n_forks", "work_urls", "root_id", "parent_id", "preview", "latest_work_url", "praise_times", "language_type", "operation_instruction", "publish_time"]
     validate:
@@ -28,18 +32,22 @@
         - eq: [content.id, $source_user_ide_published_work_id]
         - eq: [content.user_id, $source_user_id]
         - eq: [content.is_published, true]
+        - eq: [content.type, 1]
         - length_equals: [content, 22]
+        - contains: [content, description]
+        - contains: [content, operation_instruction]
 - test:
-    name: 未登录-已发布作品-fields只包含id
+    name: 已发布ide作品-fields只包含type
     request:
-        url: /works/$source_user_ide_published_work_id?fields=["id"]
+        url: /works/$source_user_ide_published_work_id?fields=["type"]
     validate:
         - eq: [status_code, 200]
         - eq: [content.id, $source_user_ide_published_work_id]
         - eq: [content.is_published, true]
-        - length_equals: [content, 9]
+        - eq: [content.type, 1]
+        - length_equals: [content, 10]
 - test:
-    name: 未登录-已发布作品-fields只包含id和user_id
+    name: 已发布ide作品-fields只包含id和user_id
     request:
         url: /works/$source_user_ide_published_work_id?fields=["id", "user_id"]
     validate:
@@ -49,52 +57,58 @@
         - eq: [content.is_published, true]
         - length_equals: [content, 10]
 - test:
-    name: 未登录-已发布作品-fields为空数组
+    name: 已发布ide作品-fields为空数组
     request:
         url: /works/$source_user_ide_published_work_id?fields=[]
     validate:
         - eq: [status_code, 400]
         - eq: [content.error_code, A_5]
 - test:
-    name: 未登录-已发布作品-fields包含不支持字段
+    name: 已发布ide作品-fields包含不支持字段
     request:
         url: /works/$source_user_ide_published_work_id?fields=["id", $wrong_type_fields_element]
     validate:
         - eq: [status_code, 400]
         - eq: [content.error_code, A_5]
 - test:
-    name: 未登录-已发布作品-fields格式错误
+    name: 已发布ide作品-fields格式错误
     request:
         url: /works/$source_user_ide_published_work_id?fields=$wrong_type_fields
     validate:
         - eq: [status_code, 400]
         - eq: [content.error_code, A_5]
 - test:
-    name: 未登录-未发布作品-不传递fields
+    name: 未发布ide作品-不传递fields
     request:
         url: /works/$source_user_ide_unpublish_work_id
     validate:
         - eq: [status_code, 200]
         - eq: [content.id, $source_user_ide_unpublish_work_id]
         - eq: [content.is_published, false]
+        - eq: [content.publish_time, 0]
+        - eq: [content.is_deleted, false]
         - length_equals: [content, 9]
 - test:
-    name: 未登录-临时删除的作品-不传递fields
+    name: 临时删除的ide作品-不传递fields
     request:
         url: /works/$source_user_ide_deleted_temporarily_work_id
     validate:
         - eq: [status_code, 200]
         - eq: [content.id, $source_user_ide_deleted_temporarily_work_id]
         - eq: [content.is_published, false]
+        - eq: [content.publish_time, 0]
+        - eq: [content.is_deleted, true]
         - length_equals: [content, 9]
 - test:
-    name: 未登录-永久删除的作品-不传递fields
+    name: 永久删除的ide作品-不传递fields
     request:
         url: /works/$source_user_ide_deleted_permanently_work_id
     validate:
         - eq: [status_code, 200]
         - eq: [content.id, $source_user_ide_deleted_permanently_work_id]
         - eq: [content.is_published, false]
+        - eq: [content.publish_time, 0]
+        - eq: [content.is_deleted, true]
         - length_equals: [content, 9]
 - test:
     name: 未登录-wood作品-fields只包含type

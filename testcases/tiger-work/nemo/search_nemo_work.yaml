@@ -37,7 +37,7 @@
 - test:
     name: 已登录-传递query-传递query_type为不支持的aaa
     request:
-        url: /tiger/nemo/user/works/search?query=$query_text&query_type=$default_query_type
+        url: /tiger/nemo/user/works/search?query=$query_text&query_type=$unsupport_query_type
         headers:
             Authorization: $source_user_login_token
     validate:

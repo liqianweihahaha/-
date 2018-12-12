@@ -11,7 +11,7 @@
         - unexist_work_id: 100
 
 - test:
-    name: 用户id存在-work_ids为用户已发布作品
+    name: 用户id存在-work_ids为用户已发布ide作品
     request:
         json:
           user_id: $source_user_id
@@ -21,7 +21,7 @@
         - eq: [content.0.work_id, $source_user_ide_published_work_id]
         - contains: [content.0, is_liked]
 - test:
-    name: 用户id存在-work_ids为用户未发布作品
+    name: 用户id存在-work_ids为用户未发布ide作品
     request:
         json:
           user_id: $source_user_id
@@ -31,7 +31,7 @@
         - eq: [content.0.work_id, $source_user_ide_unpublish_work_id]
         - contains: [content.0, is_liked]
 - test:
-    name: 用户id存在-work_ids为用户临时删除作品
+    name: 用户id存在-work_ids为用户临时删除ide作品
     request:
         json:
           user_id: $source_user_id
@@ -41,7 +41,7 @@
         - eq: [content.0.work_id, $source_user_ide_deleted_temporarily_work_id]
         - contains: [content.0, is_liked]
 - test:
-    name: 用户id存在-work_ids为用户永久删除作品
+    name: 用户id存在-work_ids为用户永久删除ide作品
     request:
         json:
           user_id: $source_user_id
@@ -79,10 +79,15 @@
         - eq: [status_code, 400]
         - eq: [content.error_code, A_5]
 - test:
-    name: 用户id不传递-work_ids为已发布作品
+    name: 用户id不传递-work_ids为已发布ide作品
     request:
         json:
             work_ids: $source_user_ide_published_work_id
+    validate:
+        - eq: [status_code, 400]
+        - eq: [content.error_code, A_5]
+- test:
+    name: 请求体为空
     validate:
         - eq: [status_code, 400]
         - eq: [content.error_code, A_5]
