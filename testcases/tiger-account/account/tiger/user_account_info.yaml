@@ -1,0 +1,19 @@
+- config:
+    name: 获取用户资料account
+    request:
+        base_url: $tiger_api_host
+        url: /tiger/account
+        method: GET
+
+- test:
+    name: 未登录
+    validate:
+        - eq: [status_code, 204]
+- test:
+    name: 已登录
+    request:
+        headers:
+            Authorization: $source_user_login_token
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.id, $source_user_id]

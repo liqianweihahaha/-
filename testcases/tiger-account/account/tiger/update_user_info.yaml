@@ -1,0 +1,26 @@
+- config:
+    name: 修改用户信息
+    request:
+        base_url: $tiger_api_host
+        url: /tiger/accounts/user_info/update
+        method: PATCH
+        headers:
+            Content-Type: $content_type
+
+- test:
+    name: 未登录-修改qq信息
+    request:
+        json:
+            qq: '123456'
+    validate:
+        - eq: [status_code, 403]
+        - eq: [content.error_code, E_0]
+# - test:
+#     name: 已登录-修改qq信息
+#     request:
+#         headers:
+#             Authorization: $source_user_login_token
+#         json:
+#             qq: '123456'
+#     validate:
+#         - eq: [status_code, 204]

@@ -1,0 +1,20 @@
+- config:
+    name: 获取用户基本认证信息
+    request:
+        base_url: $tiger_api_host
+        url: /tiger/accounts/basic_auth
+        method: GET
+        
+- test:
+    name: 未登录
+    validate:
+        - eq: [status_code, 403]
+        - eq: [content.error_code, 'E_0']
+- test:
+    name: 已登录用户
+    request:
+        headers:
+            Authorization: $source_user_login_token
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.user_id, $source_user_id]
