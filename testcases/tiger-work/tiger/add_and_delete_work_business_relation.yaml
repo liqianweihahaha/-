@@ -25,6 +25,8 @@
         - eq: [content.error_code, E_0]
 - test:
     name: 添加作品标志位：已登录-work_id为已发布ide作品(无业务标志位)-business为CONTEST
+    setup_hooks:
+        - ${delete_work_business_relation($timestamp_3, $source_user_id, $source_user_ide_published_work_id)}
     request:
         headers:
             Authorization: $source_user_login_token
