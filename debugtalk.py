@@ -10,6 +10,9 @@ env = os.environ['environment']
 if env == 'dev':
     tiger_api_host = 'https://backend-dev.codemao.cn'
     platform_tiger_api_host = 'http://dev-external.platform.codemao.cn'
+elif env == 'test':
+    tiger_api_host = "https://test-api.codemao.cn"
+    platform_tiger_api_host = 'http://test-internal.platform.codemao.cn'
 elif env == 'staging':
     tiger_api_host = 'https://backend-test.codemao.cn'
     platform_tiger_api_host = 'http://staging-internal.platform.codemao.cn'
@@ -125,7 +128,7 @@ def collection_work(work_id):
 
 # 删除作品业务标志位
 def delete_work_business_relation(timestamp, user_id, work_id):
-    signature = generate_signature(timestamp, user_id, work_id)
+    signature = business_relation_signature(timestamp, user_id, work_id)
     res = requests.delete(tiger_api_host+'/tiger/work/business/relation?business=CONTEST&timestamp=%s&user_id=%s&work_id=%s&signature=%s' % (timestamp, user_id, work_id, signature))
     if res.status_code == 204:
         return True

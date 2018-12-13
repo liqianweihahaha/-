@@ -11,6 +11,7 @@
         - unexist_user_id: 100
         - wrong_type_user_id: aaa
         - pc_pid: UvOFXx2tfv
+        - maolaozu_pid: ZD7Ac2gq
         - unsupport_fields_element: aaa
         - wrong_type_fields: '{}'
 
@@ -20,7 +21,7 @@
     request:
         json:
             id: $source_user_id
-            pid: "ZD7Ac2gq"
+            pid: $maolaozu_pid
     validate:
         - eq: [status_code, 400]
 - test:
@@ -29,7 +30,7 @@
         json:
             id: $source_user_id
             fields: []
-            pid: "ZD7Ac2gq"
+            pid: $maolaozu_pid
     validate:
         - eq: [status_code, 403]
         - eq: [content.error_code, 'Account_29']
@@ -39,7 +40,7 @@
         json:
             id: $source_user_id
             fields: ["id", "bcmid", "username", "nickname", "email", "phone_number", "avatar_url", "fullname", "qq"]
-            pid: "ZD7Ac2gq"
+            pid: $maolaozu_pid
     validate:
         - eq: [status_code, 200]
         - eq: [content.items.0.id, $source_user_id_str]
@@ -55,7 +56,7 @@
         json:
             id: $source_user_id
             fields: ["id"]
-            pid: "ZD7Ac2gq"
+            pid: $maolaozu_pid
     validate:
         - eq: [status_code, 200]
         - eq: [content.total, 1]
@@ -68,7 +69,7 @@
         json:
             id: $source_user_id
             fields: ["nickname"]
-            pid: "ZD7Ac2gq"
+            pid: $maolaozu_pid
     validate:
         - eq: [status_code, 200]
         - eq: [content.total, 1]
@@ -81,7 +82,7 @@
         json:
             id: $source_user_id
             fields: ["id", "nickname"]
-            pid: "ZD7Ac2gq"
+            pid: $maolaozu_pid
     validate:
         - eq: [status_code, 200]
         - eq: [content.items.0.id, $source_user_id_str]
@@ -93,7 +94,7 @@
         json:
             id: $source_user_id
             fields: ["id", $unsupport_fields_element]
-            pid: "ZD7Ac2gq"
+            pid: $maolaozu_pid
     validate:
         - eq: [status_code, 400]
 - test:
@@ -102,7 +103,7 @@
         json:
             id: $source_user_id
             fields: $wrong_type_fields
-            pid: "ZD7Ac2gq"
+            pid: $maolaozu_pid
     validate:
         - eq: [status_code, 400]
 - test:
@@ -111,7 +112,7 @@
         json:
             id: $unexist_user_id
             fields: ["id"]
-            pid: "ZD7Ac2gq"
+            pid: $maolaozu_pid
     validate:
         - eq: [status_code, 200]
         - eq: [content.total, 0]
@@ -122,7 +123,7 @@
         json:
             id: $wrong_type_user_id
             fields: '["id"]'
-            pid: "ZD7Ac2gq"
+            pid: $maolaozu_pid
     validate:
         - eq: [status_code, 400]
 - test:
@@ -133,7 +134,7 @@
             page: 1
             per_page: 20
             fields: ["id", "bcmid", "username", "nickname", "email", "phone_number", "avatar_url", "fullname", "qq"]
-            pid: "ZD7Ac2gq"
+            pid: $maolaozu_pid
     validate:
         - eq: [status_code, 200]
         - eq: [content.total, 1]

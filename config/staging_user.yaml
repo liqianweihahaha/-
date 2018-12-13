@@ -24,8 +24,8 @@ source_user:
       work_id: 4817480
     nemo:
       work_id: 4952126
-      work_url: https://test.bcmcdn.com/nemo/HJq-zvZpX.bcm
-      preview_url: https://test.bcmcdn.com/nemo/Bk9-MD-pQ.cover
+      work_url: https://static.codemao.cn/nemo/SJk18U1eV.bcm
+      preview_url: https://static.codemao.cn/nemo/rJJJL8keN.cover
   sprite:
     owned: 50  # 象牙螺
     unown: 1   # 编程猫

@@ -11,17 +11,16 @@
         - wrong_type_fields: '{}'
         - unsupport_fields_element: aaa
 
-# - test:
-#     name: work_ids只包含已发布ide作品-fields不传递
-#     request:
-#         json:
-#             work_ids: [$source_user_ide_published_work_id]
-#             fields: ["id"]
-#     validate:
-#         - eq: [status_code, 200]
-#         - eq: [content.id, $source_user_ide_published_work_id]
-#         - eq: [content.is_published, true]
-#         - length_equals: [content, 9]
+- test:
+    name: work_ids只包含已发布ide作品-fields不传递
+    request:
+        json:
+            work_ids: [$source_user_ide_published_work_id]
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.0.id, $source_user_ide_published_work_id]
+        - eq: [content.0.is_published, true]
+        - length_equals: [content.0, 9]
 - test:
     name: work_ids只包含已发布ide作品-fields包含所有支持字段
     request:

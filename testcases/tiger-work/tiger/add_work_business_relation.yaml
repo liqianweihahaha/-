@@ -1,43 +1,31 @@
-- config:
-    name: 添加作品业务标志位
-    request:
-        base_url: $tiger_api_host
-        url: /tiger/work/business/relation
-        method: POST
-        headers:
-            Content-Type: $content_type
-    variables:
-        - business_contest: CONTEST
-        - unsupport_business: aaa
-        - timestamp: ${timestamp_3minutes()}
-        - unexist_work_id: 100
-        - wrong_type_work_id: aaa
+# - config:
+#     name: 添加作品业务标志位
+#     request:
+#         base_url: $tiger_api_host
+#         url: /tiger/work/business/relation
+#         method: POST
+#         headers:
+#             Content-Type: $content_type
+#     variables:
+#         - business_contest: CONTEST
+#         - unsupport_business: aaa
+#         - timestamp: ${timestamp_3minutes()}
+#         - unexist_work_id: 100
+#         - wrong_type_work_id: aaa
 
-- test:
-    name: 未登录-work_id为已发布ide作品-business为CONTEST
-    request:
-        json:
-            work_id: $source_user_ide_published_work_id
-            business: $business_contest
-    validate:
-        - eq: [status_code, 403]
-        - eq: [content.error_code, E_0]
-- test:
-    name: 已登录-work_id为已发布ide作品(无业务标志位)-business为CONTEST
-    setup_hooks: 
-        - ${delete_work_business_relation($timestamp, $source_user_id, $source_user_ide_published_work_id)}
-    request:
-        headers:
-            Authorization: $source_user_login_token
-        json:
-            work_id: $source_user_ide_published_work_id
-            business: $business_contest
-    validate:
-        - eq: [status_code, 204]
-    teardown_hooks:
-        - ${delete_work_business_relation($timestamp, $source_user_id, $source_user_ide_published_work_id)} 
 # - test:
-#     name: 已登录-work_id为已发布ide作品(有业务标志位)-business为CONTEST
+#     name: 未登录-work_id为已发布ide作品-business为CONTEST
+#     request:
+#         json:
+#             work_id: $source_user_ide_published_work_id
+#             business: $business_contest
+#     validate:
+#         - eq: [status_code, 403]
+#         - eq: [content.error_code, E_0]
+# - test:
+#     name: 已登录-work_id为已发布ide作品(无业务标志位)-business为CONTEST
+#     setup_hooks: 
+#         - ${delete_work_business_relation($timestamp, $source_user_id, $source_user_ide_published_work_id)}
 #     request:
 #         headers:
 #             Authorization: $source_user_login_token
@@ -46,54 +34,66 @@
 #             business: $business_contest
 #     validate:
 #         - eq: [status_code, 204]
-- test:
-    name: 已登录-work_id为未发布ide作品-business不支持
-    request:
-        headers:
-            Authorization: $source_user_login_token
-        json:
-            work_id: $source_user_ide_published_work_id
-            business: $unsupport_business
-    validate:
-        - eq: [status_code, 400]
-        - eq: [content.error_code, A_5]
-- test:
-    name: 已登录-work_id为已发布ide作品-business不传递
-    request:
-        headers:
-            Authorization: $source_user_login_token
-        json:
-            work_id: $source_user_ide_published_work_id
-    validate:
-        - eq: [status_code, 400]
-        - eq: [content.error_code, A_5]
-- test:
-    name: 已登录-work_id不存在
-    request:
-        headers:
-            Authorization: $source_user_login_token
-        json:
-            work_id: $unexist_work_id
-            business: $business_contest
-    validate:
-        - eq: [status_code, 404]
-        - eq: [content.error_code, W_0]
-- test:
-    name: 已登录-work_id格式错误
-    request:
-        headers:
-            Authorization: $source_user_login_token
-        json:
-            work_id: $wrong_type_work_id
-            business: $business_contest
-    validate:
-        - eq: [status_code, 400]
-        - eq: [content.error_code, A_5]      
-- test:
-    name: 已登录-不传递任何参数
-    request:
-        headers:
-            Authorization: $source_user_login_token
-    validate:
-        - eq: [status_code, 400]
-        - eq: [content.error_code, A_5]   
+#     teardown_hooks:
+#         - ${delete_work_business_relation($timestamp, $source_user_id, $source_user_ide_published_work_id)} 
+# # - test:
+# #     name: 已登录-work_id为已发布ide作品(有业务标志位)-business为CONTEST
+# #     request:
+# #         headers:
+# #             Authorization: $source_user_login_token
+# #         json:
+# #             work_id: $source_user_ide_published_work_id
+# #             business: $business_contest
+# #     validate:
+# #         - eq: [status_code, 204]
+# - test:
+#     name: 已登录-work_id为未发布ide作品-business不支持
+#     request:
+#         headers:
+#             Authorization: $source_user_login_token
+#         json:
+#             work_id: $source_user_ide_published_work_id
+#             business: $unsupport_business
+#     validate:
+#         - eq: [status_code, 400]
+#         - eq: [content.error_code, A_5]
+# - test:
+#     name: 已登录-work_id为已发布ide作品-business不传递
+#     request:
+#         headers:
+#             Authorization: $source_user_login_token
+#         json:
+#             work_id: $source_user_ide_published_work_id
+#     validate:
+#         - eq: [status_code, 400]
+#         - eq: [content.error_code, A_5]
+# - test:
+#     name: 已登录-work_id不存在
+#     request:
+#         headers:
+#             Authorization: $source_user_login_token
+#         json:
+#             work_id: $unexist_work_id
+#             business: $business_contest
+#     validate:
+#         - eq: [status_code, 404]
+#         - eq: [content.error_code, W_0]
+# - test:
+#     name: 已登录-work_id格式错误
+#     request:
+#         headers:
+#             Authorization: $source_user_login_token
+#         json:
+#             work_id: $wrong_type_work_id
+#             business: $business_contest
+#     validate:
+#         - eq: [status_code, 400]
+#         - eq: [content.error_code, A_5]      
+# - test:
+#     name: 已登录-不传递任何参数
+#     request:
+#         headers:
+#             Authorization: $source_user_login_token
+#     validate:
+#         - eq: [status_code, 400]
+#         - eq: [content.error_code, A_5]   
