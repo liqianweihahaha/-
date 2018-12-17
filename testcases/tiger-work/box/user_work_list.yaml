@@ -43,9 +43,8 @@
     request:
         url: /tiger/box/work/list/user/$source_user_id?type=$unexist_work_type_id
     validate:
-        - eq: [status_code, 200]
-        - type_match: [content, list]
-        - length_equals: [content, 0]
+        - eq: [status_code, 403]
+        - eq: [content.error_code, BOX_6]
 - test:
     name: 用户id不存在-请求头为空
     request:

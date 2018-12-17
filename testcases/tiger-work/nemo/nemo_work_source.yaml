@@ -26,7 +26,7 @@
         - eq: [content.user_id, $source_user_id]
         - eq: [content.status, 1]
         - eq: [content.type, 8]
-        - length_equals: [content, 15]
+        - length_equals: [content, 16]
 - test:
     name: 已登录-个人已发布ide作品
     request:

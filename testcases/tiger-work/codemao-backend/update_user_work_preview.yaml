@@ -8,7 +8,7 @@
         - wrong_type_work_id: aaa
 
 - test:
-    name: 未登录-已发布作品
+    name: 未登录-已发布ide作品
     request:
         url: /api/user/preview/work/$source_user_ide_published_work_id
         json:
@@ -17,7 +17,7 @@
         - eq: [status_code, 403]
         - eq: [content.error_code, E_0]
 - test:
-    name: 已登录-个人已发布Kitten作品
+    name: 已登录-个人已发布ide作品
     request:
         url: /api/user/preview/work/$source_user_ide_published_work_id
         headers:
@@ -29,7 +29,7 @@
         - eq: [content.code, 200]
         - eq: [content.msg, 成功]
 - test:
-    name: 已登录-个人未发布Kitten作品
+    name: 已登录-个人未发布ide作品
     request:
         url: /api/user/preview/work/$source_user_ide_unpublish_work_id
         headers:
@@ -53,7 +53,7 @@
         - eq: [content.code, 3020]
         - eq: [content.msg, 你无权操作此作品]
 - test:
-    name: 已登录-个人永久删除kitten作品
+    name: 已登录-个人永久删除ide作品
     request:
         url: /api/user/preview/work/$source_user_ide_deleted_permanently_work_id
         headers:
