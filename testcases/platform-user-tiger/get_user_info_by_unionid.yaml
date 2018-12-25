@@ -1,0 +1,8 @@
+# - config:
+#     name: 通过unionid获取用户信息
+#     request:
+#         base_url: $platform_tiger_api_host
+#         method: GET
+
+# - test:
+#     name: unionid已注册

@@ -1,5 +1,5 @@
 - config:
-    name: 搜索用户信息（包含总数），目前只供猫老祖和CRM
+    name: 搜索用户信息（包含总数，只供猫老祖和CRM）
     request:
         base_url: $platform_tiger_api_host
         method: POST

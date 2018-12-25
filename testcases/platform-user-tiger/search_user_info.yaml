@@ -24,30 +24,32 @@
     request:
         json:
             id: $source_user_id
-            fields: '[]'
+            fields: []
     validate:
         - eq: [status_code, 403]
-        - eq: [content.error_code, 'Account_29']
+        - eq: [content.error_code, Account_29]
 - test:
     name: 用户id存在-fields包含所有支持字段
     request:
         json:
             id: $source_user_id
-            fields: '["id", "bcmid", "username", "nickname", "email", "phone_number", "avatar_url", "fullname", "qq"]'
+            fields: ["id", "bcmid", "username", "nickname", "email", "phone_number", "avatar_url", "fullname", "qq"]
     validate:
         - eq: [status_code, 200]
+        - type_match: [content, list]
         - eq: [content.0.id, $source_user_id]
+        - contains: [content.0.username, $source_user_username]
         - length_equals: [content, 1]
         - length_equals: [content.0, 9]
-        - contains: [content.0, username]
         - contains: [content.0, email]
         - contains: [content.0, phone_number]
+        - contains: [content.0, qq]
 - test:
     name: 用户id存在-fields只包含id
     request:
         json:
             id: $source_user_id
-            fields: '["id"]'
+            fields: ["id"]
     validate:
         - eq: [status_code, 200]
         - eq: [content.0.id, $source_user_id]
@@ -58,18 +60,7 @@
     request:
         json:
             id: $source_user_id
-            fields: '["nickname"]'
-    validate:
-        - eq: [status_code, 200]
-        - eq: [content.0.id, $source_user_id]
-        - length_equals: [content, 1]
-        - length_equals: [content.0, 2]
-- test:
-    name: 用户id存在-fields只包含id和nickname
-    request:
-        json:
-            id: $source_user_id
-            fields: '["id", "nickname"]'
+            fields: ["nickname"]
     validate:
         - eq: [status_code, 200]
         - eq: [content.0.id, $source_user_id]
@@ -80,7 +71,7 @@
     request:
         json:
             id: $source_user_id
-            fields: '["id", $unsupport_fields_element]'
+            fields: ["id", $unsupport_fields_element]
     validate:
         - eq: [status_code, 400]
 - test:
@@ -96,7 +87,7 @@
     request:
         json:
             id: $unexist_user_id
-            fields: '["id"]'
+            fields: ["id"]
     validate:
         - eq: [status_code, 200]
         - length_equals: [content, 0]
@@ -112,7 +103,7 @@
     request:
         json:
             username: $source_user_username
-            fields: '["id", "bcmid", "username", "nickname", "email", "phone_number", "avatar_url", "fullname", "qq"]'
+            fields: ["id", "bcmid", "username", "nickname", "email", "phone_number", "avatar_url", "fullname", "qq"]
     validate:
         - eq: [status_code, 200]
         - eq: [content.0.id, $source_user_id]

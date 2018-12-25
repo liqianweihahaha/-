@@ -8,6 +8,7 @@
     variables:
         - success_unexisted_nickname: abcd12344
         - success_existed_nickname: 哈哈
+        # emoji会有编码问题，这里不加这个
 - test:
     name: 不传递nickname
     request:

@@ -3,8 +3,6 @@
     request:
         base_url: $platform_tiger_api_host
         method: GET
-        headers:
-            Content-Type: $content_type
     variables:
         - unexist_user_id: 100
         - wrong_type_user_id: aaa
@@ -18,9 +16,13 @@
     validate:
         - eq: [status_code, 200]
         - eq: [content.id, $source_user_id]
+        - length_equals: [content, 16]
         - contains: [content, bcmid]
         - contains: [content, nickname]
-        - length_equals: [content, 15]
+        - contains: [content, fullname]
+        - contains: [content, username]
+        - contains: [content, email]
+        - contains: [content, phone_number]
 - test:
     name: 用户存在-fields只包含字段id
     request:
@@ -36,8 +38,27 @@
     validate:
         - eq: [status_code, 200]
         - eq: [content.id, $source_user_id]
+        - length_equals: [content, 16]
+        - contains: [content, bcmid]
         - contains: [content, nickname]
-        - length_equals: [content, 15]
+        - contains: [content, fullname]
+        - contains: [content, username]
+        - contains: [content, email]
+        - contains: [content, phone_number]
+- test:
+    name: 用户存在-fields包含所有支持字段
+    request:
+        url: /accounts/$source_user_id?fields=["id", "bcmid", "nickname", "fullname", "avatar_url", "username", "email", "phone_number", "sex", "birthday", "description", "qq", "remark", "grade", "gold", "product_id"]
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.id, $source_user_id]
+        - length_equals: [content, 16]
+        - contains: [content, bcmid]
+        - contains: [content, nickname]
+        - contains: [content, fullname]
+        - contains: [content, username]
+        - contains: [content, email]
+        - contains: [content, phone_number]
 - test:
     name: 用户存在-fields包含不支持的字段
     request:
@@ -55,12 +76,10 @@
     request:
         url: /accounts/$unexist_user_id
     validate:
-        - eq: [status_code, 403]
-        - eq: [content.error_code, 'Account_0']
+        - eq: [status_code, 204]
 - test:
     name: 用户ID格式错误
     request:
         url: /accounts/$wrong_type_user_id 
     validate:
-        - eq: [status_code, 403]
-        - eq: [content.error_code, 'Account_0']
+        - eq: [status_code, 204]

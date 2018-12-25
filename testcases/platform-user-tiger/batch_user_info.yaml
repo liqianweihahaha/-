@@ -2,8 +2,6 @@
     name: 通过批量id获取用户信息
     request:
         base_url: $platform_tiger_api_host
-        headers:
-            Content-Type: $content_type
         method: GET
     variables:
         - unexist_user_id: 100
@@ -18,6 +16,7 @@
     validate:
         - eq: [status_code, 200]
         - length_equals: [content, 0]
+        - type_match: [content, list]
 - test:
     name: user_ids只包含存在用户-不传递fields
     request:
@@ -26,9 +25,49 @@
         - eq: [status_code, 200]
         - eq: [content.0.id, $source_user_id]
         - length_equals: [content, 1]
-        - length_equals: [content.0, 15]
+        - length_equals: [content.0, 16]
         - contains: [content.0, bcmid]
         - contains: [content.0, nickname]
+        - contains: [content.0, sex]
+        - contains: [content.0, grade]
+        - contains: [content.0, gold]
+        - contains: [content.0, username]
+        - contains: [content.0, email]
+        - contains: [content.0, phone_number]
+- test:
+    name: user_ids只包含存在用户-fields为空数组
+    request:
+        url: /accounts?user_ids=[$source_user_id]&fields=[]
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.0.id, $source_user_id]
+        - length_equals: [content, 1]
+        - length_equals: [content.0, 16]
+        - contains: [content.0, bcmid]
+        - contains: [content.0, nickname]
+        - contains: [content.0, sex]
+        - contains: [content.0, grade]
+        - contains: [content.0, gold]
+        - contains: [content.0, username]
+        - contains: [content.0, email]
+        - contains: [content.0, phone_number]
+- test:
+    name: user_ids只包含存在用户-fields包含全部支持字段
+    request:
+        url: /accounts?user_ids=[$source_user_id]&fields=["id", "bcmid", "nickname", "fullname", "avatar_url", "username", "email", "phone_number", "sex", "birthday", "description", "qq", "remark", "grade", "gold", "product_id"]
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.0.id, $source_user_id]
+        - length_equals: [content, 1]
+        - length_equals: [content.0, 16]
+        - contains: [content.0, bcmid]
+        - contains: [content.0, nickname]
+        - contains: [content.0, sex]
+        - contains: [content.0, grade]
+        - contains: [content.0, gold]
+        - contains: [content.0, username]
+        - contains: [content.0, email]
+        - contains: [content.0, phone_number]
 - test:
     name: user_ids只包含存在用户-fields只包含id
     request:
@@ -56,18 +95,6 @@
         - eq: [content.0.id, $source_user_id]
         - length_equals: [content, 1]
         - length_equals: [content.0, 2]
-        
-- test:
-    name: user_ids只包含存在用户-fields为空数组
-    request:
-        url: /accounts?user_ids=[$source_user_id]&fields=[]
-    validate:
-        - eq: [status_code, 200]
-        - eq: [content.0.id, $source_user_id]
-        - length_equals: [content, 1]
-        - length_equals: [content.0, 15]
-        - contains: [content.0, bcmid]
-        - contains: [content.0, nickname]
 - test:
     name: user_ids只包含存在用户-fields只包含不支持的字段
     request:

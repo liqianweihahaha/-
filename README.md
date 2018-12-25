@@ -20,7 +20,7 @@
 
 
 #### 经验总结
-- ${p1(${p2})}函数嵌套会解析失败
+- `- eq: [content.id, ${str($source_user_id)}]`会报错，解决：`- eq: [content.id, '${str($source_user_id)}']`
 - variables定义多个变量时，前一个定义的变量并不能被同级后一个变量立马引用到
 ```
 variables:

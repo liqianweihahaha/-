@@ -3,8 +3,6 @@
     request:
         base_url: $platform_tiger_api_host
         method: GET
-        headers:
-            Content-Type: $content_type
     variables:
         - unregister_phone_number: 14000000000
         - registered_phone_number: 13000000000
@@ -16,20 +14,26 @@
     validate:
         - eq: [status_code, 400]
 - test:
-    name: phone_number格式正确且不存在
+    name: phone_number已注册
+    request:
+        url: /accounts/phone/check?phone_number=$registered_phone_number
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.existed, true]
+        - eq: [content.info.phone_number, $registered_phone_number]
+        - length_equals: [content.info, 5]
+        - contains: [content.info, id]
+        - contains: [content.info, has_password]
+        - contains: [content.info, email]
+        - contains: [content.info. username]
+- test:
+    name: phone_number未注册
     request:
         url: /accounts/phone/check?phone_number=$unregister_phone_number
     validate:
         - eq: [status_code, 200]
         - eq: [content.existed, false]
         - eq: [content.info, null]
-- test:
-    name: phone_number格式正确且已存在
-    request:
-        url: /accounts/phone/check?phone_number=$registered_phone_number
-    validate:
-        - eq: [status_code, 200]
-        - eq: [content.existed, true]
 - test:
     name: phone_number为空
     request:

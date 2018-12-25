@@ -1,6 +1,7 @@
 source_user:
   id: 1000002450
   username: mxq111
+  phone_number: ''
   password: m1234567
   work:
     ide:
