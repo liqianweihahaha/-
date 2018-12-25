@@ -1,8 +1,16 @@
-# - config:
-#     name: 通过unionid获取用户信息
-#     request:
-#         base_url: $platform_tiger_api_host
-#         method: GET
+- config:
+    name: 通过unionid获取用户信息
+    request:
+        base_url: $platform_tiger_api_host
+        method: GET
+    variables:
+        # 长度大于20位即可
+        - unregistered_unionid: aaaaaaaaaabbbbbbbbbb
+        - regiatered_unionid: ''
 
-# - test:
-#     name: unionid已注册
+- test:
+    name: unionid未注册-fields包含所有支持字段
+    request:
+        url: /accounts/oauth/$unregistered_unionid?fields=["unionid", "id", "bcmid", "nickname", "fullname", "avatar_url", "username", "email", "phone_number", "sex", "birthday","description", "qq", "remark", "grade", "gold"]
+    validate:
+        - eq: [status_code, 204]

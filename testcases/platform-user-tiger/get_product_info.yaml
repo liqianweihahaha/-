@@ -27,8 +27,11 @@
         url: /accounts/products/$pc_client_pid?fields=[]
     validate:
         - eq: [status_code, 200]
-        - type_match: [content, dict]
-        - length_equals: [content, 0]
+        - eq: [content.pid, $pc_client_pid]
+        - eq: [content.name, $pc_client_name]
+        - length_equals: [content, 4]
+        - contains: [content, id]
+        - contains: [content, description]
 - test:
     name: pid存在-fields包含所有支持字段
     request:

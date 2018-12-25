@@ -13,7 +13,7 @@
         - wrong_type_fields: '{}'
 
 - test:
-    name: 不传递user_ids，不传递fields
+    name: 不传递user_ids-不传递fields
     request:
         url: /accounts/business
     validate:
@@ -27,10 +27,37 @@
         - eq: [status_code, 200]
         - eq: [content.0.id, $source_user_id]
         - length_equals: [content, 1]
-        - length_equals: [content.0, 13]
+        - length_equals: [content.0, 14]
         - contains: [content.0, age_section_id]
         - contains: [content.0, gold]
-        
+        - contains: [content.0, familiar_sprite]
+        - contains: [content.0, preview_work_id]
+- test:
+    name: user_ids只包含存在用户-fields为空数组
+    request:
+        url: /accounts/business?user_ids=[$source_user_id]&fields=[]
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.0.id, $source_user_id]
+        - length_equals: [content, 1]
+        - length_equals: [content.0, 14]
+        - contains: [content.0, age_section_id]
+        - contains: [content.0, gold]
+        - contains: [content.0, familiar_sprite]
+        - contains: [content.0, preview_work_id]
+- test:
+    name: user_ids只包含存在用户-fields包含所有支持字段
+    request:
+        url: /accounts/business?user_ids=[$source_user_id]&fields=["id", "age_section_id", "gold", "create_time", "mlz_name", "age", "doing", "level", "preview_work_id", "publish_time", "credit", "introduce", "masonry", "familiar_sprite"]
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.0.id, $source_user_id]
+        - length_equals: [content, 1]
+        - length_equals: [content.0, 14]
+        - contains: [content.0, age_section_id]
+        - contains: [content.0, gold]
+        - contains: [content.0, familiar_sprite]
+        - contains: [content.0, preview_work_id]
 - test:
     name: user_ids只包含存在用户-fields只包含id
     request:
@@ -58,17 +85,6 @@
         - eq: [content.0.id, $source_user_id]
         - length_equals: [content, 1]
         - length_equals: [content.0, 2] 
-- test:
-    name: user_ids只包含存在用户-fields为空数组
-    request:
-        url: /accounts/business?user_ids=[$source_user_id]&fields=[]
-    validate:
-        - eq: [status_code, 200]
-        - eq: [content.0.id, $source_user_id]
-        - length_equals: [content, 1]
-        - length_equals: [content.0, 13]
-        - contains: [content.0, age_section_id]
-        - contains: [content.0, gold]
 - test:
     name: user_ids只包含存在用户-fields包含不支持的字段
     request:
