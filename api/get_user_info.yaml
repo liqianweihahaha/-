@@ -1,0 +1,10 @@
+- api:
+    def: get_user_info($user_id)
+    request:
+        url: $platform_tiger_api_host/accounts/$user_id
+        method: GET
+    # 可以获取到的信息： "id", "bcmid", "nickname", "fullname", "avatar_url", "username", "email", "phone_number", "sex", 
+    # "birthday", "description", "qq", "remark", "grade", "gold", "product_id"
+    validate:
+        - eq: [status_code, 200]
+
