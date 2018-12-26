@@ -21,6 +21,17 @@
         - length_equals: [content, 1]
         - eq: [content.id, $source_user_id]
 - test: 
+    name: 邮箱已注册-密码正确
+    request:
+        json: 
+            identity: $source_user_email
+            password: $source_user_password
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, dict]
+        - length_equals: [content, 1]
+        - eq: [content.id, $source_user_id]
+- test: 
     name: 用户名已注册-密码错误
     request:
         json: 

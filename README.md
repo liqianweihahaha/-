@@ -13,6 +13,7 @@
 - hrun testcases --html-report-name reports/result.html
 
 #### 测试数据准备
+1. 用户信息准备：用户名，手机号，邮箱
 1. 用户作品：已发布、未发布、临时删除、永久删除
 2. 将登录token放在debugtalk.py中避免多个test多次请求登录方法
 3. 开始测hi是作品和测试作品后，将作品属性重置
