@@ -20,23 +20,27 @@
             target_values: [$source_user_id]
     validate:
         - eq: [status_code, 200]
+        - eq: [content.0.id, $source_user_id]
+        - eq: [content.0.username, $source_user_username]
         - length_equals: [content.0, 16]
-        - contains: [content.0, id]
-        - contains: [content.0, username]
+        - contains: [content.0, email]
+        - contains: [content.0, phone_number]
+        - contains: [content.0, gold]
 - test:
     name: 用户id存在-fields为空数组
     request:
         json:
             target_type: id
             target_values: [$source_user_id]
-            fields: '[]'
+            fields: []
     validate:
         - eq: [status_code, 200]
         - eq: [content.0.id, $source_user_id]
-        - length_equals: [content, 1]
+        - eq: [content.0.username, $source_user_username]
         - length_equals: [content.0, 16]
-        - contains: [content.0, id]
-        - contains: [content.0, username]
+        - contains: [content.0, email]
+        - contains: [content.0, phone_number]
+        - contains: [content.0, gold]
 - test:
     name: 用户id存在-fields包含所有支持字段
     request:
@@ -47,10 +51,12 @@
     validate:
         - eq: [status_code, 200]
         - eq: [content.0.id, $source_user_id]
-        - length_equals: [content.0, 20]
-        - contains: [content.0, username]
+        - eq: [content.0.username, $source_user_username] 
+        - length_equals: [content.0, 21]
         - contains: [content.0, email]
         - contains: [content.0, phone_number]
+        - contains: [content.0, age]
+        - contains: [content.0, preview_work_id]
 - test:
     name: 用户id存在-fields只包含id
     request:

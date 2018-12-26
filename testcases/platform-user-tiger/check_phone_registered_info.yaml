@@ -4,9 +4,10 @@
         base_url: $platform_tiger_api_host
         method: GET
     variables:
-        - unregister_phone_number: 14000000000
-        - registered_phone_number: 13000000000
-        - wrong_phone_number: 1000
+        - unregister_phone_number: '14000000000'
+        # 手机号为字符串类型
+        - registered_phone_number: '13000000000'
+        - wrong_type_phone_number: '1000'
 - test:
     name: 不传递phone_number
     request:
@@ -25,7 +26,7 @@
         - contains: [content.info, id]
         - contains: [content.info, has_password]
         - contains: [content.info, email]
-        - contains: [content.info. username]
+        - contains: [content.info, username]
 - test:
     name: phone_number未注册
     request:
@@ -43,6 +44,6 @@
 - test:
     name: phone_number格式错误
     request:
-        url: /accounts/phone/check?phone_number=$wrong_phone_number
+        url: /accounts/phone/check?phone_number=$wrong_type_phone_number
     validate:
         - eq: [status_code, 400]

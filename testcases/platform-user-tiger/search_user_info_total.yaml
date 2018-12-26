@@ -15,7 +15,6 @@
         - unsupport_fields_element: aaa
         - wrong_type_fields: '{}'
 
-
 - test:
     name: 用户id存在-不传递fields
     request:
@@ -33,7 +32,7 @@
             pid: $maolaozu_pid
     validate:
         - eq: [status_code, 403]
-        - eq: [content.error_code, 'Account_29']
+        - eq: [content.error_code, Account_29]
 - test:
     name: 用户id存在-fields包含所有支持字段
     request:
@@ -122,7 +121,7 @@
     request:
         json:
             id: $wrong_type_user_id
-            fields: '["id"]'
+            fields: ["id"]
             pid: $maolaozu_pid
     validate:
         - eq: [status_code, 400]
