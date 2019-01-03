@@ -1,0 +1,11 @@
+# - config:
+#     name: 设置用户名
+#     request:
+#         base_url: $tiger_api_host
+#         method: PATCH
+#         url: /tiger/v3/app/accounts/username
+
+# - test:
+#     name: 已登录(用户未设置用户名)-username符合规则
+#     json:
+#         username: sss1221

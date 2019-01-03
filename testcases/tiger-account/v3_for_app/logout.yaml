@@ -1,0 +1,19 @@
+- config:
+    name: 退出登录
+    request:
+        base_url: $tiger_api_host
+        url: /tiger/v3/app/accounts/logout
+        method: POST
+
+- test:
+    name: 已登录
+    request:
+        headers:
+            Authorization: $source_user_login_token
+    validate:
+        - eq: [status_code, 204]
+- test:
+    name: 未登录
+    validate:
+        - eq: [status_code, 403]
+        - eq: [content.error_code, E_0]
