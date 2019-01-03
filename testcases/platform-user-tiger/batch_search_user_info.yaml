@@ -22,8 +22,8 @@
         - eq: [status_code, 200]
         - eq: [content.0.id, $source_user_id]
         - eq: [content.0.username, $source_user_username]
+        - eq: [content.0.email, $source_user_email]
         - length_equals: [content.0, 16]
-        - contains: [content.0, email]
         - contains: [content.0, phone_number]
         - contains: [content.0, gold]
 - test:
@@ -37,8 +37,8 @@
         - eq: [status_code, 200]
         - eq: [content.0.id, $source_user_id]
         - eq: [content.0.username, $source_user_username]
+        - eq: [content.0.email, $source_user_email]
         - length_equals: [content.0, 16]
-        - contains: [content.0, email]
         - contains: [content.0, phone_number]
         - contains: [content.0, gold]
 - test:
@@ -52,8 +52,8 @@
         - eq: [status_code, 200]
         - eq: [content.0.id, $source_user_id]
         - eq: [content.0.username, $source_user_username] 
+        - eq: [content.0.email, $source_user_email]
         - length_equals: [content.0, 21]
-        - contains: [content.0, email]
         - contains: [content.0, phone_number]
         - contains: [content.0, age]
         - contains: [content.0, preview_work_id]
@@ -63,7 +63,7 @@
         json:
             target_type: id
             target_values: [$source_user_id]
-            fields: '["id"]'
+            fields: ["id"]
     validate:
         - eq: [status_code, 200]
         - eq: [content.0.id, $source_user_id]
@@ -75,7 +75,7 @@
         json:
             target_type: id
             target_values: [$source_user_id]
-            fields: '["nickname"]'
+            fields: ["nickname"]
     validate:
         - eq: [status_code, 200]
         - length_equals: [content.0, 2]
@@ -87,7 +87,7 @@
         json:
             target_type: id
             target_values: [$source_user_id]
-            fields: '["id", "nickname"]'
+            fields: ["id", "nickname"]
     validate:
         - eq: [status_code, 200]
         - length_equals: [content.0, 2]
@@ -99,7 +99,7 @@
         json:
             target_type: id
             target_values: [$source_user_id]
-            fields: '["id", $unsupport_fields_element]'
+            fields: ["id", $unsupport_fields_element]
     validate:
         - eq: [status_code, 400]
 - test:
@@ -107,7 +107,7 @@
     request:
         json:
             target_type: id
-            target_values: '[$source_user_id]'
+            target_values: [$source_user_id]
             fields: $wrong_type_fields
     validate:
         - eq: [status_code, 400]
@@ -117,7 +117,7 @@
         json:
             target_type: id
             target_values: [$unexist_user_id]
-            fields: '["id"]'
+            fields: ["id"]
     validate:
         - eq: [status_code, 200]
         - length_equals: [content, 0]
@@ -126,10 +126,11 @@
     request:
         json:
             target_type: id
-            target_values: '[$wrong_type_user_id]'
-            fields: '["id"]'
+            target_values: [$wrong_type_user_id]
+            fields: ["id"]
     validate:
-        - eq: [status_code, 400]
+        - eq: [status_code, 200]
+        - length_equals: [content, 0]
 - test:
     name: username存在-fields不传递
     request:
@@ -146,7 +147,7 @@
         json:
             target_type: username
             target_values: [$source_user_username]
-            fields: '["id"]'
+            fields: ["id"]
     validate:
         - eq: [status_code, 200]
         - eq: [content.0.id, $source_user_id]

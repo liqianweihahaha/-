@@ -28,9 +28,7 @@
     request:
         url: /tiger/box/work/list/hot?page=1&per_page=0
     validate:
-        - eq: [status_code, 200]
-        - type_match: [content, list]
-        - length_less_than_or_equals: [content, 30]
+        - eq: [status_code, 400]
 - test:
     name: 未登录-per_page=21
     request:

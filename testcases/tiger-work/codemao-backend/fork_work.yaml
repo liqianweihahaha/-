@@ -3,6 +3,8 @@
     request:
         base_url: $tiger_api_host
         method: POST
+        headers:
+            Content-Type: $content_type
     variables:
         - unexist_work_id: 100
         - wrong_type_work_id: aaa
@@ -35,39 +37,6 @@
     validate:
         - eq: [status_code, 200]
         - eq: [content.code, 500]
-- test:
-    name: 已登录-他人未发布作品(可购买)
-    request:
-        url: /api/work/fork/$target_user_ide_unpublish_work_id
-        headers:
-            Authorization: $source_user_login_token
-    validate:
-        - eq: [status_code, 200]
-        - eq: [content.code, 200]
-        - eq: [content.msg, 成功]
-        - contains: [content.data, workId]
-- test:
-    name: 已登录-他人临时删除作品(可购买)
-    request:
-        url: /api/work/fork/$target_user_ide_deleted_temporarily_work_id
-        headers:
-            Authorization: $source_user_login_token
-    validate:
-        - eq: [status_code, 200]
-        - eq: [content.code, 200]
-        - eq: [content.msg, 成功]
-        - contains: [content.data, workId]
-- test:
-    name: 已登录-他人永久删除作品(可购买)
-    request:
-        url: /api/work/fork/$target_user_ide_deleted_permanently_work_id 
-        headers:
-            Authorization: $source_user_login_token
-    validate:
-        - eq: [status_code, 200]
-        - eq: [content.code, 200]
-        - eq: [content.msg, 成功]
-        - contains: [content.data, workId]
 - test:
     name: 已登录-个人已发布作品(可购买)
     request:

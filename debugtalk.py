@@ -24,8 +24,8 @@ elif env == 'production':
 source_user = read_config.source_user(env)
 source_user_id = source_user.get('id')
 source_user_username = source_user.get('username')
-# source_user_phone_number = source_user.get('phone_number')
 source_user_email = source_user.get('email')
+# source_user_phone_number = source_user.get('phone_number')
 source_user_password = source_user.get('password')
 # Kitten作品
 source_user_ide_published_work_id = source_user.get('work').get('ide').get('published_work_id')
