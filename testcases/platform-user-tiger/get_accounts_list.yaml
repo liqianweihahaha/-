@@ -3,8 +3,6 @@
     request:
         base_url: $platform_tiger_api_host
         method: GET
-        headers:
-            Content-Type: $content_type
 
 - test:
     name: 参数为空
@@ -27,17 +25,17 @@
         - contains: [content.items.0, fullname]
         - contains: [content.items.0, sex]
         - contains: [content.items.0, qq]
-- test:
-    name: page=1-per_page大于20
-    request:
-        url: /accounts/list?page=1&per_page=21
-    validate:
-        - eq: [status_code, 400] 
-        - eq: [content.error_code, A_5]    
-- test:
-    name: page大于20-per_page=1
-    request:
-        url: /accounts/list?page=21&per_page=1
-    validate:
-        - eq: [status_code, 400] 
-        - eq: [content.error_code, A_5]  
+# - test:
+#     name: page=1-per_page大于20
+#     request:
+#         url: /accounts/list?page=1&per_page=21
+#     validate:
+#         - eq: [status_code, 400] 
+#         - eq: [content.error_code, A_5]    
+# - test:
+#     name: page大于20-per_page=1
+#     request:
+#         url: /accounts/list?page=21&per_page=1
+#     validate:
+#         - eq: [status_code, 400] 
+#         - eq: [content.error_code, A_5]  

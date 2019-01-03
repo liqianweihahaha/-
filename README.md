@@ -14,7 +14,7 @@
 
 #### 测试数据准备
 1. 用户信息准备：用户名，手机号，邮箱
-1. 用户作品：已发布、未发布、临时删除、永久删除
+1. 用户作品：IDE、BOX2.0、WOOD、NEMO（最好存在多个存档记录的）
 2. 将登录token放在debugtalk.py中避免多个test多次请求登录方法
 3. 开始测hi是作品和测试作品后，将作品属性重置
 4. 执行完某个测试用例后，teardown_hooks将测试数据重置为开始状态
@@ -33,3 +33,5 @@ variables:
 - `less_than: [content.0.id, content.1.id]`，目标对象content.1.id会被识别为字符串，所以要先extract再比较
 - api接口定义中最好填写完整的url，避免测试文件中的base_url和api接口中的域名不一致（例如批量创建用户后，验证用户登录）
 - `&timestamp`，url: /api?a=aa&timestamp=21902910，&timestamp会被解析错误，改成：/api?timestamp=21902910&a=aa，可以正常解析到
+- 修改数据后判断数据是否更新成功，目前是通过请求某api的返回值确认，而不是数据库操作
+- 设置用户名的操作者，设置一次之后用户就无法设置了，怎么设置username为null，使测试账号可以重复使用？？？dev、test可以代码连接数据库吗？

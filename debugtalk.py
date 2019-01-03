@@ -24,7 +24,7 @@ elif env == 'production':
 source_user = read_config.source_user(env)
 source_user_id = source_user.get('id')
 source_user_username = source_user.get('username')
-source_user_phone_number = source_user.get('phone_number')
+# source_user_phone_number = source_user.get('phone_number')
 source_user_email = source_user.get('email')
 source_user_password = source_user.get('password')
 # Kitten作品
@@ -35,9 +35,11 @@ source_user_ide_deleted_permanently_work_id = source_user.get('work').get('ide')
 source_user_ide_work_url = source_user.get('work').get('ide').get('work_url')
 source_user_ide_preview_url = source_user.get('work').get('ide').get('preview_url')
 source_user_ide_bcmc_url = source_user.get('work').get('ide').get('bcmc_url')
-# box1.0, box2.0
+# box1.0
 source_user_boxv1_work_url = source_user.get('work').get('boxv1').get('work_url')
 source_user_boxv1_preview_url = source_user.get('work').get('boxv1').get('preview_url')
+# box2.0
+source_user_boxv2_published_work_id = source_user.get('work').get('boxv2').get('published_work_id')
 source_user_boxv2_work_url = source_user.get('work').get('boxv2').get('work_url')
 source_user_boxv2_preview_url = source_user.get('work').get('boxv2').get('preview_url')
 source_user_boxv2_bcmc_url = source_user.get('work').get('boxv2').get('bcmc_url')
@@ -137,3 +139,8 @@ def delete_work_business_relation(timestamp, user_id, work_id):
     else:
         print('删除作品业务标志位失败，状态码：%s，请求url: %s' % (res.status_code), res.url)
         return False
+
+# 判断是否是dev或者test环境
+def is_dev():
+    stat = True if env in ('dev', 'test') else False
+    return stat

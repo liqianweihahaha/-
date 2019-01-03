@@ -18,7 +18,6 @@
         - eq: [status_code, 200]
         - eq: [content.id, $source_user_id]
         - eq: [content.username, $source_user_username]
-        - eq: [content.phone_number, $source_user_phone_number]
         - length_equals: [content, 13]
         - contains: [content, nickname]
         - contains: [content, current_activity]
