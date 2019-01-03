@@ -4,8 +4,6 @@
       base_url: $tiger_api_host
       url: /api/user/info
       method: GET
-      headers:
-          Content-Type: $content_type
 
 - test:
     name: 未登录
