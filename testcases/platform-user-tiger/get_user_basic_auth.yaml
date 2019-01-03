@@ -14,7 +14,7 @@
         url: /accounts/$source_user_id/basic_auth
     validate:
         - eq: [status_code, 200]
-        - eq: [content.id, '${str($source_user_id)}']
+        - eq: [content.id, $source_user_id]
         - eq: [content.username, $source_user_username]
         - eq: [content.has_password, true]
         - length_equals: [content, 5]
