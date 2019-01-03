@@ -20,7 +20,8 @@
         - eq: [status_code, 200]
         - eq: [content.0.id, $source_user_ide_published_work_id]
         - eq: [content.0.is_published, true]
-        - length_equals: [content.0, 9]
+        - eq: [content.0.type, 1]
+        - length_equals: [content.0, 10]
 - test:
     name: work_ids只包含已发布ide作品-fields为空数组
     request:
@@ -30,7 +31,8 @@
     validate:
         - eq: [status_code, 200]
         - eq: [content.0.id, $source_user_ide_published_work_id]
-        - length_equals: [content.0, 9]
+        - eq: [content.0.type, 1]
+        - length_equals: [content.0, 10]
 - test:
     name: work_ids只包含已发布ide作品-fields包含所有支持字段
     request:
@@ -47,11 +49,7 @@
         - eq: [content.0.language_type, 0]
         - eq: [content.0.is_published, true]
         - greater_than: [content.0.publish_time, 0]
-        - length_equals: [content.0, 23]
-        - contains: [content.0, description]
-        - contains: [content.0, operation_instruction]
-        - contains: [content.0, latest_work_url]
-        - contains: [content.0, work_urls]
+        # - length_equals: [content.0, 23]
         - type_match: [content.0.work_urls, list]
 - test:
     name: work_ids只包含已发布ide作品-fields只包含id
@@ -63,7 +61,8 @@
         - eq: [status_code, 200]
         - eq: [content.0.id, $source_user_ide_published_work_id]
         - eq: [content.0.is_published, true]
-        - length_equals: [content.0, 9]
+        - eq: [content.0.type, 1]
+        - length_equals: [content.0, 10]
 - test:
     name: work_ids只包含已发布ide作品-fields只包含id和user_id
     request:
@@ -75,6 +74,37 @@
         - eq: [content.0.id, $source_user_ide_published_work_id]
         - eq: [content.0.user_id, $source_user_id]
         - eq: [content.0.is_published, true]
+        - eq: [content.0.type, 1]
+        - length_equals: [content.0, 11]
+- test:
+    name: work_ids只包含已发布BOX2.0作品-fields不传递
+    request:
+        json:
+            work_ids: [$source_user_boxv2_published_work_id]
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.0.id, $source_user_boxv2_published_work_id]
+        - eq: [content.0.type, 5]
+        - length_equals: [content.0, 10]
+- test:
+    name: work_ids只包含Wood作品-fields不传递
+    request:
+        json:
+            work_ids: [$source_user_wood_work_id]
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.0.id, $source_user_wood_work_id]
+        - eq: [content.0.type, 7]
+        - length_equals: [content.0, 10]
+- test:
+    name: work_ids只包含nemo作品-fields不传递
+    request:
+        json:
+            work_ids: [$source_user_nemo_work_id]
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.0.id, $source_user_nemo_work_id]
+        - eq: [content.0.type, 8]
         - length_equals: [content.0, 10]
 - test:
     name: work_ids只包含已发布ide作品-fields包含不支持字段
@@ -94,28 +124,6 @@
     validate:
         - eq: [status_code, 400]
         - eq: [content.error_code, A_5]
-- test:
-    name: work_ids只包含未发布ide作品-fields只包含user_id
-    request:
-        json:
-            work_ids: [$source_user_ide_unpublish_work_id]
-            fields: ["user_id"]
-    validate:
-        - eq: [status_code, 200]
-        - eq: [content.0.id, $source_user_ide_unpublish_work_id]
-        - eq: [content.0.is_published, false]
-        - length_equals: [content.0, 10]
-- test:
-    name: work_ids包含临时删除和永久删除的ide作品-fields只包含user_id
-    request:
-        json:
-            work_ids: [$source_user_ide_deleted_temporarily_work_id, $source_user_ide_deleted_permanently_work_id]
-            fields: ["user_id"]
-    validate:
-        - eq: [status_code, 200]
-        - eq: [content.0.is_published, false]
-        - length_equals: [content.0, 10]
-        - length_equals: [content, 2]
 - test:
     name: work_ids不传递，fields只包含user_id
     request:
