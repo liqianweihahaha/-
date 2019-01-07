@@ -44,7 +44,7 @@ target_user:
     ide:
       published_work_id: 2682404  
       published_unfork_work_id: 2682406
-      unpublish_work_id: 2682408
+      unpublish_work_id: 2682408   # 不可购买
       deleted_temporarily_work_id: 2682409
       deleted_permanently_work_id: 2682412
     nemo:

@@ -16,7 +16,7 @@
         - eq: [content.id, $source_user_ide_published_work_id]
         - eq: [content.type, 1]
         - eq: [content.is_published, true]
-        - length_equals: [content, 22]
+        # - length_equals: [content, 22]
         - contains: [content, work_labels]
         - contains: [content, n_tree_nodes]
         - contains: [content, abilities]
@@ -67,7 +67,7 @@
         - eq: [content.id, $source_user_ide_unpublish_work_id]
         - eq: [content.type, 1]
         - eq: [content.user_info.id, $source_user_id]
-        - length_equals: [content, 23]
+        # - length_equals: [content, 23]
 - test:
     name: 已登录-他人未发布ide作品
     request:
@@ -89,7 +89,7 @@
         - eq: [content.type, 7]
         - eq: [content.is_published, false]
         - eq: [content.abilities.is_owner, true]
-        - length_equals: [content, 20]
+        # - length_equals: [content, 20]
         - length_equals: [content.description, 0]
         - length_equals: [content.work_labels, 0]
         - contains: [content, work_labels]
@@ -108,7 +108,7 @@
         - eq: [content.type, 8]
         - eq: [content.is_published, false]
         - eq: [content.abilities.is_owner, true]
-        - length_equals: [content, 21]
+        # - length_equals: [content, 21]
         - contains: [content, work_labels]
         - contains: [content, n_tree_nodes]
         - contains: [content, abilities]

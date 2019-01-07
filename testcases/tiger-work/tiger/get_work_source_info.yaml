@@ -23,7 +23,7 @@
     validate:
         - eq: [status_code, 200]
         - eq: [content.config, '']
-        - length_equals: [content, 4]
+        # - length_equals: [content, 4]
         - contains: [content, name]
         - contains: [content, preview]
         - contains: [content, source_urls]
@@ -36,7 +36,7 @@
     validate:
         - eq: [status_code, 200]
         - eq: [content.config, '']
-        - length_equals: [content, 4]
+        # - length_equals: [content, 4]
         - contains: [content, name]
         - contains: [content, preview]
         - contains: [content, source_urls]

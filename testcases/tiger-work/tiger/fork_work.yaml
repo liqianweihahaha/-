@@ -5,6 +5,9 @@
         method: PATCH
         headers:
             Content-Type: $content_type
+    variables:
+        - unexist_work_id: 100
+        - wrong_type_work_id: aaa
 
 - test:
     name: 未登录-已发布作品
@@ -41,11 +44,20 @@
         - eq: [status_code, 403]
         - eq: [content.error_code, W_5]
 - test:
-    name: 已登录-购买他人未发布作品
+    name: 已登录-购买不存在的作品id
     request:
-        url: /tiger/work/$target_user_ide_unpublish_work_id/fork
+        url: /tiger/work/$unexist_work_id/fork
         headers:
             Authorization: $source_user_login_token
     validate:
-        - eq: [status_code, 200]
-        - contains: [content, id]
+        - eq: [status_code, 404]
+        - eq: [content.error_code, W_0]
+- test:
+    name: 已登录-格式错误的作品id
+    request:
+        url: /tiger/work/$wrong_type_work_id/fork
+        headers:
+            Authorization: $source_user_login_token
+    validate:
+        - eq: [status_code, 400]
+        - eq: [content.error_code, A_5]

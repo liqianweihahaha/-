@@ -1,0 +1,7 @@
+- api:
+    def: get_work_info($work_id)
+    request:
+        url: $platform_tiger_api_host/works/$work_id?fields=["id","user_id", "name", "description", "type", "n_forks", "work_urls", "root_id", "parent_id", "preview", "latest_work_url", "praise_times", "operation_instruction", "publish_time"]
+        method: GET
+    validate:
+        - eq: [status_code, 200]

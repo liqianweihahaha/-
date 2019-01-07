@@ -4,8 +4,6 @@
         base_url: $tiger_api_host
         method: GET
         url: /tiger/work/labels
-        headers:
-            Content-Type: $content_type
 
 - test:
     name: 获取作品标签列表
