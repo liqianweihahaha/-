@@ -6,10 +6,17 @@
         method: POST
 
 - test:
+    name: 账号登录
+    api: api_account_login($source_user_username, $source_user_password)
+    validate:
+        - eq: [status_code, 200]
+    extract:
+        - login_token: content.token
+- test:
     name: 已登录
     request:
         headers:
-            Authorization: $source_user_login_token
+            Authorization: Bearer $login_token
     validate:
         - eq: [status_code, 204]
 - test:
@@ -17,3 +24,14 @@
     validate:
         - eq: [status_code, 403]
         - eq: [content.error_code, E_0]
+- test: 
+    name: 退出登录后无法使用之前的登录token获取用户信息
+    request:
+        url: /tiger/v3/web/accounts/privacy
+        method: GET
+        headers:
+            Authorization: Bearer $login_token
+    validate:
+        - eq: [status_code, 401]
+        - eq: [content.error_code, E_4]
+    

@@ -35,5 +35,8 @@ variables:
 - `&timestamp`，url: /api?a=aa&timestamp=21902910，&timestamp会被解析错误，改成：/api?timestamp=21902910&a=aa，可以正常解析到
 - 修改数据后判断数据是否更新成功，目前是通过请求某api的返回值确认，而不是数据库操作
 - 设置用户名的操作者，设置一次之后用户就无法设置了，怎么设置username为null，使测试账号可以重复使用？？？dev、test可以代码连接数据库吗？
-- hrun testcases/tiger-account/tiger，v3_for_app以及v3_for_web，直接运行整个文件夹有失败的用例，单独运行每个文件运行OK，文件执行顺序：随机的
+- 直接运行整个文件夹路径，文件执行顺序是随机的
 - api定义中怎么添加可选参数？？
+
+#### 注意点
+- 退出登录后会导致其他用例的登录token不可用，所以退出登录的已登录token需要单独获取

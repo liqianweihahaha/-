@@ -2,7 +2,7 @@
     name: 退出登录
     request:
         base_url: $tiger_api_host
-        url: /tiger/v3/app/accounts/logout
+        url: /tiger/accounts/logout
         method: POST
 
 - test:
@@ -22,16 +22,15 @@
 - test:
     name: 未登录
     validate:
-        - eq: [status_code, 403]
-        - eq: [content.error_code, E_0]
+        - eq: [status_code, 204]
 - test: 
     name: 退出登录后无法使用之前的登录token获取用户信息
     request:
-        url: /tiger/v3/app/accounts/privacy
+        url: /tiger/accounts/basic_auth
         method: GET
         headers:
             Authorization: Bearer $login_token
     validate:
         - eq: [status_code, 401]
         - eq: [content.error_code, E_4]
-    
+
