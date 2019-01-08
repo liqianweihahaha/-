@@ -4,7 +4,6 @@
         base_url: $tiger_api_host
         method: GET
 
-
 - test:
     name: 未登录-不传递任何参数
     request:
