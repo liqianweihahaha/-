@@ -50,3 +50,4 @@ target_user:
     nemo:
       # 未发布作品
       work_id: 2682415
+  # 用户未设置本命精灵：user_extension.familiar_sprite为null

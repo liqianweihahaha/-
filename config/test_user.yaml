@@ -37,7 +37,7 @@ source_user:
 
 target_user:
   id: 1000002872
-  username: mxq121
+  username: mxq0002
   password: m1234567
   work:
     ide:
@@ -48,3 +48,4 @@ target_user:
       deleted_permanently_work_id: 2676257
     nemo:
       work_id: 2678946
+  # 用户无代表精灵

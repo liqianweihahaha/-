@@ -34,7 +34,15 @@
         
 - test:
     name: 批量创建的用户1应可以正常登录
-    api: api_account_login($user1_username, $password)
+    api: account_login($user1_username, $password)
+    validate:
+        - eq: [status_code, 200]
+        - length_equals: [content, 4]
+        - contains: [content, token]
 - test:
     name: 批量创建的用户2应可以正常登录
-    api: api_account_login($user2_username, $password)
+    api: account_login($user2_username, $password)
+    validate:
+        - eq: [status_code, 200]
+        - length_equals: [content, 4]
+        - contains: [content, token]
