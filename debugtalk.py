@@ -19,6 +19,11 @@ elif env == 'staging':
 elif env == 'production':
     tiger_api_host = 'https://api.codemao.cn'
     platform_tiger_api_host = 'http://internal.platform.codemao.cn'
+# 预演环境
+elif env == 'preview':
+    tiger_api_host = 'https://preview-api.codemao.cn'
+    platform_tiger_api_host = 'http://preview-internal.platform.codemao.cn'
+
 
 # 源用户信息
 source_user = read_config.source_user(env)
