@@ -9,12 +9,13 @@
     variables:
         - pc_pid: UvOFXx2tfv
         - password: m1234567
+        - test_prefix: aaaaaa
 
 - test:
     name: prefix格式正确-password格式正确(创建2个账号)
     request:
         json:
-            prefix: testbatch
+            prefix: $test_prefix
             users: [{"password": $password}, {"password": $password}]
             pid: $pc_pid
     extract:
