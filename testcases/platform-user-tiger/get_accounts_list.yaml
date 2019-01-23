@@ -1,13 +1,9 @@
 - config:
     name: 获取用户信息列表
-    request:
-        base_url: $platform_tiger_api_host
-        method: GET
 
 - test:
-    name: 参数为空
-    request:
-        url: /accounts/list
+    name: 请求头参数为空
+    api: api_platform_get_accounts_list()
     extract:
         - user_1_id: content.items.0.id
         - user_2_id: content.items.1.id

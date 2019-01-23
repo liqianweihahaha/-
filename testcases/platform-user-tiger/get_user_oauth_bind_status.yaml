@@ -1,16 +1,12 @@
 - config:
     name: 获取用户第三方绑定状态
-    request:
-        base_url: $platform_tiger_api_host
-        method: GET
     variables:
         - unexist_user_id: 100
         - wrong_type_user_id: aaa
 
 - test:
     name: user_id存在
-    request:
-        url: /accounts/$source_user_id/oauth/binding/status
+    api: api_platform_get_user_oauth_bind_status($source_user_id)
     valiate:
         - eq: [status_code, 200]
         - type_match: [content, list]
@@ -21,8 +17,7 @@
         - contains: [content.0, is_bound]
 - test:
     name: user_id不存在
-    request:
-        url: /accounts/$unexist_user_id/oauth/binding/status
+    api: api_platform_get_user_oauth_bind_status($unexist_user_id)
     valiate:
         - eq: [status_code, 200]
         - type_match: [content, list]
@@ -33,8 +28,7 @@
         - eq: [content.0.is_bound, false]
 - test:
     name: user_id格式错误
-    request:
-        url: /accounts/$wrong_type_user_id/oauth/binding/status
+    api: api_platform_get_user_oauth_bind_status($wrong_type_user_id)
     valiate:
         - eq: [status_code, 400]
         - eq: [content.error_code, A_5]
