@@ -25,4 +25,5 @@ hrun testcases/platform-user-tiger --html-report-name reports/result.html
 ```
 
 #### 注意点
-- 退出登录后会导致其他用例的登录token不可用，所以退出登录的已登录token需要单独获取
+- 退出登录后会导致其他用例的登录token不可用，所以退出登录已登录token需要单独获取
+- 账号3.0修改密码，导致source_user_login_token失效，所以使用测试账号2（target_user）测试

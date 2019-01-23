@@ -6,7 +6,11 @@
 - test:
     name: 用户名登录：用户名正确-密码正确
     # 使用api接口定义
-    api: api_account_login($source_user_username, $source_user_password)
+    api: account_login($source_user_username, $source_user_password)
+    validate:
+        - eq: [status_code, 200]
+        - length_equals: [content, 4]
+        - contains: [content, token]
     extract:
         - token: content.token
 

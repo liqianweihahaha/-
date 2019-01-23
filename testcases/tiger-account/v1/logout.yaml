@@ -7,9 +7,11 @@
 
 - test:
     name: 账号登录
-    api: api_account_login($source_user_username, $source_user_password)
+    api: account_login($source_user_username, $source_user_password)
     validate:
         - eq: [status_code, 200]
+        - length_equals: [content, 4]
+        - contains: [content, token]
     extract:
         - login_token: content.token
 - test:
