@@ -77,25 +77,6 @@ def login_token(identity, password, pid='UvOFXx2tfv'):
 
 source_user_login_token = login_token(source_user_username, source_user_password)
 
-# 获取用户的某ide作品的详细信息
-def work_info(work_id, work_type_id=1):
-    # 获取用户某作品信息
-    res = requests.get(tiger_api_host+'/tiger/work/list?type='+str(work_type_id), headers={'Authorization': source_user_login_token})
-    if res.status_code == 200:
-        for i in res.text:
-            print(i)
-            if i['id'] == work_id:
-                work_info = {
-                    "id": i["id"],
-                    "name": i["name"],
-                    "type": i["type"],
-                    "is_old": i["is_old"],
-                    "preview": i["preview"],
-                    "status": i["status"],
-                    "publish_time": i["publish_time"]
-                }
-                return work_info
-
 # 取消收藏作品
 def uncollection_work(work_id):
     res = requests.delete(tiger_api_host+'/api/work/collection/'+str(work_id), headers={'Authorization': source_user_login_token})
