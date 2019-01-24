@@ -2,28 +2,15 @@ import requests
 import os
 from common import read_config
 from common.util import *
+from common.environment import *
 from builtins import str
 
 # 读取 .env 配置
 env = os.environ['environment']
 
-if env == 'dev':
-    tiger_api_host = 'https://backend-dev.codemao.cn'
-    platform_tiger_api_host = 'http://dev-external.platform.codemao.cn'
-elif env == 'test':
-    tiger_api_host = "https://test-api.codemao.cn"
-    platform_tiger_api_host = 'http://test-internal.platform.codemao.cn'
-elif env == 'staging':
-    tiger_api_host = 'https://backend-test.codemao.cn'
-    platform_tiger_api_host = 'http://staging-internal.platform.codemao.cn'
-elif env == 'production':
-    tiger_api_host = 'https://api.codemao.cn'
-    platform_tiger_api_host = 'http://internal.platform.codemao.cn'
-# 预演环境
-elif env == 'preview':
-    tiger_api_host = 'https://preview-api.codemao.cn'
-    platform_tiger_api_host = 'http://preview-internal.platform.codemao.cn'
-
+# 获取测试hosts
+tiger_api_host = get_hosts(env).get('tiger_api_host')
+platform_tiger_api_host = get_hosts(env).get('platform_tiger_api_host')
 
 # 源用户信息
 source_user = read_config.source_user(env)
@@ -58,7 +45,6 @@ source_user_nemo_preview_url = source_user.get('work').get('nemo').get('preview_
 source_user_owned_sprite_id = source_user.get('sprite').get('owned')
 source_user_unown_sprite_id = source_user.get('sprite').get('unown')
 
-
 # 目标用户信息
 target_user = read_config.target_user(env)
 target_user_id = target_user.get('id')
@@ -72,7 +58,6 @@ target_user_ide_deleted_temporarily_work_id = target_user.get('work').get('ide')
 target_user_ide_deleted_permanently_work_id = target_user.get('work').get('ide').get('deleted_permanently_work_id')
 # nemo作品
 target_user_nemo_work_id = target_user.get('work').get('nemo').get('work_id')
-
 
 content_type = 'application/json'
 

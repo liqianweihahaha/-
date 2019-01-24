@@ -15,7 +15,6 @@
         - eq: [status_code, 200]
         - eq: [content.id, $source_user_ide_published_work_id]
         - eq: [content.is_published, true]
-        - eq: [content.is_fork_allowed, true]
         - eq: [content.is_deleted, false]
         - eq: [content.type, 1]
         - greater_than: [content.publish_time, 0]
