@@ -9,7 +9,7 @@
     variables:
         - pc_pid: UvOFXx2tfv
         - password: m1234567
-        - test_prefix: aaaaaa
+        - test_prefix: testbach
 
 - test:
     name: prefix格式正确-password格式正确(创建2个账号)
