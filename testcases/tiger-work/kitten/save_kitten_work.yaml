@@ -40,7 +40,7 @@
         - length_equals: [content, 1]
         - contains: [content, id]
     extract:
-        - kitten_work_id: content.id
+        - created_kitten_work_id: content.id
 - test:
     name: 已登录-保存kitten作品(修改作品)
     request:
@@ -53,11 +53,11 @@
             sub_config: $work_sub_config
             orientation: $orientation
             bcmc_url: $source_user_ide_bcmc_url
-            work_id: $kitten_work_id
+            work_id: $created_kitten_work_id
     validate:
         - eq: [status_code, 200]
         - length_equals: [content, 1]
-        - eq: [content.id, $kitten_work_id]
+        - eq: [content.id, $created_kitten_work_id]
 - test:
     name: 已登录-保存kitten作品(创建作品)-不传递name
     request:

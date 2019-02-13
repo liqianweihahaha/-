@@ -1,0 +1,9 @@
+- api:
+    name: 购买作品
+    def: fork_work($work_id, $token)
+    request:
+        url: $tiger_api_host/tiger/work/$work_id/fork
+        method: PATCH
+        headers:
+            Content-Type: $content_type
+            Authorization: $token

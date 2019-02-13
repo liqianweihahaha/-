@@ -41,8 +41,8 @@ target_user:
   password: m1234567
   work:
     ide:
-      published_work_id: 2675915
-      published_unfork_work_id: 2676251
+      published_work_id: 2675915           # 已发布可购买
+      published_unfork_work_id: 2676251    # 已发布不可购买
       unpublish_work_id: 2676253
       deleted_temporarily_work_id: 2676255
       deleted_permanently_work_id: 2676257
