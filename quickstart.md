@@ -28,3 +28,4 @@ variables:
 - api定义中不支持默认参数，不支持可选参数
 - api定义，request中指定 base_url 不会被识别到，所以要直接在 url 中指定完整路径
 - api文件中的yaml文件内容为空会报错
+- api文件中的name会覆盖testcases文件test用例中的name

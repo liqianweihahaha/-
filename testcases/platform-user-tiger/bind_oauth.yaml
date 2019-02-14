@@ -1,18 +1,107 @@
-# - config:
-#     name: 绑定第三方账号
-#     variables:
-#         wexin_appid: wxeda82dc272f7fe92
-#         qq_appid: '101253342'
-#         test_wexin_unioinid: test_wx_bind_0123456789
-#         test_qq_unioinid: test_qq_bind_0123456789
+- config:
+    name: 绑定第三方账号
+    variables:
+        test_wexin_unioinid1: test_wx_bind1_0123456789
+        test_wexin_unioinid2: test_wx_bind2_0123456789
+        test_qq_unioinid1: test_qq_bind1_0123456789
+        test_qq_unioinid2: test_qq_bind2_0123456789
+        wexin_appid: wxeda82dc272f7fe92
+        qq_appid: '101253342'
+        unexist_appid: '1'
+        unexist_user_id: 100
 
-# - test:
-#     name: 用户未绑定微信-unionid未被绑定
-#     api: bind_oauth($source_user_id, $test_wexin_unioinid, $wexin_appid)
-#     validate:
-#         - eq: [status_code, 204]
-# - test:
-#     name: 用户未绑定微信-unionid已被绑定
-#     api: bind_oauth($target_user_id, $test_wexin_unioinid, $wexin_appid)
-#     validate:
-#         - eq: [status_code, 204]
+# 测试绑定微信，先给用户解绑微信确保用户未绑定微信
+- test:
+    name: 用户解绑微信
+    api: unbind_oauth($source_user_id, WECHAT)
+    validate:
+        - eq: [status_code, 204]
+- test:
+    name: 用户未绑定微信-unionid未被绑定
+    api: bind_oauth($source_user_id, $test_wexin_unioinid1, $wexin_appid)
+    validate:
+        - eq: [status_code, 204]
+- test:
+    name: 判断用户绑定微信后，绑定列表中微信为true
+    api: get_user_oauth_bind_status($source_user_id)
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.0.is_bound, true]
+- test:
+    name: 用户未绑定微信-unionid已被绑定
+    api: bind_oauth($target_user_id, $test_wexin_unioinid1, $wexin_appid)
+    validate:
+        - eq: [status_code, 422]
+        - eq: [content.error_code, '10001006']
+- test:
+    name: 用户已绑定微信-unionid未被绑定
+    api: bind_oauth($source_user_id, $test_wexin_unioinid2, $wexin_appid)
+    validate:
+        - eq: [status_code, 422]
+        - eq: [content.error_code, '10001007']
+- test:
+    name: 用户已绑定微信-unionid已被绑定
+    api: bind_oauth($source_user_id, $test_wexin_unioinid1, $wexin_appid)
+    validate:
+        - eq: [status_code, 422]
+        - eq: [content.error_code, '10001006']
+- test:
+    name: 用户未绑定微信-appid不存在
+    api: bind_oauth($source_user_id, $test_wexin_unioinid1, $unexist_appid)
+    validate:
+        - eq: [status_code, 422]
+        - eq: [content.error_code, '10001008']
+- test:
+    name: 用户id不存在
+    api: bind_oauth($unexist_user_id, $test_wexin_unioinid1, $wexin_appid)
+    validate:
+        - eq: [status_code, 422]
+        - eq: [content.error_code, '10001000']
+# 解绑第三方账号:微信
+- test:
+    name: 用户解绑微信
+    api: unbind_oauth($source_user_id, WECHAT)
+    validate:
+        - eq: [status_code, 204]
+
+# 测试绑定QQ
+- test:
+    name: 用户解绑QQ
+    api: unbind_oauth($source_user_id, QQ)
+    validate:
+        - eq: [status_code, 204]
+- test:
+    name: 用户未绑定QQ-unionid未被绑定
+    api: bind_oauth($source_user_id, $test_qq_unioinid1, $qq_appid)
+    validate:
+        - eq: [status_code, 204]
+- test:
+    name: 判断用户绑定QQ后，绑定列表中QQ为true
+    api: get_user_oauth_bind_status($source_user_id)
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.1.is_bound, true]
+- test:
+    name: 用户未绑定QQ-unionid已被绑定
+    api: bind_oauth($target_user_id, $test_qq_unioinid1, $qq_appid)
+    validate:
+        - eq: [status_code, 422]
+        - eq: [content.error_code, '10001006']
+- test:
+    name: 用户已绑定QQ-unionid未被绑定
+    api: bind_oauth($source_user_id, $test_qq_unioinid2, $qq_appid)
+    validate:
+        - eq: [status_code, 422]
+        - eq: [content.error_code, '10001007']
+- test:
+    name: 用户已绑定QQ-unionid已被绑定
+    api: bind_oauth($source_user_id, $test_qq_unioinid1, $qq_appid)
+    validate:
+        - eq: [status_code, 422]
+        - eq: [content.error_code, '10001006']
+# 解绑QQ
+- test:
+    name: 用户解绑QQ
+    api: unbind_oauth($source_user_id, QQ)
+    validate:
+        - eq: [status_code, 204]

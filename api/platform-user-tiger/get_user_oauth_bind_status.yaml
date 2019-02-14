@@ -1,6 +1,6 @@
 - api:
-    name: 获取用户第三方绑定状态
-    def: api_platform_get_user_oauth_bind_status($user_id)
+    # name: 获取用户第三方绑定状态
+    def: get_user_oauth_bind_status($user_id)
     request:
         # base_url: $platform_tiger_api_host
         url: $platform_tiger_api_host/accounts/$user_id/oauth/binding/status
