@@ -8,9 +8,19 @@
         - unregistered_unionid: aaaaaaaaaabbbbbbbbbb
         - regiatered_unionid: ''
 
+# 后端语言为node时，fields格式支持数组或者逗号表达式
 - test:
-    name: unionid未注册-fields包含所有支持字段
+    name: unionid未注册-fields为数组包含所有支持字段
     request:
-        url: /accounts/oauth/$unregistered_unionid?fields=["unionid", "id", "bcmid", "nickname", "fullname", "avatar_url", "username", "email", "phone_number", "sex", "birthday","description", "qq", "remark", "grade", "gold"]
+        url: /accounts/oauth/$unregistered_unionid?fields=["unionid", "id", "bcmid", "nickname", "fullname", "avatar_url", "username", "email", "phone_number", "sex", "birthday","description", "qq", "remark", "grade", "gold", "product_id"]
+    validate:
+        - eq: [status_code, 204]
+
+
+# 后端语言为kotlin时，fields只支持逗号表达式（字段之间不包含空格）
+- test:
+    name: unionid未注册-fields为逗号表达式包含所有支持字段
+    request:
+        url: /accounts/oauth/$unregistered_unionid?fields=unionid,id,bcmid,nickname,fullname,avatar_url,username,email,phone_number,sex,birthday,description,qq,remark,grade,gold,product_id
     validate:
         - eq: [status_code, 204]

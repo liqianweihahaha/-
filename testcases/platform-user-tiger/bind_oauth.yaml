@@ -1,0 +1,18 @@
+# - config:
+#     name: 绑定第三方账号
+#     variables:
+#         wexin_appid: wxeda82dc272f7fe92
+#         qq_appid: '101253342'
+#         test_wexin_unioinid: test_wx_bind_0123456789
+#         test_qq_unioinid: test_qq_bind_0123456789
+
+# - test:
+#     name: 用户未绑定微信-unionid未被绑定
+#     api: bind_oauth($source_user_id, $test_wexin_unioinid, $wexin_appid)
+#     validate:
+#         - eq: [status_code, 204]
+# - test:
+#     name: 用户未绑定微信-unionid已被绑定
+#     api: bind_oauth($target_user_id, $test_wexin_unioinid, $wexin_appid)
+#     validate:
+#         - eq: [status_code, 204]
