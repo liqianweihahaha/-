@@ -1,0 +1,57 @@
+- config:
+    name: 通过用户id获取第三方授权信息
+    request:
+        base_url: $platform_tiger_api_host
+        method: GET
+    variables:
+        - test_wexin_unioinid1: test_wx_bind1_0123456789
+        - wexin_appid: wxeda82dc272f7fe92
+        - unsupport_oauth_type: aaa
+        - unexist_user_id: 100
+
+- test:
+    name: 用户未绑定微信-绑定微信
+    api: bind_oauth($source_user_id, $test_wexin_unioinid1, $wexin_appid)
+    validate:
+        - eq: [status_code, 204]
+- test:
+    name: 用户id存在(用户已绑定微信)-oauth_type为微信
+    request:
+        url: /accounts/$source_user_id/oauth?oauth_type=WECHAT
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.id, $source_user_id]
+        - eq: [content.unionid, $test_wexin_unioinid1]
+- test:
+    name: 用户id存在(用户已绑定微信)-oauth_type不支持
+    request:
+        url: /accounts/$source_user_id/oauth?oauth_type=$unsupport_oauth_type
+    validate:
+        - eq: [status_code, 400]
+- test:
+    name: 用户id存在(用户已绑定微信)-oauth_type不传递
+    request:
+        url: /accounts/$source_user_id/oauth
+    validate:
+        - eq: [status_code, 400]
+- test:
+    name: 用户解绑微信
+    api: unbind_oauth($source_user_id, WECHAT)
+    validate:
+        - eq: [status_code, 204]
+- test:
+    name: 用户id存在(用户未绑定微信)-oauth_type为微信
+    request:
+        url: /accounts/$source_user_id/oauth?oauth_type=WECHAT
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.id, $source_user_id]
+        - eq: [content.unionid, '']
+- test:
+    name: 用户id不存在-oauth_type为微信
+    request:
+        url: /accounts/$unexist_user_id/oauth?oauth_type=WECHAT
+    validate:
+        - eq: [status_code, 204]
+        - eq: [content, '']
+
