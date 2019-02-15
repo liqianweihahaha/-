@@ -29,3 +29,6 @@ variables:
 - api定义，request中指定 base_url 不会被识别到，所以要直接在 url 中指定完整路径
 - api文件中的yaml文件内容为空会报错
 - api文件中的name会覆盖testcases文件test用例中的name
+
+#### 框架源码学习
+- html报告生成：report.py中的render_html_report函数，使用的是jinja2的模板文件templates/report_template.html
