@@ -1,7 +1,7 @@
 import yaml
 import os
 
-conf_dir = os.path.join(os.path.dirname(__file__), '..', 'config')
+conf_dir = os.path.join(os.path.dirname(__file__), '..', 'config', 'user')
 
 def read_user(file_name, file_dir=conf_dir):
     file_path = os.path.join(file_dir, file_name)
