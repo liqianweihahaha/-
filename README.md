@@ -22,6 +22,10 @@ hrun testcases/platform-user-tiger/get_user_info.yaml
 
 # 指定html报告的路径和名称
 hrun testcases/platform-user-tiger --html-report-name reports/result.html
+
+# 指定使用的报告模板：例如只输出执行失败的用例
+# 默认使用：~\httprunner\templates\report_template.html
+hrun testcases/platform-user-tiger/get_oauth_info_by_userid.yaml --html-report-template=D:\Program\Python3.7\Lib\site-packages\httprunner\templates\report_template_default.html
 ```
 
 #### 注意点
