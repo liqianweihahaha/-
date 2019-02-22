@@ -18,7 +18,7 @@
     validate:
         - eq: [status_code, 200]
         - eq: [content.id, $source_user_id]
-        - length_equals: [content, 14]
+        # - length_equals: [content, 15]
         - contains: [content, age_section_id]
         - contains: [content, gold]
         - contains: [content, age]
@@ -26,76 +26,64 @@
         - contains: [content, familiar_sprite]
         - contains: [content, age_section_id]
 # 后端语言为node时，user_ids和fields为数组或者逗号表达式
-- test:
-    name: 用户存在-fields为空数组
-    request:
-        url: /accounts/$source_user_id/business?fields=[]
-    validate:
-        - eq: [status_code, 200]
-        - eq: [content.id, $source_user_id]
-        - length_equals: [content, 14]
-        - contains: [content, age_section_id]
-        - contains: [content, gold]
-        - contains: [content, age]
-        - contains: [content, preview_work_id]
-        - contains: [content, familiar_sprite]
-        - contains: [content, age_section_id]
-- test:
-    name: 用户存在-fields为数组包含全部支持字段
-    request:
-        url: /accounts/$source_user_id/business?fields=["id", "age_section_id", "gold", "create_time", "mlz_name", "age", "doing", "level", "preview_work_id", "publish_time", "credit", "introduce", "masonry", "familiar_sprite"]
-    validate:
-        - eq: [status_code, 200]
-        - eq: [content.id, $source_user_id]
-        - length_equals: [content, 14]
-        - contains: [content, age_section_id]
-        - contains: [content, gold]
-        - contains: [content, age]
-        - contains: [content, preview_work_id]
-        - contains: [content, familiar_sprite]
-        - contains: [content, age_section_id]
-- test:
-    name: 用户存在-fields为数组只包含字段id
-    request:
-        url: /accounts/$source_user_id/business?fields=["id"]
-    validate:
-        - eq: [status_code, 200]
-        - eq: [content.id, $source_user_id]
-        - length_equals: [content, 1]
-- test:
-    name: 用户存在-fields为数组只包含字段gold
-    request:
-        url: /accounts/$source_user_id/business?fields=["gold"]
-    validate:
-        - eq: [status_code, 200]
-        - eq: [content.id, $source_user_id]
-        - length_equals: [content, 2]
-        - contains: [content, id]
-        - contains: [content, gold]
-- test:
-    name: 用户存在-fields为数组包含不支持的字段
-    request:
-        url: /accounts/$source_user_id/business?fields=[$unsupport_fields_element]
-    validate:
-        - eq: [status_code, 400]
-- test:
-    name: 用户存在-fields格式错误
-    request:
-        url: /accounts/$source_user_id/business?fields=$wrong_type_fields
-    validate:
-        - eq: [status_code, 400]
-- test:
-    name: 用户id不存在
-    request:
-        url: /accounts/$unexist_user_id/business
-    validate:
-        - eq: [status_code, 204]
-- test:
-    name: 用户ID格式错误
-    request:
-        url: /accounts/$wrong_type_user_id/business
-    validate:
-        - eq: [status_code, 400]
+# - test:
+#     name: 用户存在-fields为空数组
+#     request:
+#         url: /accounts/$source_user_id/business?fields=[]
+#     validate:
+#         - eq: [status_code, 200]
+#         - eq: [content.id, $source_user_id]
+#         - length_equals: [content, 14]
+#         - contains: [content, age_section_id]
+#         - contains: [content, gold]
+#         - contains: [content, age]
+#         - contains: [content, preview_work_id]
+#         - contains: [content, familiar_sprite]
+#         - contains: [content, age_section_id]
+# - test:
+#     name: 用户存在-fields为数组包含全部支持字段
+#     request:
+#         url: /accounts/$source_user_id/business?fields=["id", "age_section_id", "gold", "create_time", "mlz_name", "age", "doing", "level", "preview_work_id", "publish_time", "credit", "introduce", "masonry", "familiar_sprite"]
+#     validate:
+#         - eq: [status_code, 200]
+#         - eq: [content.id, $source_user_id]
+#         - length_equals: [content, 14]
+#         - contains: [content, age_section_id]
+#         - contains: [content, gold]
+#         - contains: [content, age]
+#         - contains: [content, preview_work_id]
+#         - contains: [content, familiar_sprite]
+#         - contains: [content, age_section_id]
+# - test:
+#     name: 用户存在-fields为数组只包含字段id
+#     request:
+#         url: /accounts/$source_user_id/business?fields=["id"]
+#     validate:
+#         - eq: [status_code, 200]
+#         - eq: [content.id, $source_user_id]
+#         - length_equals: [content, 1]
+# - test:
+#     name: 用户存在-fields为数组只包含字段gold
+#     request:
+#         url: /accounts/$source_user_id/business?fields=["gold"]
+#     validate:
+#         - eq: [status_code, 200]
+#         - eq: [content.id, $source_user_id]
+#         - length_equals: [content, 2]
+#         - contains: [content, id]
+#         - contains: [content, gold]
+# - test:
+#     name: 用户存在-fields为数组包含不支持的字段
+#     request:
+#         url: /accounts/$source_user_id/business?fields=[$unsupport_fields_element]
+#     validate:
+#         - eq: [status_code, 400]
+# - test:
+#     name: 用户存在-fields格式错误
+#     request:
+#         url: /accounts/$source_user_id/business?fields=$wrong_type_fields
+#     validate:
+#         - eq: [status_code, 400]
 
 # 后端语言为kotlin时，user_ids和fields只支持逗号表达式（字段之间不包含空格）
 - test:
@@ -103,7 +91,15 @@
     request:
         url: /accounts/$source_user_id/business?fields=
     validate:
-        - eq: [status_code, 400]
+        - eq: [status_code, 200]
+        - eq: [content.id, $source_user_id]
+        - length_equals: [content, 15]
+        - contains: [content, age_section_id]
+        - contains: [content, gold]
+        - contains: [content, age]
+        - contains: [content, preview_work_id]
+        - contains: [content, familiar_sprite]
+        - contains: [content, age_section_id]
 - test:
     name: 用户存在-fields为逗号表达式包含全部支持字段
     request:
@@ -111,7 +107,7 @@
     validate:
         - eq: [status_code, 200]
         - eq: [content.id, $source_user_id]
-        - length_equals: [content, 14]
+        - length_equals: [content, 15]
         - contains: [content, age_section_id]
         - contains: [content, gold]
         - contains: [content, age]
@@ -142,3 +138,15 @@
         url: /accounts/$source_user_id/business?fields=$unsupport_fields_element
     validate:
         - eq: [status_code, 400]
+- test:
+    name: 用户id不存在
+    request:
+        url: /accounts/$unexist_user_id/business
+    validate:
+        - eq: [status_code, 204]
+# - test:
+#     name: 用户ID格式错误
+#     request:
+#         url: /accounts/$wrong_type_user_id/business
+#     validate:
+#         - eq: [status_code, 400]
