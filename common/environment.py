@@ -12,6 +12,9 @@ def get_hosts(env):
     elif env == 'production':
         tiger_api_host = 'https://api.codemao.cn'
         platform_tiger_api_host = 'http://internal.platform.codemao.cn'
+    elif env == 'press':
+        tiger_api_host = 'https://press-api.codemao.cn'
+        platform_tiger_api_host = 'http://press-internal.platform.codemao.cn'
     # 预演环境
     elif env == 'preview':
         tiger_api_host = 'https://preview-api.codemao.cn'
