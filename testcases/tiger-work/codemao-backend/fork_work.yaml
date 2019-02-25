@@ -1,5 +1,5 @@
 - config:
-    name: 购买作品（codemao-backend）
+    name: 购买作品（backend）
     request:
         base_url: $tiger_api_host
         method: POST

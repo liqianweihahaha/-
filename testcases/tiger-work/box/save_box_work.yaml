@@ -31,8 +31,10 @@
     validate:
         - eq: [status_code, 200]
         - contains: [content, id]
+        - type_match: [content.id, int]
     extract:
         - boxv2_work_id: content.id
+
 - test:
     name: 已登录-保存代码岛2.0作品(修改作品)
     request:

@@ -20,7 +20,7 @@ source_user:
       preview_url: https://preview.codemao.cn/FtjU5vGuYhkXIv37QUcQ-DMJbSch
     # 为了避免产生脏数据导致打开作品时报错，所以work_url必须是同类型url
     boxv2:
-      published_work_id: 2679101
+      published_work_id: 2679101   # 已发布
       work_url: https://static.codemao.cn/box/H1vYhAE-V.bcm
       preview_url: https://obxuuymk6.qnssl.com/default_preview.png
       bcmc_url: https://static.codemao.cn/box/HkDY2RVbE.bcmc
