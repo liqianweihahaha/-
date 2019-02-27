@@ -48,7 +48,6 @@
             password: ''
     validate:
         - eq: [status_code, 400]
-        - eq: [content.error_code, A_5]
 - test: 
     name: 用户名已注册-密码不传递
     request:
@@ -56,9 +55,7 @@
             identity: $source_user_username
     validate:
         - eq: [status_code, 400]
-        - eq: [content.error_code, A_5]
 - test: 
     name: body参数为空
     validate:
         - eq: [status_code, 400]
-        - eq: [content.error_code, A_5]

@@ -13,6 +13,12 @@
     validate:
         - eq: [status_code, 400]
 - test:
+    name: identity为空字符串
+    request:
+        url: /accounts/identity/check?identity=
+    validate:
+        - eq: [status_code, 204]
+- test:
     name: 用户名已注册
     request:
         url: /accounts/identity/check?identity=$source_user_username
@@ -32,12 +38,6 @@
         - eq: [content.username, $source_user_username]
         - length_equals: [content, 5]
         - contains: [content, phone_number]
-- test:
-    name: identity为空字符串
-    request:
-        url: /accounts/identity/check?identity=
-    validate:
-        - eq: [status_code, 400]
 - test:
     name: 用户名未注册
     request:
