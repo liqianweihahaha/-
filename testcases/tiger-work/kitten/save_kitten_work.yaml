@@ -24,17 +24,8 @@
         - eq: [status_code, 403]
         - eq: [content.error_code, E_0]
 - test:
-    name: 已登录-保存kitten作品(创建作品)
-    request:
-        headers:
-            Authorization: $source_user_login_token
-        json: 
-            name: 测试创建kitten作品
-            work_url: $source_user_ide_work_url
-            preview: $source_user_ide_preview_url
-            sub_config: $work_sub_config
-            orientation: $orientation
-            bcmc_url: $source_user_ide_bcmc_url
+    name: 已登录-创建kitten作品
+    api: create_kitten_work($source_user_login_token)
     validate:
         - eq: [status_code, 200]
         - length_equals: [content, 1]
@@ -42,7 +33,7 @@
     extract:
         - created_kitten_work_id: content.id
 - test:
-    name: 已登录-保存kitten作品(修改作品)
+    name: 已登录-修改kitten作品
     request:
         headers:
             Authorization: $source_user_login_token

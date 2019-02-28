@@ -1,0 +1,16 @@
+- api:
+    # 保存 Kitten 作品
+    def: create_kitten_work($token)
+    request:
+        url: $tiger_api_host/tiger/work/kitten
+        method: POST
+        headers:
+            Content-Type: $content_type
+            Authorization: $token
+        json:
+            name: 测试创建kitten作品
+            work_url: $source_user_ide_work_url
+            preview: $source_user_ide_preview_url
+            sub_config: '{\"kind\":\"theatre_config\",\"stage\":{\"width\":620,\"height\":900}}'
+            orientation: 1
+            bcmc_url: $source_user_ide_bcmc_url

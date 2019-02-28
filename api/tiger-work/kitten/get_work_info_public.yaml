@@ -1,0 +1,6 @@
+- api:
+    # 获取作品详情（Public）
+    def: get_work_info_public($work_id)
+    request:
+        method: GET
+        url: $tiger_api_host/tiger/work/$work_id
