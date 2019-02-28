@@ -26,11 +26,9 @@ source_user:
       preview_url: https://obxuuymk6.qnssl.com/default_preview.png
       bcmc_url: https://test.bcmcdn.com/box/BkK806VZV.bcmc
     wood:
-      # 未发布
-      work_id: 2682152
+      work_id: 2682152   # 未发布
     nemo:
-      # 未发布
-      work_id: 2682156
+      work_id: 2682156  # 未发布
       work_url: https://test.bcmcdn.com/nemo/HJq-zvZpX.bcm
       preview_url: https://test.bcmcdn.com/nemo/Bk9-MD-pQ.cover
   sprite:

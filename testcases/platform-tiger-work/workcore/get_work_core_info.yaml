@@ -1,0 +1,38 @@
+- config:
+    name: 获取作品通用属性
+    variables:
+        - unexist_work_id: 100
+        - wrong_type_work_id: aaa
+
+- test:
+    name: 已发布IDE作品
+    api: get_work_core_info($source_user_ide_published_work_id)
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.id, $source_user_ide_published_work_id]
+        - eq: [content.user_id, $source_user_id]
+        - eq: [content.type, 1]
+        - eq: [content.status, 1]
+        - greater_than: [content.publish_time, 0]
+        - contains: [content, preview]
+- test:
+    name: 未发布nemo作品
+    api: get_work_core_info($source_user_nemo_work_id)
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.id, $source_user_nemo_work_id]
+        - eq: [content.user_id, $source_user_id]
+        - eq: [content.type, 8]
+        - eq: [content.status, 1]
+        - eq: [content.publish_time, 0]
+        - contains: [content, preview]
+- test:
+    name: 作品ID不存在
+    api: get_work_core_info($unexist_work_id)
+    validate:
+        - eq: [status_code, 204]
+- test:
+    name: 作品ID格式错误
+    api: get_work_core_info($wrong_type_work_id)
+    validate:
+        - eq: [status_code, 400]
