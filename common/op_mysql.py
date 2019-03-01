@@ -4,12 +4,26 @@ class OpMysql(object):
     # 连接ali云数据库，使用云数据库外网地址
     def __init__(self, host, user, password, database):
         try:
-            self.conn = pymysql.connect(host=host, user=user, password=password, database,charset='utf-8')
+            self.conn = pymysql.connect(host=host, user=user, password=password, database=database)
             self.cur = self.conn.cursor()
         except pymysql.Error as e:
-            print('err')
+            print('connect mysql error')
 
+    def select_one(self, query, params=None):
+        try:
+            result = self.cur.execute(query, params)
+            if result > 1:
+                print('找到多条数据')
+            elif result == 1:
+                return self.cur.fetchone()
+            else:
+                # 查询到的结果为0
+                print('找不到符合条件的数据')
+        except BaseException as e:
+            return '001'
 
 
 if __name__ == '__main__':
-    opmysql = OpMysql()
+    opmysql = OpMysql(host='rm-bp15t47j196je1u0l4o.mysql.rds.aliyuncs.com', user='TestDep', password='4Ehp1ndpfnlN9D0qvg4SZuig', database='account')
+    data = opmysql.select_one("SELECT * from basic_auth where user_id=%s", (1000002450, ))
+    print(data)
