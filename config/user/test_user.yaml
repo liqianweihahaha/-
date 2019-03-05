@@ -1,15 +1,20 @@
 source_user:
-  id: 1000002450
+  # 账号相关信息
+  id: 1000012631
   username: mxq0001
   email: mxq0001@qq.com
   phone_number: ''
   password: m1234567
+  sprite:
+    owned: 50    # 象牙螺
+    unown: 1     # 编程猫
+  # 作品相关信息
   work:
     ide:
-      published_work_id: 2675933
-      unpublish_work_id: 2675934
-      deleted_temporarily_work_id: 2678494
-      deleted_permanently_work_id: 2675938
+      published_work_id: 20000559
+      unpublish_work_id: 20000560
+      deleted_temporarily_work_id: 20000561
+      deleted_permanently_work_id: 20000562
       # 用于测试创建作品/修改作品/修改作品封面，bcm文件实际上就是经过处理的json字符串
       # work_url未加密，bcmc_url有加密(可选)，作品播放内容根据bcmc_url展示
       work_url: https://test.bcmcdn.com/kitten/ByW-83V1N.bcm
@@ -31,14 +36,14 @@ source_user:
       work_id: 2674264
       work_url: https://test.bcmcdn.com/nemo/HJq-zvZpX.bcm
       preview_url: https://test.bcmcdn.com/nemo/Bk9-MD-pQ.cover
-  sprite:
-    owned: 50    # 象牙螺
-    unown: 1     # 编程猫
+
 
 target_user:
-  id: 1000002872
+  # 账号相关信息
+  id: 1000012686
   username: mxq0002
   password: m1234567
+  # 用户无代表精灵
   work:
     ide:
       published_work_id: 2675915           # 已发布可购买
@@ -48,4 +53,4 @@ target_user:
       deleted_permanently_work_id: 2676257
     nemo:
       work_id: 2678946
-  # 用户无代表精灵
+  
