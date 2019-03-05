@@ -10,7 +10,6 @@
         - unexist_work_type_id: 100
         - wrong_type_work_type_id: aaa
 
-
 - test:
     name: 未登录-type=1
     request:

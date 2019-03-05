@@ -5,7 +5,6 @@
         url: /api/work/delete/list
         method: GET
 
-
 - test:
     name: 未登录
     validate:

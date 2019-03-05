@@ -1,8 +1,7 @@
 #### 测试数据准备
 1. 用户信息准备：创建2个用户
-1. 用户作品：IDE、BOX2.0、WOOD、NEMO（最好存在多个存档记录的）
-2. 将登录token放在debugtalk.py中避免多个test多次请求登录方法
-3. 开始测hi是作品和测试作品后，将作品属性重置
+2. 用户作品：IDE、BOX2.0、WOOD、NEMO（最好存在多个存档记录的）
+3. 将登录token放在debugtalk.py中避免多个test多次请求登录方法
 4. 执行完某个测试用例后，teardown_hooks将测试数据重置为开始状态
 
 #### 依赖包

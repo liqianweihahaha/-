@@ -7,7 +7,6 @@
         unexist_work_id: 100
         wrong_type_work_id: aaa
 
-
 - test:
     name: 未登录-已发布作品
     request:
