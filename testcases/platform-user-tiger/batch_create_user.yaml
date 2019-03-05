@@ -1,11 +1,11 @@
 - config:
     name: 批量创建用户
     request:
-        base_url: ${get_platform_tiger_api_host()}
+        base_url: ${platform_tiger_api_host()}
         method: POST
         url: /accounts/batch
         headers:
-            Content-Type: $content_type
+            Content-Type: ${content_type()}
     variables:
         - pc_pid: UvOFXx2tfv
         - password: m1234567
@@ -36,6 +36,9 @@
 - test:
     name: 批量创建的用户1应可以正常登录
     api: api/account/account_login.yaml
+    variables:
+        identity: $user1_username
+        password: $password
     validate:
         - eq: [status_code, 200]
         - length_equals: [content, 4]
@@ -43,6 +46,9 @@
 - test:
     name: 批量创建的用户2应可以正常登录
     api: api/account/account_login.yaml
+    variables:
+        identity: $user2_username
+        password: $password
     validate:
         - eq: [status_code, 200]
         - length_equals: [content, 4]

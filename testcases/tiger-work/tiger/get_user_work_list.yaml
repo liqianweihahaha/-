@@ -1,33 +1,33 @@
-- config:
-    name: 我的作品列表
-    request:
-        base_url: $tiger_api_host
-        method: GET
-        headers:
-            Content-Type: $content_type
-    variables:
-        ide_work_type: 1
+# - config:
+#     name: 我的作品列表
+#     request:
+#         base_url: $tiger_api_host
+#         method: GET
+#         headers:
+#             Content-Type: $content_type
+#     variables:
+#         ide_work_type: 1
 
-- test:
-    name: 未登录
-    request:
-        url: /tiger/work/list
-    validate:
-        - eq: [status_code, 400]
-- test:
-    name: 未登录-传递type
-    request:
-        url: /tiger/work/list?type=$ide_work_type
-    validate:
-        - eq: [status_code, 403]
-        - eq: [content.error_code, E_0]
-- test:
-    name: 已登录-传递type
-    request:
-        url: /tiger/work/list?type=$ide_work_type
-        headers:
-            Authorization: $source_user_login_token
-    validate:
-        - eq: [status_code, 200]
-        - eq: [content.0.type, 1]
-        - eq: [content.0.is_old, 0]
+# - test:
+#     name: 未登录
+#     request:
+#         url: /tiger/work/list
+#     validate:
+#         - eq: [status_code, 400]
+# - test:
+#     name: 未登录-传递type
+#     request:
+#         url: /tiger/work/list?type=$ide_work_type
+#     validate:
+#         - eq: [status_code, 403]
+#         - eq: [content.error_code, E_0]
+# - test:
+#     name: 已登录-传递type
+#     request:
+#         url: /tiger/work/list?type=$ide_work_type
+#         headers:
+#             Authorization: $source_user_login_token
+#     validate:
+#         - eq: [status_code, 200]
+#         - eq: [content.0.type, 1]
+#         - eq: [content.0.is_old, 0]

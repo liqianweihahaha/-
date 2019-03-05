@@ -1,17 +1,17 @@
-- config:
-    name: 获取标签列表（Public）
-    request:
-        base_url: $tiger_api_host
-        url: /api/label/list
-        method: GET
+# - config:
+#     name: 获取标签列表（Public）
+#     request:
+#         base_url: $tiger_api_host
+#         url: /api/label/list
+#         method: GET
 
-- test:
-    name: 未登录
-    validate:
-        - eq: [status_code, 200]
-        - eq: [content.code, 200]
-        - eq: [content.msg, 成功]
-        - length_equals: [content.data, 3]
-        - eq: [content.data.0.0.type, recommend]
-        - eq: [content.data.1.0.type, normal]
-        - eq: [content.data.2.0.type, activity]
+# - test:
+#     name: 未登录
+#     validate:
+#         - eq: [status_code, 200]
+#         - eq: [content.code, 200]
+#         - eq: [content.msg, 成功]
+#         - length_equals: [content.data, 3]
+#         - eq: [content.data.0.0.type, recommend]
+#         - eq: [content.data.1.0.type, normal]
+#         - eq: [content.data.2.0.type, activity]

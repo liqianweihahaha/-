@@ -1,21 +1,21 @@
-- config:
-    name: 查询及补全用户基本信息
-    request:
-        base_url: $tiger_api_host
-        method: POST
-        url: /tiger/ar/user
-        headers:
-            Content-Type: $content_type
+# - config:
+#     name: 查询及补全用户基本信息
+#     request:
+#         base_url: $tiger_api_host
+#         method: POST
+#         url: /tiger/ar/user
+#         headers:
+#             Content-Type: $content_type
 
-- test:
-    name: 用户未登录
-    validate:
-        - eq: [status_code, 403]
-        - eq: [content.error_code, E_0]
-- test:
-    name: 用户已登录
-    request:
-        headers:
-          Authorization: $source_user_login_token
-    validate:
-        - eq: [status_code, 204]
+# - test:
+#     name: 用户未登录
+#     validate:
+#         - eq: [status_code, 403]
+#         - eq: [content.error_code, E_0]
+# - test:
+#     name: 用户已登录
+#     request:
+#         headers:
+#           Authorization: $source_user_login_token
+#     validate:
+#         - eq: [status_code, 204]

@@ -1,37 +1,37 @@
-- config:
-    name: 检查作品名称（创建或获取）
-    request:
-        base_url: $tiger_api_host
-        method: GET
-    variables:
-        - unexist_work_name: 哈哈呵呵呵呵呵呵11
+# - config:
+#     name: 检查作品名称（创建或获取）
+#     request:
+#         base_url: $tiger_api_host
+#         method: GET
+#     variables:
+#         - unexist_work_name: 哈哈呵呵呵呵呵呵11
 
-- test:
-    name: 未登录-传递work_name
-    request:
-        url: /api/v2/work/checkname?work_name=''
-    validate:
-        - eq: [status_code, 200]
-        - eq: [content.code, 2002]
-        - eq: [content.msg, 用户未登陆]
-        - length_equals: [content.data, 0]
-- test:
-    name: 已登录-不传递work_name
-    request:
-        url: /api/v2/work/checkname
-        headers:
-            Authorization: $source_user_login_token
-    validate:
-        - eq: [status_code, 400]
-        - eq: [content.error_code, A_5]
-- test:
-    name: 已登录-传递work_name
-    request:
-        url: /api/v2/work/checkname?work_name=$unexist_work_name
-        headers:
-            Authorization: $source_user_login_token
-    validate:
-        - eq: [status_code, 200]
-        - eq: [content.code, 200]
-        - eq: [content.msg, 成功]
-        - eq: [content.data.work_name, $unexist_work_name]
+# - test:
+#     name: 未登录-传递work_name
+#     request:
+#         url: /api/v2/work/checkname?work_name=''
+#     validate:
+#         - eq: [status_code, 200]
+#         - eq: [content.code, 2002]
+#         - eq: [content.msg, 用户未登陆]
+#         - length_equals: [content.data, 0]
+# - test:
+#     name: 已登录-不传递work_name
+#     request:
+#         url: /api/v2/work/checkname
+#         headers:
+#             Authorization: $source_user_login_token
+#     validate:
+#         - eq: [status_code, 400]
+#         - eq: [content.error_code, A_5]
+# - test:
+#     name: 已登录-传递work_name
+#     request:
+#         url: /api/v2/work/checkname?work_name=$unexist_work_name
+#         headers:
+#             Authorization: $source_user_login_token
+#     validate:
+#         - eq: [status_code, 200]
+#         - eq: [content.code, 200]
+#         - eq: [content.msg, 成功]
+#         - eq: [content.data.work_name, $unexist_work_name]

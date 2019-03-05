@@ -39,5 +39,5 @@ variables:
 | 不同点 | hrun 1.5.15 | hrun 2.0 |
 |----|----|----|
 |api定义|通过api和def关键字定义|和test定义一样|
-|api调用|通过api关键字和方法名|通过api关键字和api定义路径|
+|api调用|通过api关键字和方法名|通过api关键字和api定义路径，以及variables传递参数|
 |debugtalk.py|可以直接引用其中定义的变量|不能直接引用其中定义的变量|

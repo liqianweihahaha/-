@@ -1,14 +1,14 @@
-- config:
-    name: 获取标签列表（Public）
-    request:
-        base_url: $tiger_api_host
-        url: /api/work/label/list
-        method: GET
+# - config:
+#     name: 获取标签列表（Public）
+#     request:
+#         base_url: $tiger_api_host
+#         url: /api/work/label/list
+#         method: GET
 
-- test:
-    name: 未登录
-    validate:
-        - eq: [status_code, 200]
-        - eq: [content.code, 200]
-        - eq: [content.msg, 成功]
-        - contains: [content.data, labelList]
+# - test:
+#     name: 未登录
+#     validate:
+#         - eq: [status_code, 200]
+#         - eq: [content.code, 200]
+#         - eq: [content.msg, 成功]
+#         - contains: [content.data, labelList]

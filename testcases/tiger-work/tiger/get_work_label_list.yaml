@@ -1,12 +1,12 @@
-- config:
-    name: 获取作品标签列表（Public）
-    request:
-        base_url: $tiger_api_host
-        method: GET
-        url: /tiger/work/labels
+# - config:
+#     name: 获取作品标签列表（Public）
+#     request:
+#         base_url: $tiger_api_host
+#         method: GET
+#         url: /tiger/work/labels
 
-- test:
-    name: 获取作品标签列表
-    validate: 
-      - eq: [status_code, 200]
+# - test:
+#     name: 获取作品标签列表
+#     validate: 
+#       - eq: [status_code, 200]
 

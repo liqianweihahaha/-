@@ -1,6 +1,4 @@
-- api:
-    # 获取作品通用属性
-    def: get_work_core_info($work_id)
-    request:
-        method: GET
-        url: ${get_platform_tiger_api_host()}/works/core/$work_id
+name: 获取作品通用属性
+request:
+    method: GET
+    url: /works/core/$work_id

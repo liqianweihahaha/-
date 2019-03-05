@@ -1,28 +1,28 @@
-- config:
-    name: 账号登录
-    request:
-        base_url: $tiger_api_host
+# - config:
+#     name: 账号登录
+#     request:
+#         base_url: $tiger_api_host
 
-- test:
-    name: 用户名登录：用户名正确-密码正确
-    # 使用api接口定义
-    api: account_login($source_user_username, $source_user_password)
-    validate:
-        - eq: [status_code, 200]
-        - length_equals: [content, 4]
-        - contains: [content, token]
-    extract:
-        - token: content.token
+# - test:
+#     name: 用户名登录：用户名正确-密码正确
+#     # 使用api接口定义
+#     api: account_login($source_user_username, $source_user_password)
+#     validate:
+#         - eq: [status_code, 200]
+#         - length_equals: [content, 4]
+#         - contains: [content, token]
+#     extract:
+#         - token: content.token
 
-- test:
-    name: 验证登录成功后获取用户信息
-    request:
-        url: /tiger/user
-        method: GET
-        headers:
-            Authorization: Bearer $token
-    validate:
-        - eq: [status_code, 200]
-        - eq: [content.id, $source_user_id]
-        - eq: [content.username, $source_user_username]
-        - length_equals: [content, 13]
+# - test:
+#     name: 验证登录成功后获取用户信息
+#     request:
+#         url: /tiger/user
+#         method: GET
+#         headers:
+#             Authorization: Bearer $token
+#     validate:
+#         - eq: [status_code, 200]
+#         - eq: [content.id, $source_user_id]
+#         - eq: [content.username, $source_user_username]
+#         - length_equals: [content, 13]

@@ -1,24 +1,24 @@
-- config:
-    name: 账户注册(为B端定制，通用型较低)
-    request:
-        base_url: ${get_platform_tiger_api_host()}
-        method: POST
-        url: /accounts/register
-        headers:
-            Content-Type: $content_type
-    variables:
-        - registered_email: maxiaoqian@qq.com
-        - wrong_email_type: ma
-        - wrong_password_value: 12
-        - correct_password_value: m1234567
+# - config:
+#     name: 账户注册(为B端定制，通用型较低)
+#     request:
+#         base_url: ${get_platform_tiger_api_host()}
+#         method: POST
+#         url: /accounts/register
+#         headers:
+#             Content-Type: $content_type
+#     variables:
+#         - registered_email: maxiaoqian@qq.com
+#         - wrong_email_type: ma
+#         - wrong_password_value: 12
+#         - correct_password_value: m1234567
 
-- test:
-    name: 邮箱已注册
-    request:
-        json:
-            identity_type: 1
-            identity: $registered_email
-            pid: 65edCTyg
-    validate:
-        - eq: [status_code, 200]
-        - eq: [content.is_create, false]
+# - test:
+#     name: 邮箱已注册
+#     request:
+#         json:
+#             identity_type: 1
+#             identity: $registered_email
+#             pid: 65edCTyg
+#     validate:
+#         - eq: [status_code, 200]
+#         - eq: [content.is_create, false]
