@@ -1,21 +1,21 @@
-# - config:
-#     name: 检查手机号在编程猫平台账号的注册情况
-#     request:
-#         base_url: ${get_platform_tiger_api_host()}
-#         method: GET
-#     variables:
-#         # 手机号为字符串类型
-#         - unregister_phone_number: '14000000000'
-#         - wrong_type_phone_number: '1000'
-# - test:
-#     name: 不传递phone_number
-#     request:
-#         url: /accounts/phone/check
-#     validate:
-#         - eq: [status_code, 400]
+- config:
+    name: 检查手机号在编程猫平台账号的注册情况
+    base_url: ${platform_tiger_api_host()}  
+    variables:
+        # 手机号为字符串类型
+        - unregister_phone_number: '14000000000'
+        - wrong_type_phone_number: '1000'
+- test:
+    name: 不传递phone_number
+    request:
+        method: GET
+        url: /accounts/phone/check
+    validate:
+        - eq: [status_code, 400]
 # - test:
 #     name: phone_number已注册
 #     request:
+#         method: GET
 #         url: /accounts/phone/check?phone_number=$source_user_phone_number
 #     validate:
 #         - eq: [status_code, 200]
@@ -26,23 +26,26 @@
 #         - contains: [content.info, has_password]
 #         - contains: [content.info, email]
 #         - contains: [content.info, username]
-# - test:
-#     name: phone_number未注册
-#     request:
-#         url: /accounts/phone/check?phone_number=$unregister_phone_number
-#     validate:
-#         - eq: [status_code, 200]
-#         - eq: [content.existed, false]
-#         - eq: [content.info, null]
-# - test:
-#     name: phone_number为空
-#     request:
-#         url: /accounts/phone/check?phone_number=
-#     validate:
-#         - eq: [status_code, 400]
-# - test:
-#     name: phone_number格式错误
-#     request:
-#         url: /accounts/phone/check?phone_number=$wrong_type_phone_number
-#     validate:
-#         - eq: [status_code, 400]
+- test:
+    name: phone_number未注册
+    request:
+        method: GET
+        url: /accounts/phone/check?phone_number=$unregister_phone_number
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.existed, false]
+        - eq: [content.info, null]
+- test:
+    name: phone_number为空
+    request:
+        method: GET
+        url: /accounts/phone/check?phone_number=
+    validate:
+        - eq: [status_code, 400]
+- test:
+    name: phone_number格式错误
+    request:
+        method: GET
+        url: /accounts/phone/check?phone_number=$wrong_type_phone_number
+    validate:
+        - eq: [status_code, 400]

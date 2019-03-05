@@ -1,10 +1,6 @@
 - config:
     name: 检查并返回可用昵称
-    request:
-        base_url: ${get_platform_tiger_api_host()}
-        method: GET
-        headers:
-            Content-Type: $content_type
+    base_url: ${platform_tiger_api_host()}
     variables:
         - success_unexisted_nickname: abcd12344
         - success_existed_nickname: 哈哈
@@ -12,12 +8,14 @@
 - test:
     name: 不传递nickname
     request:
+        method: GET
         url: /accounts/nickname/available
     validate:
         - eq: [status_code, 400]
 - test:
     name: nickname格式正确且不存在
     request:
+        method: GET
         url: /accounts/nickname/available?nickname=$success_unexisted_nickname
     validate:
         - eq: [status_code, 200]
@@ -25,6 +23,7 @@
 - test:
     name: nickname格式正确且已存在
     request:
+        method: GET
         url: /accounts/nickname/available?nickname=$success_existed_nickname
     validate:
         - eq: [status_code, 200]
@@ -32,6 +31,7 @@
 - test:
     name: nickname为空
     request:
+        method: GET
         url: /accounts/nickname/available?nickname=
     validate:
         - eq: [status_code, 400]
