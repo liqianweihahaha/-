@@ -9,13 +9,6 @@
         - unsupport_sex: 2
         - new_password: m12345
 
-- test:
-    name: 用户存在-传递内容为空
-    request:
-        url: /accounts/$source_user_id
-    validate:
-        - eq: [status_code, 204]
-
 # 修改性别
 - test:
     name: 用户存在-sex为0

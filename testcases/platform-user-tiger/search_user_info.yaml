@@ -63,9 +63,8 @@
             fields: ["nickname"]
     validate:
         - eq: [status_code, 200]
-        - eq: [content.0.id, $source_user_id]
         - length_equals: [content, 1]
-        - length_equals: [content.0, 2]
+        - length_equals: [content.0, 1]
 - test:
     name: 用户id存在-fields包含不支持的字段
     request:

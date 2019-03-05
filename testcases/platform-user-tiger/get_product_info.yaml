@@ -11,7 +11,7 @@
         - unexist_pid: aaa
 
 - test:
-    name: pid存在-fields不传递
+    name: pid存在
     request:
         url: /accounts/products/$pc_client_pid
     validate:
@@ -22,52 +22,7 @@
         - contains: [content, id]
         - contains: [content, description]
 - test:
-    name: pid存在-fields为空数组
-    request:
-        url: /accounts/products/$pc_client_pid?fields=[]
-    validate:
-        - eq: [status_code, 200]
-        - eq: [content.pid, $pc_client_pid]
-        - eq: [content.name, $pc_client_name]
-        - length_equals: [content, 4]
-        - contains: [content, id]
-        - contains: [content, description]
-- test:
-    name: pid存在-fields包含所有支持字段
-    request:
-        url: /accounts/products/$pc_client_pid?fields=["id", "pid", "name", "description"]
-    validate:
-        - eq: [status_code, 200]
-        - eq: [content.pid, $pc_client_pid]
-        - eq: [content.name, $pc_client_name]
-        - length_equals: [content, 4]
-        - contains: [content, id]
-        - contains: [content, description] 
-- test:
-    name: pid存在-fields只包含name
-    request:
-        url: /accounts/products/$pc_client_pid?fields=["name"]
-    validate:
-        - eq: [status_code, 200]
-        - eq: [content.name, $pc_client_name] 
-        - type_match: [content, dict]
-        - length_equals: [content, 1]  
-- test:
-    name: pid存在-fields包含不支持的字段
-    request:
-        url: /accounts/products/$pc_client_pid?fields=[$unsupport_fields_element]
-    validate:
-        - eq: [status_code, 400]
-        - eq: [content.error_code, A_5]
-- test:
-    name: pid存在-fields格式错误
-    request:
-        url: /accounts/products/$pc_client_pid?fields=$wrong_type_fields
-    validate:
-        - eq: [status_code, 400]
-        - eq: [content.error_code, A_5]
-- test:
-    name: pid不存在-fields不传递
+    name: pid不存在
     request:
         url: /accounts/products/$unexist_pid
     validate:

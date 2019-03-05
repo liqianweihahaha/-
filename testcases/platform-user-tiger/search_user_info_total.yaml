@@ -7,7 +7,6 @@
         headers:
             Content-Type: $content_type
     variables:
-        - source_user_id_str: ${str($source_user_id)}
         - unexist_user_id: 100
         - wrong_type_user_id: aaa
         - pc_pid: UvOFXx2tfv
@@ -42,7 +41,7 @@
             pid: $maolaozu_pid
     validate:
         - eq: [status_code, 200]
-        - eq: [content.items.0.id, $source_user_id_str]
+        - eq: [content.items.0.id, $source_user_id]
         - eq: [content.total, 1]
         - length_equals: [content.items.0, 9]
         - contains: [content, total]
@@ -59,7 +58,7 @@
     validate:
         - eq: [status_code, 200]
         - eq: [content.total, 1]
-        - eq: [content.items.0.id, $source_user_id_str]
+        - eq: [content.items.0.id, $source_user_id]
         - length_equals: [content.items.0, 1]
         - contains: [content.items.0, id]
 - test:
@@ -84,7 +83,7 @@
             pid: $maolaozu_pid
     validate:
         - eq: [status_code, 200]
-        - eq: [content.items.0.id, $source_user_id_str]
+        - eq: [content.items.0.id, $source_user_id]
         - eq: [content.total, 1]
         - length_equals: [content.items.0, 2]
 - test:

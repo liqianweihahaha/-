@@ -10,7 +10,7 @@
         - qq_appid: '101253342'
         - unsupport_fields_element: aaa
 
-# 后端语言为node时，fields格式支持数组或者逗号表达式
+# 后端语言为kotlin时，fields只支持逗号表达式（字段之间不包含空格）
 - test:
     name: 用户未绑定微信-绑定微信
     api: bind_oauth($source_user_id, $test_wexin_unioinid1, $wexin_appid)
@@ -27,79 +27,12 @@
         - eq: [content.unionid, $test_wexin_unioinid1]
         - contains: [content, nickname]
         - contains: [content, gold]
-- test:
-    name: unionid已注册-fields为空数组
-    request:
-        url: /accounts/oauth/$test_wexin_unioinid1?fields=[]
-    validate:
-        - eq: [status_code, 200]
-        - length_equals: [content, 17]
-        - eq: [content.id, $source_user_id]
-        - eq: [content.unionid, $test_wexin_unioinid1]
-        - contains: [content, nickname]
-        - contains: [content, gold]
-- test:
-    name: unionid已注册-fields为数组包含所有支持字段
-    request:
-        url: /accounts/oauth/$test_wexin_unioinid1?fields=["unionid", "id", "bcmid", "nickname", "fullname", "avatar_url", "username", "email", "phone_number", "sex", "birthday","description", "qq", "remark", "grade", "gold", "product_id"]
-    validate:
-        - eq: [status_code, 200]
-        - length_equals: [content, 17]
-        - eq: [content.id, $source_user_id]
-        - eq: [content.unionid, $test_wexin_unioinid1]
-        - contains: [content, nickname]
-        - contains: [content, gold]
-- test:
-    name: unionid已注册-fields为数组只包含id
-    request:
-        url: /accounts/oauth/$test_wexin_unioinid1?fields=["id"]
-    validate:
-        - eq: [status_code, 200]
-        - length_equals: [content, 2]
-        - eq: [content.id, $source_user_id]
-        - eq: [content.unionid, $test_wexin_unioinid1]
-- test:
-    name: unionid已注册-fields为数组包含不支持字段
-    request:
-        url: /accounts/oauth/$test_wexin_unioinid1?fields=["id", $unsupport_fields_element]
-    validate:
-        - eq: [status_code, 400]
-- test:
-    name: unionid已注册-fields格式错误
-    request:
-        url: /accounts/oauth/$test_wexin_unioinid1?fields={"id"}
-    validate:
-        - eq: [status_code, 400]
-- test:
-    name: 用户解绑微信
-    api: unbind_oauth($source_user_id, WECHAT)
-    validate:
-        - eq: [status_code, 204]
-- test:
-    name: unionid未注册-fields为数组包含所有支持字段
-    request:
-        url: /accounts/oauth/$test_wexin_unioinid1?fields=["unionid", "id", "bcmid", "nickname", "fullname", "avatar_url", "username", "email", "phone_number", "sex", "birthday","description", "qq", "remark", "grade", "gold", "product_id"]
-    validate:
-        - eq: [status_code, 204]
-- test:
-    name: unionid长度小于20-fields不传递
-    request:
-        url: /accounts/oauth/$test_unionid_less_20
-    validate:
-        - eq: [status_code, 400]
-
-# 后端语言为kotlin时，fields只支持逗号表达式（字段之间不包含空格）
-- test:
-    name: 用户未绑定微信-绑定微信
-    api: bind_oauth($source_user_id, $test_wexin_unioinid1, $wexin_appid)
-    validate:
-        - eq: [status_code, 204]
-- test:
-    name: unionid已注册-fields为空字符串
-    request:
-        url: /accounts/oauth/$test_wexin_unioinid1?fields=
-    validate:
-        - eq: [status_code, 400]
+# - test:
+#     name: unionid已注册-fields为空字符串
+#     request:
+#         url: /accounts/oauth/$test_wexin_unioinid1?fields=
+#     validate:
+#         - eq: [status_code, 400]
 - test:
     name: unionid已注册-fields为逗号表达式包含所有支持字段
     request:
@@ -120,12 +53,18 @@
         - length_equals: [content, 2]
         - eq: [content.id, $source_user_id]
         - eq: [content.unionid, $test_wexin_unioinid1]
-- test:
-    name: unionid已注册-fields为逗号表达式包含不支持字段
-    request:
-        url: /accounts/oauth/$test_wexin_unioinid1?fields=id,$unsupport_fields_element
-    validate:
-        - eq: [status_code, 400]
+# - test:
+#     name: unionid已注册-fields为逗号表达式包含不支持字段
+#     request:
+#         url: /accounts/oauth/$test_wexin_unioinid1?fields=id,$unsupport_fields_element
+#     validate:
+#         - eq: [status_code, 400]
+# - test:
+#     name: unionid已注册-fields格式错误
+#     request:
+#         url: /accounts/oauth/$test_wexin_unioinid1?fields={"id"}
+#     validate:
+#         - eq: [status_code, 400]
 - test:
     name: 用户解绑微信
     api: unbind_oauth($source_user_id, WECHAT)
@@ -134,12 +73,12 @@
 - test:
     name: unionid未注册-fields为逗号表达式包含所有支持字段
     request:
-        url: /accounts/oauth/$test_wexin_unioinid1?fields=["unionid", "id", "bcmid", "nickname", "fullname", "avatar_url", "username", "email", "phone_number", "sex", "birthday","description", "qq", "remark", "grade", "gold", "product_id"]
+        url: /accounts/oauth/$test_wexin_unioinid1?fields=unionid,id,bcmid,nickname,fullname,avatar_url,username,email,phone_number,sex,birthday,description,qq,remark,grade,gold,product_id
     validate:
         - eq: [status_code, 204]
-- test:
-    name: unionid长度小于20-fields不传递
-    request:
-        url: /accounts/oauth/$test_unionid_less_20
-    validate:
-        - eq: [status_code, 400]
+# - test:
+#     name: unionid长度小于20-fields不传递
+#     request:
+#         url: /accounts/oauth/$test_unionid_less_20
+#     validate:
+#         - eq: [status_code, 400]

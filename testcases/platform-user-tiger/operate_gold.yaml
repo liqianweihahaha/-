@@ -14,7 +14,7 @@
         - unsupport_event_id_gold: 16
         - wrong_type_offset: aaa
         - wrong_type_event_id: aaa
-        - large_offset_gold: 10000
+        - large_offset_gold: 2000
         - wrong_type_user_id: aaa
 
 - test:
@@ -47,12 +47,6 @@
         - eq: [status_code, 403]
         - eq: [content.error_code, Account_37]
 - test:
-    name: 用户id存在-event_id不传递-offset不传递
-    request:
-        url: /accounts/$source_user_id/gold
-    validate:
-        - eq: [status_code, 400]
-- test:
     name: 用户id存在-event_id不传递-offse正确
     request:
         url: /accounts/$source_user_id/gold
@@ -61,11 +55,9 @@
     validate:
         - eq: [status_code, 400]
 - test:
-    name: 用户id存在-event_id正确-offse不传递
+    name: 用户id存在-event_id不传递-offset不传递
     request:
         url: /accounts/$source_user_id/gold
-        json:
-            event_id: $event_id_add
     validate:
         - eq: [status_code, 400]
 - test:
@@ -75,7 +67,16 @@
         json:
             event_id: $event_id_add
     validate:
-        - eq: [status_code, 400]
+        - eq: [status_code, 204]
+- test:
+    name: 用户id存在-event_id正确-offse大于2000
+    request:
+        url: /accounts/$source_user_id/gold
+        json:
+            event_id: $event_id_add
+            offset: 2001
+    validate:
+        - eq: [status_code, 400]      
 - test:
     name: 用户id不存在-event_id正确-offse正确
     request:
@@ -84,8 +85,8 @@
             event_id: $event_id_add
             offset: $offset
     validate:
-        - eq: [status_code, 403]
-        - eq: [content.error_code, Account_0]
+        - eq: [status_code, 422]
+        - eq: [content.error_code, '10001000']
 - test:
     name: 用户id格式错误-event_id正确-offse正确
     request:
@@ -94,4 +95,4 @@
             event_id: $event_id_add
             offset: $offset
     validate:
-        - eq: [status_code, 400]
+        - eq: [status_code, 404]

@@ -23,12 +23,6 @@
         - eq: [content.id, $source_user_id]
         - eq: [content.unionid, $test_wexin_unioinid1]
 - test:
-    name: 用户id存在(用户已绑定微信)-oauth_type不支持
-    request:
-        url: /accounts/$source_user_id/oauth?oauth_type=$unsupport_oauth_type
-    validate:
-        - eq: [status_code, 400]
-- test:
     name: 用户id存在(用户已绑定微信)-oauth_type不传递
     request:
         url: /accounts/$source_user_id/oauth

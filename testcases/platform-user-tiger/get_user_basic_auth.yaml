@@ -31,4 +31,4 @@
     request:
         url: /accounts/$wrong_type_user_id/basic_auth
     validate:
-        - eq: [status_code, 204]
+        - eq: [status_code, 404]
