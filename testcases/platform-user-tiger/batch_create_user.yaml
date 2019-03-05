@@ -1,11 +1,6 @@
 - config:
     name: 批量创建用户
-    request:
-        base_url: ${platform_tiger_api_host()}
-        method: POST
-        url: /accounts/batch
-        headers:
-            Content-Type: ${content_type()}
+    base_url: ${platform_tiger_api_host()}
     variables:
         - pc_pid: UvOFXx2tfv
         - password: m1234567
@@ -14,6 +9,10 @@
 - test:
     name: prefix格式正确-password格式正确(创建2个账号)
     request:
+        url: /accounts/batch
+        method: POST
+        headers:
+            Content-Type: ${content_type()}
         json:
             prefix: $test_prefix
             users: [{"password": $password}, {"password": $password}]

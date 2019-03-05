@@ -10,10 +10,10 @@ env = os.environ['environment']
 
 # 获取测试hosts
 def tiger_api_host():
-    return get_hosts(env).get('tiger_api_host()')
+    return get_hosts(env).get('tiger_api_host')
 
 def platform_tiger_api_host():
-    return get_hosts(env).get('platform_tiger_api_host()')
+    return get_hosts(env).get('platform_tiger_api_host')
 
 # 源用户信息
 def source_user():

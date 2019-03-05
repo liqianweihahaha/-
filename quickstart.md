@@ -41,3 +41,5 @@ variables:
 |api定义|通过api和def关键字定义|和test定义一样|
 |api调用|通过api关键字和方法名|通过api关键字和api定义路径，以及variables传递参数|
 |debugtalk.py|可以直接引用其中定义的变量|不能直接引用其中定义的变量|
+|base_url|在config中的request下定义|在config下直接定义或者api中直接定义(不能在request下)|
+|method、url等|可以在config的request下统一配置|只能在test中指定|
