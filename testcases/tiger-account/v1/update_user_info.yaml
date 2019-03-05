@@ -71,7 +71,9 @@
 - test:
     name: 判断nickname是否更新成功
     skipUnless: ${eval_equal($update_nickname_success_code, 204)}
-    api: get_user_info($source_user_id)
+    api: api/account/get_user_info.yaml
+    variables:
+        user_id: ${source_user_id()}
     validate:
         - eq: [content.nickname, $test_nickname]
 
@@ -89,7 +91,9 @@
 - test:
     name: 判断fullname是否更新成功
     skipUnless: ${eval_equal($update_fullname_success_code, 204)}
-    api: get_user_info($source_user_id)
+    api: api/account/get_user_info.yaml
+    variables:
+        user_id: ${source_user_id()}
     validate:
         - eq: [content.fullname, '']
 - test:
@@ -106,7 +110,9 @@
 - test:
     name: 判断fullname是否更新成功
     skipUnless: ${eval_equal($update_fullname_success_code, 204)}
-    api: get_user_info($source_user_id)
+    api: api/account/get_user_info.yaml
+    variables:
+        user_id: ${source_user_id()}
     validate:
         - eq: [content.fullname, $test_fullname]
 
@@ -131,7 +137,9 @@
         - eq: [status_code, 204]
 - test:
     name: 判断头像是否更新成功
-    api: get_user_info($source_user_id)
+    api: api/account/get_user_info.yaml
+    variables:
+        user_id: ${source_user_id()}
     validate:
         - eq: [content.avatar_url, $test_avatar_url]
 
@@ -146,7 +154,9 @@
         - eq: [status_code, 204]
 - test:
     name: 判断性别是否更新成功
-    api: get_user_info($source_user_id)
+    api: api/account/get_user_info.yaml
+    variables:
+        user_id: ${source_user_id()}
     validate:
         - eq: [content.sex, $test_sex_0]
 - test:
@@ -160,7 +170,9 @@
         - eq: [status_code, 204]
 - test:
     name: 判断性别是否更新成功
-    api: get_user_info($source_user_id)
+    api: api/account/get_user_info.yaml
+    variables:
+        user_id: ${source_user_id()}
     validate:
         - eq: [content.sex, $test_sex_1]
 - test:
@@ -185,7 +197,9 @@
         - eq: [status_code, 204]
 - test:
     name: 判断出生日期是否更新成功
-    api: get_user_info($source_user_id)
+    api: api/account/get_user_info.yaml
+    variables:
+        user_id: ${source_user_id()}
     validate:
         - eq: [content.birthday, $test_birthday_0]
 - test:
@@ -199,7 +213,9 @@
         - eq: [status_code, 204]
 - test:
     name: 判断出生日期是否更新成功
-    api: get_user_info($source_user_id)
+    api: api/account/get_user_info.yaml
+    variables:
+        user_id: ${source_user_id()}
     validate:
         - eq: [content.birthday, $test_birthday_123]
 
@@ -224,7 +240,9 @@
         - eq: [status_code, 204]
 - test:
     name: 判断出生日期是否更新成功
-    api: get_user_info($source_user_id)
+    api: api/account/get_user_info.yaml
+    variables:
+        user_id: ${source_user_id()}
     validate:
         - eq: [content.description, $test_description]
 
@@ -239,6 +257,8 @@
         - eq: [status_code, 204]
 - test:
     name: 判断qq是否更新成功
-    api: get_user_info($source_user_id)
+    api: api/account/get_user_info.yaml
+    variables:
+        user_id: ${source_user_id()}
     validate:
         - eq: [content.qq, $test_qq]
