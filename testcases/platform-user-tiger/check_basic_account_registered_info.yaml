@@ -12,12 +12,12 @@
         url: /accounts/identity/check
     validate:
         - eq: [status_code, 400]
-- test:
-    name: identity为空字符串
-    request:
-        url: /accounts/identity/check?identity=
-    validate:
-        - eq: [status_code, 204]
+# - test:
+#     name: identity为空字符串
+#     request:
+#         url: /accounts/identity/check?identity=
+#     validate:
+#         - eq: [status_code, 204]
 - test:
     name: 用户名已注册
     request:
