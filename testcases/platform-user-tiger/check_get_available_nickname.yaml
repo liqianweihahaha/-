@@ -1,7 +1,7 @@
 - config:
     name: 检查并返回可用昵称
     request:
-        base_url: $platform_tiger_api_host
+        base_url: ${get_platform_tiger_api_host()}
         method: GET
         headers:
             Content-Type: $content_type

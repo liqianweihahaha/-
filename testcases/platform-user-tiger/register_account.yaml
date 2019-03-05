@@ -1,7 +1,7 @@
 - config:
     name: 普通账户注册
     request:
-        base_url: $platform_tiger_api_host
+        base_url: ${get_platform_tiger_api_host()}
         method: POST
         url: /accounts
         headers:

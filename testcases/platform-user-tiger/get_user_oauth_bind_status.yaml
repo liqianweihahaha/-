@@ -6,7 +6,7 @@
 
 - test:
     name: user_id存在
-    api: get_user_oauth_bind_status($source_user_id)
+    api: get_user_oauth_bind_status(${source_user_id()})
     valiate:
         - eq: [status_code, 200]
         - type_match: [content, list]

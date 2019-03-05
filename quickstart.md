@@ -33,3 +33,11 @@ variables:
 
 #### 框架源码学习
 - html报告生成：report.py中的render_html_report函数，使用的是jinja2的模板文件templates/report_template.html
+
+#### hrun1.0 到 2.0
+1. api定义的写法不同，2.0中调用api中的方法需指定路径
+| 不同点 | hrun 1.5.15 | hrun 2.0 |
+|----|----|----|
+|api定义|通过api和def关键字定义|和test定义一样|
+|api调用|通过api关键字和方法名|通过api关键字和api定义路径|
+|debugtalk.py|可以直接引用其中定义的变量|不能直接引用其中定义的变量|

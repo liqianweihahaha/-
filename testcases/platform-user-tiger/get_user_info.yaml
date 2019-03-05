@@ -1,7 +1,7 @@
 - config:
     name: 获取单个用户信息
     request:
-        base_url: $platform_tiger_api_host
+        base_url: ${get_platform_tiger_api_host()}
         method: GET
     variables:
         - unexist_user_id: 100
@@ -12,10 +12,10 @@
 - test:
     name: 用户存在-fields不传递
     request:
-        url: /accounts/$source_user_id
+        url: /accounts/${source_user_id()}
     validate:
         - eq: [status_code, 200]
-        - eq: [content.id, $source_user_id]
+        - eq: [content.id, ${source_user_id()}]
         - length_equals: [content, 16]
         - contains: [content, bcmid]
         - contains: [content, nickname]
@@ -28,10 +28,10 @@
 - test:
     name: 用户存在-fields为空字符串
     request:
-        url: /accounts/$source_user_id?fields=
+        url: /accounts/${source_user_id()}?fields=
     validate:
         - eq: [status_code, 200]
-        - eq: [content.id, $source_user_id]
+        - eq: [content.id, ${source_user_id()}]
         - length_equals: [content, 16]
         - contains: [content, bcmid]
         - contains: [content, nickname]
@@ -42,10 +42,10 @@
 - test:
     name: 用户存在-fields为逗号表达式包含所有支持字段
     request:
-        url: /accounts/$source_user_id?fields=id,bcmid,nickname,fullname,avatar_url,username,email,phone_number,sex,birthday,description,qq,remark,grade,gold,product_id
+        url: /accounts/${source_user_id()}?fields=id,bcmid,nickname,fullname,avatar_url,username,email,phone_number,sex,birthday,description,qq,remark,grade,gold,product_id
     validate:
         - eq: [status_code, 200]
-        - eq: [content.id, $source_user_id]
+        - eq: [content.id, ${source_user_id()}]
         - length_equals: [content, 16]
         - contains: [content, bcmid]
         - contains: [content, nickname]
@@ -56,15 +56,15 @@
 - test:
     name: 用户存在-fields为逗号表达式只包含字段id
     request:
-        url: /accounts/$source_user_id?fields=id
+        url: /accounts/${source_user_id()}?fields=id
     validate:
         - eq: [status_code, 200]
-        - eq: [content.id, $source_user_id]
+        - eq: [content.id, ${source_user_id()}]
         - length_equals: [content, 1]
 # - test:
 #     name: 用户存在-fields为数组包含不支持的字段
 #     request:
-#         url: /accounts/$source_user_id?fields=$unsupport_fields_element
+#         url: /accounts/${source_user_id()}?fields=$unsupport_fields_element
 #     validate:
 #         - eq: [status_code, 400]
 - test:

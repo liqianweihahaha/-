@@ -3,4 +3,4 @@
     def: get_work_core_info($work_id)
     request:
         method: GET
-        url: $platform_tiger_api_host/works/core/$work_id
+        url: ${get_platform_tiger_api_host()}/works/core/$work_id

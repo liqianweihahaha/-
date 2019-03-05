@@ -1,7 +1,7 @@
 - config:
     name: 通过unionid获取用户信息
     request:
-        base_url: $platform_tiger_api_host
+        base_url: ${get_platform_tiger_api_host()}
         method: GET
     variables:
         - test_wexin_unioinid1: test_wx_bind1_0123456789
@@ -13,7 +13,7 @@
 # 后端语言为kotlin时，fields只支持逗号表达式（字段之间不包含空格）
 - test:
     name: 用户未绑定微信-绑定微信
-    api: bind_oauth($source_user_id, $test_wexin_unioinid1, $wexin_appid)
+    api: bind_oauth(${source_user_id()}, $test_wexin_unioinid1, $wexin_appid)
     validate:
         - eq: [status_code, 204]
 - test:
@@ -23,7 +23,7 @@
     validate:
         - eq: [status_code, 200]
         - length_equals: [content, 17]
-        - eq: [content.id, $source_user_id]
+        - eq: [content.id, ${source_user_id()}]
         - eq: [content.unionid, $test_wexin_unioinid1]
         - contains: [content, nickname]
         - contains: [content, gold]
@@ -40,7 +40,7 @@
     validate:
         - eq: [status_code, 200]
         - length_equals: [content, 17]
-        - eq: [content.id, $source_user_id]
+        - eq: [content.id, ${source_user_id()}]
         - eq: [content.unionid, $test_wexin_unioinid1]
         - contains: [content, nickname]
         - contains: [content, gold]
@@ -51,7 +51,7 @@
     validate:
         - eq: [status_code, 200]
         - length_equals: [content, 2]
-        - eq: [content.id, $source_user_id]
+        - eq: [content.id, ${source_user_id()}]
         - eq: [content.unionid, $test_wexin_unioinid1]
 # - test:
 #     name: unionid已注册-fields为逗号表达式包含不支持字段
@@ -67,7 +67,7 @@
 #         - eq: [status_code, 400]
 - test:
     name: 用户解绑微信
-    api: unbind_oauth($source_user_id, WECHAT)
+    api: unbind_oauth(${source_user_id()}, WECHAT)
     validate:
         - eq: [status_code, 204]
 - test:

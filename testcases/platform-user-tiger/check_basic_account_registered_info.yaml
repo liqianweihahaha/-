@@ -1,7 +1,7 @@
 - config:
     name: 检查主账号(手机号、用户名、邮箱)的注册情况
     request:
-        base_url: $platform_tiger_api_host
+        base_url: ${get_platform_tiger_api_host()}
         method: GET
     variables:
         - unregistered_identity: dcba123
@@ -21,21 +21,21 @@
 - test:
     name: 用户名已注册
     request:
-        url: /accounts/identity/check?identity=$source_user_username
+        url: /accounts/identity/check?identity=${source_user_username()}
     validate:
         - eq: [status_code, 200]
-        - eq: [content.id, $source_user_id]
-        - eq: [content.username, $source_user_username]
+        - eq: [content.id, ${source_user_id()}]
+        - eq: [content.username, ${source_user_username()}]
         - length_equals: [content, 5]
         - contains: [content, phone_number]
 - test:
     name: email已注册
     request:
-        url: /accounts/identity/check?identity=$source_user_email
+        url: /accounts/identity/check?identity=${source_user_email()}
     validate:
         - eq: [status_code, 200]
-        - eq: [content.id, $source_user_id]
-        - eq: [content.username, $source_user_username]
+        - eq: [content.id, ${source_user_id()}]
+        - eq: [content.username, ${source_user_username()}]
         - length_equals: [content, 5]
         - contains: [content, phone_number]
 - test:

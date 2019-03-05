@@ -1,7 +1,7 @@
 - config:
     name: 搜索用户信息（不包含总数）
     request:
-        base_url: $platform_tiger_api_host
+        base_url: ${get_platform_tiger_api_host()}
         method: POST
         url: /accounts/search
         headers:
@@ -16,14 +16,14 @@
     name: 用户id存在-不传递fields
     request:
         json:
-            id: $source_user_id
+            id: ${source_user_id()}
     validate:
         - eq: [status_code, 400]
 - test:
     name: 用户id存在-fields为空数组
     request:
         json:
-            id: $source_user_id
+            id: ${source_user_id()}
             fields: []
     validate:
         - eq: [status_code, 403]
@@ -32,13 +32,13 @@
     name: 用户id存在-fields包含所有支持字段
     request:
         json:
-            id: $source_user_id
+            id: ${source_user_id()}
             fields: ["id", "bcmid", "username", "nickname", "email", "phone_number", "avatar_url", "fullname", "qq"]
     validate:
         - eq: [status_code, 200]
         - type_match: [content, list]
-        - eq: [content.0.id, $source_user_id]
-        - contains: [content.0.username, $source_user_username]
+        - eq: [content.0.id, ${source_user_id()}]
+        - contains: [content.0.username, ${source_user_username()}]
         - length_equals: [content, 1]
         - length_equals: [content.0, 9]
         - contains: [content.0, email]
@@ -48,18 +48,18 @@
     name: 用户id存在-fields只包含id
     request:
         json:
-            id: $source_user_id
+            id: ${source_user_id()}
             fields: ["id"]
     validate:
         - eq: [status_code, 200]
-        - eq: [content.0.id, $source_user_id]
+        - eq: [content.0.id, ${source_user_id()}]
         - length_equals: [content, 1]
         - length_equals: [content.0, 1]
 - test:
     name: 用户id存在-fields只包含nickname
     request:
         json:
-            id: $source_user_id
+            id: ${source_user_id()}
             fields: ["nickname"]
     validate:
         - eq: [status_code, 200]
@@ -69,7 +69,7 @@
     name: 用户id存在-fields包含不支持的字段
     request:
         json:
-            id: $source_user_id
+            id: ${source_user_id()}
             fields: ["id", $unsupport_fields_element]
     validate:
         - eq: [status_code, 400]
@@ -77,7 +77,7 @@
     name: 用户id存在-fields格式错误
     request:
         json:
-            id: $source_user_id
+            id: ${source_user_id()}
             fields: $wrong_type_fields
     validate:
         - eq: [status_code, 400]
@@ -101,11 +101,11 @@
     name: 用户username存在-fields包含所有支持字段
     request:
         json:
-            username: $source_user_username
+            username: ${source_user_username()}
             fields: ["id", "bcmid", "username", "nickname", "email", "phone_number", "avatar_url", "fullname", "qq"]
     validate:
         - eq: [status_code, 200]
-        - eq: [content.0.id, $source_user_id]
+        - eq: [content.0.id, ${source_user_id()}]
         - length_equals: [content, 1]
         - length_equals: [content.0, 9]
         - contains: [content.0, username]

@@ -1,6 +1,4 @@
-- api:
-    name: 获取用户信息列表
-    def: api_platform_get_accounts_list()
-    request:
-        url: $platform_tiger_api_host/accounts/list
-        method: GET
+name: 获取用户信息列表
+request:
+    url: /accounts/list
+    method: GET

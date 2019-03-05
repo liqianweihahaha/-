@@ -2,7 +2,7 @@
     # name: 绑定第三方账号
     def: bind_oauth($user_id, $unionid, $appid)
     request:
-        url: $platform_tiger_api_host/accounts/oauth/bind
+        url: ${get_platform_tiger_api_host()}/accounts/oauth/bind
         method: POST
         json:
             user_id: $user_id

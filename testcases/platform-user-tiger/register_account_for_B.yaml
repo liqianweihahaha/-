@@ -1,7 +1,7 @@
 - config:
     name: 账户注册(为B端定制，通用型较低)
     request:
-        base_url: $platform_tiger_api_host
+        base_url: ${get_platform_tiger_api_host()}
         method: POST
         url: /accounts/register
         headers:

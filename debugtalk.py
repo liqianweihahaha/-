@@ -9,16 +9,28 @@ from builtins import str
 env = os.environ['environment']
 
 # 获取测试hosts
-tiger_api_host = get_hosts(env).get('tiger_api_host')
-platform_tiger_api_host = get_hosts(env).get('platform_tiger_api_host')
+def get_tiger_api_host():
+    return get_hosts(env).get('tiger_api_host')
+
+def get_platform_tiger_api_host():
+    return get_hosts(env).get('platform_tiger_api_host')
 
 # 源用户信息
-source_user = read_config.source_user(env)
-source_user_id = source_user.get('id')
-source_user_username = source_user.get('username')
-source_user_email = source_user.get('email')
-# source_user_phone_number = source_user.get('phone_number')
-source_user_password = source_user.get('password')
+def source_user():
+    return read_config.source_user(env)
+
+def source_user_id():
+    return source_user().get('id')
+
+def source_user_username():
+    return source_user().get('username')
+
+def source_user_email():
+    return source_user().get('email')
+
+def source_user_password():
+    return source_user().get('password')
+
 # Kitten作品
 source_user_ide_published_work_id = source_user.get('work').get('ide').get('published_work_id')
 source_user_ide_unpublish_work_id = source_user.get('work').get('ide').get('unpublish_work_id')
@@ -46,10 +58,17 @@ source_user_owned_sprite_id = source_user.get('sprite').get('owned')
 source_user_unown_sprite_id = source_user.get('sprite').get('unown')
 
 # 目标用户信息
-target_user = read_config.target_user(env)
-target_user_id = target_user.get('id')
-target_user_username = target_user.get('username')
-target_user_password = target_user.get('password')
+def target_user():
+    return read_config.target_user(env)
+
+def target_user_id():
+    return target_user().get('id')
+
+def target_user_username():
+    return target_user().get('username')
+
+def target_user_password():
+    return target_user().get('password')
 # Kitten作品
 target_user_ide_published_work_id = target_user.get('work').get('ide').get('published_work_id')
 target_user_ide_published_unfork_work_id = target_user.get('work').get('ide').get('published_unfork_work_id')
@@ -59,7 +78,8 @@ target_user_ide_deleted_permanently_work_id = target_user.get('work').get('ide')
 # nemo作品
 target_user_nemo_work_id = target_user.get('work').get('nemo').get('work_id')
 
-content_type = 'application/json'
+def content_type():
+    return 'application/json'
 
 # 获取登录token
 def login_token(identity, password, pid='UvOFXx2tfv'):

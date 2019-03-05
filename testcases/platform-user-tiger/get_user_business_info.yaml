@@ -1,7 +1,7 @@
 - config:
     name: 获取单个用户业务资料
     request:
-        base_url: $platform_tiger_api_host
+        base_url: ${get_platform_tiger_api_host()}
         method: GET
         headers:
             Content-Type: $content_type
@@ -14,10 +14,10 @@
 - test:
     name: 用户存在-不传递fields
     request:
-        url: /accounts/$source_user_id/business
+        url: /accounts/${source_user_id()}/business
     validate:
         - eq: [status_code, 200]
-        - eq: [content.id, $source_user_id]
+        - eq: [content.id, ${source_user_id()}]
         # - length_equals: [content, 15]
         - contains: [content, age_section_id]
         - contains: [content, gold]
@@ -30,10 +30,10 @@
 - test:
     name: 用户存在-fields为空字符串
     request:
-        url: /accounts/$source_user_id/business?fields=
+        url: /accounts/${source_user_id()}/business?fields=
     validate:
         - eq: [status_code, 200]
-        - eq: [content.id, $source_user_id]
+        - eq: [content.id, ${source_user_id()}]
         - length_equals: [content, 15]
         - contains: [content, age_section_id]
         - contains: [content, gold]
@@ -44,10 +44,10 @@
 - test:
     name: 用户存在-fields为逗号表达式包含全部支持字段
     request:
-        url: /accounts/$source_user_id/business?fields=id,age_section_id,gold,create_time,mlz_name,age,doing,level,preview_work_id,publish_time,credit,introduce,masonry,familiar_sprite
+        url: /accounts/${source_user_id()}/business?fields=id,age_section_id,gold,create_time,mlz_name,age,doing,level,preview_work_id,publish_time,credit,introduce,masonry,familiar_sprite
     validate:
         - eq: [status_code, 200]
-        - eq: [content.id, $source_user_id]
+        - eq: [content.id, ${source_user_id()}]
         - length_equals: [content, 14]
         - contains: [content, age_section_id]
         - contains: [content, gold]
@@ -58,15 +58,15 @@
 - test:
     name: 用户存在-fields为逗号表达式只包含字段id
     request:
-        url: /accounts/$source_user_id/business?fields=id
+        url: /accounts/${source_user_id()}/business?fields=id
     validate:
         - eq: [status_code, 200]
-        - eq: [content.id, $source_user_id]
+        - eq: [content.id, ${source_user_id()}]
         - length_equals: [content, 1]
 - test:
     name: 用户存在-fields为逗号表达式只包含字段gold
     request:
-        url: /accounts/$source_user_id/business?fields=gold
+        url: /accounts/${source_user_id()}/business?fields=gold
     validate:
         - eq: [status_code, 200]
         - length_equals: [content, 1]
@@ -74,7 +74,7 @@
 # - test:
 #     name: 用户存在-fields为逗号表达式包含不支持的字段
 #     request:
-#         url: /accounts/$source_user_id/business?fields=$unsupport_fields_element
+#         url: /accounts/${source_user_id()}/business?fields=$unsupport_fields_element
 #     validate:
 #         - eq: [status_code, 400]
 - test:

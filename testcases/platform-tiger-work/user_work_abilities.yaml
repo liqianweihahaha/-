@@ -1,7 +1,7 @@
 - config:
     name: 根据user_id获取作品列表的能力
     request:
-        base_url: $platform_tiger_api_host
+        base_url: ${get_platform_tiger_api_host()}
         url: /works/abilities/batch
         method: PUT
         headers:

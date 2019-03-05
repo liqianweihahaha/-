@@ -1,7 +1,7 @@
 - config:
     name: 通过批量id获取用户业务数据
     request:
-        base_url: $platform_tiger_api_host
+        base_url: ${get_platform_tiger_api_host()}
         headers:
             Content-Type: $content_type
         method: GET
@@ -23,10 +23,10 @@
 - test:
     name: user_ids为逗号表达式只包含1个存在用户-fields不传递
     request:
-        url: /accounts/business?user_ids=$source_user_id
+        url: /accounts/business?user_ids=${source_user_id()}
     validate:
         - eq: [status_code, 200]
-        - eq: [content.0.id, $source_user_id]
+        - eq: [content.0.id, ${source_user_id()}]
         - length_equals: [content, 1]
         - length_equals: [content.0, 15]
         - contains: [content.0, age_section_id]
@@ -36,10 +36,10 @@
 - test:
     name: user_ids为逗号表达式只包含一个存在用户-fields为空字符串
     request:
-        url: /accounts/business?user_ids=$source_user_id&fields=
+        url: /accounts/business?user_ids=${source_user_id()}&fields=
     validate:
         - eq: [status_code, 200]
-        - eq: [content.0.id, $source_user_id]
+        - eq: [content.0.id, ${source_user_id()}]
         - length_equals: [content, 1]
         - length_equals: [content.0, 15]
         - contains: [content.0, age_section_id]
@@ -49,10 +49,10 @@
 - test:
     name: user_ids为逗号表达式只包含一个存在用户-fields为逗号表达式包含所有支持字段
     request:
-        url: /accounts/business?user_ids=$source_user_id&fields=id,age_section_id,gold,create_time,mlz_name,age,doing,level,preview_work_id,publish_time,credit,introduce,masonry,familiar_sprite
+        url: /accounts/business?user_ids=${source_user_id()}&fields=id,age_section_id,gold,create_time,mlz_name,age,doing,level,preview_work_id,publish_time,credit,introduce,masonry,familiar_sprite
     validate:
         - eq: [status_code, 200]
-        - eq: [content.0.id, $source_user_id]
+        - eq: [content.0.id, ${source_user_id()}]
         - length_equals: [content, 1]
         - length_equals: [content.0, 14]
         - contains: [content.0, age_section_id]
@@ -62,16 +62,16 @@
 - test:
     name: user_ids为逗号表达式只包含一个存在用户-fields为逗号表达式只包含id
     request:
-        url: /accounts/business?user_ids=$source_user_id&fields=id
+        url: /accounts/business?user_ids=${source_user_id()}&fields=id
     validate:
         - eq: [status_code, 200]
-        - eq: [content.0.id, $source_user_id]
+        - eq: [content.0.id, ${source_user_id()}]
         - length_equals: [content, 1]
         - length_equals: [content.0, 1]
 - test:
     name: user_ids为逗号表达式只包含一个存在用户-fields为逗号表达式只包含age_section_id
     request:
-        url: /accounts/business?user_ids=$source_user_id&fields=age_section_id
+        url: /accounts/business?user_ids=${source_user_id()}&fields=age_section_id
     validate:
         - eq: [status_code, 200]
         - length_equals: [content, 1]
@@ -79,28 +79,28 @@
 - test:
     name: user_ids为逗号表达式只包含一个存在用户-fields为逗号表达式只包含id和age_section_id
     request:
-        url: /accounts/business?user_ids=$source_user_id&fields=id,age_section_id
+        url: /accounts/business?user_ids=${source_user_id()}&fields=id,age_section_id
     validate:
         - eq: [status_code, 200]
-        - eq: [content.0.id, $source_user_id]
+        - eq: [content.0.id, ${source_user_id()}]
         - length_equals: [content, 1]
         - length_equals: [content.0, 2] 
 # - test:
 #     name: user_ids为逗号表达式只包含一个存在用户-fields为逗号表达式包含不支持的字段
 #     request:
-#         url: /accounts/business?user_ids=$source_user_id&fields=$unsupport_fields_element
+#         url: /accounts/business?user_ids=${source_user_id()}&fields=$unsupport_fields_element
 #     validate:
 #         - eq: [status_code, 400]
 # - test:
 #     name: user_ids为逗号表达式只包含一个存在用户-fields格式错误
 #     request:
-#         url: /accounts/business?user_ids=$source_user_id&fields=$wrong_type_fields
+#         url: /accounts/business?user_ids=${source_user_id()}&fields=$wrong_type_fields
 #     validate:
 #         - eq: [status_code, 400]
 - test:
     name: user_ids为逗号表达式包含2个存在用户-fields不传递
     request:
-        url: /accounts/business?user_ids=$source_user_id,$target_user_id
+        url: /accounts/business?user_ids=${source_user_id()},$target_user_id
     extract:
         - user1_id: content.0.id
         - user2_id: content.1.id
@@ -112,10 +112,10 @@
 - test:
     name: user_ids为逗号表达式包含存在用户和不存在用户
     request:
-        url: /accounts/business?user_ids=$source_user_id,$unexist_user_id
+        url: /accounts/business?user_ids=${source_user_id()},$unexist_user_id
     validate:
         - eq: [status_code, 200]
-        - eq: [content.0.id, $source_user_id]
+        - eq: [content.0.id, ${source_user_id()}]
         - length_equals: [content, 1]
 - test:
     name: user_ids为逗号表达式只包含不存在用户

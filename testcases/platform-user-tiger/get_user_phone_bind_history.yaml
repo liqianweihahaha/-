@@ -1,7 +1,7 @@
 - config:
     name: 获取用户绑定手机记录
     request:
-        base_url: $platform_tiger_api_host
+        base_url: ${get_platform_tiger_api_host()}
         url: /accounts/phone/bind/histories
         method: POST
         headers:
@@ -19,10 +19,10 @@
     name: user_ids只包含用户存在
     request:
         json:
-            user_ids: [$source_user_id]
+            user_ids: [${source_user_id()}]
     validate:
         - eq: [status_code, 200]
-        - eq: [content.0.user_id, $source_user_id]
+        - eq: [content.0.user_id, ${source_user_id()}]
         - contains: [content.0, first_bind_time]
         - contains: [content.0, last_bind_time]
 - test:

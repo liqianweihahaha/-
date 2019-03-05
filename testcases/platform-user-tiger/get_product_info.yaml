@@ -1,7 +1,7 @@
 - config:
     name: 获取产品信息
     request:
-        base_url: $platform_tiger_api_host
+        base_url: ${get_platform_tiger_api_host()}
         method: GET
     variables:
         - pc_client_pid: UvOFXx2tfv

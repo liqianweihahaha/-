@@ -1,11 +1,9 @@
-- api:
-    def: account_login($identity, $password)
-    request:
-        # 完整的url路径
-        url: $tiger_api_host/tiger/accounts/login
-        method: POST
-        json:
-            identity: $identity
-            password: $password
-            pid: 65edCTyg
+name: 账号密码登录
+request:
+    url: /tiger/accounts/login
+    method: POST
+    json:
+        identity: $identity
+        password: $password
+        pid: 65edCTyg
 

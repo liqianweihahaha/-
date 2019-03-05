@@ -1,21 +1,21 @@
 - config:
     name: 通过用户ID获取主账号
     request:
-        base_url: $platform_tiger_api_host
+        base_url: ${get_platform_tiger_api_host()}
         method: GET
     variables:
         - unexist_user_id: 100
         - wrong_type_user_id: aaa
-        - source_user_id_str: ${str($source_user_id)}
+        - source_user_id_str: ${str(${source_user_id()})}
 
 - test:
     name: 用户id存在
     request:
-        url: /accounts/$source_user_id/basic_auth
+        url: /accounts/${source_user_id()}/basic_auth
     validate:
         - eq: [status_code, 200]
-        - eq: [content.id, $source_user_id]
-        - eq: [content.username, $source_user_username]
+        - eq: [content.id, ${source_user_id()}]
+        - eq: [content.username, ${source_user_username()}]
         - eq: [content.has_password, true]
         - length_equals: [content, 5]
         - contains: [content, phone_number]

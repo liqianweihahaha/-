@@ -1,7 +1,7 @@
 - config:
     name: 获取作品详细
     request:
-        base_url: $platform_tiger_api_host
+        base_url: ${get_platform_tiger_api_host()}
         method: GET
     variables:
         - wrong_type_fields_element: ''

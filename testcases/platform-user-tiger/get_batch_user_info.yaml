@@ -1,7 +1,7 @@
 - config:
     name: 通过批量id获取用户信息
     request:
-        base_url: $platform_tiger_api_host
+        base_url: ${get_platform_tiger_api_host()}
         method: GET
     variables:
         - unexist_user_id: 100
@@ -20,10 +20,10 @@
 - test:
     name: user_ids为逗号表达式只包含一个存在用户-fields不传递
     request:
-        url: /accounts?user_ids=$source_user_id
+        url: /accounts?user_ids=${source_user_id()}
     validate:
         - eq: [status_code, 200]
-        - eq: [content.0.id, $source_user_id]
+        - eq: [content.0.id, ${source_user_id()}]
         - length_equals: [content, 1]
         - length_equals: [content.0, 16]
         - contains: [content.0, bcmid]
@@ -37,10 +37,10 @@
 - test:
     name: user_ids为逗号表达式只包含一个存在用户-fields为逗号表达式包含全部支持字段
     request:
-        url: /accounts?user_ids=$source_user_id&fields=id,bcmid,nickname,fullname,avatar_url,username,email,phone_number,sex,birthday,description,qq,remark,grade,gold,product_id
+        url: /accounts?user_ids=${source_user_id()}&fields=id,bcmid,nickname,fullname,avatar_url,username,email,phone_number,sex,birthday,description,qq,remark,grade,gold,product_id
     validate:
         - eq: [status_code, 200]
-        - eq: [content.0.id, $source_user_id]
+        - eq: [content.0.id, ${source_user_id()}]
         - length_equals: [content, 1]
         - length_equals: [content.0, 16]
         - contains: [content.0, bcmid]
@@ -54,32 +54,32 @@
 - test:
     name: user_ids为逗号表达式只包含一个存在用户-fields为逗号表达式只包含id
     request:
-        url: /accounts?user_ids=$source_user_id&fields=id
+        url: /accounts?user_ids=${source_user_id()}&fields=id
     validate:
         - eq: [status_code, 200]
-        - eq: [content.0.id, $source_user_id]
+        - eq: [content.0.id, ${source_user_id()}]
         - length_equals: [content, 1]
         - length_equals: [content.0, 1]
 - test:
     name: user_ids为逗号表达式只包含一个存在用户-fields为逗号表达式只包含nickname
     request:
-        url: /accounts?user_ids=$source_user_id&fields=nickname
+        url: /accounts?user_ids=${source_user_id()}&fields=nickname
     validate:
         - eq: [status_code, 200]
         - length_equals: [content, 1]
 - test:
     name: user_ids为逗号表达式只包含一个存在用户-fields为逗号表达式只包含id和nickname
     request:
-        url: /accounts?user_ids=$source_user_id&fields=id,nickname
+        url: /accounts?user_ids=${source_user_id()}&fields=id,nickname
     validate:
         - eq: [status_code, 200]
-        - eq: [content.0.id, $source_user_id]
+        - eq: [content.0.id, ${source_user_id()}]
         - length_equals: [content, 1]
         - length_equals: [content.0, 2]
 # - test:
 #     name: user_ids为逗号表达式只包含存在用户-fields为逗号表达式只包含不支持的字段
 #     request:
-#         url: /accounts?user_ids=$source_user_id&fields=$unsupport_fields_element
+#         url: /accounts?user_ids=${source_user_id()}&fields=$unsupport_fields_element
 #     validate:
 #         - eq: [status_code, 400]
 - test:

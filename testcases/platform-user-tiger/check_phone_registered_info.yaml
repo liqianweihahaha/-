@@ -1,7 +1,7 @@
 # - config:
 #     name: 检查手机号在编程猫平台账号的注册情况
 #     request:
-#         base_url: $platform_tiger_api_host
+#         base_url: ${get_platform_tiger_api_host()}
 #         method: GET
 #     variables:
 #         # 手机号为字符串类型

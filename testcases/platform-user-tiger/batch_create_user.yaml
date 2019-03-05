@@ -1,7 +1,7 @@
 - config:
     name: 批量创建用户
     request:
-        base_url: $platform_tiger_api_host
+        base_url: ${get_platform_tiger_api_host()}
         method: POST
         url: /accounts/batch
         headers:
@@ -35,14 +35,14 @@
         
 - test:
     name: 批量创建的用户1应可以正常登录
-    api: account_login($user1_username, $password)
+    api: api/account/account_login.yaml
     validate:
         - eq: [status_code, 200]
         - length_equals: [content, 4]
         - contains: [content, token]
 - test:
     name: 批量创建的用户2应可以正常登录
-    api: account_login($user2_username, $password)
+    api: api/account/account_login.yaml
     validate:
         - eq: [status_code, 200]
         - length_equals: [content, 4]
