@@ -18,7 +18,7 @@
 #     name: 添加作品标志位：未登录-work_id为已发布ide作品-business为CONTEST
 #     request:
 #         json:
-#             work_id: $source_user_ide_published_work_id
+#             work_id: ${source_user_ide_published_work_id()}
 #             business: $business_contest
 #     validate:
 #         - eq: [status_code, 403]
@@ -26,12 +26,12 @@
 # - test:
 #     name: 添加作品标志位：已登录-work_id为已发布ide作品(无业务标志位)-business为CONTEST
 #     setup_hooks:
-#         - ${delete_work_business_relation($timestamp_3, $source_user_id, $source_user_ide_published_work_id)}
+#         - ${delete_work_business_relation($timestamp_3, ${source_user_id()}, ${source_user_ide_published_work_id()})}
 #     request:
 #         headers:
-#             Authorization: $source_user_login_token
+#             Authorization: ${source_user_login_token()}
 #         json:
-#             work_id: $source_user_ide_published_work_id
+#             work_id: ${source_user_ide_published_work_id()}
 #             business: $business_contest
 #     extract:
 #         - add_business_status_code: status_code
@@ -39,14 +39,14 @@
 #         - eq: [$add_business_status_code, 204]
 #     # 因为脚本中删除标志位有问题，所以这里调用方法
 #     teardown_hooks:
-#         - ${delete_work_business_relation($timestamp_3, $source_user_id, $source_user_ide_published_work_id)}
+#         - ${delete_work_business_relation($timestamp_3, ${source_user_id()}, ${source_user_ide_published_work_id()})}
 # # - test:
 # #     name: 添加作品标志位：已登录-work_id为已发布ide作品(有业务标志位)-business为CONTEST
 # #     request:
 # #         headers:
-# #             Authorization: $source_user_login_token
+# #             Authorization: ${source_user_login_token()}
 # #         json:
-# #             work_id: $source_user_ide_published_work_id
+# #             work_id: ${source_user_ide_published_work_id()}
 # #             business: $business_contest
 # #     validate:
 # #         - eq: [status_code, 204]
@@ -54,9 +54,9 @@
 #     name: 添加作品标志位：已登录-work_id为未发布ide作品-business不支持
 #     request:
 #         headers:
-#             Authorization: $source_user_login_token
+#             Authorization: ${source_user_login_token()}
 #         json:
-#             work_id: $source_user_ide_published_work_id
+#             work_id: ${source_user_ide_published_work_id()}
 #             business: $unsupport_business
 #     validate:
 #         - eq: [status_code, 400]
@@ -65,9 +65,9 @@
 #     name: 添加作品标志位：已登录-work_id为已发布ide作品-business不传递
 #     request:
 #         headers:
-#             Authorization: $source_user_login_token
+#             Authorization: ${source_user_login_token()}
 #         json:
-#             work_id: $source_user_ide_published_work_id
+#             work_id: ${source_user_ide_published_work_id()}
 #     validate:
 #         - eq: [status_code, 400]
 #         - eq: [content.error_code, A_5]
@@ -75,7 +75,7 @@
 #     name: 添加作品标志位：已登录-work_id不存在
 #     request:
 #         headers:
-#             Authorization: $source_user_login_token
+#             Authorization: ${source_user_login_token()}
 #         json:
 #             work_id: $unexist_work_id
 #             business: $business_contest
@@ -86,7 +86,7 @@
 #     name: 添加作品标志位：已登录-work_id格式错误
 #     request:
 #         headers:
-#             Authorization: $source_user_login_token
+#             Authorization: ${source_user_login_token()}
 #         json:
 #             work_id: $wrong_type_work_id
 #             business: $business_contest
@@ -97,7 +97,7 @@
 #     name: 添加作品标志位：已登录-不传递任何参数
 #     request:
 #         headers:
-#             Authorization: $source_user_login_token
+#             Authorization: ${source_user_login_token()}
 #     validate:
 #         - eq: [status_code, 400]
 #         - eq: [content.error_code, A_5]
@@ -107,8 +107,8 @@
 # #     # 如果添加标志位失败则跳过
 # #     skipUless: ${eval_equal($add_business_status_code, 204)}
 # #     variables:
-# #         - user_id: $source_user_id
-# #         - work_id: $source_user_ide_published_work_id
+# #         - user_id: ${source_user_id()}
+# #         - work_id: ${source_user_ide_published_work_id()}
 # #         - signature: ${business_relation_signature($timestamp, $user_id, $work_id)}
 # #     request:
 # #         # &timestamp不能被正常解析导致报错

@@ -1,29 +1,30 @@
-# - config:
-#     name: 获取产品信息
-#     request:
-#         base_url: ${get_platform_tiger_api_host()}
-#         method: GET
-#     variables:
-#         - pc_client_pid: UvOFXx2tfv
-#         - pc_client_name: 客户端
-#         - unsupport_fields_element: aaa
-#         - wrong_type_fields: {}
-#         - unexist_pid: aaa
+- config:
+    name: 获取产品信息
+    base_url: ${platform_tiger_api_host()}
+    
+    variables:
+        - pc_client_pid: UvOFXx2tfv
+        - pc_client_name: 客户端
+        - unsupport_fields_element: aaa
+        - wrong_type_fields: {}
+        - unexist_pid: aaa
 
-# - test:
-#     name: pid存在
-#     request:
-#         url: /accounts/products/$pc_client_pid
-#     validate:
-#         - eq: [status_code, 200]
-#         - eq: [content.pid, $pc_client_pid]
-#         - eq: [content.name, $pc_client_name]
-#         - length_equals: [content, 4]
-#         - contains: [content, id]
-#         - contains: [content, description]
-# - test:
-#     name: pid不存在
-#     request:
-#         url: /accounts/products/$unexist_pid
-#     validate:
-#         - eq: [status_code, 204]
+- test:
+    name: pid存在
+    api: api/platform-user-tiger/get_product_info.yaml
+    variables:
+        - pid: $pc_client_pid
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.pid, $pc_client_pid]
+        - eq: [content.name, $pc_client_name]
+        - length_equals: [content, 4]
+        - contains: [content, id]
+        - contains: [content, description]
+- test:
+    name: pid不存在
+    api: api/platform-user-tiger/get_product_info.yaml
+    variables:
+        - pid: $unexist_pid
+    validate:
+        - eq: [status_code, 204]

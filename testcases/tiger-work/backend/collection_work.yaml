@@ -10,7 +10,7 @@
 # - test:
 #     name: 未登录-已发布作品
 #     request:
-#         url: /api/work/collection/$source_user_ide_published_work_id
+#         url: /api/work/collection/${source_user_ide_published_work_id()}
 #     validate:
 #         - eq: [status_code, 200]
 #         - eq: [content.code, 2002]
@@ -18,9 +18,9 @@
 # - test:
 #     name: 已登录-个人已发布作品(未收藏)
 #     request:
-#         url: /api/work/collection/$source_user_ide_published_work_id
+#         url: /api/work/collection/${source_user_ide_published_work_id()}
 #         headers:
-#             Authorization: $source_user_login_token
+#             Authorization: ${source_user_login_token()}
 #     validate:
 #         - eq: [status_code, 200]
 #         - eq: [content.code, 200]
@@ -29,9 +29,9 @@
 # - test:
 #     name: 已登录-个人已发布作品(已收藏) 
 #     request:
-#         url: /api/work/collection/$source_user_ide_published_work_id
+#         url: /api/work/collection/${source_user_ide_published_work_id()}
 #         headers:
-#             Authorization: $source_user_login_token
+#             Authorization: ${source_user_login_token()}
 #     validate:
 #         - eq: [status_code, 200]
 #         - eq: [content.code, 2001]
@@ -39,13 +39,13 @@
 #         - length_equals: [content.data, 0]
 #     teardown_hooks:
 #         # 取消收藏作品
-#         - ${uncollection_work($source_user_ide_published_work_id)}
+#         - ${uncollection_work(${source_user_ide_published_work_id()})}
 # - test:
 #     name: 已登录-个人未发布作品(未收藏) 
 #     request:
-#         url: /api/work/collection/$source_user_ide_unpublish_work_id
+#         url: /api/work/collection/${source_user_ide_unpublish_work_id()}
 #         headers:
-#             Authorization: $source_user_login_token
+#             Authorization: ${source_user_login_token()}
 #     validate:
 #         - eq: [status_code, 200]
 #         - eq: [content.code, 200]
@@ -54,9 +54,9 @@
 # - test:
 #     name: 已登录-个人未发布作品(已收藏) 
 #     request:
-#         url: /api/work/collection/$source_user_ide_unpublish_work_id
+#         url: /api/work/collection/${source_user_ide_unpublish_work_id()}
 #         headers:
-#             Authorization: $source_user_login_token
+#             Authorization: ${source_user_login_token()}
 #     validate:
 #         - eq: [status_code, 200]
 #         - eq: [content.code, 2001]
@@ -64,13 +64,13 @@
 #         - length_equals: [content.data, 0]
 #     teardown_hooks:
 #         # 取消收藏作品
-#         - ${uncollection_work($source_user_ide_unpublish_work_id)}
+#         - ${uncollection_work(${source_user_ide_unpublish_work_id()})}
 # - test:
 #     name: 已登录-个人临时删除作品(未收藏) 
 #     request:
-#         url: /api/work/collection/$source_user_ide_deleted_temporarily_work_id
+#         url: /api/work/collection/${source_user_ide_deleted_temporarily_work_id()}
 #         headers:
-#             Authorization: $source_user_login_token
+#             Authorization: ${source_user_login_token()}
 #     validate:
 #         - eq: [status_code, 200]
 #         - eq: [content.code, 200]
@@ -79,9 +79,9 @@
 # - test:
 #     name: 已登录-个人临时删除作品(已收藏) 
 #     request:
-#         url: /api/work/collection/$source_user_ide_deleted_temporarily_work_id
+#         url: /api/work/collection/${source_user_ide_deleted_temporarily_work_id()}
 #         headers:
-#             Authorization: $source_user_login_token
+#             Authorization: ${source_user_login_token()}
 #     validate:
 #         - eq: [status_code, 200]
 #         - eq: [content.code, 2001]
@@ -89,13 +89,13 @@
 #         - length_equals: [content.data, 0]
 #     teardown_hooks:
 #         # 取消收藏作品
-#         - ${uncollection_work($source_user_ide_deleted_temporarily_work_id)}
+#         - ${uncollection_work(${source_user_ide_deleted_temporarily_work_id()})}
 # - test:
 #     name: 已登录-个人永久删除作品(未收藏) 
 #     request:
-#         url: /api/work/collection/$source_user_ide_deleted_permanently_work_id
+#         url: /api/work/collection/${source_user_ide_deleted_permanently_work_id()}
 #         headers:
-#             Authorization: $source_user_login_token
+#             Authorization: ${source_user_login_token()}
 #     validate:
 #         - eq: [status_code, 200]
 #         - eq: [content.code, 200]
@@ -104,9 +104,9 @@
 # - test:
 #     name: 已登录-个人临时删除作品(已收藏) 
 #     request:
-#         url: /api/work/collection/$source_user_ide_deleted_permanently_work_id
+#         url: /api/work/collection/${source_user_ide_deleted_permanently_work_id()}
 #         headers:
-#             Authorization: $source_user_login_token
+#             Authorization: ${source_user_login_token()}
 #     validate:
 #         - eq: [status_code, 200]
 #         - eq: [content.code, 2001]
@@ -114,13 +114,13 @@
 #         - length_equals: [content.data, 0]
 #     teardown_hooks:
 #         # 取消收藏作品
-#         - ${uncollection_work($source_user_ide_deleted_permanently_work_id)}
+#         - ${uncollection_work(${source_user_ide_deleted_permanently_work_id()})}
 # - test:
 #     name: 已登录-作品id不存在 
 #     request:
 #         url: /api/work/collection/$unexist_work_id
 #         headers:
-#             Authorization: $source_user_login_token
+#             Authorization: ${source_user_login_token()}
 #     validate:
 #         - eq: [status_code, 200]
 #         - eq: [content.code, 500]
@@ -130,7 +130,7 @@
 #     request:
 #         url: /api/work/collection/$wrong_type_work_id
 #         headers:
-#             Authorization: $source_user_login_token
+#             Authorization: ${source_user_login_token()}
 #     validate:
 #         - eq: [status_code, 400]
 #         - eq: [content.error_code, A_5]

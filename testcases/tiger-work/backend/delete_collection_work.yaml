@@ -7,7 +7,7 @@
 - test:
     name: 未登录-已发布作品
     request:
-        url: /api/work/collection/$source_user_ide_published_work_id
+        url: /api/work/collection/${source_user_ide_published_work_id()}
     validate:
         - eq: [status_code, 200]
         - eq: [content.code, 2002]
@@ -16,11 +16,11 @@
     name: 已登录-个人已发布作品(已收藏)
     setup_hooks:
         # 收藏作品
-        - ${collection_work($source_user_ide_published_work_id)}
+        - ${collection_work(${source_user_ide_published_work_id()})}
     request:
-        url: /api/work/collection/$source_user_ide_published_work_id
+        url: /api/work/collection/${source_user_ide_published_work_id()}
         headers:
-            Authorization: $source_user_login_token
+            Authorization: ${source_user_login_token()}
     validate:
         - eq: [status_code, 200]
         - eq: [content.code, 200]
@@ -29,9 +29,9 @@
 - test:
     name: 已登录-个人已发布作品(未收藏) 
     request:
-        url: /api/work/collection/$source_user_ide_published_work_id
+        url: /api/work/collection/${source_user_ide_published_work_id()}
         headers:
-            Authorization: $source_user_login_token
+            Authorization: ${source_user_login_token()}
     validate:
         - eq: [status_code, 200]
         - eq: [content.code, 500]
@@ -40,11 +40,11 @@
     name: 已登录-个人未发布作品(已收藏) 
     setup_hooks:
         # 收藏作品
-        - ${collection_work($source_user_ide_unpublish_work_id)}
+        - ${collection_work(${source_user_ide_unpublish_work_id()})}
     request:
-        url: /api/work/collection/$source_user_ide_unpublish_work_id
+        url: /api/work/collection/${source_user_ide_unpublish_work_id()}
         headers:
-            Authorization: $source_user_login_token
+            Authorization: ${source_user_login_token()}
     validate:
         - eq: [status_code, 200]
         - eq: [content.code, 200]
@@ -53,9 +53,9 @@
 - test:
     name: 已登录-个人未发布作品(未收藏) 
     request:
-        url: /api/work/collection/$source_user_ide_unpublish_work_id
+        url: /api/work/collection/${source_user_ide_unpublish_work_id()}
         headers:
-            Authorization: $source_user_login_token
+            Authorization: ${source_user_login_token()}
     validate:
         - eq: [status_code, 200]
         - eq: [content.code, 500]
@@ -64,11 +64,11 @@
     name: 已登录-个人临时删除作品(已收藏) 
     setup_hooks:
         # 收藏作品
-        - ${collection_work($source_user_ide_deleted_temporarily_work_id)}
+        - ${collection_work(${source_user_ide_deleted_temporarily_work_id()})}
     request:
-        url: /api/work/collection/$source_user_ide_deleted_temporarily_work_id
+        url: /api/work/collection/${source_user_ide_deleted_temporarily_work_id()}
         headers:
-            Authorization: $source_user_login_token
+            Authorization: ${source_user_login_token()}
     validate:
         - eq: [status_code, 200]
         - eq: [content.code, 200]
@@ -77,9 +77,9 @@
 - test:
     name: 已登录-个人临时删除作品(未收藏) 
     request:
-        url: /api/work/collection/$source_user_ide_deleted_temporarily_work_id
+        url: /api/work/collection/${source_user_ide_deleted_temporarily_work_id()}
         headers:
-            Authorization: $source_user_login_token
+            Authorization: ${source_user_login_token()}
     validate:
         - eq: [status_code, 200]
         - eq: [content.code, 500]
@@ -88,11 +88,11 @@
     name: 已登录-个人永久删除作品(已收藏) 
     setup_hooks:
         # 收藏作品
-        - ${collection_work($source_user_ide_deleted_permanently_work_id)}
+        - ${collection_work(${source_user_ide_deleted_permanently_work_id()})}
     request:
-        url: /api/work/collection/$source_user_ide_deleted_permanently_work_id
+        url: /api/work/collection/${source_user_ide_deleted_permanently_work_id()}
         headers:
-            Authorization: $source_user_login_token
+            Authorization: ${source_user_login_token()}
     validate:
         - eq: [status_code, 200]
         - eq: [content.code, 200]
@@ -101,9 +101,9 @@
 - test:
     name: 已登录-个人临时删除作品(未收藏) 
     request:
-        url: /api/work/collection/$source_user_ide_deleted_permanently_work_id
+        url: /api/work/collection/${source_user_ide_deleted_permanently_work_id()}
         headers:
-            Authorization: $source_user_login_token
+            Authorization: ${source_user_login_token()}
     validate:
         - eq: [status_code, 200]
         - eq: [content.code, 500]

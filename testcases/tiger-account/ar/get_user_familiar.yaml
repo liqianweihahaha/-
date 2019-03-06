@@ -14,10 +14,10 @@
 #     name: 测试用户1已登录-用户有代表精灵
 #     request:
 #         headers:
-#             Authorization: $source_user_login_token
+#             Authorization: ${source_user_login_token()}
 #     validate:
 #         - eq: [status_code, 200]
-#         - eq: [content.0.user_id, $source_user_id]
+#         - eq: [content.0.user_id, ${source_user_id()}]
 #         - length_equals: [content, 1]
 #         - type_match: [content, list]
 #         - length_equals: [content.0, 6]
@@ -25,7 +25,7 @@
 #         - contains: [content.0, name]
 # - test:
 #     name: 测试用户2登录
-#     api: account_login($target_user_username, $target_user_password)
+#     api: account_login(${target_user_username()}, ${target_user_password()})
 #     validate:
 #         - eq: [status_code, 200]
 #         - length_equals: [content, 4]

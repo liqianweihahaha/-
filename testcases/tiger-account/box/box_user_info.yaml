@@ -7,9 +7,9 @@
 # - test:
 #     name: 未登录-用户id存在
 #     request:
-#         url: /tiger/box/user/$source_user_id
+#         url: /tiger/box/user/${source_user_id()}
 #     validate:
 #         - eq: [status_code, 200]
-#         - eq: [content.user_id, $source_user_id]
+#         - eq: [content.user_id, ${source_user_id()}]
 #         - length_equals: [content, 11]
 #         - contains: [content, username]

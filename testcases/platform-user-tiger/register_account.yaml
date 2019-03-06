@@ -1,42 +1,45 @@
-# - config:
-#     name: 普通账户注册
-#     request:
-#         base_url: ${get_platform_tiger_api_host()}
-#         method: POST
-#         url: /accounts
-#         headers:
-#             Content-Type: $content_type
-#     variables:
-#         - registered_email: maxiaoqian@qq.com
-#         - wrong_email_type: ma
-#         - wrong_password_value: 12
-#         - correct_password_value: m1234567
+- config:
+    name: 普通账户注册
+    base_url: ${platform_tiger_api_host()}
+    variables:
+        - registered_email: maxiaoqian@qq.com
+        - wrong_email_type: ma
+        - wrong_password_value: 12
+        - correct_password_value: m1234567
 
-# - test:
-#     name: 邮箱已注册
-#     request:
-#         json:
-#             email: $registered_email
-#             password: $correct_password_value
-#             pid: 65edCTyg
-#     validate:
-#         - eq: [status_code, 403]
-#         - eq: [content.error_code, Account_13]
-# - test:
-#     name: 邮箱格式错误
-#     request:
-#         json:
-#             email: $wrong_email_type
-#             password: $correct_password_value
-#             pid: 65edCTyg
-#     validate:
-#         - eq: [status_code, 400]
-# - test:
-#     name: 密码格式错误
-#     request:
-#         json:
-#             email: $registered_email
-#             password: $wrong_password_value
-#             pid: 65edCTyg
-#     validate:
-#         - eq: [status_code, 400]
+- test:
+    name: 邮箱已注册
+    request:
+        method: POST
+        url: /accounts
+        json:
+            email: $registered_email
+            password: $correct_password_value
+            pid: 65edCTyg
+    validate:
+        - eq: [status_code, 403]
+        - eq: [content.error_code, Account_13]
+
+- test:
+    name: 邮箱格式错误
+    request:
+        method: POST
+        url: /accounts
+        json:
+            email: $wrong_email_type
+            password: $correct_password_value
+            pid: 65edCTyg
+    validate:
+        - eq: [status_code, 400]
+
+- test:
+    name: 密码格式错误
+    request:
+        method: POST
+        url: /accounts
+        json:
+            email: $registered_email
+            password: $wrong_password_value
+            pid: 65edCTyg
+    validate:
+        - eq: [status_code, 400]

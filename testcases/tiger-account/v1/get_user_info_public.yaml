@@ -10,10 +10,10 @@
 # - test:
 #     name: 未登录-目标用户存在
 #     request:
-#         url: /tiger/user/$source_user_id
+#         url: /tiger/user/${source_user_id()}
 #     validate:
 #         - eq: [status_code, 200]
-#         - eq: [content.id, $source_user_id]
+#         - eq: [content.id, ${source_user_id()}]
 #         - eq: [content.username, $source_user_username]
 #         - length_equals: [content, 11]
 #         - contains: [content, n_following]
@@ -23,12 +23,12 @@
 # - test:
 #     name: 已登录-用户个人id
 #     request:
-#         url: /tiger/user/$source_user_id
+#         url: /tiger/user/${source_user_id()}
 #         headers:
-#             Authorization: $source_user_login_token
+#             Authorization: ${source_user_login_token()}
 #     validate:
 #         - eq: [status_code, 200]
-#         - eq: [content.id, $source_user_id]
+#         - eq: [content.id, ${source_user_id()}]
 #         - eq: [content.username, $source_user_username]
 #         - length_equals: [content, 11]
 #         - contains: [content, n_following]

@@ -1,81 +1,81 @@
-# - config:
-#     name: 更新用户信息
-#     request:
-#         base_url: ${get_platform_tiger_api_host()}
-#         method: PUT
-#         headers:
-#             Content-Type: $content_type
-#     variables:
-#         - unsupport_sex: 2
-#         - new_password: m12345
+- config:
+    name: 更新用户信息
+    base_url: ${platform_tiger_api_host()}
+    variables:
+        - unsupport_sex: 2
+        - new_password: m12345
 
-# # 修改性别
-# - test:
-#     name: 用户存在-sex为0
-#     request:
-#         url: /accounts/${source_user_id()}
-#         json:
-#             sex: 0
-#     validate:
-#         - eq: [status_code, 204]
-# - test:
-#     name: 用户存在-sex为1
-#     request:
-#         url: /accounts/${source_user_id()}
-#         json:
-#             sex: 1
-#     validate:
-#         - eq: [status_code, 204]
-# - test:
-#     name: 用户存在-sex为2
-#     request:
-#         url: /accounts/${source_user_id()}
-#         json:
-#             sex: 2
-#     validate:
-#         - eq: [status_code, 400]
+# 修改性别
+- test:
+    name: 用户存在-sex为0
+    request:
+        method: PUT
+        url: /accounts/${source_user_id()}
+        json:
+            sex: 0
+    validate:
+        - eq: [status_code, 204]
+- test:
+    name: 用户存在-sex为1
+    request:
+        method: PUT
+        url: /accounts/${source_user_id()}
+        json:
+            sex: 1
+    validate:
+        - eq: [status_code, 204]
+- test:
+    name: 用户存在-sex为2
+    request:
+        method: PUT
+        url: /accounts/${source_user_id()}
+        json:
+            sex: 2
+    validate:
+        - eq: [status_code, 400]
 
-# # 修改密码
-# - test:
-#     name: 用户存在-password长度为6
-#     api: api/account/reset_user_password.yaml
-#     variables:
-#         user_id: ${source_user_id()}
-#         password: $new_password
-#     validate:
-#         - eq: [status_code, 204]
-# - test:
-#     name: 验证修改用户密码后，用户可以使用新密码登录
-#     api: api/account/account_login.yaml
-#     variables:
-#         identity: ${source_user_username()}
-#         password: $new_password
-#     validate:
-#         - eq: [status_code, 200]
-#         - contains: [content, token]
-# - test:
-#     name: 验证修改用户密码后，用户使用旧密码登录失败
-#     api: api/account/account_login.yaml
-#     variables:
-#         identity: ${source_user_username()}
-#         password: ${source_user_password()}
-#     validate:
-#         - eq: [status_code, 403]
-#         - eq: [content.error_code, AC_1]
-# - test: 
-#     name: 将用户的密码重置为修改前的密码
-#     api: api/account/reset_user_password.yaml
-#     variables:
-#         user_id: ${source_user_id()}
-#         password: ${source_user_password()}
-#     validate:
-#         - eq: [status_code, 204]
-# - test:
-#     name: 验证重置用户密码后，用户可以使用之前的密码可以登录
-#     api: api/account/account_login.yaml
-#     variables:
-#         identity: ${source_user_username()}
-#         password: ${source_user_password()}
-#     validate:
-#         - eq: [status_code, 200]
-#         - contains: [content, token]
+# 通过手机号修改密码/重置密码
+- test:
+    name: 用户存在-password长度为6
+    api: api/platform-user-tiger/reset_user_password.yaml
+    variables:
+        user_id: ${source_user_id()}
+        password: $new_password
+    validate:
+        - eq: [status_code, 204]
+- test:
+    name: 验证修改用户密码后，用户可以使用新密码登录
+    api: api/account/account_login.yaml
+    variables:
+        identity: ${source_user_username()}
+        password: $new_password
+    validate:
+        - eq: [status_code, 200]
+        - contains: [content, token]
+- test:
+    name: 验证修改用户密码后，用户使用旧密码登录失败
+    api: api/account/account_login.yaml
+    variables:
+        identity: ${source_user_username()}
+        password: ${source_user_password()}
+    validate:
+        - eq: [status_code, 403]
+        - eq: [content.error_code, AC_1]
+
+- test: 
+    name: 将用户的密码重置为修改前的密码
+    api: api/platform-user-tiger/reset_user_password.yaml
+    variables:
+        user_id: ${source_user_id()}
+        password: ${source_user_password()}
+    validate:
+        - eq: [status_code, 204]
+- test:
+    name: 验证重置用户密码后，用户可以使用之前的密码可以登录
+    api: api/account/account_login.yaml
+    variables:
+        identity: ${source_user_username()}
+        password: ${source_user_password()}
+    validate:
+        - eq: [status_code, 200]
+        - contains: [content, token]

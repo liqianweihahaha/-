@@ -15,11 +15,11 @@
 #     name: 已登录
 #     request:
 #         headers: 
-#             Authorization: $source_user_login_token
+#             Authorization: ${source_user_login_token()}
 #     validate:
 #         - eq: [status_code, 200]
 #         - eq: [content.code, 200]
-#         - eq: [content.data.userInfo.id, $source_user_id]
+#         - eq: [content.data.userInfo.id, ${source_user_id()}]
 #         - length_equals: [content.data.userInfo, 14]
 #         - contains: [content.data.userInfo, email]
 

@@ -18,7 +18,7 @@
 #             password: $source_user_password
 #     validate:
 #         - eq: [status_code, 200]
-#         - eq: [content.userInfo.id, $source_user_id]
+#         - eq: [content.userInfo.id, ${source_user_id()}]
 #         - contains: [content, token]
 # - test:
 #     name: 用户名正确-密码错误

@@ -12,7 +12,7 @@
 # - test:
 #     name: 未登录-已发布IDE作品(可购买)
 #     request:
-#         url: /api/work/fork/$source_user_ide_published_work_id
+#         url: /api/work/fork/${source_user_ide_published_work_id()}
 #     validate:
 #         - eq: [status_code, 200]
 #         - eq: [content.code, 2002]
@@ -20,9 +20,9 @@
 # - test:
 #     name: 已登录-他人已发布IDE作品(可购买)
 #     request:
-#         url: /api/work/fork/$target_user_ide_published_work_id
+#         url: /api/work/fork/${target_user_id()}e_published_work_id
 #         headers:
-#             Authorization: $source_user_login_token
+#             Authorization: ${source_user_login_token()}
 #     validate:
 #         - eq: [status_code, 200]
 #         - eq: [content.code, 200]
@@ -31,18 +31,18 @@
 # - test:
 #     name: 已登录-他人已发布IDE作品(不可购买)
 #     request:
-#         url: /api/work/fork/$target_user_ide_published_unfork_work_id
+#         url: /api/work/fork/${target_user_id()}e_published_unfork_work_id
 #         headers:
-#             Authorization: $source_user_login_token
+#             Authorization: ${source_user_login_token()}
 #     validate:
 #         - eq: [status_code, 200]
 #         - eq: [content.code, 500]
 # - test:
 #     name: 已登录-个人已发布IDE作品(可购买)
 #     request:
-#         url: /api/work/fork/$source_user_ide_published_work_id 
+#         url: /api/work/fork/${source_user_ide_published_work_id()} 
 #         headers:
-#             Authorization: $source_user_login_token
+#             Authorization: ${source_user_login_token()}
 #     validate:
 #         - eq: [status_code, 200]
 #         - eq: [content.code, 500]
@@ -51,7 +51,7 @@
 #     request:
 #         url: /api/work/fork/$unexist_work_id 
 #         headers:
-#             Authorization: $source_user_login_token
+#             Authorization: ${source_user_login_token()}
 #     validate:
 #         - eq: [status_code, 200]
 #         - eq: [content.code, 500]
@@ -60,7 +60,7 @@
 #     request:
 #         url: /api/work/fork/$wrong_type_work_id 
 #         headers:
-#             Authorization: $source_user_login_token
+#             Authorization: ${source_user_login_token()}
 #     validate:
 #         - eq: [status_code, 400]
 #         - eq: [content.error_code, A_5]

@@ -10,7 +10,7 @@
 - setup_hooks, teardown_hooks
 
 #### 经验总结
-- `- eq: [content.id, ${str($source_user_id)}]`会报错，解决：`- eq: [content.id, '${str($source_user_id)}']`
+- `- eq: [content.id, ${str(${source_user_id()})}]`会报错，解决：`- eq: [content.id, '${str(${source_user_id()})}']`
 - variables定义多个变量时，前一个定义的变量并不能被同级后一个变量立马引用到，例如下面的写法会报错
 ```
 variables:
@@ -39,7 +39,7 @@ variables:
 | 不同点 | hrun 1.5.15 | hrun 2.0 |
 |----|----|----|
 |api定义|通过api和def关键字定义|和test定义一样|
-|api调用|通过api关键字和方法名|通过api关键字和api定义路径，以及variables传递参数|
+|api调用|通过api关键字和函数名调用，传递函数参数|通过api关键字和api文件路径，以及variables传递参数|
 |debugtalk.py|可以直接引用其中定义的变量|不能直接引用其中定义的变量|
 |base_url|在config中的request下定义|在config下直接定义或者api中直接定义(不能在request下)|
 |method、url等|可以在config的request下统一配置|只能在test中指定|

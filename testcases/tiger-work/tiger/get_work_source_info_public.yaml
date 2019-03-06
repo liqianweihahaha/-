@@ -10,7 +10,7 @@
 # - test:
 #     name: 未登录-已发布ide作品
 #     request:
-#         url: /tiger/work/source/public/$source_user_ide_published_work_id
+#         url: /tiger/work/source/public/${source_user_ide_published_work_id()}
 #     validate:
 #         - eq: [status_code, 200]
 #         - eq: [content.is_bcmc, true]
@@ -27,7 +27,7 @@
 # - test:
 #     name: 未登录-未发布ide作品
 #     request:
-#         url: /tiger/work/source/public/$source_user_ide_unpublish_work_id
+#         url: /tiger/work/source/public/${source_user_ide_unpublish_work_id()}
 #     validate:
 #         - eq: [status_code, 200]
 #         - eq: [content.is_bcmc, true]
@@ -40,14 +40,14 @@
 # - test:
 #     name: 未登录-临时删除的ide作品
 #     request:
-#         url: /tiger/work/source/public/$source_user_ide_deleted_temporarily_work_id
+#         url: /tiger/work/source/public/${source_user_ide_deleted_temporarily_work_id()}
 #     validate:
 #         - eq: [status_code, 410]
 #         - eq: [content.error_code, W_1]
 # - test:
 #     name: 未登录-永久删除的ide作品
 #     request:
-#         url: /tiger/work/source/public/$source_user_ide_deleted_permanently_work_id
+#         url: /tiger/work/source/public/${source_user_ide_deleted_permanently_work_id()}
 #     validate:
 #         - eq: [status_code, 410]
 #         - eq: [content.error_code, W_1]

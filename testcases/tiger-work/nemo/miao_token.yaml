@@ -16,11 +16,11 @@
 #     request:
 #         url: /tiger/nemo/miao-codes/bcm
 #         headers:
-#             Authorization: $source_user_login_token
+#             Authorization: ${source_user_login_token()}
 #         json:
-#             work_id: $source_user_nemo_work_id
-#             work_url: $source_user_ide_work_url
-#             preview: $source_user_ide_preview_url
+#             work_id: ${source_user_nemo_work_id()}
+#             work_url: ${source_user_ide_work_url()}
+#             preview: ${source_user_ide_preview_url()}
 #             name: $name
 #             bcm_version: $bcm_version
 #             app_version: $app_version    
@@ -35,11 +35,11 @@
 #     request:
 #         url: /tiger/nemo/miao-codes/bcm
 #         headers:
-#             Authorization: $source_user_login_token
+#             Authorization: ${source_user_login_token()}
 #         json:
 #             work_id: $unexist_work_id
-#             work_url: $source_user_ide_work_url
-#             preview: $source_user_ide_preview_url
+#             work_url: ${source_user_ide_work_url()}
+#             preview: ${source_user_ide_preview_url()}
 #             name: 测试生成喵口令
 #             bcm_version: $bcm_version
 #             app_version: $app_version   
@@ -51,11 +51,11 @@
 #     request:
 #         url: /tiger/nemo/miao-codes/bcm
 #         headers:
-#             Authorization: $source_user_login_token
+#             Authorization: ${source_user_login_token()}
 #         json:
 #             work_id: $wrong_type_work_id
-#             work_url: $source_user_ide_work_url
-#             preview: $source_user_ide_preview_url
+#             work_url: ${source_user_ide_work_url()}
+#             preview: ${source_user_ide_preview_url()}
 #             name: 测试生成喵口令
 #             bcm_version: $bcm_version
 #             app_version: $app_version
@@ -72,11 +72,11 @@
 #     validate:
 #         - eq: [status_code, 200]
 #         - eq: [content.type, bcm]
-#         - eq: [content.data.work_url, $source_user_ide_work_url]
+#         - eq: [content.data.work_url, ${source_user_ide_work_url()}]
 #         - eq: [content.data.name, $name]
 #         - eq: [content.data.bcm_version, $bcm_version]
 #         - eq: [content.data.app_version, $app_version]
-#         - eq: [content.data.preview, $source_user_ide_preview_url]
+#         - eq: [content.data.preview, ${source_user_ide_preview_url()}]
 # - test:
 #     name: 根据喵口令获取作品信息：传递错误的token
 #     request:

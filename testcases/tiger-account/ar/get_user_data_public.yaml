@@ -10,7 +10,7 @@
 # - test:
 #     name: 用户未登录-用户id存在
 #     request:
-#         url: /tiger/ar/user/$source_user_id
+#         url: /tiger/ar/user/${source_user_id()}
 #     validate:
 #         - eq: [status_code, 200]
 #         - length_equals: [content, 4]
@@ -35,9 +35,9 @@
 # - test:
 #     name: 用户已登录-个人user_id
 #     request:
-#         url: /tiger/ar/user/$source_user_id
+#         url: /tiger/ar/user/${source_user_id()}
 #         headers:
-#             Authorization: $source_user_login_token
+#             Authorization: ${source_user_login_token()}
 #     validate:
 #         - eq: [status_code, 200]
 #         - length_equals: [content, 4]
@@ -48,9 +48,9 @@
 # - test:
 #     name: 用户已登录-他人user_id
 #     request:
-#         url: /tiger/ar/user/$target_user_id
+#         url: /tiger/ar/user/${target_user_id()}
 #         headers:
-#             Authorization: $source_user_login_token
+#             Authorization: ${source_user_login_token()}
 #     validate:
 #         - eq: [status_code, 200]
 #         - length_equals: [content, 4]

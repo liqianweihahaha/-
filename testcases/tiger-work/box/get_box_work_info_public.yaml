@@ -10,11 +10,11 @@
 # - test:
 #     name: 未登录-已发布BOX2.0作品
 #     request:
-#         url: /tiger/box/work/$source_user_boxv2_published_work_id
+#         url: /tiger/box/work/${source_user_boxv2_published_work_id()}
 #     validate:
 #         - eq: [status_code, 200]
-#         - eq: [content.id, $source_user_boxv2_published_work_id]
-#         - eq: [content.user_info.id, $source_user_id]
+#         - eq: [content.id, ${source_user_boxv2_published_work_id()}]
+#         - eq: [content.user_info.id, ${source_user_id()}]
 #         - length_equals: [content, 18]
 #         - contains: [content, preview_url]
 #         - contains: [content, work_url]
@@ -22,11 +22,11 @@
 # - test:
 #     name: 未登录-已发布ide作品
 #     request:
-#         url: /tiger/box/work/$source_user_ide_published_work_id
+#         url: /tiger/box/work/${source_user_ide_published_work_id()}
 #     validate:
 #         - eq: [status_code, 200]
-#         - eq: [content.id, $source_user_ide_published_work_id]
-#         - eq: [content.user_info.id, $source_user_id]
+#         - eq: [content.id, ${source_user_ide_published_work_id()}]
+#         - eq: [content.user_info.id, ${source_user_id()}]
 #         - length_equals: [content, 18]
 #         - contains: [content, preview_url]
 #         - contains: [content, work_url]
@@ -34,14 +34,14 @@
 # - test:
 #     name: 未登录-未发布ide作品
 #     request:
-#         url: /tiger/box/work/$source_user_ide_unpublish_work_id
+#         url: /tiger/box/work/${source_user_ide_unpublish_work_id()}
 #     validate:
 #         - eq: [status_code, 403]
 #         - eq: [content.error_code, W_3]
 # - test:
 #     name: 未登录-nemo作品
 #     request:
-#         url: /tiger/box/work/$source_user_nemo_work_id
+#         url: /tiger/box/work/${source_user_nemo_work_id()}
 #     validate:
 #         - eq: [status_code, 403]
 #         - eq: [content.error_code, W_3]

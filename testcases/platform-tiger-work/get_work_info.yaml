@@ -1,103 +1,120 @@
-# - config:
-#     name: 获取作品详细
-#     request:
-#         base_url: ${get_platform_tiger_api_host()}
-#         method: GET
-#     variables:
-#         - wrong_type_fields_element: ''
-#         - wrong_type_fields: '{}'
+- config:
+    name: 获取作品详细
+    base_url: ${platform_tiger_api_host()}
+    variables:
+        - wrong_type_fields_element: ''
+        - wrong_type_fields: '{}'
 
-# - test:
-#     name: 已发布IDE作品-不传递fields
-#     request:
-#         url: /works/$source_user_ide_published_work_id
-#     validate:
-#         - eq: [status_code, 200]
-#         - eq: [content.id, $source_user_ide_published_work_id]
-#         - eq: [content.is_published, true]
-#         - eq: [content.is_deleted, false]
-#         - eq: [content.type, 1]
-#         - greater_than: [content.publish_time, 0]
-#         - length_equals: [content, 10]
-#         - contains: [content, is_share_allowed]
-#         - contains: [content, created_at]
-# - test:
-#     name: 已发布ide作品-fields包含所有支持字段
-#     request:
-#         url: /works/$source_user_ide_published_work_id?fields=["id", "user_id", "name", "description", "type", "n_forks", "work_urls", "root_id", "parent_id", "preview", "latest_work_url", "praise_times", "language_type", "operation_instruction", "publish_time"]
-#     validate:
-#         - eq: [status_code, 200]
-#         - eq: [content.id, $source_user_ide_published_work_id]
-#         - eq: [content.user_id, $source_user_id]
-#         - eq: [content.is_published, true]
-#         - eq: [content.type, 1]
-#         # 因为字段值为null时不会反悔，所以这里不判断长度
-#         # - length_equals: [content, 22]
-#         - contains: [content, description]
-#         - contains: [content, operation_instruction]
-# - test:
-#     name: 已发布ide作品-fields只包含type
-#     request:
-#         url: /works/$source_user_ide_published_work_id?fields=["type"]
-#     validate:
-#         - eq: [status_code, 200]
-#         - eq: [content.id, $source_user_ide_published_work_id]
-#         - eq: [content.is_published, true]
-#         - eq: [content.type, 1]
-#         - length_equals: [content, 10]
-# - test:
-#     name: 已发布ide作品-fields只包含id和user_id
-#     request:
-#         url: /works/$source_user_ide_published_work_id?fields=["id", "user_id"]
-#     validate:
-#         - eq: [status_code, 200]
-#         - eq: [content.id, $source_user_ide_published_work_id]
-#         - eq: [content.user_id, $source_user_id]
-#         - eq: [content.is_published, true]
-#         - length_equals: [content, 11]
-# - test:
-#     name: 已发布ide作品-fields为空数组
-#     request:
-#         url: /works/$source_user_ide_published_work_id?fields=[]
-#     validate:
-#         - eq: [status_code, 400]
-#         - eq: [content.error_code, A_5]
-# - test:
-#     name: 已发布ide作品-fields包含不支持字段
-#     request:
-#         url: /works/$source_user_ide_published_work_id?fields=["id", $wrong_type_fields_element]
-#     validate:
-#         - eq: [status_code, 400]
-#         - eq: [content.error_code, A_5]
-# - test:
-#     name: 已发布ide作品-fields格式错误
-#     request:
-#         url: /works/$source_user_ide_published_work_id?fields=$wrong_type_fields
-#     validate:
-#         - eq: [status_code, 400]
-#         - eq: [content.error_code, A_5]
-# - test:
-#     name: BOX2.0已发布作品-fields不传递
-#     request:
-#         url: /works/$source_user_boxv2_published_work_id?fields=["type"]
-#     validate:
-#         - eq: [status_code, 200]
-#         - eq: [content.id, $source_user_boxv2_published_work_id]
-#         - eq: [content.type, 5]
-#         - length_equals: [content, 10]
-# - test:
-#     name: wood作品-fields不传递
-#     request:
-#         url: /works/$source_user_wood_work_id?fields=["type"]
-#     validate:
-#         - eq: [status_code, 200]
-#         - eq: [content.id, $source_user_wood_work_id]
-#         - eq: [content.type, 7]
-# - test:
-#     name: nemo作品-fields不传递
-#     request:
-#         url: /works/$source_user_nemo_work_id?fields=["type"]
-#     validate:
-#         - eq: [status_code, 200]
-#         - eq: [content.id, $source_user_nemo_work_id]
-#         - eq: [content.type, 8]
+- test:
+    name: 已发布IDE作品-不传递fields
+    request:
+        method: GET
+        url: /works/${source_user_ide_published_work_id()}
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.id, '${source_user_ide_published_work_id()}']
+        - eq: [content.is_published, true]
+        - eq: [content.is_deleted, false]
+        - eq: [content.type, 1]
+        - greater_than: [content.publish_time, 0]
+        - length_equals: [content, 10]
+        - contains: [content, is_share_allowed]
+        - contains: [content, created_at]
+
+- test:
+    name: 已发布ide作品-fields包含所有支持字段
+    request:
+        method: GET
+        url: /works/${source_user_ide_published_work_id()}?fields=["id", "user_id", "name", "description", "type", "n_forks", "work_urls", "root_id", "parent_id", "preview", "latest_work_url", "praise_times", "language_type", "operation_instruction", "publish_time"]
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.id, '${source_user_ide_published_work_id()}']
+        - eq: [content.user_id, '${source_user_id()}']
+        - eq: [content.is_published, true]
+        - eq: [content.type, 1]
+        # 因为字段值为null时不会反悔，所以这里不判断长度
+        # - length_equals: [content, 22]
+        - contains: [content, description]
+        - contains: [content, operation_instruction]
+
+- test:
+    name: 已发布ide作品-fields只包含type
+    request:
+        method: GET
+        url: /works/${source_user_ide_published_work_id()}?fields=["type"]
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.id, '${source_user_ide_published_work_id()}']
+        - eq: [content.is_published, true]
+        - eq: [content.type, 1]
+        - length_equals: [content, 10]
+
+- test:
+    name: 已发布ide作品-fields只包含id和user_id
+    request:
+        method: GET
+        url: /works/${source_user_ide_published_work_id()}?fields=["id", "user_id"]
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.id, '${source_user_ide_published_work_id()}']
+        - eq: [content.user_id, '${source_user_id()}']
+        - eq: [content.is_published, true]
+        - length_equals: [content, 11]
+
+- test:
+    name: 已发布ide作品-fields为空数组
+    request:
+        method: GET
+        url: /works/${source_user_ide_published_work_id()}?fields=[]
+    validate:
+        - eq: [status_code, 400]
+        - eq: [content.error_code, A_5]
+
+- test:
+    name: 已发布ide作品-fields包含不支持字段
+    request:
+        method: GET
+        url: /works/${source_user_ide_published_work_id()}?fields=["id", $wrong_type_fields_element]
+    validate:
+        - eq: [status_code, 400]
+        - eq: [content.error_code, A_5]
+
+- test:
+    name: 已发布ide作品-fields格式错误
+    request:
+        method: GET
+        url: /works/${source_user_ide_published_work_id()}?fields=$wrong_type_fields
+    validate:
+        - eq: [status_code, 400]
+        - eq: [content.error_code, A_5]
+
+- test:
+    name: BOX2.0已发布作品-fields不传递
+    request:
+        method: GET
+        url: /works/${source_user_boxv2_published_work_id()}?fields=["type"]
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.id, '${source_user_boxv2_published_work_id()}']
+        - eq: [content.type, 5]
+        - length_equals: [content, 10]
+
+- test:
+    name: wood作品-fields不传递
+    request:
+        method: GET
+        url: /works/${source_user_wood_work_id()}?fields=["type"]
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.id, '${source_user_wood_work_id()}']
+        - eq: [content.type, 7]
+
+- test:
+    name: nemo作品-fields不传递
+    request:
+        method: GET
+        url: /works/${source_user_nemo_work_id()}?fields=["type"]
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.id, '${source_user_nemo_work_id()}']
+        - eq: [content.type, 8]

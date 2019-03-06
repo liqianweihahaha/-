@@ -15,17 +15,17 @@
 #     request:
 #         json: 
 #             name: 测试创建kitten作品
-#             work_url: $source_user_ide_work_url
-#             preview: $source_user_ide_preview_url
+#             work_url: ${source_user_ide_work_url()}
+#             preview: ${source_user_ide_preview_url()}
 #             sub_config: $work_sub_config
 #             orientation: $orientation
-#             bcmc_url: $source_user_ide_bcmc_url
+#             bcmc_url: ${source_user_ide_bcmc_url()}
 #     validate:
 #         - eq: [status_code, 403]
 #         - eq: [content.error_code, E_0]
 # - test:
 #     name: 已登录-创建kitten作品
-#     api: create_kitten_work($source_user_login_token)
+#     api: create_kitten_work(${source_user_login_token()})
 #     validate:
 #         - eq: [status_code, 200]
 #         - length_equals: [content, 1]
@@ -36,14 +36,14 @@
 #     name: 已登录-修改kitten作品
 #     request:
 #         headers:
-#             Authorization: $source_user_login_token
+#             Authorization: ${source_user_login_token()}
 #         json: 
 #             name: 测试修改kitten作品
-#             work_url: $source_user_ide_work_url
-#             preview: $source_user_ide_preview_url
+#             work_url: ${source_user_ide_work_url()}
+#             preview: ${source_user_ide_preview_url()}
 #             sub_config: $work_sub_config
 #             orientation: $orientation
-#             bcmc_url: $source_user_ide_bcmc_url
+#             bcmc_url: ${source_user_ide_bcmc_url()}
 #             work_id: $created_kitten_work_id
 #     validate:
 #         - eq: [status_code, 200]
@@ -53,13 +53,13 @@
 #     name: 已登录-保存kitten作品(创建作品)-不传递name
 #     request:
 #         headers:
-#             Authorization: $source_user_login_token
+#             Authorization: ${source_user_login_token()}
 #         json: 
-#             work_url: $source_user_ide_work_url
-#             preview: $source_user_ide_preview_url
+#             work_url: ${source_user_ide_work_url()}
+#             preview: ${source_user_ide_preview_url()}
 #             sub_config: $work_sub_config
 #             orientation: $orientation
-#             bcmc_url: $source_user_ide_bcmc_url
+#             bcmc_url: ${source_user_ide_bcmc_url()}
 #     validate:
 #         - eq: [status_code, 400]
 #         - eq: [content.error_code, A_5]
@@ -67,14 +67,14 @@
 #     name: 已登录-保存kitten作品(创建作品)-不传递work_url
 #     request:
 #         headers:
-#             Authorization: $source_user_login_token
+#             Authorization: ${source_user_login_token()}
 #         json: 
 #             name: 测试保存kitten作品
-#             preview: $source_user_ide_preview_url
+#             preview: ${source_user_ide_preview_url()}
 #             sub_config: $work_sub_config
 #             orientation: $orientation
-#             bcmc_url: $source_user_ide_bcmc_url
-#             preview: $source_user_ide_preview_url
+#             bcmc_url: ${source_user_ide_bcmc_url()}
+#             preview: ${source_user_ide_preview_url()}
 #     validate:
 #         - eq: [status_code, 400]
 #         - eq: [content.error_code, A_5]
@@ -82,13 +82,13 @@
 #     name: 已登录-保存kitten作品(创建作品)-不传递preview
 #     request:
 #         headers:
-#             Authorization: $source_user_login_token
+#             Authorization: ${source_user_login_token()}
 #         json: 
 #             name: 测试创建kitten作品
-#             work_url: $source_user_ide_work_url
+#             work_url: ${source_user_ide_work_url()}
 #             sub_config: $work_sub_config
 #             orientation: $orientation
-#             bcmc_url: $source_user_ide_bcmc_url
+#             bcmc_url: ${source_user_ide_bcmc_url()}
 #     validate:
 #         - eq: [status_code, 400]
 #         - eq: [content.error_code, A_5]
@@ -96,13 +96,13 @@
 #     name: 已登录-保存kitten作品(创建作品)-不传递任何参数
 #     request:
 #         headers:
-#             Authorization: $source_user_login_token
+#             Authorization: ${source_user_login_token()}
 #         json: 
 #             name: 测试创建kitten作品
-#             work_url: $source_user_ide_work_url
+#             work_url: ${source_user_ide_work_url()}
 #             sub_config: $work_sub_config
 #             orientation: 1
-#             bcmc_url: $source_user_ide_bcmc_url
+#             bcmc_url: ${source_user_ide_bcmc_url()}
 #     validate:
 #         - eq: [status_code, 400]
 #         - eq: [content.error_code, A_5]

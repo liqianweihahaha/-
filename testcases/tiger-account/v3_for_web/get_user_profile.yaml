@@ -9,10 +9,10 @@
 #     name: 已登录
 #     request:
 #         headers:
-#             Authorization: $source_user_login_token
+#             Authorization: ${source_user_login_token()}
 #     validate:
 #         - eq: [status_code, 200]
-#         - eq: [content.id, $source_user_id]
+#         - eq: [content.id, ${source_user_id()}]
 #         - length_equals: [content, 8]
 #         - contains: [content, nickname]
 #         - contains: [content, avatar_url]

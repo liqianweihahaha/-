@@ -23,7 +23,7 @@
 #     name: 已登录-保存wood作品(创建作品)
 #     request:
 #         headers:
-#             Authorization: $source_user_login_token
+#             Authorization: ${source_user_login_token()}
 #         json: 
 #             name: 测试创建wood作品
 #             content: $wood_work_content
@@ -39,7 +39,7 @@
 #     name: 已登录-保存wood作品(修改作品)
 #     request:
 #         headers:
-#             Authorization: $source_user_login_token
+#             Authorization: ${source_user_login_token()}
 #         json: 
 #             name: 测试修改wood作品
 #             content: $wood_work_content
@@ -54,7 +54,7 @@
 #     name: 已登录-只传递name
 #     request:
 #         headers:
-#             Authorization: $source_user_login_token
+#             Authorization: ${source_user_login_token()}
 #         json: 
 #             name: 测试修改wood作品
 #     validate:
@@ -64,7 +64,7 @@
 #     name: 已登录-只传递content
 #     request:
 #         headers:
-#             Authorization: $source_user_login_token
+#             Authorization: ${source_user_login_token()}
 #         json: 
 #             name: 测试修改wood作品
 #             content: $wood_work_content
@@ -77,7 +77,7 @@
 #         wood_work_content: test-update-wood-work
 #     request:
 #         headers:
-#             Authorization: $source_user_login_token
+#             Authorization: ${source_user_login_token()}
 #     validate:
 #         - eq: [status_code, 400]
 #         - eq: [content.error_code, A_5]

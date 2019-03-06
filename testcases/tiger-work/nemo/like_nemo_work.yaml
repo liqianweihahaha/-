@@ -10,42 +10,42 @@
 # - test:
 #     name: 未登录-nemo作品
 #     request:
-#         url: /tiger/nemo/works/$source_user_nemo_work_id/like
+#         url: /tiger/nemo/works/${source_user_nemo_work_id()}/like
 #     validate:
 #         - eq: [status_code, 200]
 #         - contains: [content, n_likes]
 # - test:
 #     name: 未登录-已发布ide作品
 #     request:
-#         url: /tiger/nemo/works/$source_user_ide_published_work_id/like
+#         url: /tiger/nemo/works/${source_user_ide_published_work_id()}/like
 #     validate:
 #         - eq: [status_code, 200]
 #         - contains: [content, n_likes]
 # - test:
 #     name: 未登录-未发布ide作品
 #     request:
-#         url: /tiger/nemo/works/$source_user_ide_unpublish_work_id/like
+#         url: /tiger/nemo/works/${source_user_ide_unpublish_work_id()}/like
 #     validate:
 #         - eq: [status_code, 200]
 #         - contains: [content, n_likes]
 # - test:
 #     name: 未登录-临时删除的ide作品
 #     request:
-#         url: /tiger/nemo/works/$source_user_ide_deleted_temporarily_work_id/like
+#         url: /tiger/nemo/works/${source_user_ide_deleted_temporarily_work_id()}/like
 #     validate:
 #         - eq: [status_code, 200]
 #         - contains: [content, n_likes]
 # - test:
 #     name: 未登录-永久删除的ide作品
 #     request:
-#         url: /tiger/nemo/works/$source_user_ide_deleted_permanently_work_id/like
+#         url: /tiger/nemo/works/${source_user_ide_deleted_permanently_work_id()}/like
 #     validate:
 #         - eq: [status_code, 200]
 #         - contains: [content, n_likes]
 # - test:
 #     name: 未登录-wood作品
 #     request:
-#         url: /tiger/nemo/works/$source_user_wood_work_id/like
+#         url: /tiger/nemo/works/${source_user_wood_work_id()}/like
 #     validate:
 #         - eq: [status_code, 200]
 #         - contains: [content, n_likes]

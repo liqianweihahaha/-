@@ -9,12 +9,12 @@
 # - test:
 #     name: 未登录-用户存在
 #     request:
-#         url: /api/user/info/detail/$source_user_id
+#         url: /api/user/info/detail/${source_user_id()}
 #     validate:
 #         - eq: [status_code, 200]
 #         - eq: [content.code, 200]
 #         - eq: [content.msg, 成功]
-#         - eq: [content.data.userInfo.user.id, $source_user_id]
+#         - eq: [content.data.userInfo.user.id, ${source_user_id()}]
 #         - length_equals: [content.data.userInfo, 7]
 # - test:
 #     name: 未登录-用户不存在

@@ -1,148 +1,184 @@
-# - config:
-#     name: 根据作品 ids 获取作品信息
-#     request:
-#         base_url: ${get_platform_tiger_api_host()}
-#         url: /works/list
-#         method: POST
-#         headers:
-#             Content-Type: $content_type
-#     variables:
-#         - wrong_type_fields_element: ''
-#         - wrong_type_fields: '{}'
-#         - unsupport_fields_element: aaa
+- config:
+    name: 根据作品 ids 获取作品信息
+    base_url: ${platform_tiger_api_host()}
+    variables:
+        - wrong_type_fields_element: ''
+        - wrong_type_fields: '{}'
+        - unsupport_fields_element: aaa
 
-# - test:
-#     name: work_ids只包含已发布ide作品-fields不传递
-#     request:
-#         json:
-#             work_ids: [$source_user_ide_published_work_id]
-#     validate:
-#         - eq: [status_code, 200]
-#         - eq: [content.0.id, $source_user_ide_published_work_id]
-#         - eq: [content.0.is_published, true]
-#         - eq: [content.0.type, 1]
-#         - length_equals: [content.0, 10]
-# - test:
-#     name: work_ids只包含已发布ide作品-fields为空数组
-#     request:
-#         json:
-#           work_ids: [$source_user_ide_published_work_id]
-#           fields: []
-#     validate:
-#         - eq: [status_code, 200]
-#         - eq: [content.0.id, $source_user_ide_published_work_id]
-#         - eq: [content.0.type, 1]
-#         - length_equals: [content.0, 10]
-# - test:
-#     name: work_ids只包含已发布ide作品-fields包含所有支持字段
-#     request:
-#         json:
-#             work_ids: [$source_user_ide_published_work_id]
-#             fields: ["id", "user_id", "name", "description", "type", "n_forks", "work_urls", "root_id", "parent_id", "preview", "latest_work_url", "view_times", "praise_times", "language_type", "operation_instruction", "publish_time"]
-#     validate:
-#         - eq: [status_code, 200]
-#         - length_equals: [content, 1]
-#         - eq: [content.0.id, $source_user_ide_published_work_id]
-#         - eq: [content.0.user_id, $source_user_id]
-#         - eq: [content.0.is_published, true]
-#         - eq: [content.0.type, 1]
-#         - eq: [content.0.language_type, 0]
-#         - eq: [content.0.is_published, true]
-#         - greater_than: [content.0.publish_time, 0]
-#         # - length_equals: [content.0, 23]
-#         - type_match: [content.0.work_urls, list]
-# - test:
-#     name: work_ids只包含已发布ide作品-fields只包含id
-#     request:
-#         json:
-#             work_ids: [$source_user_ide_published_work_id]
-#             fields: ["id"]
-#     validate:
-#         - eq: [status_code, 200]
-#         - eq: [content.0.id, $source_user_ide_published_work_id]
-#         - eq: [content.0.is_published, true]
-#         - eq: [content.0.type, 1]
-#         - length_equals: [content.0, 10]
-# - test:
-#     name: work_ids只包含已发布ide作品-fields只包含id和user_id
-#     request:
-#         json:
-#             work_ids: [$source_user_ide_published_work_id]
-#             fields: ["id", "user_id"]
-#     validate:
-#         - eq: [status_code, 200]
-#         - eq: [content.0.id, $source_user_ide_published_work_id]
-#         - eq: [content.0.user_id, $source_user_id]
-#         - eq: [content.0.is_published, true]
-#         - eq: [content.0.type, 1]
-#         - length_equals: [content.0, 11]
-# - test:
-#     name: work_ids只包含已发布BOX2.0作品-fields不传递
-#     request:
-#         json:
-#             work_ids: [$source_user_boxv2_published_work_id]
-#     validate:
-#         - eq: [status_code, 200]
-#         - eq: [content.0.id, $source_user_boxv2_published_work_id]
-#         - eq: [content.0.type, 5]
-#         - length_equals: [content.0, 10]
-# - test:
-#     name: work_ids只包含Wood作品-fields不传递
-#     request:
-#         json:
-#             work_ids: [$source_user_wood_work_id]
-#     validate:
-#         - eq: [status_code, 200]
-#         - eq: [content.0.id, $source_user_wood_work_id]
-#         - eq: [content.0.type, 7]
-#         - length_equals: [content.0, 10]
-# - test:
-#     name: work_ids只包含nemo作品-fields不传递
-#     request:
-#         json:
-#             work_ids: [$source_user_nemo_work_id]
-#     validate:
-#         - eq: [status_code, 200]
-#         - eq: [content.0.id, $source_user_nemo_work_id]
-#         - eq: [content.0.type, 8]
-#         - length_equals: [content.0, 10]
-# - test:
-#     name: work_ids只包含已发布ide作品-fields包含不支持字段
-#     request:
-#         json: 
-#             work_ids: [$source_user_ide_published_work_id]
-#             fields: ["id", $unsupport_fields_element]
-#     validate:
-#         - eq: [status_code, 400]
-#         - eq: [content.error_code, A_5]
-# - test:
-#     name: work_ids只包含已发布ide作品-fields格式错误
-#     request:
-#         json:
-#             work_ids: [$source_user_ide_published_work_id]
-#             fields: $wrong_type_fields
-#     validate:
-#         - eq: [status_code, 400]
-#         - eq: [content.error_code, A_5]
-# - test:
-#     name: work_ids不传递，fields只包含user_id
-#     request:
-#         json:
-#             fields: ["user_id"]
-#     validate:
-#         - eq: [status_code, 200]
-#         - length_equals: [content, 0]
-# - test:
-#     name: work_ids为空数组，fields只包含user_id
-#     request:
-#         json:
-#             work_ids: []
-#             fields: ["user_id"]
-#     validate:
-#         - eq: [status_code, 400]
-#         - eq: [content.error_code, A_5]
-# - test:
-#     name: 请求体为空
-#     validate:
-#         - eq: [status_code, 200]
-#         - length_equals: [content, 0]
+- test:
+    name: work_ids只包含已发布ide作品-fields不传递
+    request:
+        url: /works/list
+        method: POST
+        json:
+            work_ids: ['${source_user_ide_published_work_id()}']
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.0.id, '${source_user_ide_published_work_id()}']
+        - eq: [content.0.is_published, true]
+        - eq: [content.0.type, 1]
+        - length_equals: [content.0, 10]
+
+- test:
+    name: work_ids只包含已发布ide作品-fields为空数组
+    request:
+        url: /works/list
+        method: POST
+        json:
+          work_ids: ['${source_user_ide_published_work_id()}']
+          fields: []
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.0.id, '${source_user_ide_published_work_id()}']
+        - eq: [content.0.type, 1]
+        - length_equals: [content.0, 10]
+
+- test:
+    name: work_ids只包含已发布ide作品-fields包含所有支持字段
+    request:
+        url: /works/list
+        method: POST
+        json:
+            work_ids: ['${source_user_ide_published_work_id()}']
+            fields: ["id", "user_id", "name", "description", "type", "n_forks", "work_urls", "root_id", "parent_id", "preview", "latest_work_url", "view_times", "praise_times", "language_type", "operation_instruction", "publish_time"]
+    validate:
+        - eq: [status_code, 200]
+        - length_equals: [content, 1]
+        - eq: [content.0.id, '${source_user_ide_published_work_id()}']
+        - eq: [content.0.user_id, '${source_user_id()}']
+        - eq: [content.0.is_published, true]
+        - eq: [content.0.type, 1]
+        - eq: [content.0.language_type, 0]
+        - eq: [content.0.is_published, true]
+        - greater_than: [content.0.publish_time, 0]
+        # - length_equals: [content.0, 23]
+        - type_match: [content.0.work_urls, list]
+
+- test:
+    name: work_ids只包含已发布ide作品-fields只包含id
+    request:
+        url: /works/list
+        method: POST
+        json:
+            work_ids: ['${source_user_ide_published_work_id()}']
+            fields: ["id"]
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.0.id, '${source_user_ide_published_work_id()}']
+        - eq: [content.0.is_published, true]
+        - eq: [content.0.type, 1]
+        - length_equals: [content.0, 10]
+
+- test:
+    name: work_ids只包含已发布ide作品-fields只包含id和user_id
+    request:
+        url: /works/list
+        method: POST
+        json:
+            work_ids: ['${source_user_ide_published_work_id()}']
+            fields: ["id", "user_id"]
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.0.id, '${source_user_ide_published_work_id()}']
+        - eq: [content.0.user_id, '${source_user_id()}']
+        - eq: [content.0.is_published, true]
+        - eq: [content.0.type, 1]
+        - length_equals: [content.0, 11]
+
+- test:
+    name: work_ids只包含已发布BOX2.0作品-fields不传递
+    request:
+        url: /works/list
+        method: POST
+        json:
+            work_ids: ['${source_user_boxv2_published_work_id()}']
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.0.id, '${source_user_boxv2_published_work_id()}']
+        - eq: [content.0.type, 5]
+        - length_equals: [content.0, 10]
+
+- test:
+    name: work_ids只包含Wood作品-fields不传递
+    request:
+        url: /works/list
+        method: POST
+        json:
+            work_ids: ['${source_user_wood_work_id()}']
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.0.id, '${source_user_wood_work_id()}']
+        - eq: [content.0.type, 7]
+        - length_equals: [content.0, 10]
+
+- test:
+    name: work_ids只包含nemo作品-fields不传递
+    request:
+        url: /works/list
+        method: POST
+        json:
+            work_ids: ['${source_user_nemo_work_id()}']
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.0.id, '${source_user_nemo_work_id()}']
+        - eq: [content.0.type, 8]
+        - length_equals: [content.0, 10]
+
+- test:
+    name: work_ids只包含已发布ide作品-fields包含不支持字段
+    request:
+        url: /works/list
+        method: POST
+        json: 
+            work_ids: ['${source_user_ide_published_work_id()}']
+            fields: ["id", $unsupport_fields_element]
+    validate:
+        - eq: [status_code, 400]
+        - eq: [content.error_code, A_5]
+
+- test:
+    name: work_ids只包含已发布ide作品-fields格式错误
+    request:
+        url: /works/list
+        method: POST
+        json:
+            work_ids: ['${source_user_ide_published_work_id()}']
+            fields: $wrong_type_fields
+    validate:
+        - eq: [status_code, 400]
+        - eq: [content.error_code, A_5]
+
+- test:
+    name: work_ids不传递，fields只包含user_id
+    request:
+        url: /works/list
+        method: POST
+        json:
+            fields: ["user_id"]
+    validate:
+        - eq: [status_code, 200]
+        - length_equals: [content, 0]
+
+- test:
+    name: work_ids为空数组，fields只包含user_id
+    request:
+        url: /works/list
+        method: POST
+        json:
+            work_ids: []
+            fields: ["user_id"]
+    validate:
+        - eq: [status_code, 400]
+        - eq: [content.error_code, A_5]
+
+- test:
+    name: 请求体为空
+    request:
+        url: /works/list
+        method: POST
+        headers:
+            Content-Type: application/json
+    validate:
+        - eq: [status_code, 200]
+        - length_equals: [content, 0]

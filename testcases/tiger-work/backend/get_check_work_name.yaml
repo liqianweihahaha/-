@@ -20,7 +20,7 @@
 #     request:
 #         url: /api/v2/work/checkname
 #         headers:
-#             Authorization: $source_user_login_token
+#             Authorization: ${source_user_login_token()}
 #     validate:
 #         - eq: [status_code, 400]
 #         - eq: [content.error_code, A_5]
@@ -29,7 +29,7 @@
 #     request:
 #         url: /api/v2/work/checkname?work_name=$unexist_work_name
 #         headers:
-#             Authorization: $source_user_login_token
+#             Authorization: ${source_user_login_token()}
 #     validate:
 #         - eq: [status_code, 200]
 #         - eq: [content.code, 200]

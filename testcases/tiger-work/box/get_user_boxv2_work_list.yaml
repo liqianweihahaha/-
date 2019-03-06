@@ -18,7 +18,7 @@
 #     request:
 #         url: /tiger/box/my_works
 #         headers:
-#             Authorization: $source_user_login_token
+#             Authorization: ${source_user_login_token()}
 #     validate:
 #         - eq: [status_code, 200]
 #         - contains: [content, total]
@@ -28,7 +28,7 @@
 #     request:
 #         url: /tiger/box/my_works?page=1&per_page=20&is_published=true&order=asc
 #         headers:
-#             Authorization: $source_user_login_token
+#             Authorization: ${source_user_login_token()}
 #     validate:
 #         - eq: [status_code, 200]
 #         - contains: [content, total]
@@ -38,7 +38,7 @@
 #     request:
 #         url: /tiger/box/my_works?is_published=false&order=desc
 #         headers:
-#             Authorization: $source_user_login_token
+#             Authorization: ${source_user_login_token()}
 #     validate:
 #         - eq: [status_code, 200]
 #         - contains: [content, total]
@@ -48,7 +48,7 @@
 #     request:
 #         url: /tiger/box/my_works?is_published=$unsupport_is_published
 #         headers:
-#             Authorization: $source_user_login_token
+#             Authorization: ${source_user_login_token()}
 #     validate:
 #         - eq: [status_code, 400]
 #         - eq: [content.error_code, A_5]

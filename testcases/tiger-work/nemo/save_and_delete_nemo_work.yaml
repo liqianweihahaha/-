@@ -19,8 +19,8 @@
 #     request:
 #         json: 
 #             name: 测试创建nemo作品
-#             work_url: $source_user_nemo_work_url
-#             preview: $source_user_nemo_preview_url
+#             work_url: ${source_user_nemo_work_url()}
+#             preview: ${source_user_nemo_preview_url()}
 #             n_blocks: $nemo_n_blocks
 #             n_roles: $nemo_n_roles
 #             bcm_version: $nemo_bcm_version
@@ -31,11 +31,11 @@
 #     name: 已登录-保存nemo作品(创建作品)
 #     request:
 #         headers:
-#             Authorization: $source_user_login_token
+#             Authorization: ${source_user_login_token()}
 #         json: 
 #             name: 测试创建nemo作品
-#             work_url: $source_user_nemo_work_url
-#             preview: $source_user_nemo_preview_url
+#             work_url: ${source_user_nemo_work_url()}
+#             preview: ${source_user_nemo_preview_url()}
 #             n_blocks: $nemo_n_blocks
 #             n_roles: $nemo_n_roles
 #             bcm_version: $nemo_bcm_version
@@ -48,11 +48,11 @@
 #     name: 已登录-保存nemo作品(修改作品)
 #     request:
 #         headers:
-#             Authorization: $source_user_login_token
+#             Authorization: ${source_user_login_token()}
 #         json: 
 #             name: 测试修改nemo作品
-#             work_url: $source_user_nemo_work_url
-#             preview: $source_user_nemo_preview_url
+#             work_url: ${source_user_nemo_work_url()}
+#             preview: ${source_user_nemo_preview_url()}
 #             n_blocks: $nemo_n_blocks
 #             n_roles: $nemo_n_roles
 #             bcm_version: $nemo_bcm_version
@@ -65,10 +65,10 @@
 #     name: 已登录-保存nemo作品(创建作品)-不传递name
 #     request:
 #         headers:
-#             Authorization: $source_user_login_token
+#             Authorization: ${source_user_login_token()}
 #         json: 
-#             work_url: $source_user_nemo_work_url
-#             preview: $source_user_nemo_preview_url
+#             work_url: ${source_user_nemo_work_url()}
+#             preview: ${source_user_nemo_preview_url()}
 #             n_blocks: $nemo_n_blocks
 #             n_roles: $nemo_n_roles
 #             bcm_version: $nemo_bcm_version
@@ -79,10 +79,10 @@
 #     name: 已登录-保存nemo作品(创建作品)-不传递preview
 #     request:
 #         headers:
-#             Authorization: $source_user_login_token
+#             Authorization: ${source_user_login_token()}
 #         json: 
 #             name: 测试创建nemo作品
-#             work_url: $source_user_nemo_work_url
+#             work_url: ${source_user_nemo_work_url()}
 #             n_blocks: $nemo_n_blocks
 #             n_roles: $nemo_n_roles
 #             bcm_version: $nemo_bcm_version
@@ -93,11 +93,11 @@
 #     name: 已登录-保存nemo作品(创建作品)-不传递n_blocks
 #     request:
 #         headers:
-#             Authorization: $source_user_login_token
+#             Authorization: ${source_user_login_token()}
 #         json: 
 #             name: 测试创建nemo作品
-#             work_url: $source_user_nemo_work_url
-#             preview: $source_user_nemo_preview_url
+#             work_url: ${source_user_nemo_work_url()}
+#             preview: ${source_user_nemo_preview_url()}
 #             n_roles: $nemo_n_roles
 #             bcm_version: $nemo_bcm_version
 #     validate:
@@ -107,11 +107,11 @@
 #     name: 已登录-保存nemo作品(创建作品)-不传递n_roles
 #     request:
 #         headers:
-#             Authorization: $source_user_login_token
+#             Authorization: ${source_user_login_token()}
 #         json: 
 #             name: 测试创建nemo作品
-#             work_url: $source_user_nemo_work_url
-#             preview: $source_user_nemo_preview_url
+#             work_url: ${source_user_nemo_work_url()}
+#             preview: ${source_user_nemo_preview_url()}
 #             n_blocks: $nemo_n_blocks
 #             bcm_version: $nemo_bcm_version
 #     validate:
@@ -133,7 +133,7 @@
 #         url: /tiger/work/nemo/$nemo_work_id
 #         method: DELETE
 #         headers:
-#             Authorization: $source_user_login_token
+#             Authorization: ${source_user_login_token()}
 #     validate:
 #         - eq: [status_code, 204]
 # - test:
@@ -142,7 +142,7 @@
 #         url: /tiger/work/nemo/$target_user_nemo_work_id
 #         method: DELETE
 #         headers:
-#             Authorization: $source_user_login_token
+#             Authorization: ${source_user_login_token()}
 #     validate:
 #         - eq: [status_code, 403]
 #         - eq: [content.error_code, W_3]
@@ -152,7 +152,7 @@
 #         url: /tiger/work/nemo/$unexist_work_id
 #         method: DELETE
 #         headers:
-#             Authorization: $source_user_login_token
+#             Authorization: ${source_user_login_token()}
 #     validate:
 #         - eq: [status_code, 404]
 #         - eq: [content.error_code, W_0]
@@ -162,7 +162,7 @@
 #         url: /tiger/work/nemo/$wrong_type_work_id
 #         method: DELETE
 #         headers:
-#             Authorization: $source_user_login_token
+#             Authorization: ${source_user_login_token()}
 #     validate:
 #         - eq: [status_code, 400]
 #         - eq: [content.error_code, A_5]

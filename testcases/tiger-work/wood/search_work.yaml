@@ -25,7 +25,7 @@
 #     request:
 #         url: /tiger/wood/user/works/search?query=$query_text
 #         headers:
-#             Authorization: $source_user_login_token
+#             Authorization: ${source_user_login_token()}
 #     validate:
 #         - eq: [status_code, 200]
 #         - type_match: [content, list]
@@ -34,7 +34,7 @@
 #     request:
 #         url: /tiger/wood/user/works/search?query=$query_text&limit=0
 #         headers:
-#             Authorization: $source_user_login_token
+#             Authorization: ${source_user_login_token()}
 #     validate:
 #         - eq: [status_code, 400]
 #         - eq: [content.error_code, A_5]

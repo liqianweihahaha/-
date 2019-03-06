@@ -10,20 +10,20 @@
 # - test:
 #     name: 未登录-已发布ide作品
 #     request:
-#         url: /api/user/preview/work/$source_user_ide_published_work_id
+#         url: /api/user/preview/work/${source_user_ide_published_work_id()}
 #         json:
-#             preview: $source_user_ide_preview_url
+#             preview: ${source_user_ide_preview_url()}
 #     validate:
 #         - eq: [status_code, 403]
 #         - eq: [content.error_code, E_0]
 # - test:
 #     name: 已登录-个人已发布ide作品
 #     request:
-#         url: /api/user/preview/work/$source_user_ide_published_work_id
+#         url: /api/user/preview/work/${source_user_ide_published_work_id()}
 #         headers:
-#             Authorization: $source_user_login_token
+#             Authorization: ${source_user_login_token()}
 #         json:
-#             preview: $source_user_ide_preview_url
+#             preview: ${source_user_ide_preview_url()}
 #     validate:
 #         - eq: [status_code, 200]
 #         - eq: [content.code, 200]
@@ -31,11 +31,11 @@
 # - test:
 #     name: 已登录-个人未发布ide作品
 #     request:
-#         url: /api/user/preview/work/$source_user_ide_unpublish_work_id
+#         url: /api/user/preview/work/${source_user_ide_unpublish_work_id()}
 #         headers:
-#             Authorization: $source_user_login_token
+#             Authorization: ${source_user_login_token()}
 #         json:
-#             preview: $source_user_ide_preview_url
+#             preview: ${source_user_ide_preview_url()}
 #     validate:
 #         - eq: [status_code, 200]
 #         - eq: [content.code, 3020]
@@ -43,11 +43,11 @@
 # - test:
 #     name: 已登录-个人临时删除作品
 #     request:
-#         url: /api/user/preview/work/$source_user_ide_deleted_temporarily_work_id
+#         url: /api/user/preview/work/${source_user_ide_deleted_temporarily_work_id()}
 #         headers:
-#             Authorization: $source_user_login_token
+#             Authorization: ${source_user_login_token()}
 #         json:
-#             preview: $source_user_ide_preview_url
+#             preview: ${source_user_ide_preview_url()}
 #     validate:
 #         - eq: [status_code, 200]
 #         - eq: [content.code, 3020]
@@ -55,11 +55,11 @@
 # - test:
 #     name: 已登录-个人永久删除ide作品
 #     request:
-#         url: /api/user/preview/work/$source_user_ide_deleted_permanently_work_id
+#         url: /api/user/preview/work/${source_user_ide_deleted_permanently_work_id()}
 #         headers:
-#             Authorization: $source_user_login_token
+#             Authorization: ${source_user_login_token()}
 #         json:
-#             preview: $source_user_ide_preview_url
+#             preview: ${source_user_ide_preview_url()}
 #     validate:
 #         - eq: [status_code, 200]
 #         - eq: [content.code, 3020]
@@ -69,9 +69,9 @@
 #     request:
 #         url: /api/user/preview/work/$unexist_work_id
 #         headers:
-#             Authorization: $source_user_login_token
+#             Authorization: ${source_user_login_token()}
 #         json:
-#             preview: $source_user_ide_preview_url
+#             preview: ${source_user_ide_preview_url()}
 #     validate:
 #         - eq: [status_code, 200]
 #         - eq: [content.code, 3020]
@@ -81,9 +81,9 @@
 #     request:
 #         url: /api/user/preview/work/$wrong_type_work_id
 #         headers:
-#             Authorization: $source_user_login_token
+#             Authorization: ${source_user_login_token()}
 #         json:
-#             preview: $source_user_ide_preview_url
+#             preview: ${source_user_ide_preview_url()}
 #     validate:
 #         - eq: [status_code, 200]
 #         - eq: [content.code, 2001]

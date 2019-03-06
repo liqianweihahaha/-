@@ -19,7 +19,7 @@
 #             pid: $pc_client_pid
 #     validate:
 #         - eq: [status_code, 200]
-#         - eq: [content.user_info.id, $source_user_id]
+#         - eq: [content.user_info.id, ${source_user_id()}]
 # - test:
 #     name: 邮箱已注册-密码正确
 #     request:
@@ -29,7 +29,7 @@
 #             pid: $pc_client_pid
 #     validate:
 #         - eq: [status_code, 200]
-#         - eq: [content.user_info.id, $source_user_id]
+#         - eq: [content.user_info.id, ${source_user_id()}]
 # - test:
 #     name: 用户名已注册-密码错误
 #     request:

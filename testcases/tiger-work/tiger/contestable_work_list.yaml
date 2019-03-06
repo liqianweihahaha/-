@@ -18,7 +18,7 @@
 #     request:
 #         url: /tiger/work/business/contestable?work_type=1&limit=5
 #         headers:
-#             Authorization: $source_user_login_token
+#             Authorization: ${source_user_login_token()}
 #     validate:
 #         - eq: [status_code, 200]
 #         - contains: [content, total]
@@ -29,7 +29,7 @@
 #     request:
 #         url: /tiger/work/business/contestable?work_type=3&limit=5
 #         headers:
-#             Authorization: $source_user_login_token
+#             Authorization: ${source_user_login_token()}
 #     validate:
 #         - eq: [status_code, 200]
 #         - contains: [content, total]
@@ -40,7 +40,7 @@
 #     request:
 #         url: /tiger/work/business/contestable?work_type=$unsupport_work_type&limit=5
 #         headers:
-#             Authorization: $source_user_login_token
+#             Authorization: ${source_user_login_token()}
 #     validate:
 #         - eq: [status_code, 400]
 #         - eq: [content.error_code, A_5]
@@ -49,7 +49,7 @@
 #     request:
 #         url: /tiger/work/business/contestable?work_type=1&limit=4
 #         headers:
-#             Authorization: $source_user_login_token
+#             Authorization: ${source_user_login_token()}
 #     validate:
 #         - eq: [status_code, 400]
 #         - eq: [content.error_code, A_5]
@@ -58,7 +58,7 @@
 #     request:
 #         url: /tiger/work/business/contestable?work_type=1
 #         headers:
-#             Authorization: $source_user_login_token
+#             Authorization: ${source_user_login_token()}
 #     validate:
 #         - eq: [status_code, 400]
 #         - eq: [content.error_code, A_5]
@@ -67,7 +67,7 @@
 #     request:
 #         url: /tiger/work/business/contestable?limit=5
 #         headers:
-#             Authorization: $source_user_login_token
+#             Authorization: ${source_user_login_token()}
 #     validate:
 #         - eq: [status_code, 400]
 #         - eq: [content.error_code, A_5]
@@ -76,7 +76,7 @@
 #     request:
 #         url: /tiger/work/business/contestable
 #         headers:
-#             Authorization: $source_user_login_token
+#             Authorization: ${source_user_login_token()}
 #     validate:
 #         - eq: [status_code, 400]
 #         - eq: [content.error_code, A_5]

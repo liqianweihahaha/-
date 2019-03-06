@@ -13,10 +13,10 @@
 #     name: 已登录用户
 #     request:
 #         headers:
-#             Authorization: $source_user_login_token
+#             Authorization: ${source_user_login_token()}
 #     validate:
 #         - eq: [status_code, 200]
-#         - eq: [content.id, $source_user_id]
+#         - eq: [content.id, ${source_user_id()}]
 #         - eq: [content.username, $source_user_username]
 #         - length_equals: [content, 13]
 #         - contains: [content, nickname]

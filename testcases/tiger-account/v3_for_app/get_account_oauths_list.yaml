@@ -9,7 +9,7 @@
 #     name: 已登录
 #     request:
 #         headers:
-#             Authorization: $source_user_login_token
+#             Authorization: ${source_user_login_token()}
 #     validate:
 #         - eq: [status_code, 200]
 #         - length_equals: [content, 5]

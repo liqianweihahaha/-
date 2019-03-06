@@ -11,7 +11,7 @@
 # - test:
 #     name: 未登录-已发布作品
 #     request:
-#         url: /api/v2/work/display/$source_user_ide_published_work_id
+#         url: /api/v2/work/display/${source_user_ide_published_work_id()}
 #     validate:
 #         - eq: [status_code, 200]
 #         - eq: [content.code, 200]
@@ -23,7 +23,7 @@
 # - test:
 #     name: 未登录-未发布作品
 #     request:
-#         url: /api/v2/work/display/$source_user_ide_unpublish_work_id
+#         url: /api/v2/work/display/${source_user_ide_unpublish_work_id()}
 #     validate:
 #         - eq: [status_code, 200]
 #         - eq: [content.code, 200]
@@ -35,7 +35,7 @@
 # - test:
 #     name: 未登录-临时删除作品
 #     request:
-#         url: /api/v2/work/display/$source_user_ide_deleted_temporarily_work_id
+#         url: /api/v2/work/display/${source_user_ide_deleted_temporarily_work_id()}
 #     validate:
 #         - eq: [status_code, 200]
 #         - eq: [content.code, 200]
@@ -47,7 +47,7 @@
 # - test:
 #     name: 未登录-永久删除作品
 #     request:
-#         url: /api/v2/work/display/$source_user_ide_deleted_permanently_work_id
+#         url: /api/v2/work/display/${source_user_ide_deleted_permanently_work_id()}
 #     validate:
 #         - eq: [status_code, 200]
 #         - eq: [content.code, 200]

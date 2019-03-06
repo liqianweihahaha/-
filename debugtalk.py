@@ -16,86 +16,132 @@ def platform_tiger_api_host():
     return get_hosts(env).get('platform_tiger_api_host')
 
 # 源用户信息
-def source_user():
-    return read_config.source_user(env)
+global source_user
+source_user = read_config.source_user(env)
 
 def source_user_id():
-    return source_user().get('id')
+    return source_user.get('id')
 
 def source_user_username():
-    return source_user().get('username')
+    return source_user.get('username')
 
 def source_user_email():
-    return source_user().get('email')
+    return source_user.get('email')
 
 def source_user_password():
-    return source_user().get('password')
+    return source_user.get('password')
 
-# # Kitten作品
-# source_user_ide_published_work_id = source_user.get('work').get('ide').get('published_work_id')
-# source_user_ide_unpublish_work_id = source_user.get('work').get('ide').get('unpublish_work_id')
-# source_user_ide_deleted_temporarily_work_id = source_user.get('work').get('ide').get('deleted_temporarily_work_id')
-# source_user_ide_deleted_permanently_work_id = source_user.get('work').get('ide').get('deleted_permanently_work_id')
-# source_user_ide_work_url = source_user.get('work').get('ide').get('work_url')
-# source_user_ide_preview_url = source_user.get('work').get('ide').get('preview_url')
-# source_user_ide_bcmc_url = source_user.get('work').get('ide').get('bcmc_url')
-# # box1.0
-# source_user_boxv1_work_url = source_user.get('work').get('boxv1').get('work_url')
-# source_user_boxv1_preview_url = source_user.get('work').get('boxv1').get('preview_url')
-# # box2.0
-# source_user_boxv2_published_work_id = source_user.get('work').get('boxv2').get('published_work_id')
-# source_user_boxv2_work_url = source_user.get('work').get('boxv2').get('work_url')
-# source_user_boxv2_preview_url = source_user.get('work').get('boxv2').get('preview_url')
-# source_user_boxv2_bcmc_url = source_user.get('work').get('boxv2').get('bcmc_url')
-# # wood
-# source_user_wood_work_id = source_user.get('work').get('wood').get('work_id')
-# # nemo
-# source_user_nemo_work_id = source_user.get('work').get('nemo').get('work_id')
-# source_user_nemo_work_url = source_user.get('work').get('nemo').get('work_url')
-# source_user_nemo_preview_url = source_user.get('work').get('nemo').get('preview_url')
-# # 用户拥有的精灵，不拥有的精灵
-# source_user_owned_sprite_id = source_user.get('sprite').get('owned')
-# source_user_unown_sprite_id = source_user.get('sprite').get('unown')
+# 用户拥有的精灵，不拥有的精灵
+def source_user_owned_sprite_id(): 
+    return source_user.get('sprite').get('owned')
+
+def source_user_unown_sprite_id(): 
+    return source_user.get('sprite').get('unown')
+
+# Kitten作品
+def source_user_ide_published_work_id():
+    return source_user.get('work').get('ide').get('published_work_id')
+
+def source_user_ide_unpublish_work_id():
+    return source_user.get('work').get('ide').get('unpublish_work_id')
+
+def source_user_ide_deleted_temporarily_work_id():
+    return source_user.get('work').get('ide').get('deleted_temporarily_work_id')
+
+def source_user_ide_deleted_permanently_work_id():  
+    return source_user.get('work').get('ide').get('deleted_permanently_work_id')
+
+def source_user_ide_work_url():
+    return source_user.get('work').get('ide').get('work_url')
+
+def source_user_ide_preview_url():
+    return source_user.get('work').get('ide').get('preview_url')
+
+def source_user_ide_bcmc_url():
+    return source_user.get('work').get('ide').get('bcmc_url')
+
+# box1.0作品
+def source_user_boxv1_work_url():
+    return source_user.get('work').get('boxv1').get('work_url')
+
+def source_user_boxv1_preview_url():
+    return source_user.get('work').get('boxv1').get('preview_url')
+
+# box2.0作品
+def source_user_boxv2_published_work_id(): 
+    return source_user.get('work').get('boxv2').get('published_work_id')
+
+def source_user_boxv2_work_url(): 
+    return source_user.get('work').get('boxv2').get('work_url')
+
+def source_user_boxv2_preview_url(): 
+    return source_user.get('work').get('boxv2').get('preview_url')
+
+def source_user_boxv2_bcmc_url():
+    return source_user.get('work').get('boxv2').get('bcmc_url')
+# wood
+def source_user_wood_work_id():
+    return source_user.get('work').get('wood').get('work_id')
+# nemo
+def source_user_nemo_work_id(): 
+    return source_user.get('work').get('nemo').get('work_id')
+
+def source_user_nemo_work_url():
+    return source_user.get('work').get('nemo').get('work_url')
+
+def source_user_nemo_preview_url(): 
+    return source_user.get('work').get('nemo').get('preview_url')
 
 # 目标用户信息
-def target_user():
-    return read_config.target_user(env)
+global target_user
+target_user = read_config.target_user(env)
 
 def target_user_id():
-    return target_user().get('id')
+    return target_user.get('id')
 
 def target_user_username():
-    return target_user().get('username')
+    return target_user.get('username')
 
 def target_user_password():
-    return target_user().get('password')
+    return target_user.get('password')
 # Kitten作品
-# target_user_ide_published_work_id = target_user.get('work').get('ide').get('published_work_id')
-# target_user_ide_published_unfork_work_id = target_user.get('work').get('ide').get('published_unfork_work_id')
-# target_user_ide_unpublish_work_id = target_user.get('work').get('ide').get('unpublish_work_id')
-# target_user_ide_deleted_temporarily_work_id = target_user.get('work').get('ide').get('deleted_temporarily_work_id')
-# target_user_ide_deleted_permanently_work_id = target_user.get('work').get('ide').get('deleted_permanently_work_id')
-# # nemo作品
-# target_user_nemo_work_id = target_user.get('work').get('nemo').get('work_id')
+def target_user_ide_published_work_id():
+    return target_user.get('work').get('ide').get('published_work_id')
+
+def target_user_ide_published_unfork_work_id(): 
+    return target_user.get('work').get('ide').get('published_unfork_work_id')
+
+def target_user_ide_unpublish_work_id():
+    return target_user.get('work').get('ide').get('unpublish_work_id')
+
+def target_user_ide_deleted_temporarily_work_id():
+    return target_user.get('work').get('ide').get('deleted_temporarily_work_id')
+
+def target_user_ide_deleted_permanently_work_id():
+    return target_user.get('work').get('ide').get('deleted_permanently_work_id')
+# nemo作品
+def target_user_nemo_work_id():
+    return target_user.get('work').get('nemo').get('work_id')
 
 def content_type():
     return 'application/json'
 
-# # 获取登录token
-# def login_token(identity, password, pid='UvOFXx2tfv'):
-#     data = {
-#         "identity": identity,
-#         "password": password,
-#         "pid": pid
-#     }
-#     params = {'Content-Type': 'application/json'}  
-#     res = requests.post(get_tiger_api_host()+'/tiger/accounts/login', json=data, params=params)
-#     if res.status_code == 200 and 'application/json' in res.headers['Content-Type']:
-#         token = res.json()['token']
-#         bearer_token = 'Bearer '+ token
-#         return bearer_token
+# 获取登录token
+def login_token(identity, password, pid='UvOFXx2tfv'):
+    data = {
+        "identity": identity,
+        "password": password,
+        "pid": pid
+    }
+    params = {'Content-Type': 'application/json'}  
+    res = requests.post(get_tiger_api_host()+'/tiger/accounts/login', json=data, params=params)
+    if res.status_code == 200 and 'application/json' in res.headers['Content-Type']:
+        token = res.json()['token']
+        bearer_token = 'Bearer '+ token
+        return bearer_token
 
-# source_user_login_token = login_token(source_user_username, source_user_password)
+def source_user_login_token():
+    return login_token(source_user_username, source_user_password)
 
 # # 取消收藏作品
 # def uncollection_work(work_id):

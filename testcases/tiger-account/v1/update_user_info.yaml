@@ -31,7 +31,7 @@
 #     name: 已登录-修改昵称nickname为空字符串
 #     request:
 #         headers:
-#             Authorization: $source_user_login_token
+#             Authorization: ${source_user_login_token()}
 #         json:
 #             nickname: ''
 #     validate:
@@ -41,7 +41,7 @@
 #     name: 已登录-修改昵称nickname长度超过20
 #     request:
 #         headers:
-#             Authorization: $source_user_login_token
+#             Authorization: ${source_user_login_token()}
 #         json:
 #             nickname: $nickname_21
 #     validate:
@@ -51,7 +51,7 @@
 #     name: 已登录-修改昵称nickname已经存在
 #     request:
 #         headers:
-#             Authorization: $source_user_login_token
+#             Authorization: ${source_user_login_token()}
 #         json:
 #             nickname: $existed_nickname
 #     validate:
@@ -61,7 +61,7 @@
 #     name: 已登录-修改昵称：nickname不存在
 #     request:
 #         headers:
-#             Authorization: $source_user_login_token
+#             Authorization: ${source_user_login_token()}
 #         json:
 #             nickname: $test_nickname
 #     validate:
@@ -81,7 +81,7 @@
 #     name: 修改fullname：fullname为空字符串
 #     request:
 #         headers:
-#             Authorization: $source_user_login_token
+#             Authorization: ${source_user_login_token()}
 #         json:
 #             fullname: ''
 #     validate:
@@ -100,7 +100,7 @@
 #     name: 修改fullname：fullname为哈哈
 #     request:
 #         headers:
-#             Authorization: $source_user_login_token
+#             Authorization: ${source_user_login_token()}
 #         json:
 #             fullname: $test_fullname
 #     validate:
@@ -120,7 +120,7 @@
 #     name: 修改头像：avatar_url为空字符串
 #     request:
 #         headers:
-#             Authorization: $source_user_login_token
+#             Authorization: ${source_user_login_token()}
 #         json:
 #             avatar_url: ''
 #     validate:
@@ -130,7 +130,7 @@
 #     name: 修改头像
 #     request:
 #         headers:
-#             Authorization: $source_user_login_token
+#             Authorization: ${source_user_login_token()}
 #         json:
 #             avatar_url: $test_avatar_url
 #     validate:
@@ -147,7 +147,7 @@
 #     name: 修改性别：sex为0
 #     request:
 #         headers:
-#             Authorization: $source_user_login_token
+#             Authorization: ${source_user_login_token()}
 #         json:
 #             sex: $test_sex_0
 #     validate:
@@ -163,7 +163,7 @@
 #     name: 修改性别：sex为1
 #     request:
 #         headers:
-#             Authorization: $source_user_login_token
+#             Authorization: ${source_user_login_token()}
 #         json:
 #             sex: $test_sex_1
 #     validate:
@@ -179,7 +179,7 @@
 #     name: 修改性别：sex为2
 #     request:
 #         headers:
-#             Authorization: $source_user_login_token
+#             Authorization: ${source_user_login_token()}
 #         json:
 #             sex: 2
 #     validate:
@@ -190,7 +190,7 @@
 #     name: 修改出生日期：birthday为0
 #     request:
 #         headers:
-#             Authorization: $source_user_login_token
+#             Authorization: ${source_user_login_token()}
 #         json:
 #             birthday: $test_birthday_0
 #     validate:
@@ -206,7 +206,7 @@
 #     name: 修改出生日期：birthday为123
 #     request:
 #         headers:
-#             Authorization: $source_user_login_token
+#             Authorization: ${source_user_login_token()}
 #         json:
 #             birthday: $test_birthday_123
 #     validate:
@@ -223,7 +223,7 @@
 #     name: 修改用户描述：description为空字符串
 #     request:
 #         headers:
-#             Authorization: $source_user_login_token
+#             Authorization: ${source_user_login_token()}
 #         json:
 #             description: ''
 #     validate:
@@ -233,7 +233,7 @@
 #     name: 修改用户描述：description为测试
 #     request:
 #         headers:
-#             Authorization: $source_user_login_token
+#             Authorization: ${source_user_login_token()}
 #         json:
 #             description: $test_description
 #     validate:
@@ -250,7 +250,7 @@
 #     name: 修改qq：qq为123456
 #     request:
 #         headers:
-#             Authorization: $source_user_login_token
+#             Authorization: ${source_user_login_token()}
 #         json:
 #             qq: $test_qq
 #     validate:

@@ -28,16 +28,16 @@
 #     request:
 #         url: /tiger/work/checkname?name=$work_name
 #         headers:
-#             Authorization: $source_user_login_token
+#             Authorization: ${source_user_login_token()}
 #     validate:
 #         - eq: [status_code, 200]
 #         - contains: [content.name, $work_name]
 # - test:
 #     name: 已登录-name传递-work_id为个人已发布作品
 #     request:
-#         url: /tiger/work/checkname?name=$work_name&work_id=$source_user_ide_published_work_id
+#         url: /tiger/work/checkname?name=$work_name&work_id=${source_user_ide_published_work_id()}
 #         headers:
-#             Authorization: $source_user_login_token
+#             Authorization: ${source_user_login_token()}
 #     validate:
 #         - eq: [status_code, 200]
 #         - contains: [content.name, $work_name]
@@ -46,7 +46,7 @@
 #     request:
 #         url: /tiger/work/checkname?name=$work_name&work_id=$unexist_work_id
 #         headers:
-#             Authorization: $source_user_login_token
+#             Authorization: ${source_user_login_token()}
 #     validate:
 #         - eq: [status_code, 200]
 #         - contains: [content.name, $work_name]

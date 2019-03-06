@@ -10,7 +10,7 @@
 # - test:
 #     name: 未登录-用户id存在
 #     request:
-#         url: /tiger/box/work/collection/$source_user_id
+#         url: /tiger/box/work/collection/${source_user_id()}
 #     validate:
 #         - eq: [status_code, 200]
 #         - type_match: [content, list]

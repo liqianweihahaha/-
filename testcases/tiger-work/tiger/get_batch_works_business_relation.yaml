@@ -12,35 +12,35 @@
 # - test:
 #     name: 未登录-work_ids为已发布ide作品(作品没有标志位)-business为CONTEST
 #     request:
-#         url: /tiger/work/business/relation?work_ids=$source_user_ide_published_work_id&business=$business_contest
+#         url: /tiger/work/business/relation?work_ids=${source_user_ide_published_work_id()}&business=$business_contest
 #     validate:
 #         - eq: [status_code, 200]
 #         - type_match: [content, list]
 # # - test:
 # #     name: 未登录-work_ids为已发布ide作品(作品有标志位)-business为CONTEST
 # #     request:
-# #         url: /tiger/work/business/relation?work_ids=$source_user_ide_published_work_id&business=$business_contest
+# #         url: /tiger/work/business/relation?work_ids=${source_user_ide_published_work_id()}&business=$business_contest
 # #     validate:
 # #         - eq: [status_code, 200]
 # #         - type_match: [content, list]
 # - test:
 #     name: 未登录-work_ids为已发布ide作品和未发布ide作品-business为CONTEST
 #     request:
-#         url: /tiger/work/business/relation?work_ids=$source_user_ide_published_work_id,$source_user_ide_unpublish_work_id&business=$business_contest
+#         url: /tiger/work/business/relation?work_ids=${source_user_ide_published_work_id()},${source_user_ide_unpublish_work_id()}&business=$business_contest
 #     validate:
 #         - eq: [status_code, 200]
 #         - type_match: [content, list]
 # - test:
 #     name: 未登录-work_ids为已发布作品-business为不支持字段
 #     request:
-#         url: /tiger/work/business/relation?work_ids=$target_user_ide_published_work_id&business=$unsupport_business
+#         url: /tiger/work/business/relation?work_ids=${target_user_id()}e_published_work_id&business=$unsupport_business
 #     validate:
 #         - eq: [status_code, 400]
 #         - eq: [content.error_code, A_5]
 # - test:
 #     name: 未登录-只传递work_ids为已发布作品
 #     request:
-#         url: /tiger/work/business/relation?work_ids=$target_user_ide_published_work_id
+#         url: /tiger/work/business/relation?work_ids=${target_user_id()}e_published_work_id
 #     validate:
 #         - eq: [status_code, 400]
 #         - eq: [content.error_code, A_5]
