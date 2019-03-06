@@ -1,15 +1,14 @@
-# - config:
-#     name: 获取box用户信息
-#     request:
-#         base_url: $tiger_api_host
-#         method: GET
-
-# - test:
-#     name: 未登录-用户id存在
-#     request:
-#         url: /tiger/box/user/${source_user_id()}
-#     validate:
-#         - eq: [status_code, 200]
-#         - eq: [content.user_id, ${source_user_id()}]
-#         - length_equals: [content, 11]
-#         - contains: [content, username]
+- config:
+    name: 获取box用户信息
+    base_url: ${tiger_api_host()}       
+        
+- test:
+    name: 未登录-用户id存在
+    request:
+        method: GET
+        url: /tiger/box/user/${source_user_id()}
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.user_id, '${source_user_id()}']
+        - length_equals: [content, 11]
+        - contains: [content, username]

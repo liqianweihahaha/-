@@ -1,54 +1,61 @@
-# - config:
-#     name: 获取用户box2.0作品已发布列表
-#     request:
-#         base_url: $tiger_api_host
-#         method: GET
-#     variables:
-#         - unsupport_is_published: aa
+- config:
+    name: 获取用户box2.0作品已发布列表
+    base_url: ${tiger_api_host()}
+    variables:
+        - unsupport_is_published: aa
 
-# - test:
-#     name: 未登录-不传递任何参数
-#     request:
-#         url: /tiger/box/my_works
-#     validate:
-#         - eq: [status_code, 403]
-#         - eq: [content.error_code, E_0]
-# - test:
-#     name: 已登录-不传递任何参数
-#     request:
-#         url: /tiger/box/my_works
-#         headers:
-#             Authorization: ${source_user_login_token()}
-#     validate:
-#         - eq: [status_code, 200]
-#         - contains: [content, total]
-#         - contains: [content, data]
-# - test:
-#     name: 已登录-传递所有默认参数（已发布的作品）
-#     request:
-#         url: /tiger/box/my_works?page=1&per_page=20&is_published=true&order=asc
-#         headers:
-#             Authorization: ${source_user_login_token()}
-#     validate:
-#         - eq: [status_code, 200]
-#         - contains: [content, total]
-#         - contains: [content, data]
-# - test:
-#     name: 已登录-is_published为false-order为desc
-#     request:
-#         url: /tiger/box/my_works?is_published=false&order=desc
-#         headers:
-#             Authorization: ${source_user_login_token()}
-#     validate:
-#         - eq: [status_code, 200]
-#         - contains: [content, total]
-#         - contains: [content, data]
-# - test:
-#     name: 已登录-is_published参数值错误
-#     request:
-#         url: /tiger/box/my_works?is_published=$unsupport_is_published
-#         headers:
-#             Authorization: ${source_user_login_token()}
-#     validate:
-#         - eq: [status_code, 400]
-#         - eq: [content.error_code, A_5]
+- test:
+    name: 未登录-不传递任何参数
+    request:
+        method: GET
+        url: /tiger/box/my_works
+    validate:
+        - eq: [status_code, 403]
+        - eq: [content.error_code, E_0]
+
+- test:
+    name: 已登录-不传递任何参数
+    request:
+        method: GET
+        url: /tiger/box/my_works
+        headers:
+            Authorization: ${source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+        - contains: [content, total]
+        - contains: [content, data]
+
+- test:
+    name: 已登录-传递所有默认参数（已发布的作品）
+    request:
+        method: GET
+        url: /tiger/box/my_works?page=1&per_page=20&is_published=true&order=asc
+        headers:
+            Authorization: ${source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+        - contains: [content, total]
+        - contains: [content, data]
+
+- test:
+    name: 已登录-is_published为false-order为desc
+    request:
+        method: GET
+        url: /tiger/box/my_works?is_published=false&order=desc
+        headers:
+            Authorization: ${source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+        - contains: [content, total]
+        - contains: [content, data]
+
+- test:
+    name: 已登录-is_published参数值错误
+    request:
+        method: GET
+        url: /tiger/box/my_works?is_published=$unsupport_is_published
+        headers:
+            Authorization: ${source_user_login_token()}
+    validate:
+        - eq: [status_code, 400]
+        - eq: [content.error_code, A_5]

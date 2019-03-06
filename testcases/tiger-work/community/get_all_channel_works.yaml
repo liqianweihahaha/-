@@ -1,11 +1,11 @@
-# - config:
-#     name: 获取所有频道作品
-#     request:
-#         base_url: $tiger_api_host
-#         method: GET
-#         url: /tiger/community/channel/works
+- config:
+    name: 获取所有频道作品
+    base_url: ${tiger_api_host()}
 
-# - test:
-#     name: 未登录
-#     validate:
-#         - eq: [status_code, 200]
+- test:
+    name: 未登录
+    request:
+        method: GET
+        url: /tiger/community/channel/works
+    validate:
+        - eq: [status_code, 200]

@@ -134,50 +134,50 @@ def login_token(identity, password, pid='UvOFXx2tfv'):
         "pid": pid
     }
     params = {'Content-Type': 'application/json'}  
-    res = requests.post(get_tiger_api_host()+'/tiger/accounts/login', json=data, params=params)
+    res = requests.post(tiger_api_host()+'/tiger/accounts/login', json=data, params=params)
     if res.status_code == 200 and 'application/json' in res.headers['Content-Type']:
         token = res.json()['token']
         bearer_token = 'Bearer '+ token
         return bearer_token
 
 def source_user_login_token():
-    return login_token(source_user_username, source_user_password)
+    return login_token(source_user_username(), source_user_password())
 
-# # 取消收藏作品
-# def uncollection_work(work_id):
-#     res = requests.delete(get_tiger_api_host()+'/api/work/collection/'+str(work_id), headers={'Authorization': source_user_login_token})
-#     if res.status_code == 200:
-#         if res.json()['code'] == 200:
-#             return True
-#         elif res.json()['code'] == 500:
-#             print('用户未收藏此作品')
-#             return False
-#     else:
-#         print('用户取消收藏作品失败，返回状态码：%s' % res.status_code)
-#         return False
+# 取消收藏作品
+def uncollection_work(work_id):
+    res = requests.delete(tiger_api_host()+'/api/work/collection/'+str(work_id), headers={'Authorization': source_user_login_token})
+    if res.status_code == 200:
+        if res.json()['code'] == 200:
+            return True
+        elif res.json()['code'] == 500:
+            print('用户未收藏此作品')
+            return False
+    else:
+        print('用户取消收藏作品失败，返回状态码：%s' % res.status_code)
+        return False
 
-# # 收藏作品
-# def collection_work(work_id):
-#     res = requests.post(get_tiger_api_host()+'/api/work/collection/'+str(work_id), headers={'Authorization': source_user_login_token})
-#     if res.status_code == 200:
-#         if res.json()['code'] == 200:
-#             return True
-#         elif res.json()['code'] == 2001:
-#             print('用户已收藏此作品')
-#             return False
-#     else:
-#         print('用户收藏作品失败，返回状态码：%s' % res.status_code)
-#         return False
+# 收藏作品
+def collection_work(work_id):
+    res = requests.post(tiger_api_host()+'/api/work/collection/'+str(work_id), headers={'Authorization': source_user_login_token})
+    if res.status_code == 200:
+        if res.json()['code'] == 200:
+            return True
+        elif res.json()['code'] == 2001:
+            print('用户已收藏此作品')
+            return False
+    else:
+        print('用户收藏作品失败，返回状态码：%s' % res.status_code)
+        return False
 
-# # 删除作品业务标志位
-# def delete_work_business_relation(timestamp, user_id, work_id):
-#     signature = business_relation_signature(timestamp, user_id, work_id)
-#     res = requests.delete(get_tiger_api_host()+'/tiger/work/business/relation?business=CONTEST&timestamp=%s&user_id=%s&work_id=%s&signature=%s' % (timestamp, user_id, work_id, signature))
-#     if res.status_code == 204:
-#         return True
-#     else:
-#         print('删除作品业务标志位失败，状态码：%s，请求url: %s' % (res.status_code), res.url)
-#         return False
+# 删除作品业务标志位
+def delete_work_business_relation(timestamp, user_id, work_id):
+    signature = business_relation_signature(timestamp, user_id, work_id)
+    res = requests.delete(tiger_api_host()+'/tiger/work/business/relation?business=CONTEST&timestamp=%s&user_id=%s&work_id=%s&signature=%s' % (timestamp, user_id, work_id, signature))
+    if res.status_code == 204:
+        return True
+    else:
+        print('删除作品业务标志位失败，状态码：%s，请求url: %s' % (res.status_code), res.url)
+        return False
 
 # # 判断是否是dev或者test环境
 # def is_dev():

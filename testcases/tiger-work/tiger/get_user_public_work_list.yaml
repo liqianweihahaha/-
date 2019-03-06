@@ -1,31 +1,32 @@
-# - config:
-#     name: 获取某用户公开作品（Public）
-#     request:
-#         base_url: $tiger_api_host
-#         method: GET
-#     variables:
-#         - unexist_user_id: 100
-#         - wrong_type_user_id: aaa
+- config:
+    name: 获取某用户公开作品（Public）
+    base_url: ${tiger_api_host()}
+    variables:
+        - unexist_user_id: 100
+        - wrong_type_user_id: aaa
 
-# - test:
-#     name: 未登录-用户id存在
-#     request:
-#         url: /tiger/work/list/user/${source_user_id()}
-#     validate:
-#         - eq: [status_code, 200]
-#         - type_match: [content, list]
-# - test:
-#     name: 未登录-不存在的用户id
-#     request:
-#         url: /tiger/work/list/user/$unexist_user_id
-#     validate:
-#         - eq: [status_code, 200]
-#         - type_match: [content, list]
-#         - length_equals: [content, 0]
-# - test:
-#     name: 未登录-格式错误的用户id
-#     request:
-#         url: /tiger/work/list/user/$wrong_type_user_id
-#     validate:
-#         - eq: [status_code, 400]
-#         - eq: [content.error_code, A_5]
+- test:
+    name: 未登录-用户id存在
+    request:
+        method: GET
+        url: /tiger/work/list/user/${source_user_id()}
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, list]
+- test:
+    name: 未登录-不存在的用户id
+    request:
+        method: GET
+        url: /tiger/work/list/user/$unexist_user_id
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, list]
+        - length_equals: [content, 0]
+- test:
+    name: 未登录-格式错误的用户id
+    request:
+        method: GET
+        url: /tiger/work/list/user/$wrong_type_user_id
+    validate:
+        - eq: [status_code, 400]
+        - eq: [content.error_code, A_5]

@@ -1,33 +1,36 @@
-# - config:
-#     name: 获取第三方服务绑定状态列表
-#     request:
-#         base_url: $tiger_api_host
-#         url: /tiger/v3/web/accounts/oauths
-#         method: GET
+- config:
+    name: 获取第三方服务绑定状态列表
+    base_url: ${tiger_api_host()}
 
-# - test:
-#     name: 已登录
-#     request:
-#         headers:
-#             Authorization: ${source_user_login_token()}
-#     validate:
-#         - eq: [status_code, 200]
-#         - length_equals: [content, 5]
-#         - length_equals: [content.0, 3]
-#         - type_match: [content, list]
-#         - eq: [content.0.id, 1]
-#         - eq: [content.0.name, wechat]
-#         - eq: [content.1.id, 2]
-#         - eq: [content.1.name, qq]
-#         - eq: [content.2.id, 3]
-#         - eq: [content.2.name, noahedu]
-#         - eq: [content.3.id, 4]
-#         - eq: [content.3.name, eduyun]
-#         - eq: [content.4.id, 5]
-#         - eq: [content.4.name, baobaolong]
-#         - contains: [content.0, is_bound]
-# - test:
-#     name: 未登录
-#     validate:
-#         - eq: [status_code, 403]
-#         - eq: [content.error_code, E_0]
+- test:
+    name: 已登录
+    request:
+        method: GET
+        url: /tiger/v3/web/accounts/oauths
+        headers:
+            Authorization: ${source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+        - length_equals: [content, 5]
+        - length_equals: [content.0, 3]
+        - type_match: [content, list]
+        - eq: [content.0.id, 1]
+        - eq: [content.0.name, wechat]
+        - eq: [content.1.id, 2]
+        - eq: [content.1.name, qq]
+        - eq: [content.2.id, 3]
+        - eq: [content.2.name, noahedu]
+        - eq: [content.3.id, 4]
+        - eq: [content.3.name, eduyun]
+        - eq: [content.4.id, 5]
+        - eq: [content.4.name, baobaolong]
+        - contains: [content.0, is_bound]
+
+- test:
+    name: 未登录
+    request:
+        method: GET
+        url: /tiger/v3/web/accounts/oauths
+    validate:
+        - eq: [status_code, 403]
+        - eq: [content.error_code, E_0]

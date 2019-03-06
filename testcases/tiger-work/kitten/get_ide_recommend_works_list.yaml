@@ -1,59 +1,70 @@
-# - config:
-#     name: 获取带有某标签的作品（Public）
-#     request:
-#         base_url: $tiger_api_host
-#         method: GET
+- config:
+    name: 获取带有某标签的作品（Public）
+    base_url: ${tiger_api_host()}
 
-# - test:
-#     name: 未登录-page_number为1-amount_items为1
-#     request:
-#         url: /tiger/work/ide/recommended?page_number=1&amount_items=1
-#     validate:
-#         - eq: [status_code, 200]
-#         - type_match: [content, list]
-#         # - length_equals: [content, 1]
-#         # - length_equals: [content.0, 10]
-#         # - eq: [content.0.type, 1]
-#         # - contains: [content.0, description]
-# - test:
-#     name: 未登录-page_number为0-amount_items为1
-#     request:
-#         url: /tiger/work/ide/recommended?page_number=0&amount_items=1
-#     validate:
-#         - eq: [status_code, 400]
-#         - eq: [content.error_code, A_5]
-# - test:
-#     name: 未登录-page_number为-1-amount_items为1
-#     request:
-#         url: /tiger/work/ide/recommended?page_number=-1&amount_items=1
-#     validate:
-#         - eq: [status_code, 400]
-#         - eq: [content.error_code, A_5]
-# - test:
-#     name: 未登录-page_number为1-amount_items为0
-#     request:
-#         url: /tiger/work/ide/recommended?page_number=1&amount_items=0
-#     validate:
-#         - eq: [status_code, 400]
-#         - eq: [content.error_code, A_5]
-# - test:
-#     name: 未登录-page_number为1-amount_items为-1
-#     request:
-#         url: /tiger/work/ide/recommended?page_number=1&amount_items=-1
-#     validate:
-#         - eq: [status_code, 400]
-#         - eq: [content.error_code, A_5]
-# - test:
-#     name: 未登录-page_number为1-amount_items不传递
-#     request:
-#         url: /tiger/work/ide/recommended?page_number=1
-#     validate:
-#         - eq: [status_code, 400]
-#         - eq: [content.error_code, A_5]
-# - test:
-#     name: 未登录-page_number不传递-amount_items为1
-#     request:
-#         url: /tiger/work/ide/recommended?amount_items=1
-#     validate:
-#         - eq: [status_code, 400]
-#         - eq: [content.error_code, A_5]
+- test:
+    name: 未登录-page_number为1-amount_items为1
+    request:
+        method: GET
+        url: /tiger/work/ide/recommended?page_number=1&amount_items=1
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, list]
+        # - length_equals: [content, 1]
+        # - length_equals: [content.0, 10]
+        # - eq: [content.0.type, 1]
+        # - contains: [content.0, description]
+
+- test:
+    name: 未登录-page_number为0-amount_items为1
+    request:
+        method: GET
+        url: /tiger/work/ide/recommended?page_number=0&amount_items=1
+    validate:
+        - eq: [status_code, 400]
+        - eq: [content.error_code, A_5]
+
+- test:
+    name: 未登录-page_number为-1-amount_items为1
+    request:
+        method: GET
+        url: /tiger/work/ide/recommended?page_number=-1&amount_items=1
+    validate:
+        - eq: [status_code, 400]
+        - eq: [content.error_code, A_5]
+
+- test:
+    name: 未登录-page_number为1-amount_items为0
+    request:
+        method: GET
+        url: /tiger/work/ide/recommended?page_number=1&amount_items=0
+    validate:
+        - eq: [status_code, 400]
+        - eq: [content.error_code, A_5]
+
+- test:
+    name: 未登录-page_number为1-amount_items为-1
+    request:
+        method: GET
+        url: /tiger/work/ide/recommended?page_number=1&amount_items=-1
+    validate:
+        - eq: [status_code, 400]
+        - eq: [content.error_code, A_5]
+
+- test:
+    name: 未登录-page_number为1-amount_items不传递
+    request:
+        method: GET
+        url: /tiger/work/ide/recommended?page_number=1
+    validate:
+        - eq: [status_code, 400]
+        - eq: [content.error_code, A_5]
+
+- test:
+    name: 未登录-page_number不传递-amount_items为1
+    request:
+        method: GET
+        url: /tiger/work/ide/recommended?amount_items=1
+    validate:
+        - eq: [status_code, 400]
+        - eq: [content.error_code, A_5]

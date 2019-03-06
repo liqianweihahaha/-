@@ -1,141 +1,162 @@
-# - config:
-#     name: 发布作品
-#     request:
-#         base_url: $tiger_api_host
-#         method: PUT
-#         headers:
-#             Content-Type: $content_type
-#     variables:
-#         - preview_work_url: https://static.codemao.cn/lesson/assets/images/work_default_preview_1.png
-#         - unexist_work_id: 100
-#         # 游戏标签
-#         - work_label_id: 23
-#         - unexist_work_label_id: 1000
-#         - unexist_work_allow_fork_id: 2
-#         - test_update_work_name: 测试发布作品时更新作品名称
-#         - test_update_work_description: 测试发布作品时更新作品说明
-#         - test_update_work_instruction: 测试发布作品时更新作品操作说明
+- config:
+    name: 发布作品
+    base_url: ${tiger_api_host()}
+    variables:
+        - preview_work_url: https://static.codemao.cn/lesson/assets/images/work_default_preview_1.png
+        - unexist_work_id: 100
+        # 游戏标签
+        - work_label_id: 23
+        - unexist_work_label_id: 1000
+        - unexist_work_allow_fork_id: 2
+        - test_update_work_name: 测试发布作品时更新作品名称
+        - test_update_work_description: 测试发布作品时更新作品说明
+        - test_update_work_instruction: 测试发布作品时更新作品操作说明
 
 # - test:
 #     name: 未登录-已发布ide作品
-#     api: publish_work(${source_user_ide_published_work_id()}, None)
+#     api: api/tiger-work/tiger/publish_work.yaml
+#     variables:
+#         - work_id: ${source_user_ide_published_work_id()}
+#         - token: None
 #     validate:
 #         - eq: [status_code, 403]
 #         - eq: [content.error_code, E_0]
-# - test:
-#     name: 已登录-个人已发布ide作品-body为空
-#     api: publish_work(${source_user_ide_published_work_id()}, ${source_user_login_token()})
-#     validate:
-#         - eq: [status_code, 204]
 
-# - test:
-#     name: 已登录-个人已发布ide作品-传递name、description、operation
-#     request:
-#         url: /tiger/work/${source_user_ide_published_work_id()}/publish
-#         headers:
-#             Authorization: ${source_user_login_token()}
-#         json:
-#             name: $test_update_work_name
-#             description: $test_update_work_description
-#             operation_instruction: $test_update_work_instruction
-#     validate:
-#         - eq: [status_code, 204]
-# - test:
-#     name: 判断作品名称和作品说明和作品操作说明是否更新成功
-#     api: get_work_info(${source_user_ide_published_work_id()})
-#     validate:
-#         - eq: [content.name, $test_update_work_name]
-#         - eq: [content.description, $test_update_work_description]
-#         - eq: [content.operation_instruction, $test_update_work_instruction]
+- test:
+    name: 已登录-个人已发布ide作品-body为空
+    api: api/tiger-work/tiger/publish_work.yaml
+    variables:
+        - work_id: ${source_user_ide_published_work_id()}
+        - token: ${source_user_login_token()}
+    validate:
+        - eq: [status_code, 204]
 
-# - test:
-#     name: 已登录-个人已发布ide作品-body只传递preview
-#     request:
-#         url: /tiger/work/${source_user_ide_published_work_id()}/publish
-#         headers:
-#             Authorization: ${source_user_login_token()}
-#         json:
-#             preview: $preview_work_url
-#     validate:
-#         - eq: [status_code, 204]
-# - test:
-#     name: 判断作品封面是否更新成功
-#     api: get_work_info(${source_user_ide_published_work_id()})
-#     validate:
-#         - eq: [content.preview, $preview_work_url]
+- test:
+    name: 已登录-个人已发布ide作品-传递name、description、operation
+    request:
+        method: PUT
+        url: /tiger/work/${source_user_ide_published_work_id()}/publish
+        headers:
+            Authorization: ${source_user_login_token()}
+        json:
+            name: $test_update_work_name
+            description: $test_update_work_description
+            operation_instruction: $test_update_work_instruction
+    validate:
+        - eq: [status_code, 204]
 
-# - test:
-#     name: 已登录-个人已发布ide作品-body只传递label
-#     request:
-#         url: /tiger/work/${source_user_ide_published_work_id()}/publish
-#         headers:
-#             Authorization: ${source_user_login_token()}
-#         json:
-#             labels: [$work_label_id]
-#     validate:
-#         - eq: [status_code, 204]
-# - test:
-#     name: 已登录-个人已发布ide作品-body传递不存在的label_id
-#     request:
-#         url: /tiger/work/${source_user_ide_published_work_id()}/publish
-#         headers:
-#             Authorization: ${source_user_login_token()}
-#         json:
-#             labels: [$unexist_work_label_id]
-#     validate:
-#         - eq: [status_code, 403]
-#         - eq: [content.error_code, W_4]
+- test:
+    name: 判断作品名称和作品说明和作品操作说明是否更新成功
+    api: api/tiger-work/kitten/get_work_info_public.yaml
+    variables:
+        - work_id: ${source_user_ide_published_work_id()}
+    validate:
+        - eq: [content.name, $test_update_work_name]
+        - eq: [content.description, $test_update_work_description]
+        - eq: [content.operation_instruction, $test_update_work_instruction]
 
-# - test:
-#     name: 已登录-个人已发布ide作品-body传递的allow_fork为0
-#     request:
-#         url: /tiger/work/${source_user_ide_published_work_id()}/publish
-#         headers:
-#             Authorization: ${source_user_login_token()}
-#         json:
-#             allow_fork: 0
-#     validate:
-#         - eq: [status_code, 204]
-# - test:
-#     name: 判断作品是否更新为不可购买
-#     api: get_work_info(${source_user_ide_published_work_id()})
-#     validate:
-#         - eq: [content.is_fork_allowed, false]
+- test:
+    name: 已登录-个人已发布ide作品-body只传递preview
+    request:
+        method: PUT
+        url: /tiger/work/${source_user_ide_published_work_id()}/publish
+        headers:
+            Authorization: ${source_user_login_token()}
+        json:
+            preview: $preview_work_url
+    validate:
+        - eq: [status_code, 204]
+- test:
+    name: 判断作品封面是否更新成功
+    api: api/tiger-work/kitten/get_work_info_public.yaml
+    variables:
+        - work_id: ${source_user_ide_published_work_id()}
+    validate:
+        - eq: [content.preview, $preview_work_url]
 
-# - test:
-#     name: 已登录-个人已发布ide作品-body传递的allow_fork为1
-#     request:
-#         url: /tiger/work/${source_user_ide_published_work_id()}/publish
-#         headers:
-#             Authorization: ${source_user_login_token()}
-#         json:
-#             allow_fork: 1
-#     validate:
-#         - eq: [status_code, 204]
-# - test:
-#     name: 判断作品是否更新为可购买
-#     api: get_work_info(${source_user_ide_published_work_id()})
-#     validate:
-#         - eq: [content.is_fork_allowed, true]
+- test:
+    name: 已登录-个人已发布ide作品-body只传递label
+    request:
+        method: PUT
+        url: /tiger/work/${source_user_ide_published_work_id()}/publish
+        headers:
+            Authorization: ${source_user_login_token()}
+        json:
+            labels: [$work_label_id]
+    validate:
+        - eq: [status_code, 204]
+- test:
+    name: 已登录-个人已发布ide作品-body传递不存在的label_id
+    request:
+        method: PUT
+        url: /tiger/work/${source_user_ide_published_work_id()}/publish
+        headers:
+            Authorization: ${source_user_login_token()}
+        json:
+            labels: [$unexist_work_label_id]
+    validate:
+        - eq: [status_code, 403]
+        - eq: [content.error_code, W_4]
 
-# - test:
-#     name: 已登录-个人已发布ide作品-body传递的allow_fork为2
-#     request:
-#         url: /tiger/work/${source_user_ide_published_work_id()}/publish
-#         headers:
-#             Authorization: ${source_user_login_token()}
-#         json:
-#             allow_fork: $unexist_work_allow_fork_id
-#     validate:
-#         - eq: [status_code, 400]
-#         - eq: [content.error_code, A_5]
+- test:
+    name: 已登录-个人已发布ide作品-body传递的allow_fork为0
+    request:
+        method: PUT
+        url: /tiger/work/${source_user_ide_published_work_id()}/publish
+        headers:
+            Authorization: ${source_user_login_token()}
+        json:
+            allow_fork: 0
+    validate:
+        - eq: [status_code, 204]
+- test:
+    name: 判断作品是否更新为不可购买
+    api: api/tiger-work/kitten/get_work_info_public.yaml
+    variables:
+        - work_id: ${source_user_ide_published_work_id()}
+    validate:
+        - eq: [content.is_fork_allowed, false]
 
-# - test:
-#     name: 已登录-不存在的作品id-body为空
-#     request:
-#         url: /tiger/work/$unexist_work_id/publish
-#         headers:
-#             Authorization: ${source_user_login_token()}
-#     validate:
-#         - eq: [status_code, 404]
-#         - eq: [content.error_code, W_0]
+- test:
+    name: 已登录-个人已发布ide作品-body传递的allow_fork为1
+    request:
+        method: PUT
+        url: /tiger/work/${source_user_ide_published_work_id()}/publish
+        headers:
+            Authorization: ${source_user_login_token()}
+        json:
+            allow_fork: 1
+    validate:
+        - eq: [status_code, 204]
+- test:
+    name: 判断作品是否更新为可购买
+    api: api/tiger-work/kitten/get_work_info_public.yaml
+    variables:
+        - work_id: ${source_user_ide_published_work_id()}
+    validate:
+        - eq: [content.is_fork_allowed, true]
+
+- test:
+    name: 已登录-个人已发布ide作品-body传递的allow_fork为2
+    request:
+        method: PUT
+        url: /tiger/work/${source_user_ide_published_work_id()}/publish
+        headers:
+            Authorization: ${source_user_login_token()}
+        json:
+            allow_fork: $unexist_work_allow_fork_id
+    validate:
+        - eq: [status_code, 400]
+        - eq: [content.error_code, A_5]
+
+- test:
+    name: 已登录-不存在的作品id-body为空
+    request:
+        method: PUT
+        url: /tiger/work/$unexist_work_id/publish
+        headers:
+            Authorization: ${source_user_login_token()}
+            Content-Type: application/json
+    validate:
+        - eq: [status_code, 404]
+        - eq: [content.error_code, W_0]

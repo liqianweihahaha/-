@@ -1,86 +1,98 @@
-# - config:
-#     name: 搜索作品（Public）
-#     request:
-#         base_url: $tiger_api_host
-#         method: GET
-#     variables:
-#         - text: 哈哈
-#         - type: 1
-#         - page: 1
-#         - limit: 5
-#         - unexist_type_id: 100
+- config:
+    name: 搜索作品（Public）
+    base_url: ${tiger_api_host()}
+    variables:
+        - text: 哈哈
+        - type: 1
+        - page: 1
+        - limit: 5
+        - unexist_type_id: 100
 
-# - test:
-#     name: 未登录-传递所有参数text,type=1,page,limit
-#     request:
-#         url: /api/work/search?text=$text&type=$type&page=$page&limit=$limit
-#     validate:
-#         - eq: [status_code, 200]
-#         - eq: [content.code, 200]
-#         - eq: [content.msg, 成功]
-#         - contains: [content.data, programList]
-#         - contains: [content.data, workCount]
-# - test:
-#     name: 未登录-传递全部参数，type=3
-#     request:
-#         url: /api/work/search?text=$text&type=3&page=$page&limit=$limit
-#     validate:
-#         - eq: [status_code, 200]
-#         - eq: [content.code, 200]
-#         - eq: [content.msg, 成功]
-#         - length_equals: [content.data, 2]
-#         - contains: [content.data, programList]
-#         - contains: [content.data, workCount]
-# - test:
-#     name: 未登录-传递全部参数，type=5
-#     request:
-#         url: /api/work/search?text=$text&type=5&page=$page&limit=$limit
-#     validate:
-#         - eq: [status_code, 200]
-#         - eq: [content.code, 200]
-#         - eq: [content.msg, 成功]
-#         - length_equals: [content.data, 2]
-#         - contains: [content.data, programList]
-#         - contains: [content.data, workCount]
-# - test:
-#     name: 未登录-只传递text
-#     request:
-#         url: /api/work/search?text=$text
-#     validate:
-#         - eq: [status_code, 400]
-#         - eq: [content.error_code, A_5]
-# - test:
-#     name: 未登录-只传递text和type=1
-#     request:
-#         url: /api/work/search?text=$text&type=$type
-#     validate:
-#         - eq: [status_code, 200]
-#         - eq: [content.code, 200]
-#         - eq: [content.msg, 成功]
-#         - contains: [content.data, programList]
-#         - contains: [content.data, workCount]
-# - test:
-#     name: 未登录-只传递type=1
-#     request:
-#         url: /api/work/search?type=$type
-#     validate:
-#         - eq: [status_code, 400]
-#         - eq: [content.error_code, A_5]
-# - test:
-#     name: 未登录-不传递参数
-#     request:
-#         url: /api/work/search?type=$type
-#     validate:
-#         - eq: [status_code, 400]
-#         - eq: [content.error_code, A_5]
-# - test:
-#     name: 未登录-传递全部参数，type不存在
-#     request:
-#         url: /api/work/search?text=$text&type=$unexist_type_id&page=$page&limit=$limit
-#     validate:
-#         - eq: [status_code, 200]
-#         - eq: [content.code, 200]
-#         - eq: [content.msg, 成功]
-#         - length_equals: [content.data, 2]
-#         - contains: [content.data, programList]
-#         - contains: [content.data, workCount]
+- test:
+    name: 未登录-传递所有参数text,type=1,page,limit
+    request:
+        method: GET
+        url: /api/work/search?text=$text&type=$type&page=$page&limit=$limit
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.code, 200]
+        - eq: [content.msg, 成功]
+        - contains: [content.data, programList]
+        - contains: [content.data, workCount]
+
+- test:
+    name: 未登录-传递全部参数，type=3
+    request:
+        method: GET
+        url: /api/work/search?text=$text&type=3&page=$page&limit=$limit
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.code, 200]
+        - eq: [content.msg, 成功]
+        - length_equals: [content.data, 2]
+        - contains: [content.data, programList]
+        - contains: [content.data, workCount]
+
+- test:
+    name: 未登录-传递全部参数，type=5
+    request:
+        method: GET
+        url: /api/work/search?text=$text&type=5&page=$page&limit=$limit
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.code, 200]
+        - eq: [content.msg, 成功]
+        - length_equals: [content.data, 2]
+        - contains: [content.data, programList]
+        - contains: [content.data, workCount]
+
+- test:
+    name: 未登录-只传递text
+    request:
+        method: GET
+        url: /api/work/search?text=$text
+    validate:
+        - eq: [status_code, 400]
+        - eq: [content.error_code, A_5]
+
+- test:
+    name: 未登录-只传递text和type=1
+    request:
+        method: GET
+        url: /api/work/search?text=$text&type=$type
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.code, 200]
+        - eq: [content.msg, 成功]
+        - contains: [content.data, programList]
+        - contains: [content.data, workCount]
+
+- test:
+    name: 未登录-只传递type=1
+    request:
+        method: GET
+        url: /api/work/search?type=$type
+    validate:
+        - eq: [status_code, 400]
+        - eq: [content.error_code, A_5]
+
+- test:
+    name: 未登录-不传递参数
+    request:
+        method: GET
+        url: /api/work/search?type=$type
+    validate:
+        - eq: [status_code, 400]
+        - eq: [content.error_code, A_5]
+- test:
+    name: 未登录-传递全部参数，type不存在
+    request:
+        method: GET
+        url: /api/work/search?text=$text&type=$unexist_type_id&page=$page&limit=$limit
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.code, 200]
+        - eq: [content.msg, 成功]
+        - length_equals: [content.data, 2]
+        - contains: [content.data, programList]
+        - contains: [content.data, workCount]

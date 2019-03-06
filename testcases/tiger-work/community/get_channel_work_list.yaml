@@ -1,55 +1,61 @@
-# - config:
-#     name: 获取特定频道作品
-#     request:
-#         base_url: $tiger_api_host
-#         method: GET
-#     variables:
-#         - existed_channel_id: 1
-#         - unexist_channel_id: 100
-#         - wrong_type_channel_id: aaa
+- config:
+    name: 获取特定频道作品
+    base_url: ${tiger_api_host()}
+    variables:
+        - existed_channel_id: 1
+        - unexist_channel_id: 100
+        - wrong_type_channel_id: aaa
 
+- test:
+    name: 未登录-频道存在为1-limit不传递
+    request:
+        method: GET
+        url: /tiger/community/channel/$existed_channel_id/works
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.page, 1]
+        - eq: [content.limit, 15]
+        - contains: [content, works]
+        - contains: [content, total]
+        - length_equals: [content.works.0, 6]
+
+- test:
+    name: 未登录-频道存在为1-limit为1
+    request:
+        method: GET
+        url: /tiger/community/channel/$existed_channel_id/works?limit=1
+    validate:
+        - eq: [status_code, 400]
+        - eq: [content.error_code, A_5]
+
+- test:
+    name: 未登录-频道存在为1-limit为0
+    request:
+        method: GET
+        url: /tiger/community/channel/$existed_channel_id/works?limit=0
+    validate:
+        - eq: [status_code, 400]
+        - eq: [content.error_code, A_5]
+
+- test:
+    name: 未登录-频道存在为1-limit为101
+    request:
+        method: GET
+        url: /tiger/community/channel/$existed_channel_id/works?limit=101
+    validate:
+        - eq: [status_code, 400]
+        - eq: [content.error_code, A_5]
 # - test:
-#     name: 未登录-频道存在为1-limit不传递
+#     name: 未登录-不存在的频道id,500错误，需要社区处理
 #     request:
-#         url: /tiger/community/channel/$existed_channel_id/works
+#         url: /tiger/community/channel/$unexist_channel_id/works
 #     validate:
-#         - eq: [status_code, 200]
-#         - eq: [content.page, 1]
-#         - eq: [content.limit, 15]
-#         - contains: [content, works]
-#         - contains: [content, total]
-#         - length_equals: [content.works.0, 6]
-# - test:
-#     name: 未登录-频道存在为1-limit为1
-#     request:
-#         url: /tiger/community/channel/$existed_channel_id/works?limit=1
-#     validate:
-#         - eq: [status_code, 400]
-#         - eq: [content.error_code, A_5]
-# - test:
-#     name: 未登录-频道存在为1-limit为0
-#     request:
-#         url: /tiger/community/channel/$existed_channel_id/works?limit=0
-#     validate:
-#         - eq: [status_code, 400]
-#         - eq: [content.error_code, A_5]
-# - test:
-#     name: 未登录-频道存在为1-limit为101
-#     request:
-#         url: /tiger/community/channel/$existed_channel_id/works?limit=101
-#     validate:
-#         - eq: [status_code, 400]
-#         - eq: [content.error_code, A_5]
-# # - test:
-# #     name: 未登录-不存在的频道id,500错误，需要社区处理
-# #     request:
-# #         url: /tiger/community/channel/$unexist_channel_id/works
-# #     validate:
-# - test:
-#     name: 未登录-格式错误的频道id
-#     request:
-#         url: /tiger/community/channel/$wrong_type_channel_id/works
-#     validate:
-#         - eq: [status_code, 400]
-#         - eq: [content.error_code, A_5]
-#         
+- test:
+    name: 未登录-格式错误的频道id
+    request:
+        method: GET
+        url: /tiger/community/channel/$wrong_type_channel_id/works
+    validate:
+        - eq: [status_code, 400]
+        - eq: [content.error_code, A_5]
+        

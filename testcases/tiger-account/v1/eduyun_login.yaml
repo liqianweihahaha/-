@@ -1,39 +1,41 @@
-# - config:
-#     name: 国家数字教育资源账号接入
-#     request:
-#         base_url: $tiger_api_host
-#         url: /tiger/accounts/eduyun/login
-#         method: POST
-#         headers:
-#             Content-Type: $content_type
-#     variables:
-#         - wrong_ticket: aaa
+- config:
+    name: 国家数字教育资源账号接入
+    base_url: ${tiger_api_host()}
+    variables:
+        - wrong_ticket: aaa
 
+- test:
+    name: ticket正确
+    request:
+        method: POST
+        url: /tiger/accounts/eduyun/login
+        json: 
+            ticket: ${get_eduyun_ticket()}
+            pid: 65edCTyg
+    validate:
+        - eq: [status_code, 200]
+        - contains: [content, user_info]
+        - contains: [content, token]
 
-# - test:
-#     name: ticket正确
-#     request:
-#         json: 
-#             ticket: ${get_eduyun_ticket()}
-#             pid: 65edCTyg
-#     validate:
-#         - eq: [status_code, 200]
-#         - contains: [content, user_info]
-#         - contains: [content, token]
-# - test:
-#     name: ticket不正确
-#     request:
-#         json: 
-#             ticket: $wrong_ticket
-#             pid: 65edCTyg
-#     validate:
-#         - eq: [status_code, 403]
-#         - eq: [content.error_code, AC_42]
-# - test:
-#     name: 不传递ticket
-#     request:
-#         json: 
-#             pid: 65edCTyg
-#     validate:
-#         - eq: [status_code, 400]
-#         - eq: [content.error_code, A_5]
+- test:
+    name: ticket不正确
+    request:
+        method: POST
+        url: /tiger/accounts/eduyun/login
+        json: 
+            ticket: $wrong_ticket
+            pid: 65edCTyg
+    validate:
+        - eq: [status_code, 403]
+        - eq: [content.error_code, AC_42]
+
+- test:
+    name: 不传递ticket
+    request:
+        method: POST
+        url: /tiger/accounts/eduyun/login
+        json: 
+            pid: 65edCTyg
+    validate:
+        - eq: [status_code, 400]
+        - eq: [content.error_code, A_5]

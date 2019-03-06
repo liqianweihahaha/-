@@ -1,15 +1,15 @@
-# - config:
-#     name: 作品排行榜(Public)
-#     request:
-#         base_url: $tiger_api_host
-#         method: GET
-#         url: /tiger/community/work/ranking
+- config:
+    name: 作品排行榜(Public)
+    base_url: ${tiger_api_host()}
 
-# - test:
-#     name: 未登录用户
-#     validate:
-#         - eq: [status_code, 200]
-#         - contains: [content, works]
-#         - length_equals: [content.works, 10]
-#         - length_equals: [content.works.0, 6]
-#         - contains: [content.works.0, description]
+- test:
+    name: 未登录用户
+    request:
+        method: GET
+        url: /tiger/community/work/ranking
+    validate:
+        - eq: [status_code, 200]
+        - contains: [content, works]
+        - length_equals: [content.works, 10]
+        - length_equals: [content.works.0, 6]
+        - contains: [content.works.0, description]

@@ -1,57 +1,66 @@
-# - config:
-#     name: 列出box所有作品（Public）
-#     request:
-#         base_url: $tiger_api_host
-#         method: GET
+- config:
+    name: 列出box所有作品（Public）
+    base_url: ${tiger_api_host()}
 
-# - test:
-#     name: 未登录-不传递任何参数
-#     request:
-#         url: /tiger/box/work/list/all
-#     validate:
-#         - eq: [status_code, 200]
-#         - eq: [content.0.type, 5]
-#         - type_match: [content, list]
-#         - length_equals: [content.0, 14]
-#         - length_less_than_or_equals: [content, 20]
-# - test:
-#     name: 未登录-per_page为1
-#     request:
-#         url: /tiger/box/work/list/all?per_page=1
-#     validate:
-#         - eq: [status_code, 200]
-#         - eq: [content.0.type, 5]
-#         - type_match: [content, list]
-#         - length_equals: [content.0, 14]
-#         - length_equals: [content, 1]
-# - test:
-#     name: 未登录-per_page为0
-#     request:
-#         url: /tiger/box/work/list/all?per_page=0
-#     validate:
-#         - eq: [status_code, 400]
-#         - eq: [content.error_code, A_5]
-# - test:
-#     name: 未登录-order_type为view_times
-#     request:
-#         url: /tiger/box/work/list/all?orer_by=view_times
-#     extract: 
-#         - work_2_view_times: content.1.view_times
-#     validate:
-#         - eq: [status_code, 200]
-#         - type_match: [content, list]
-#         - greater_than_or_equals: [content.0.view_times, $work_2_view_times]
-# - test:
-#     name: 未登录-order_type为update_time
-#     request:
-#         url: /tiger/box/work/list/all?orer_by=update_time
-#     validate:
-#         - eq: [status_code, 200]
-#         - type_match: [content, list]
-# - test:
-#     name: 未登录-order_type为aaa
-#     request:
-#         url: /tiger/box/work/list/all?order_by=aaa
-#     validate:
-#         - eq: [status_code, 400]
-#         - eq: [content.error_code, A_5]
+- test:
+    name: 未登录-不传递任何参数
+    request:
+        method: GET
+        url: /tiger/box/work/list/all
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.0.type, 5]
+        - type_match: [content, list]
+        - length_equals: [content.0, 14]
+        - length_less_than_or_equals: [content, 20]
+
+- test:
+    name: 未登录-per_page为1
+    request:
+        method: GET
+        url: /tiger/box/work/list/all?per_page=1
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.0.type, 5]
+        - type_match: [content, list]
+        - length_equals: [content.0, 14]
+        - length_equals: [content, 1]
+
+- test:
+    name: 未登录-per_page为0
+    request:
+        method: GET
+        url: /tiger/box/work/list/all?per_page=0
+    validate:
+        - eq: [status_code, 400]
+        - eq: [content.error_code, A_5]
+
+- test:
+    name: 未登录-order_type为view_times
+    request:
+        method: GET
+        url: /tiger/box/work/list/all?orer_by=view_times
+    extract: 
+        - work_2_view_times: content.1.view_times
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, list]
+        - greater_than_or_equals: [content.0.view_times, $work_2_view_times]
+
+- test:
+    name: 未登录-order_type为update_time
+    request:
+        method: GET
+        url: /tiger/box/work/list/all?orer_by=update_time
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, list]
+
+- test:
+    name: 未登录-order_type为aaa
+    request:
+        method: GET
+        url: /tiger/box/work/list/all?order_by=aaa
+    validate:
+        - eq: [status_code, 400]
+        - eq: [content.error_code, A_5]

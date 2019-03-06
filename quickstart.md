@@ -43,3 +43,4 @@ variables:
 |debugtalk.py|可以直接引用其中定义的变量|不能直接引用其中定义的变量|
 |base_url|在config中的request下定义|在config下直接定义或者api中直接定义(不能在request下)|
 |method、url等|可以在config的request下统一配置|只能在test中指定|
+|testcase文件内容为空||执行报错|
