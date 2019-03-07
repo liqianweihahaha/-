@@ -7,8 +7,9 @@
 #### 依赖包
 ```
 python 3.0+
-httprunner==1.5.13, 1.5.14, 1.5.15
+httprunner==2.0+
 ```
+- httprunner 1.5.x版本，可切换到分支hrun1.0，然后运行
 
 #### 运行脚本
 - 默认测试报告的路径：reports/xx.html

@@ -172,7 +172,7 @@ def collection_work(work_id):
 # 删除作品业务标志位
 def delete_work_business_relation(timestamp, user_id, work_id):
     signature = business_relation_signature(timestamp, user_id, work_id)
-    res = requests.delete(tiger_api_host()+'/tiger/work/business/relation?business=CONTEST&timestamp=%s&user_id=%s&work_id=%s&signature=%s' % (timestamp, user_id, work_id, signature))
+    res = requests.delete( tiger_api_host()+'/tiger/work/business/relation?business=CONTEST&timestamp=%s&user_id=%s&work_id=%s&signature=%s' % (timestamp, user_id, work_id, signature))
     if res.status_code == 204:
         return True
     else:

@@ -9,6 +9,20 @@
 - skip，skipIf, skipUnless
 - setup_hooks, teardown_hooks
 
+#### hrun1.0 到 2.0
+1. api定义的写法不同，2.0中调用api中的方法需指定路径
+| 不同点 | hrun 1.5.15 | hrun 2.0 |
+|----|----|----|
+|api定义|通过api和def关键字定义|和test定义一样|
+|api调用|通过api关键字和函数名调用，传递函数参数|通过api关键字和api文件路径，以及variables传递参数|
+|debugtalk.py|可以直接引用其中定义的变量|不能直接引用其中定义的变量|
+|base_url|在config中的request下定义|在config下直接定义或者api中直接定义(不能在request下)|
+|method、url等|可以在config的request下统一配置|只能在test中指定|
+|testcase文件内容为空||执行报错|
+
+#### 框架源码学习
+- html报告生成：report.py中的render_html_report函数，使用的是jinja2的模板文件templates/report_template.html
+
 #### 经验总结
 - `- eq: [content.id, ${str(${source_user_id()})}]`会报错，解决：`- eq: [content.id, '${str(${source_user_id()})}']`
 - variables定义多个变量时，前一个定义的变量并不能被同级后一个变量立马引用到，例如下面的写法会报错
@@ -31,16 +45,5 @@ variables:
 - api文件中的name会覆盖testcases文件test用例中的name
 - testcases中yaml文件内容为空，会导致生成报告失败
 
-#### 框架源码学习
-- html报告生成：report.py中的render_html_report函数，使用的是jinja2的模板文件templates/report_template.html
 
-#### hrun1.0 到 2.0
-1. api定义的写法不同，2.0中调用api中的方法需指定路径
-| 不同点 | hrun 1.5.15 | hrun 2.0 |
-|----|----|----|
-|api定义|通过api和def关键字定义|和test定义一样|
-|api调用|通过api关键字和函数名调用，传递函数参数|通过api关键字和api文件路径，以及variables传递参数|
-|debugtalk.py|可以直接引用其中定义的变量|不能直接引用其中定义的变量|
-|base_url|在config中的request下定义|在config下直接定义或者api中直接定义(不能在request下)|
-|method、url等|可以在config的request下统一配置|只能在test中指定|
-|testcase文件内容为空||执行报错|
+

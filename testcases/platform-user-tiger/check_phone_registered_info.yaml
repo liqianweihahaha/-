@@ -34,18 +34,33 @@
     validate:
         - eq: [status_code, 200]
         - eq: [content.existed, false]
-        - eq: [content.info, null]
+        - length_equals: [content.info, 5]
+        - eq: [content.info.id, -1]
+        - eq: [content.info.email, '']
+        - eq: [content.info.phone_number, '']
+        - eq: [content.info.username, '']
+        - eq: [content.info.has_password, false]
+
+# phone_number为空字符串的账号可能存在也可能不存在
 - test:
     name: phone_number为空
     request:
         method: GET
         url: /accounts/phone/check?phone_number=
     validate:
-        - eq: [status_code, 400]
+        - eq: [status_code, 200]
+
 - test:
     name: phone_number格式错误
     request:
         method: GET
         url: /accounts/phone/check?phone_number=$wrong_type_phone_number
     validate:
-        - eq: [status_code, 400]
+        - eq: [status_code, 200]
+        - eq: [content.existed, false]
+        - length_equals: [content.info, 5]
+        - eq: [content.info.id, -1]
+        - eq: [content.info.email, '']
+        - eq: [content.info.phone_number, '']
+        - eq: [content.info.username, '']
+        - eq: [content.info.has_password, false]
