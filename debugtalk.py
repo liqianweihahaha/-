@@ -4,6 +4,7 @@ from common import read_config
 from common.util import *
 from common.environment import *
 from builtins import str
+from common.db_user import *
 
 # 读取 .env 配置
 env = os.environ['environment']

@@ -2,7 +2,6 @@
     name: 获取用户基本认证信息
     base_url: ${tiger_api_host()}
 
-        
 - test:
     name: 未登录
     request:
