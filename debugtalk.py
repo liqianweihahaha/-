@@ -4,6 +4,7 @@ from common import read_config
 from common.util import *
 from common.environment import *
 from builtins import str
+from common.db_user import *
 
 # 读取 .env 配置
 env = os.environ['environment']
@@ -167,16 +168,6 @@ def collection_work(work_id):
             return False
     else:
         print('用户收藏作品失败，返回状态码：%s' % res.status_code)
-        return False
-
-# 删除作品业务标志位
-def delete_work_business_relation(timestamp, user_id, work_id):
-    signature = business_relation_signature(timestamp, user_id, work_id)
-    res = requests.delete( tiger_api_host()+'/tiger/work/business/relation?business=CONTEST&timestamp=%s&user_id=%s&work_id=%s&signature=%s' % (timestamp, user_id, work_id, signature))
-    if res.status_code == 204:
-        return True
-    else:
-        print('删除作品业务标志位失败，状态码：%s，请求url: %s' % (res.status_code), res.url)
         return False
 
 # # 判断是否是dev或者test环境

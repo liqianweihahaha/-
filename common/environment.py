@@ -5,7 +5,7 @@ def get_hosts(env):
         platform_tiger_api_host = 'http://dev-internal.platform.codemao.cn'
         # platform_tiger_api_host = 'http://dev-account.internal.platform.codemao.cn'
     elif env == 'test':
-        tiger_api_host = "https://test-api.codemao.cn"
+        tiger_api_host = 'https://test-api.codemao.cn'
         platform_tiger_api_host = 'http://test-internal.platform.codemao.cn'
         # platform_tiger_api_host = 'http://test-account.internal.platform.codemao.cn'
     elif env == 'staging':

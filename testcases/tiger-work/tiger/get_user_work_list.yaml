@@ -11,6 +11,7 @@
         url: /tiger/work/list
     validate:
         - eq: [status_code, 400]
+
 - test:
     name: 未登录-传递type
     request:
@@ -19,6 +20,7 @@
     validate:
         - eq: [status_code, 403]
         - eq: [content.error_code, E_0]
+        
 - test:
     name: 已登录-传递type
     request:

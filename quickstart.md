@@ -10,7 +10,6 @@
 - setup_hooks, teardown_hooks
 
 #### hrun1.0 到 2.0
-1. api定义的写法不同，2.0中调用api中的方法需指定路径
 
 | 不同点 | hrun 1.5.15 | hrun 2.0 |
 |----|----|----|
