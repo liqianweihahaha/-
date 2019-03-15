@@ -25,9 +25,5 @@ hrun testcases/platform-user-tiger --html-report-name reports/result.html
 
 # 指定使用的报告模板：例如只输出执行失败的用例
 # 默认使用：~\httprunner\templates\report_template.html
-hrun testcases/platform-user-tiger/get_oauth_info_by_userid.yaml --html-report-template=D:\Program\Python3.7\Lib\site-packages\httprunner\templates\report_template_default.html
+hrun testcases/platform-user-tiger/get_oauth_info_by_userid.yaml --report-template=D:\Program\Python3.7\Lib\site-packages\httprunner\templates\report_template_default.html
 ```
-
-#### 注意点
-- 退出登录后会导致其他用例中的source_user_login_token失效，所以退出登录用例中的已登录token需要单独获取
-- 账号3.0修改密码，导致source_user_login_token失效，所以使用测试账号2（target_user）测试
