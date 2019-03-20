@@ -4,6 +4,39 @@
     variables:
         - unsupport_sex: 2
         - new_password: m12345
+        - existed_nickname: 哈哈
+
+# 修改昵称
+- test:
+    name: nickname为空字符串
+    request:
+        method: PUT
+        url: /accounts/${source_user_id()}
+        json:
+            nickname: ""
+    validate:
+        - eq: [status_code, 400]
+
+- test:
+    name: nickname长度超过20位
+    request:
+        method: PUT
+        url: /accounts/${source_user_id()}
+        json:
+            nickname: "111111111122222222223"
+    validate:
+        - eq: [status_code, 400]
+
+- test:
+    name: nickname已经存在
+    request:
+        method: PUT
+        url: /accounts/${source_user_id()}
+        json:
+            nickname: $existed_nickname
+    validate:
+        - eq: [status_code, 403]
+        - eq: [content.error_code, Account_22]
 
 # 修改性别
 - test:
@@ -31,6 +64,78 @@
         url: /accounts/${source_user_id()}
         json:
             sex: 2
+    validate:
+        - eq: [status_code, 400]
+
+# 修改用户头像
+- test:
+    name: avatar_url为空字符串
+    request:
+        method: PUT
+        url: /accounts/${source_user_id()}
+        json:
+            avatar_url: ""
+    validate:
+        - eq: [status_code, 400]
+
+- test:
+    name: avatar_url非http格式
+    request:
+        method: PUT
+        url: /accounts/${source_user_id()}
+        json:
+            avatar_url: "11"
+    validate:
+        - eq: [status_code, 400]
+
+- test:
+    name: avatar_url为http格式
+    request:
+        method: PUT
+        url: /accounts/${source_user_id()}
+        json:
+            avatar_url: "https://static-user-center.codemao.cn/user_0003.png"
+    validate:
+        - eq: [status_code, 204]
+
+# 修改出生日期
+- test:
+    name: birthday为0
+    request:
+        method: PUT
+        url: /accounts/${source_user_id()}
+        json:
+            birthday: 0
+    validate:
+        - eq: [status_code, 204]
+
+- test:
+    name: birthday为负数
+    request:
+        method: PUT
+        url: /accounts/${source_user_id()}
+        json:
+            birthday: -28800
+    validate:
+        - eq: [status_code, 204]
+
+- test:
+    name: birthday为负数，超过int最小限制
+    request:
+        method: PUT
+        url: /accounts/${source_user_id()}
+        json:
+            birthday: -2147483649
+    validate:
+        - eq: [status_code, 400]
+
+- test:
+    name: birthday为正数，超过int最大限制
+    request:
+        method: PUT
+        url: /accounts/${source_user_id()}
+        json:
+            birthday: 2147483648
     validate:
         - eq: [status_code, 400]
 
@@ -79,3 +184,24 @@
     validate:
         - eq: [status_code, 200]
         - contains: [content, token]
+
+# 修改用户封面作品
+- test:
+    name: 重置封面作品为0
+    request:
+        method: PUT
+        url: /accounts/${source_user_id()}
+        json:
+            preview_work_id: 0
+    validate:
+        - eq: [status_code, 204]
+
+- test:
+    name: preview_work_id为负数
+    request:
+        method: PUT
+        url: /accounts/${source_user_id()}
+        json:
+            preview_work_id: -1
+    validate:
+        - eq: [status_code, 400]
