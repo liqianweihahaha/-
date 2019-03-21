@@ -3,7 +3,6 @@ source_user:
   id: 1000012631
   username: mxq0001
   email: mxq0001@qq.com
-  phone_number: ''
   password: m1234567
   sprite:
     owned: 50    # 象牙螺

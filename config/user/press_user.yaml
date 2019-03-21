@@ -2,7 +2,6 @@ source_user:
   id: 1679348
   username: mxq0001
   email: mxq0001@qq.com
-  phone_number: ''
   password: m1234567
   work:
     ide:

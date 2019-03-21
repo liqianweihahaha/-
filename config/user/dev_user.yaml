@@ -1,7 +1,6 @@
 source_user:
   id: 1000012631
   username: mxq0001
-  phone_number: '13000000000'
   email: mxq0001@qq.com
   password: m1234567
   work:

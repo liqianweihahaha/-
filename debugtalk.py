@@ -105,6 +105,7 @@ def target_user_username():
 
 def target_user_password():
     return target_user.get('password')
+    
 # Kitten作品
 def target_user_ide_published_work_id():
     return target_user.get('work').get('ide').get('published_work_id')
@@ -120,11 +121,12 @@ def target_user_ide_deleted_temporarily_work_id():
 
 def target_user_ide_deleted_permanently_work_id():
     return target_user.get('work').get('ide').get('deleted_permanently_work_id')
+
 # nemo作品
 def target_user_nemo_work_id():
     return target_user.get('work').get('nemo').get('work_id')
 
-def content_type():
+def type_json():
     return 'application/json'
 
 # 获取登录token

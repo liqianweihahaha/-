@@ -14,7 +14,7 @@
 | 不同点 | hrun 1.5.15 | hrun 2.0 |
 |----|----|----|
 |api定义|通过api和def关键字定义|和test定义一样|
-|api调用|通过api关键字和函数名调用，传递函数参数|通过api关键字和api文件路径，以及variables传递参数|
+|api调用|通过api关键字和函数名调用，传递函数参数|通过api指定文件路径，variables传递参数|
 |debugtalk.py|可以直接引用其中定义的变量|不能直接引用其中定义的变量|
 |base_url|在config中的request下定义|在config下直接定义或者api中直接定义(不能在request下)|
 |method、url等|可以在config的request下统一配置|只能在test中指定|
@@ -45,6 +45,10 @@ variables:
 - api文件中的name会覆盖testcases文件test用例中的name
 - testcases中yaml文件内容为空，会导致生成报告失败
 
+#### Hook
+- 测试用例的准备和清理工作没有使用setup_hooks/teardown_hoos，而是直接调用DB层的接口（因为DB层涉及的CRUD操作的接口已经有了）
+- 缺点：用例之间耦合性大，依赖于底层的DB操作接口的正确性
+- 优点：减少直接操作数据库（并且正式库还没法直接修改表）
 
 #### 注意点
 - 退出登录后会导致其他用例中的source_user_login_token失效，所以退出登录用例中的已登录token需要单独获取
