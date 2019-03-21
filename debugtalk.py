@@ -5,6 +5,7 @@ from common.util import *
 from common.environment import *
 from builtins import str
 from common.db_user import *
+from common.op_mysql import OpMysql
 
 # 读取 .env 配置
 env = os.environ['environment']
@@ -15,6 +16,10 @@ def tiger_api_host():
 
 def platform_tiger_api_host():
     return get_hosts(env).get('platform_tiger_api_host')
+
+# 判断是否是dev或者test环境
+def is_dev():
+    return is_dev_environment(env)
 
 # 源用户信息
 global source_user
@@ -172,7 +177,10 @@ def collection_work(work_id):
         print('用户收藏作品失败，返回状态码：%s' % res.status_code)
         return False
 
-# # 判断是否是dev或者test环境
-# def is_dev():
-#     stat = True if env in ('dev', 'test') else False
-#     return stat
+# 读取mysql配置数据
+mysql_config_datas = read_config.read_config_mysql(env)
+opmysql_account = OpMysql(host=mysql_config_datas['host'], user=mysql_config_datas['user'], password=mysql_config_datas['password'], database='account')
+
+def clear_phone_number(phone_number):
+    global opmysql_account
+    opmysql_account.clear_phone_number(phone_number)

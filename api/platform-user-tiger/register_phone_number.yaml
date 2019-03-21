@@ -1,0 +1,7 @@
+name: 手机号注册不设置密码
+request:
+    method: POST
+    url: /accounts
+    json:
+        phone_number: $phone_number
+        pid: 65edCTyg

@@ -28,3 +28,8 @@ def get_hosts(env):
         'platform_tiger_api_host': platform_tiger_api_host
         }
     return hosts
+
+# 判断是否是dev或者test环境
+def is_dev_environment(env):
+    stat = True if env in ('dev', 'test') else False
+    return stat

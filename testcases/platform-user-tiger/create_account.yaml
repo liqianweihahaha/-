@@ -3,6 +3,7 @@
     base_url: ${platform_tiger_api_host()}
     variables:
         - registered_email: maxiaoqian@qq.com
+        - unregister_phone_number: '14011111111'
         - wrong_email_type: ma
         - wrong_password_value: 12
         - correct_password_value: m1234567
@@ -43,3 +44,29 @@
             pid: 65edCTyg
     validate:
         - eq: [status_code, 400]
+
+# 手机号注册
+- test:
+    name: 手机号未注册
+    skipUnless: ${is_dev()}
+    setup_hooks:
+        - ${clear_phone_number($unregister_phone_number)}
+    api: api/platform-user-tiger/register_phone_number.yaml
+    variables:
+        - phone_number: $unregister_phone_number
+    validate:
+        - eq: [status_code, 200]
+        - contains: [content, id]
+        - length_equals: [content, 1]
+
+- test:
+    name: 手机号已注册
+    skipUnless: ${is_dev()}
+    api: api/platform-user-tiger/register_phone_number.yaml
+    variables:
+        - phone_number: $unregister_phone_number
+    validate:
+        - eq: [status_code, 403]
+        - eq: [content.error_code, Account_7]
+    teardown_hooks:
+        - ${clear_phone_number($unregister_phone_number)}

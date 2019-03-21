@@ -22,8 +22,15 @@ class OpMysql(object):
         except BaseException as e:
             return '001'
 
+    # 清除用户的手机号
+    def clear_phone_number(self, phone_number):
+        result = self.cur.execute('UPDATE basic_auth SET phone_number=%s WHERE phone_number=%s', (None, phone_number,))
+        if self.cur.rowcount == 1:
+            self.conn.commit()
+
 
 if __name__ == '__main__':
-    opmysql = OpMysql(host='rm-bp15t47j196je1u0l4o.mysql.rds.aliyuncs.com', user='TestDep', password='4Ehp1ndpfnlN9D0qvg4SZuig', database='account')
+    # 连接dev环境
+    opmysql = OpMysql(host='rm-bp173j25673ah67z8ko.mysql.rds.aliyuncs.com', user='TestDep', password='4Ehp1ndpfnlN9D0qvg4SZuig', database='account')
     data = opmysql.select_one("SELECT * from basic_auth where user_id=%s", (1000002450, ))
     print(data)

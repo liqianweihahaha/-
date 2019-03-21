@@ -1,6 +1,9 @@
 - config:
     name: 账号登录
-    base_url: ${tiger_api_host()}        
+    base_url: ${tiger_api_host()}  
+    variables:
+        - unregister_phone_number: '14011111111'
+        - correct_password: 'm1234567' 
 
 - test:
     name: 用户名登录：用户名正确-密码正确
@@ -27,3 +30,33 @@
         - eq: [content.id, '${source_user_id()}']
         - eq: [content.username, '${source_user_username()}']
         - length_equals: [content, 13]
+
+# 手机号注册用户登录，只在dev测试
+- test: 
+    name: 手机号注册设置密码
+    skipUnless: ${is_dev()}
+    setup_hooks:
+        - ${clear_phone_number($unregister_phone_number)}
+    api: api/platform-user-tiger/register_phone_number_with_password.yaml
+    variables:
+        - phone_number: $unregister_phone_number
+        - password: $correct_password
+    validate:
+        - eq: [status_code, 200]
+        - contains: [content, id]
+    extract:
+        - created_user_id: content.id
+
+- test:
+    name: 手机号正确-密码正确
+    skipUnless: ${is_dev()}
+    api: api/account/account_login.yaml
+    variables:
+        - identity: $unregister_phone_number
+        - password: $correct_password
+    validate:
+        - eq: [status_code, 200]
+        - length_equals: [content, 4]
+        - contains: [content, token]
+    teardown_hooks:
+        - ${clear_phone_number($unregister_phone_number)}
