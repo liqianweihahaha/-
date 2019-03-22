@@ -15,7 +15,7 @@ def get_hosts(env):
     elif env == 'production':
         tiger_api_host = 'https://api.codemao.cn'
         platform_tiger_api_host = 'http://internal.platform.codemao.cn'
-        # platform_tiger_api_host = 'http://account.internal.platform.codemao.cn'
+        #platform_tiger_api_host = 'http://account.internal.platform.codemao.cn'
     elif env == 'press':
         tiger_api_host = 'https://press-api.codemao.cn'
         platform_tiger_api_host = 'http://press-internal.platform.codemao.cn'
@@ -31,5 +31,5 @@ def get_hosts(env):
 
 # 判断是否是dev或者test环境
 def is_dev_environment(env):
-    stat = True if env in ('dev', 'test') else False
+    stat = True if env not in ('staging', 'production') else False
     return stat
