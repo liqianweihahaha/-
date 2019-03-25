@@ -7,6 +7,7 @@ from builtins import str
 from common.db_user import *
 from common.op_mysql import OpMysql
 from common.op_redis import OpRedis
+from common.vars import Vars
 
 # 读取 .env 配置
 env = os.environ['environment']
@@ -202,4 +203,4 @@ def get_captcha_ticket():
 
 # 因为会发送验证码，所以最好天下自己的手机号
 def unregistered_phone_number():
-    return '15889741219'
+    return Vars.TEST_PHONE_NUMBER
