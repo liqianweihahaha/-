@@ -6,6 +6,7 @@ from common.environment import *
 from builtins import str
 from common.db_user import *
 from common.op_mysql import OpMysql
+from common.op_redis import OpRedis
 
 # 读取 .env 配置
 env = os.environ['environment']
@@ -178,9 +179,27 @@ def collection_work(work_id):
         return False
 
 # 读取mysql配置数据
-mysql_config_datas = read_config.read_config_mysql(env)
-opmysql_account = OpMysql(host=mysql_config_datas['host'], user=mysql_config_datas['user'], password=mysql_config_datas['password'], database='account')
+mysql_config_data = read_config.read_config_mysql(env)
+opmysql_account = OpMysql(host=mysql_config_data['host'], user=mysql_config_data['user'], password=mysql_config_data['password'], database='account')
+# 读取redis配置
+redis_config_data = read_config.read_config_redis(env)
+op_redis = OpRedis(host=redis_config_data['host'], port=redis_config_data['port'], db=1)
 
 def clear_phone_number(phone_number):
     global opmysql_account
     opmysql_account.clear_phone_number(phone_number)
+
+def get_captcha(catpcha_type, phone_number):
+    global op_redis
+    captcha = op_redis.get_captcha(catpcha_type, phone_number)
+    return captcha
+
+# 获取发送图形验证码的ticket
+def get_captcha_ticket():
+    res = requests.get(tiger_api_host()+'/tiger/captcha/graph/ticket')
+    if res.status_code == 200:
+        return res.json()['ticket']
+
+# 因为会发送验证码，所以最好天下自己的手机号
+def unregistered_phone_number():
+    return '15889741219'

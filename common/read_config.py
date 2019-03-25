@@ -32,6 +32,11 @@ def read_config_mysql(env):
     mysql_data = read_db(file_name)['mysql']
     return mysql_data
 
+def read_config_redis(env):
+    file_name = str(env)+'_db.yaml'
+    redis_data = read_db(file_name)['redis']
+    return redis_data
+
 
 if __name__ == '__main__':
     user = read_user('user.yaml')
