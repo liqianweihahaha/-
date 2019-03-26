@@ -19,6 +19,8 @@ def tiger_api_host():
 def platform_tiger_api_host():
     return get_hosts(env).get('platform_tiger_api_host')
 
+tiger_host = tiger_api_host()
+
 # 判断是否是dev或者test环境
 def is_dev():
     return is_dev_environment(env)
@@ -144,7 +146,7 @@ def login_token(identity, password, pid='UvOFXx2tfv'):
         "pid": pid
     }
     params = {'Content-Type': 'application/json'}  
-    res = requests.post(tiger_api_host()+'/tiger/accounts/login', json=data, params=params)
+    res = requests.post(tiger_host+'/tiger/accounts/login', json=data, params=params)
     if res.status_code == 200 and 'application/json' in res.headers['Content-Type']:
         token = res.json()['token']
         bearer_token = 'Bearer '+ token
@@ -155,7 +157,7 @@ def source_user_login_token():
 
 # 取消收藏作品
 def uncollection_work(work_id):
-    res = requests.delete(tiger_api_host()+'/api/work/collection/'+str(work_id), headers={'Authorization': source_user_login_token})
+    res = requests.delete(tiger_host+'/api/work/collection/'+str(work_id), headers={'Authorization': source_user_login_token})
     if res.status_code == 200:
         if res.json()['code'] == 200:
             return True
@@ -168,7 +170,7 @@ def uncollection_work(work_id):
 
 # 收藏作品
 def collection_work(work_id):
-    res = requests.post(tiger_api_host()+'/api/work/collection/'+str(work_id), headers={'Authorization': source_user_login_token})
+    res = requests.post(tiger_host+'/api/work/collection/'+str(work_id), headers={'Authorization': source_user_login_token})
     if res.status_code == 200:
         if res.json()['code'] == 200:
             return True
@@ -186,9 +188,28 @@ opmysql_account = OpMysql(host=mysql_config_data['host'], user=mysql_config_data
 redis_config_data = read_config.read_config_redis(env)
 op_redis = OpRedis(host=redis_config_data['host'], port=redis_config_data['port'], db=1)
 
+# 清除数据库basic_auth表的phone_number字段
 def clear_phone_number(phone_number):
     global opmysql_account
     opmysql_account.clear_phone_number(phone_number)
+
+# 注册手机号
+def register_phone(phone_number):
+    info = {
+        "phone_number": phone_number,
+        "pid": "65edCTyg"
+    }
+    res = requests.post(platform_tiger_api_host()+'/accounts')
+
+
+# 发送登录验证码（静默注册版本）
+def is_send_login_slience_captcha_success(phone_number):
+    url = '/tiger/v3/web/accounts/captcha/login/silence'
+    post_data = {
+        "phone_number": phone_number
+    }
+    res = requests.post(tiger_host+url, json=post_data, headers={'X-Captcha-Ticket': get_captcha_ticket()})
+    return True if res.status_code == 204 else False
 
 def get_captcha(catpcha_type, phone_number):
     global op_redis
@@ -197,10 +218,13 @@ def get_captcha(catpcha_type, phone_number):
 
 # 获取发送图形验证码的ticket
 def get_captcha_ticket():
-    res = requests.get(tiger_api_host()+'/tiger/captcha/graph/ticket')
+    res = requests.get(tiger_host+'/tiger/captcha/graph/ticket')
     if res.status_code == 200:
         return res.json()['ticket']
+    else:
+        print('获取发送图形验证码的ticket失败，状态码：%s' % res.status_code)
 
-# 因为会发送验证码，所以最好天下自己的手机号
-def unregistered_phone_number():
+# 因为会发送验证码，所以最好是自己的手机号
+def test_phone_number():
     return Vars.TEST_PHONE_NUMBER
+

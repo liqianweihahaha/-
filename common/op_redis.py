@@ -14,7 +14,10 @@ class OpRedis(object):
         h_key = 'captcha'
         captcha_value = self.r.hget(r_key, h_key)
         if captcha_value != None:
-            return captcha_value 
+            return captcha_value
+        else:
+            # print('Redis中未获取到手机号：%s 对应的验证码' % phone_number)
+            pass
 
     # 获取产品信息
     # return: List

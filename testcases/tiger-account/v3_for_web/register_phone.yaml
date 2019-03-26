@@ -2,7 +2,7 @@
     name: 手机号注册
     base_url: ${tiger_api_host()}
     variables:
-        - unregistered_phone_number: ${unregistered_phone_number()}
+        - unregistered_phone_number: ${test_phone_number()}
         - wrong_captcha: '123456'
         - correct_password: m1234567
         - exist_pid: UvOFXx2tfv

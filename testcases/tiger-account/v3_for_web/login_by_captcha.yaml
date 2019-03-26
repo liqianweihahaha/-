@@ -2,7 +2,7 @@
     name: 验证码登录
     base_url: ${tiger_api_host()}
     variables:
-        - unregister_phone_number: ${unregistered_phone_number()}
+        - unregister_phone_number: ${test_phone_number()}
         - wrong_captcha: '123456'
         - exist_pid: UvOFXx2tfv
 

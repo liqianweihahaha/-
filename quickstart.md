@@ -44,6 +44,56 @@ variables:
 - api文件中的yaml文件内容为空会报错
 - api文件中的name会覆盖testcases文件test用例中的name
 - testcases中yaml文件内容为空，会导致生成报告失败
+- 加载顺序：.env文件---》加载testcase中定义的变量(执行其中可执行部分)---》运行testcase
+
+#### 错误写法总结
+
+##### 错误写法1
+- 预期效果：先执行发送登录验证码接口，再获取验证码，执行验证码登录接口。
+- 实际效果：用例有时候执行成功，有时候执行失败。
+- 原因：获取验证码的方法会被先加载（loader.py的加载顺序：.env--》执行testcase中调用debugtalk.py的函数--》顺序执行testcase：skipIf、setup_hooks、api或request、teardown_hooks），而不是一定在发送登录验证码之后获取，因此有时候获取到的captcha为None。
+- 解决：使用 setup_hooks保证执行顺序
+
+```
+- test:
+    name: 发送登录验证码-手机号未注册
+    skipUnless: ${is_dev()}
+    setup_hooks:
+        - ${clear_phone_number($unregister_phone_number)}
+    api: api/account/v3_for_web/send_login_silence_captcha.yaml
+    variables:
+        - phone_number: $unregister_phone_number
+    validate: 
+        - eq: [status_code, 204]
+
+- test:
+    name: 验证码登录：手机号未注册-验证码正确
+    skipUnless: ${is_dev()}
+    api: api/account/v3_for_web/login_silence_by_captcha.yaml
+    variables:
+        - phone_number: $unregister_phone_number
+        - captcha: ${get_captcha(login_with_register, $unregister_phone_number)}  # 在执行整个test(包括setup_hooks)之前，test中调用debugtalk.py中的函数会被先执行，调用几次就执行几次
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.is_first_login, true]
+```
+- 调整后：
+```
+- test:
+    name: 验证码登录：手机号未注册-验证码正确
+    skipUnless: ${is_dev()}
+    api: api/account/v3_for_web/login_silence_by_captcha.yaml
+    variables:
+        # 先清除手机号，再发送验证码，再获取验证码
+        - clear_phone: ${clear_phone_number($unregister_phone_number)}
+        - send_captcha_status: ${is_send_login_slience_captcha_success($unregister_phone_number)}
+        - phone_number: $unregister_phone_number
+        # 将send_login_slience_captcha()定义在get_captcha()之前，保证先发送验证码之后再获取验证码
+        - captcha: ${get_captcha(login_with_register, $unregister_phone_number)}
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.is_first_login, true]
+```
 
 #### Hook
 - 测试用例的准备和清理工作没有使用setup_hooks/teardown_hoos，而是直接调用DB层的接口（因为DB层涉及的CRUD操作的接口已经有了）

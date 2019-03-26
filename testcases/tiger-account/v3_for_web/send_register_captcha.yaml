@@ -2,7 +2,7 @@
     name: 发送注册验证码
     base_url: ${tiger_api_host()}
     variables:
-        - unregistered_phone_number: ${unregistered_phone_number()}
+        - unregistered_phone_number: ${test_phone_number()}
         - wrong_type_phone_number: '1302614'
 
 - test:

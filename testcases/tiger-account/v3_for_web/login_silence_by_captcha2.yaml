@@ -1,0 +1,29 @@
+- config:
+    name: 验证码登录（静默注册版本）
+    base_url: ${tiger_api_host()}
+    variables:
+        - unregister_phone_number: ${test_phone_number()}
+
+# 手机号已注册
+# - test:
+#     name: 发送登录验证码-手机号已注册
+#     skipUnless: ${is_dev()}
+#     api: api/account/v3_for_web/send_login_silence_captcha.yaml
+#     variables:
+#         - phone_number: $unregister_phone_number
+#     validate: 
+#         - eq: [status_code, 204]
+
+# - test:
+#     name: 验证码登录：手机号已注册-验证码正确
+#     skipUnless: ${is_dev()}
+#     api: api/account/v3_for_web/login_silence_by_captcha.yaml
+#     variables:
+#         # 先手机号注册，再发送验证码，再获取验证码
+#         - register_phone: ${register_phone()}
+#         - send_captcha: ${is_send_login_slience_captcha_success($unregister_phone_number)}
+#         - phone_number: $unregister_phone_number
+#         - captcha: ${get_captcha(login_with_register, $unregister_phone_number)}
+#     validate:
+#         - eq: [status_code, 200]
+#         - eq: [content.is_first_login, false]

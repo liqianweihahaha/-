@@ -1,0 +1,9 @@
+name: 验证码登录
+request:
+    method: POST
+    url: /tiger/v3/web/accounts/phone/login/silence
+    json:
+        client_id: web
+        phone_number: $phone_number
+        captcha: $captcha
+        pid: UvOFXx2tfv
