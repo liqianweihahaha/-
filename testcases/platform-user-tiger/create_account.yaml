@@ -3,7 +3,7 @@
     base_url: ${platform_tiger_api_host()}
     variables:
         - registered_email: maxiaoqian@qq.com
-        - unregister_phone_number: '14011111111'
+        - unregister_phone_number: ${test_phone_number()}
         - wrong_email_type: ma
         - wrong_password_value: 12
         - correct_password_value: m1234567

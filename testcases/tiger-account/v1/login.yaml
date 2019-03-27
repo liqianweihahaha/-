@@ -2,7 +2,7 @@
     name: 账号登录
     base_url: ${tiger_api_host()}  
     variables:
-        - unregister_phone_number: '14011111111'
+        - unregister_phone_number: ${test_phone_number()}
         - correct_password: 'm1234567' 
 
 - test:

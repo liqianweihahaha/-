@@ -7,10 +7,14 @@ from builtins import str
 from common.db_user import *
 from common.op_mysql import OpMysql
 from common.op_redis import OpRedis
-from common.vars import Vars
 
 # 读取 .env 配置
 env = os.environ['environment']
+# 因为会发送验证码，所以最好是用自己的手机号
+TEST_PHONE_NUMBER = os.environ['test_phone_number']
+
+def test_phone_number():
+    return TEST_PHONE_NUMBER
 
 # 获取测试hosts
 def tiger_api_host():
@@ -206,8 +210,4 @@ def get_captcha_ticket():
         return res.json()['ticket']
     else:
         print('获取发送图形验证码的ticket失败，状态码：%s' % res.status_code)
-
-# 因为会发送验证码，所以最好是自己的手机号
-def test_phone_number():
-    return Vars.TEST_PHONE_NUMBER
 
