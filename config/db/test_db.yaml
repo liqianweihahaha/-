@@ -3,5 +3,7 @@ mysql:
   user: TestDep
   password: 4Ehp1ndpfnlN9D0qvg4SZuig
 redis:
-  host: dev.codemao.cn
-  port: 7000
+  # 需要开启VPN
+  host: r-bp1a97853b5914d4.redis.rds.aliyuncs.com
+  port: 6379
+  password: HjKxGkp3jbWbxGgQzSrKBBc6

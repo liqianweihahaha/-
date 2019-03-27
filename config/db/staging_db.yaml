@@ -1,4 +1,4 @@
-# 避免读取db文件报错，这里配置为dev数据
+# 避免读取不存在的db文件报错，这里配置为dev数据
 mysql:
   host: rm-bp173j25673ah67z8ko.mysql.rds.aliyuncs.com
   user: TestDep
@@ -6,3 +6,4 @@ mysql:
 redis:
   host: dev.codemao.cn
   port: 7000
+  password: ''

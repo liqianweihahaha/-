@@ -1,8 +1,0 @@
-name: 验证码登录
-request:
-    method: POST
-    url: /tiger/v3/web/accounts/phone/login
-    json:
-        phone_number: $phone_number
-        captcha: $captcha
-        pid: UvOFXx2tfv

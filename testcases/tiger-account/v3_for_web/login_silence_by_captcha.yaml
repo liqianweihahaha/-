@@ -3,35 +3,72 @@
     base_url: ${tiger_api_host()}
     variables:
         - unregister_phone_number: ${test_phone_number()}
+        - correct_pid: UvOFXx2tfv
 
 # 手机号未注册
-# - test:
-#     name: 发送登录验证码-手机号未注册
-#     skipUnless: ${is_dev()}
-#     setup_hooks:
-#         - ${clear_phone_number($unregister_phone_number)}
-#     api: api/account/v3_for_web/send_login_silence_captcha.yaml
-#     variables:
-#         - phone_number: $unregister_phone_number
-#     validate: 
-#         - eq: [status_code, 204]
+- test:
+    name: 未注册的手机号发送登录验证码
+    skipUnless: ${is_dev()}
+    setup_hooks:
+        - ${clear_phone_number($unregister_phone_number)}
+    api: api/account/v3_for_web/send_login_silence_captcha.yaml
+    variables:
+        - phone_number: $unregister_phone_number
+    validate:
+        - eq: [status_code, 204]
 
 - test:
-    name: 验证码登录：手机号未注册-验证码正确
+    name: 手机号未注册-验证码正确
     skipUnless: ${is_dev()}
-    api: api/account/v3_for_web/login_silence_by_captcha.yaml
-    variables:
-        # 先清除手机号，再发送验证码，再获取验证码
-        - clear_phone: ${clear_phone_number($unregister_phone_number)}
-        - send_captcha_status: ${is_send_login_slience_captcha_success($unregister_phone_number)}
-        - phone_number: $unregister_phone_number
-        # 将send_login_slience_captcha()定义在get_captcha()之前，保证先发送验证码之后再获取验证码
-        - captcha: ${get_captcha(login_with_register, $unregister_phone_number)}
+    request:
+        method: POST
+        url: /tiger/v3/web/accounts/phone/login/silence
+        json:
+            client_id: web
+            phone_number: $unregister_phone_number
+            # 为了保证获取验证码在发送验证码之后，这里不将request抽象成api再引用
+            captcha: ${get_captcha(login_with_register, $unregister_phone_number)}
+            pid: $correct_pid
     validate:
         - eq: [status_code, 200]
         - eq: [content.is_first_login, true]
+        - eq: [content.user_info.sex, 1]
+        - eq: [content.user_info.birthday, 0]
+        - eq: [content.auth.token.access.type, Bearer]
+        - eq: [content.auth.token.refresh.type, Bearer]
+        - length_equals: [content.user_info, 8]
+        - contains: [content.auth.token, access]
+        - contains: [content.auth.token, refresh]
 
+# 手机号已注册
+- test:
+    name: 已注册的手机号发送登录验证码
+    skipUnless: ${is_dev()}
+    api: api/account/v3_for_web/send_login_silence_captcha.yaml
+    variables:
+        - phone_number: $unregister_phone_number
+    validate:
+        - eq: [status_code, 204]
 
-
-
-# 问题2：手机号未注册和手机号已注册两种场景不能放在同一个文件中，因为会先发送再获取验证码，然后再执行testcase，因此在第一个用例执行成功后，验证码失效了，第二个用例始终执行失败
+- test:
+    name: 手机号已注册-验证码正确
+    skipUnless: ${is_dev()}
+    request:
+        method: POST
+        url: /tiger/v3/web/accounts/phone/login/silence
+        json:
+            client_id: web
+            phone_number: $unregister_phone_number
+            # 为了保证获取验证码在发送验证码之后，这里不将request抽象成api再引用
+            captcha: ${get_captcha(login_with_register, $unregister_phone_number)}
+            pid: $correct_pid
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.is_first_login, false]
+        - eq: [content.user_info.sex, 1]
+        - eq: [content.user_info.birthday, 0]
+        - eq: [content.auth.token.access.type, Bearer]
+        - eq: [content.auth.token.refresh.type, Bearer]
+        - length_equals: [content.user_info, 8]
+        - contains: [content.auth.token, access]
+        - contains: [content.auth.token, refresh]

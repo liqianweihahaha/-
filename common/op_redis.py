@@ -3,9 +3,10 @@ import redis
 
 class OpRedis(object):
     # dev环境，默认连接redis实例下面的第一个数据库
-    def __init__(self, host='dev.codemao.cn', port=7000, db=0):
+    def __init__(self, host, port, password, db):
+        password = None if password == '' else password
         # decode_responses=True,写入键值对中的value为str类型，不加这个参数写入的则为字节类型
-        pool = redis.ConnectionPool(host=host, port=port, db=db, decode_responses=True)
+        pool = redis.ConnectionPool(host=host, port=port, password=password, db=db, decode_responses=True)
         self.r = redis.Redis(connection_pool=pool)
  
     # 获取登录、注册等验证码

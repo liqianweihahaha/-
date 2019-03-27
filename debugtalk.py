@@ -186,31 +186,14 @@ mysql_config_data = read_config.read_config_mysql(env)
 opmysql_account = OpMysql(host=mysql_config_data['host'], user=mysql_config_data['user'], password=mysql_config_data['password'], database='account')
 # 读取redis配置
 redis_config_data = read_config.read_config_redis(env)
-op_redis = OpRedis(host=redis_config_data['host'], port=redis_config_data['port'], db=1)
+op_redis = OpRedis(host=redis_config_data['host'], port=redis_config_data['port'], password=redis_config_data['password'], db=1)
 
 # 清除数据库basic_auth表的phone_number字段
 def clear_phone_number(phone_number):
     global opmysql_account
     opmysql_account.clear_phone_number(phone_number)
 
-# 注册手机号
-def register_phone(phone_number):
-    info = {
-        "phone_number": phone_number,
-        "pid": "65edCTyg"
-    }
-    res = requests.post(platform_tiger_api_host()+'/accounts')
-
-
-# 发送登录验证码（静默注册版本）
-def is_send_login_slience_captcha_success(phone_number):
-    url = '/tiger/v3/web/accounts/captcha/login/silence'
-    post_data = {
-        "phone_number": phone_number
-    }
-    res = requests.post(tiger_host+url, json=post_data, headers={'X-Captcha-Ticket': get_captcha_ticket()})
-    return True if res.status_code == 204 else False
-
+# 获取redis中存储的验证码
 def get_captcha(catpcha_type, phone_number):
     global op_redis
     captcha = op_redis.get_captcha(catpcha_type, phone_number)

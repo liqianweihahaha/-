@@ -1,36 +1,23 @@
 - config:
-    name: 验证码登录
+    name: 验证码登录（非静默注册版本）
     base_url: ${tiger_api_host()}
     variables:
         - unregister_phone_number: ${test_phone_number()}
         - wrong_captcha: '123456'
-        - exist_pid: UvOFXx2tfv
 
 - test:
-    name: 发送登录验证码:手机号未注册
+    name: 准备1：注册手机号
     skipUnless: ${is_dev()}
-    setup_hooks: 
+    setup_hooks:
         - ${clear_phone_number($unregister_phone_number)}
-    api: api/account/v3_for_web/send_login_captcha.yaml
-    variables:
-        - phone_number: $unregister_phone_number
-    validate:
-        - eq: [status_code, 403]
-        - eq: [content.error_code, AC3_1]
-
-- test: 
-    name: 注册手机号
-    skipUnless: ${is_dev()}
     api: api/platform-user-tiger/register_phone_number.yaml
     variables:
         - phone_number: $unregister_phone_number
     validate:
         - eq: [status_code, 200]
-    extract:
-        - registered_user_id: content.id
 
 - test:
-    name: 发送登录验证码：手机号已注册
+    name: 准备2：发送登录验证码（非静默注册版本）
     skipUnless: ${is_dev()}
     api: api/account/v3_for_web/send_login_captcha.yaml
     variables:
@@ -39,25 +26,30 @@
         - eq: [status_code, 204]
 
 - test:
-    name: 验证码登录：手机号已注册-验证码错误
+    name: 手机号已注册-验证码正确
     skipUnless: ${is_dev()}
-    api: api/account/v3_for_web/login_by_captcha.yaml
-    variables:
-        - phone_number: $unregister_phone_number
-        - captcha: $wrong_captcha
+    request:
+        method: POST
+        url: /tiger/v3/web/accounts/phone/login
+        json:
+            phone_number: $unregister_phone_number
+            captcha: ${get_captcha(login, $unregister_phone_number)}
+            pid: UvOFXx2tfv
+    validate:
+        - eq: [status_code, 200]
+
+- test:
+    name: 手机号已注册-验证码错误
+    skipUnless: ${is_dev()}
+    request:
+        method: POST
+        url: /tiger/v3/web/accounts/phone/login
+        json:
+            phone_number: $unregister_phone_number
+            captcha: $wrong_captcha
+            pid: UvOFXx2tfv
     validate:
         - eq: [status_code, 403]
         - eq: [content.error_code, AC3_13]
-
-- test:
-    name: 验证码登录：手机号已注册-验证码正确
-    skipUnless: ${is_dev()}
-    api: api/account/v3_for_web/login_by_captcha.yaml
-    variables:
-        - phone_number: $unregister_phone_number
-        - captcha: ${get_captcha(login, $unregister_phone_number)}
-    validate:
-        - eq: [status_code, 200]
-        - eq: [content.user_info.id, $registered_user_id]
     teardown_hooks:
         - ${clear_phone_number($unregister_phone_number)}
