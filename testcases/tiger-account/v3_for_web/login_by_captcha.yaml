@@ -33,7 +33,7 @@
         url: /tiger/v3/web/accounts/phone/login
         json:
             phone_number: $unregister_phone_number
-            captcha: ${get_captcha(login, $unregister_phone_number)}
+            captcha: ${get_captcha_account_v3(login, $unregister_phone_number)}
             pid: UvOFXx2tfv
     validate:
         - eq: [status_code, 200]

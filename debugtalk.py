@@ -46,10 +46,10 @@ def source_user_password():
     return source_user.get('password')
 
 # 用户拥有的精灵，不拥有的精灵
-def source_user_owned_sprite_id(): 
+def source_user_owned_sprite_id():
     return source_user.get('sprite').get('owned')
 
-def source_user_unown_sprite_id(): 
+def source_user_unown_sprite_id():
     return source_user.get('sprite').get('unown')
 
 # Kitten作品
@@ -62,7 +62,7 @@ def source_user_ide_unpublish_work_id():
 def source_user_ide_deleted_temporarily_work_id():
     return source_user.get('work').get('ide').get('deleted_temporarily_work_id')
 
-def source_user_ide_deleted_permanently_work_id():  
+def source_user_ide_deleted_permanently_work_id():
     return source_user.get('work').get('ide').get('deleted_permanently_work_id')
 
 def source_user_ide_work_url():
@@ -82,13 +82,13 @@ def source_user_boxv1_preview_url():
     return source_user.get('work').get('boxv1').get('preview_url')
 
 # box2.0作品
-def source_user_boxv2_published_work_id(): 
+def source_user_boxv2_published_work_id():
     return source_user.get('work').get('boxv2').get('published_work_id')
 
-def source_user_boxv2_work_url(): 
+def source_user_boxv2_work_url():
     return source_user.get('work').get('boxv2').get('work_url')
 
-def source_user_boxv2_preview_url(): 
+def source_user_boxv2_preview_url():
     return source_user.get('work').get('boxv2').get('preview_url')
 
 def source_user_boxv2_bcmc_url():
@@ -97,13 +97,13 @@ def source_user_boxv2_bcmc_url():
 def source_user_wood_work_id():
     return source_user.get('work').get('wood').get('work_id')
 # nemo
-def source_user_nemo_work_id(): 
+def source_user_nemo_work_id():
     return source_user.get('work').get('nemo').get('work_id')
 
 def source_user_nemo_work_url():
     return source_user.get('work').get('nemo').get('work_url')
 
-def source_user_nemo_preview_url(): 
+def source_user_nemo_preview_url():
     return source_user.get('work').get('nemo').get('preview_url')
 
 # 目标用户信息
@@ -118,12 +118,12 @@ def target_user_username():
 
 def target_user_password():
     return target_user.get('password')
-    
+
 # Kitten作品
 def target_user_ide_published_work_id():
     return target_user.get('work').get('ide').get('published_work_id')
 
-def target_user_ide_published_unfork_work_id(): 
+def target_user_ide_published_unfork_work_id():
     return target_user.get('work').get('ide').get('published_unfork_work_id')
 
 def target_user_ide_unpublish_work_id():
@@ -149,7 +149,7 @@ def login_token(identity, password, pid='UvOFXx2tfv'):
         "password": password,
         "pid": pid
     }
-    params = {'Content-Type': 'application/json'}  
+    params = {'Content-Type': 'application/json'}
     res = requests.post(tiger_host+'/tiger/accounts/login', json=data, params=params)
     if res.status_code == 200 and 'application/json' in res.headers['Content-Type']:
         token = res.json()['token']
@@ -197,10 +197,15 @@ def clear_phone_number(phone_number):
     global opmysql_account
     opmysql_account.clear_phone_number(phone_number)
 
-# 获取redis中存储的验证码
-def get_captcha(catpcha_type, phone_number):
+# 获取账号3.0的redis中存储的验证码
+def get_captcha_account_v3(catpcha_type, phone_number):
     global op_redis
-    captcha = op_redis.get_captcha(catpcha_type, phone_number)
+    captcha = op_redis.get_captcha_account_v3(catpcha_type, phone_number)
+    return captcha
+
+# 获取账号2.0的redi中存储的验证码
+def get_captcha_account_v2(catpcha_type, phone_number):
+    captcha = op_redis.get_captcha_account_v2(catpcha_type, phone_number)
     return captcha
 
 # 获取发送图形验证码的ticket

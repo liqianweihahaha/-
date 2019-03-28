@@ -60,7 +60,7 @@ variables:
     api: api/account/v3_for_web/send_login_silence_captcha.yaml
     variables:
         - phone_number: $unregister_phone_number
-    validate: 
+    validate:
         - eq: [status_code, 204]
 
 - test:
@@ -69,7 +69,7 @@ variables:
     api: api/account/v3_for_web/login_silence_by_captcha.yaml
     variables:
         - phone_number: $unregister_phone_number
-        - captcha: ${get_captcha(login_with_register, $unregister_phone_number)}  # 在执行所有testcase(包括setup_hooks)之前，variables中调用debugtalk.py中的函数会被先执行，调用几次就执行几次
+        - captcha: ${get_captcha_account_v3(login_with_register, $unregister_phone_number)}  # 在执行所有testcase(包括setup_hooks)之前，variables中调用debugtalk.py中的函数会被先执行，调用几次就执行几次
     validate:
         - eq: [status_code, 200]
         - eq: [content.is_first_login, true]

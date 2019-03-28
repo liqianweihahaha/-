@@ -42,7 +42,7 @@
         url: /tiger/v3/web/accounts/register/phone
         json:
             phone_number: $unregistered_phone_number
-            captcha: ${get_captcha(register, $unregistered_phone_number)}
+            captcha: ${get_captcha_account_v3(register, $unregistered_phone_number)}
             pid: $exist_pid
     validate:
         - eq: [status_code, 400]
@@ -56,7 +56,7 @@
         url: /tiger/v3/web/accounts/register/phone
         json:
             phone_number: $unregistered_phone_number
-            captcha: ${get_captcha(register, $unregistered_phone_number)}
+            captcha: ${get_captcha_account_v3(register, $unregistered_phone_number)}
             password: $correct_password
             pid: $exist_pid
     validate:
