@@ -8,7 +8,7 @@
 - test:
     name: 手机号未注册
     skipUnless: ${is_dev()}
-    setup_hooks: 
+    setup_hooks:
         - ${clear_phone_number($unregister_phone_number)}
     api: api/account/v3_for_web/send_login_captcha.yaml
     variables:
@@ -20,6 +20,7 @@
 # 手机号已注册
 - test:
     name: 准备：注册手机号
+    skipUnless: ${is_dev()}
     api: api/platform-user-tiger/register_phone_number.yaml
     variables:
         - phone_number: $unregister_phone_number
