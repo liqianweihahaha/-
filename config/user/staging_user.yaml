@@ -1,5 +1,5 @@
 source_user:
-  id: 771783
+  id: 3046773
   username: sandy000
   email: sandy000@qq.com
   password: m1234567
@@ -34,7 +34,7 @@ source_user:
     unown: 1   # 编程猫
     
 target_user:
-  id: 1855538
+  id: 3046775
   username: sandy001
   password: m1234567
   work:

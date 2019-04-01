@@ -2,7 +2,7 @@
     name: 修改用户信息
     base_url: ${tiger_api_host()}
     variables:
-        - test_nickname: '哈哈122333'
+        - test_nickname: '哈哈12233389898'
         - test_fullname: 哈哈
         - test_sex_0: 0
         - test_sex_1: 1
