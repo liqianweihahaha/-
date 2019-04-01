@@ -85,6 +85,9 @@ def source_user_boxv1_preview_url():
 def source_user_boxv2_published_work_id():
     return source_user.get('work').get('boxv2').get('published_work_id')
 
+def source_user_boxv2_unpublish_work_id():
+    return source_user.get('work').get('boxv2').get('unpublish_work_id')
+
 def source_user_boxv2_work_url():
     return source_user.get('work').get('boxv2').get('work_url')
 
