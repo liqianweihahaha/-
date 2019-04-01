@@ -3,6 +3,7 @@
     base_url: ${tiger_api_host()}
     variables:
         - unexist_work_name: 哈哈哈哈呵呵呵呵
+        - boxv2_work_type: 3
 
 - test:
     name: 未登录-已发布ide作品-传递work_type=1和name
@@ -30,15 +31,16 @@
         - eq: [status_code, 200]
         - contains: [content.name, $unexist_work_name]
 
+# 当work_type对应的作品类型不存在时404，路由错误
 - test:
-    name: 已登录-个人已发布ide作品-传递work_type=2和name
+    name: 已登录-个人已发布ide作品-传递work_type为Box2.0和name
     request:
         method: PATCH
         url: /tiger/work/works/${source_user_ide_published_work_id()}/rename
         headers:
             Authorization: ${source_user_login_token()}
         json:
-            work_type: 2
+            work_type: $boxv2_work_type
             name: $unexist_work_name
     validate:
         - eq: [status_code, 404]
