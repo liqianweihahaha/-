@@ -11,8 +11,6 @@
     request:
         url: /accounts/batch
         method: POST
-        headers:
-            Content-Type: ${content_type()}
         json:
             prefix: $test_prefix
             users: [{"password": $password}, {"password": $password}]

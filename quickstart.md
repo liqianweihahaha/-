@@ -14,7 +14,7 @@
 | 不同点 | hrun 1.5.15 | hrun 2.0 |
 |----|----|----|
 |api定义|通过api和def关键字定义|和test定义一样|
-|api调用|通过api关键字和函数名调用，传递函数参数|通过api关键字和api文件路径，以及variables传递参数|
+|api调用|通过api关键字和函数名调用，传递函数参数|通过api指定文件路径，variables传递参数|
 |debugtalk.py|可以直接引用其中定义的变量|不能直接引用其中定义的变量|
 |base_url|在config中的request下定义|在config下直接定义或者api中直接定义(不能在request下)|
 |method、url等|可以在config的request下统一配置|只能在test中指定|
@@ -44,6 +44,48 @@ variables:
 - api文件中的yaml文件内容为空会报错
 - api文件中的name会覆盖testcases文件test用例中的name
 - testcases中yaml文件内容为空，会导致生成报告失败
+- 加载顺序：.env文件---》加载testcase中定义的变量(执行其中可执行部分)---》运行testcase
+
+#### 错误写法总结
+
+##### 错误写法1
+- 预期效果：先执行发送登录验证码接口，再获取验证码，执行验证码登录接口。
+
+```
+- test:
+    name: 发送登录验证码-手机号未注册
+    skipUnless: ${is_dev()}
+    setup_hooks:
+        - ${clear_phone_number($unregister_phone_number)}
+    api: api/account/v3_for_web/send_login_silence_captcha.yaml
+    variables:
+        - phone_number: $unregister_phone_number
+    validate:
+        - eq: [status_code, 204]
+
+- test:
+    name: 验证码登录：手机号未注册-验证码正确
+    skipUnless: ${is_dev()}
+    api: api/account/v3_for_web/login_silence_by_captcha.yaml
+    variables:
+        - phone_number: $unregister_phone_number
+        - captcha: ${get_captcha_account_v3(login_with_register, $unregister_phone_number)}  # 在执行所有testcase(包括setup_hooks)之前，variables中调用debugtalk.py中的函数会被先执行，调用几次就执行几次
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.is_first_login, true]
+```
+- 实际效果：先执行了获取验证码，然后再执行发送验证码，导致获取的验证码为空（原因：test的variables中调用debugtalk.py的函数会在所有用例执行之前先执行）
+- 解决方法：执行获取验证码的方法放在request中，而不是variables中，因此只要不复用api即可。
+
+#### Hook
+- 测试用例的准备和清理工作没有使用setup_hooks/teardown_hoos，而是直接调用DB层的接口（因为DB层涉及的CRUD操作的接口已经有了）
+- 缺点：用例之间耦合性大，依赖于底层的DB操作接口的正确性
+- 优点：减少直接操作数据库（并且正式库还没法直接修改表）
+- 涉及到手机号注册相关，不会通过解绑接口清空手机号，因为业务限制太多，所以直接操作数据库
+
+#### 注意点
+- 退出登录后会导致其他用例中的source_user_login_token失效，所以退出登录用例中的已登录token需要单独获取
+- 账号3.0修改密码，导致source_user_login_token失效，所以使用测试账号2（target_user）测试
 
 
 

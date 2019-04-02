@@ -12,22 +12,20 @@ httprunner==2.0+
 - httprunner 1.5.x版本，可切换到分支hrun1.0，然后运行
 
 #### 运行脚本
-- 默认测试报告的路径：reports/xx.html
+1. `.env`文件中指定测试环境和配置测试手机号
+2. 运行如下命令
+
 ```sh
 # 运行某目录下的所有测试用例
-hrun testcases/platform-user-tiger
+hrun testcases/tiger-account
 
 # 运行某个测试用例文件
-hrun testcases/platform-user-tiger/get_user_info.yaml
+hrun testcases/tiger-account/v1/login.yaml
 
 # 指定html报告的路径和名称
-hrun testcases/platform-user-tiger --html-report-name reports/result.html
+hrun testcases/tiger-account --html-report-name reports/result.html
 
-# 指定使用的报告模板：例如只输出执行失败的用例
+# 指定报告模板：例如只输出执行失败的testcase
 # 默认使用：~\httprunner\templates\report_template.html
-hrun testcases/platform-user-tiger/get_oauth_info_by_userid.yaml --html-report-template=D:\Program\Python3.7\Lib\site-packages\httprunner\templates\report_template_default.html
+hrun testcases/tiger-account/v1/login.yaml --report-template=D:\Program\Python3.7\Lib\site-packages\httprunner\templates\report_template_default.html
 ```
-
-#### 注意点
-- 退出登录后会导致其他用例中的source_user_login_token失效，所以退出登录用例中的已登录token需要单独获取
-- 账号3.0修改密码，导致source_user_login_token失效，所以使用测试账号2（target_user）测试

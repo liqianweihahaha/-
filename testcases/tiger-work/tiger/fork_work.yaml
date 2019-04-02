@@ -22,7 +22,7 @@
         - token: ${source_user_login_token()}
     validate:
         - eq: [status_code, 403]
-        - eq: [content.error_code, W_9]
+        # - eq: [content.error_code, 'W_9']
 
 - test:
     name: 已登录-他人已发布作品(可购买)

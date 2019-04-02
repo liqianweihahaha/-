@@ -3,7 +3,6 @@ source_user:
   id: 1000012631
   username: mxq0001
   email: mxq0001@qq.com
-  phone_number: ''
   password: m1234567
   sprite:
     owned: 50    # 象牙螺
@@ -25,7 +24,8 @@ source_user:
       preview_url: https://preview.codemao.cn/FtjU5vGuYhkXIv37QUcQ-DMJbSch
     # 为了避免产生脏数据导致打开作品时报错，所以work_url必须是同类型url
     boxv2:
-      published_work_id: 21000006   # 已发布
+      published_work_id: 21000006    # 已发布
+      unpublish_work_id: 21000597  # 未发布
       work_url: https://static.codemao.cn/box/H1vYhAE-V.bcm
       preview_url: https://obxuuymk6.qnssl.com/default_preview.png
       bcmc_url: https://static.codemao.cn/box/HkDY2RVbE.bcmc

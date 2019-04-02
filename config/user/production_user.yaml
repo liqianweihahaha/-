@@ -1,7 +1,6 @@
 source_user:
   id: 771783
   username: sandy000
-  phone_number: ''
   email: sandy000@qq.com
   password: m1234567
   work:
@@ -20,6 +19,7 @@ source_user:
       preview_url: https://preview.codemao.cn/Fiji8FtyQbOq3tU61xhos1H1XU6Y
     boxv2:
       published_work_id: 6173018
+      unpublish_work_id: 20935446
       work_url: https://static.codemao.cn/box/BJbmF0EbN.bcm
       preview_url: https://obxuuymk6.qnssl.com/default_preview.png
       bcmc_url: https://static.codemao.cn/box/B1e-QtRNb4.bcmc

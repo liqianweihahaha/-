@@ -1,7 +1,6 @@
 source_user:
   id: 1000012631
   username: mxq0001
-  phone_number: '13000000000'
   email: mxq0001@qq.com
   password: m1234567
   work:
@@ -22,6 +21,7 @@ source_user:
     # 为了避免产生脏数据导致打开作品时报错，所以work_url必须是同类型url
     boxv2:
       published_work_id: 2683514
+      unpublish_work_id: 21003481
       work_url: https://test.bcmcdn.com/box/SyK8CaNW4.bcm
       preview_url: https://obxuuymk6.qnssl.com/default_preview.png
       bcmc_url: https://test.bcmcdn.com/box/BkK806VZV.bcmc

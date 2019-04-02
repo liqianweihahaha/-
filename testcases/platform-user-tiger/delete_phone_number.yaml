@@ -6,18 +6,18 @@
 
 - test:
     name: 用户名+密码用户(未绑定手机号)
-    request:
-        method: DELETE
-        url: /accounts/${source_user_id()}/phone_number
+    api: api/platform-user-tiger/delete_phone_number.yaml
+    variables:
+        - user_id: ${source_user_id()}
     validate:
         - eq: [status_code, 403]
         - eq: [content.error_code, Account_41]
 
 - test:
     name: 用户不存在
-    request:
-        method: DELETE
-        url: /accounts/$unexist_user_id/phone_number
+    api: api/platform-user-tiger/delete_phone_number.yaml
+    variables:
+        - user_id: $unexist_user_id
     validate:
         - eq: [status_code, 422]
         - eq: [content.error_code, '10001000']

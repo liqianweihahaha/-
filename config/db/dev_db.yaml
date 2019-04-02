@@ -1,0 +1,9 @@
+mysql:
+  host: rm-bp173j25673ah67z8ko.mysql.rds.aliyuncs.com
+  user: TestDep
+  password: 4Ehp1ndpfnlN9D0qvg4SZuig
+redis:
+  # 可以不用vpn连接
+  host: dev.codemao.cn
+  port: 7000
+  password: ''

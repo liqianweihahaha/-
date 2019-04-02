@@ -61,9 +61,8 @@
         url: /accounts/oauth/$test_wexin_unioinid1?fields=id
     validate:
         - eq: [status_code, 200]
-        - length_equals: [content, 2]
+        - length_equals: [content, 1]
         - eq: [content.id, '${source_user_id()}']
-        - eq: [content.unionid, $test_wexin_unioinid1]
 
 # - test:
 #     name: unionid已注册-fields为逗号表达式包含不支持字段

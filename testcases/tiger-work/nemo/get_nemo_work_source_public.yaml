@@ -14,9 +14,11 @@
         - eq: [status_code, 200]
         - eq: [content.user.id, '${source_user_id()}']
         - eq: [content.work_id, '${source_user_nemo_work_id()}']
-        - length_equals: [content, 7]
+        # - length_equals: [content, 7]
         - length_greater_than_or_equals: [content.work_urls, 1]
         - type_match: [content.work_urls, list]
+        - contains: [content, n_likes]
+        - contains: [content, view_times]
 
 - test:
     name: 未登录-已发布ide作品
@@ -27,7 +29,6 @@
         - eq: [status_code, 200]
         - eq: [content.work_id, '${source_user_ide_published_work_id()}']
         - eq: [content.user.id, '${source_user_id()}']
-        - length_equals: [content, 7]
         - length_equals: [content.work_urls, 0]
 
 - test:
@@ -39,7 +40,6 @@
         - eq: [status_code, 200]
         - eq: [content.work_id, '${source_user_ide_unpublish_work_id()}']
         - eq: [content.user.id, '${source_user_id()}']
-        - length_equals: [content, 7]
         - length_equals: [content.work_urls, 0]
 
 - test:
@@ -69,7 +69,6 @@
         - eq: [status_code, 200]
         - eq: [content.work_id, '${source_user_boxv2_published_work_id()}']
         - eq: [content.user.id, '${source_user_id()}']
-        - length_equals: [content, 7]
         - length_equals: [content.work_urls, 0]
 
 - test:
@@ -81,7 +80,6 @@
         - eq: [status_code, 200]
         - eq: [content.work_id, '${source_user_wood_work_id()}']
         - eq: [content.user.id, '${source_user_id()}']
-        - length_equals: [content, 7]
         - length_equals: [content.work_urls, 0]
 
 - test:
