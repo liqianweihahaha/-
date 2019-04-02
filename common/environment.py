@@ -2,7 +2,7 @@
 def get_hosts(env):
     if env == 'dev':
         tiger_api_host = 'https://backend-dev.codemao.cn'
-        # tiger_api_host = 'https://set12-dev-backend.codemao.cn'
+        # tiger_api_host = 'https://dev-account-api.codemao.cn'
         platform_tiger_api_host = 'http://dev-internal.platform.codemao.cn'
     elif env == 'test':
         tiger_api_host = 'https://test-api.codemao.cn'

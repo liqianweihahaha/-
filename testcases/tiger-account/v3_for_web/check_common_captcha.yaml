@@ -1,0 +1,90 @@
+- config:
+    name: 通用验证码之校验
+    base_url: ${tiger_api_host()}
+    variables:
+        - test_phone_number: ${test_phone_number()}
+
+# 手机号未注册
+- test:
+    name: 准备工作：发送通用验证码（phone_number未注册）
+    skipUnless: ${is_dev()}
+    setup_hooks:
+        - ${clear_phone_number($test_phone_number)}
+    api: api/account/v3_for_web/send_common_captcha.yaml
+    variables:
+        - phone_number: $test_phone_number
+    validate:
+        - eq: [status_code, 204]
+
+- test:
+    name: 校验通用验证码-phone_number未注册-captcha错误
+    skipUnless: ${is_dev()}
+    request:
+        method: POST
+        url: /tiger/v3/web/accounts/captcha/common/check
+        json:
+            phone_number: $test_phone_number
+            captcha: '123456'
+    validate:
+        - eq: [status_code, 403]
+        - eq: [content.error_code, AC3_13]
+
+- test:
+    name: 校验通用验证码-phone_number未注册-captcha正确
+    skipUnless: ${is_dev()}
+    request:
+        method: POST
+        url: /tiger/v3/web/accounts/captcha/common/check
+        json:
+            phone_number: $test_phone_number
+            captcha: ${get_captcha_account_v3(common, $test_phone_number)}
+    validate:
+        - eq: [status_code, 204]
+
+# 手机号已注册
+- test:
+    name: 准备工作1：注册手机号
+    skipUnless: ${is_dev()}
+    setup_hooks:
+        - ${clear_phone_number($test_phone_number)}
+    api: api/platform-user-tiger/register_phone_number.yaml
+    variables:
+        - phone_number: $test_phone_number
+    validate:
+        - eq: [status_code, 200]
+
+- test:
+    name: 准备工作2：发送通用验证码（phone_number已注册）
+    skipUnless: ${is_dev()}
+    setup_hooks:
+        - ${clear_phone_number($test_phone_number)}
+    api: api/account/v3_for_web/send_common_captcha.yaml
+    variables:
+        - phone_number: $test_phone_number
+    validate:
+        - eq: [status_code, 204]
+
+- test:
+    name: 校验通用验证码-phone_number已注册-captcha错误
+    skipUnless: ${is_dev()}
+    request:
+        method: POST
+        url: /tiger/v3/web/accounts/captcha/common/check
+        json:
+            phone_number: $test_phone_number
+            captcha: '123456'
+    validate:
+        - eq: [status_code, 403]
+        - eq: [content.error_code, AC3_13]
+
+- test:
+    name: 校验通用验证码-phone_number已注册-captcha正确
+    skipUnless: ${is_dev()}
+    request:
+        method: POST
+        url: /tiger/v3/web/accounts/captcha/common/check
+        json:
+            phone_number: $test_phone_number
+            captcha: ${get_captcha_account_v3(common, $test_phone_number)}
+    validate:
+        - eq: [status_code, 204]
