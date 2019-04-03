@@ -34,7 +34,7 @@
 # 手机号注册用户登录，只在dev测试
 - test: 
     name: 手机号注册设置密码
-    skipUnless: ${is_dev()}
+    skipUnless: ${is_dev_or_test()}
     setup_hooks:
         - ${clear_phone_number($unregister_phone_number)}
     api: api/platform-user-tiger/register_phone_number_with_password.yaml
@@ -49,7 +49,7 @@
 
 - test:
     name: 手机号正确-密码正确
-    skipUnless: ${is_dev()}
+    skipUnless: ${is_dev_or_test()}
     api: api/account/account_login.yaml
     variables:
         - identity: $unregister_phone_number

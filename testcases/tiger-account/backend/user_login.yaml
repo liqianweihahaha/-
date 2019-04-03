@@ -29,6 +29,7 @@
     validate:
         - eq: [status_code, 403]
         - eq: [content.error_code, B_8]
+        
 - test:
     name: 用户名错误-密码正确
     request:

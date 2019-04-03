@@ -7,7 +7,7 @@
 
 - test:
     name: 手机号未注册
-    skipUnless: ${is_dev()}
+    skipUnless: ${is_dev_or_test()}
     setup_hooks: 
         - ${clear_phone_number($unregister_phone_number)}
     api: api/account/v3_for_web/send_login_silence_captcha.yaml
@@ -27,7 +27,7 @@
 
 - test:
     name: 手机号已注册
-    skipUnless: ${is_dev()}
+    skipUnless: ${is_dev_or_test()}
     api: api/account/v3_for_web/send_login_silence_captcha.yaml
     variables:
         - phone_number: $unregister_phone_number

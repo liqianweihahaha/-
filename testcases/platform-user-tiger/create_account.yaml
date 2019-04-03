@@ -48,7 +48,7 @@
 # 手机号注册
 - test:
     name: 手机号未注册
-    skipUnless: ${is_dev()}
+    skipUnless: ${is_dev_or_test()}
     setup_hooks:
         - ${clear_phone_number($unregister_phone_number)}
     api: api/platform-user-tiger/register_phone_number.yaml
@@ -61,7 +61,7 @@
 
 - test:
     name: 手机号已注册
-    skipUnless: ${is_dev()}
+    skipUnless: ${is_dev_or_test()}
     api: api/platform-user-tiger/register_phone_number.yaml
     variables:
         - phone_number: $unregister_phone_number

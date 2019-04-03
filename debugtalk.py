@@ -26,6 +26,10 @@ def platform_tiger_api_host():
 tiger_host = tiger_api_host()
 
 # 判断是否是dev或者test环境
+def is_dev_or_test():
+    return is_dev_or_test_environment(env)
+
+# 判断是dev环境（因为账号2.0只有dev关闭了极验）
 def is_dev():
     return is_dev_environment(env)
 
@@ -213,7 +217,7 @@ def get_captcha_account_v2(catpcha_type, phone_number):
 
 # 获取发送图形验证码的ticket
 def get_captcha_ticket():
-    res = requests.get(tiger_host+'/tiger/captcha/graph/ticket')
+    res = requests.get('https://backend-dev.codemao.cn'+'/tiger/captcha/graph/ticket')
     if res.status_code == 200:
         return res.json()['ticket']
     else:

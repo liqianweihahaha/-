@@ -7,7 +7,7 @@
 # 手机号未注册
 - test:
     name: 准备工作：发送通用验证码（phone_number未注册）
-    skipUnless: ${is_dev()}
+    skipUnless: ${is_dev_or_test()}
     setup_hooks:
         - ${clear_phone_number($test_phone_number)}
     api: api/account/v3_for_web/send_common_captcha.yaml
@@ -18,7 +18,7 @@
 
 - test:
     name: 校验通用验证码-phone_number未注册-captcha错误
-    skipUnless: ${is_dev()}
+    skipUnless: ${is_dev_or_test()}
     request:
         method: POST
         url: /tiger/v3/web/accounts/captcha/common/check
@@ -31,7 +31,7 @@
 
 - test:
     name: 校验通用验证码-phone_number未注册-captcha正确
-    skipUnless: ${is_dev()}
+    skipUnless: ${is_dev_or_test()}
     request:
         method: POST
         url: /tiger/v3/web/accounts/captcha/common/check
@@ -44,7 +44,7 @@
 # 手机号已注册
 - test:
     name: 准备工作1：注册手机号
-    skipUnless: ${is_dev()}
+    skipUnless: ${is_dev_or_test()}
     setup_hooks:
         - ${clear_phone_number($test_phone_number)}
     api: api/platform-user-tiger/register_phone_number.yaml
@@ -55,7 +55,7 @@
 
 - test:
     name: 准备工作2：发送通用验证码（phone_number已注册）
-    skipUnless: ${is_dev()}
+    skipUnless: ${is_dev_or_test()}
     setup_hooks:
         - ${clear_phone_number($test_phone_number)}
     api: api/account/v3_for_web/send_common_captcha.yaml
@@ -66,7 +66,7 @@
 
 - test:
     name: 校验通用验证码-phone_number已注册-captcha错误
-    skipUnless: ${is_dev()}
+    skipUnless: ${is_dev_or_test()}
     request:
         method: POST
         url: /tiger/v3/web/accounts/captcha/common/check
@@ -79,7 +79,7 @@
 
 - test:
     name: 校验通用验证码-phone_number已注册-captcha正确
-    skipUnless: ${is_dev()}
+    skipUnless: ${is_dev_or_test()}
     request:
         method: POST
         url: /tiger/v3/web/accounts/captcha/common/check

@@ -8,7 +8,7 @@
 # 手机号未注册
 - test:
     name: 未注册的手机号发送登录验证码
-    skipUnless: ${is_dev()}
+    skipUnless: ${is_dev_or_test()}
     setup_hooks:
         - ${clear_phone_number($unregister_phone_number)}
     api: api/account/v3_for_web/send_login_silence_captcha.yaml
@@ -19,7 +19,7 @@
 
 - test:
     name: 手机号未注册-验证码正确
-    skipUnless: ${is_dev()}
+    skipUnless: ${is_dev_or_test()}
     request:
         method: POST
         url: /tiger/v3/web/accounts/phone/login/silence
@@ -43,7 +43,7 @@
 # 手机号已注册
 - test:
     name: 已注册的手机号发送登录验证码
-    skipUnless: ${is_dev()}
+    skipUnless: ${is_dev_or_test()}
     api: api/account/v3_for_web/send_login_silence_captcha.yaml
     variables:
         - phone_number: $unregister_phone_number
@@ -52,7 +52,7 @@
 
 - test:
     name: 手机号已注册-验证码正确
-    skipUnless: ${is_dev()}
+    skipUnless: ${is_dev_or_test()}
     request:
         method: POST
         url: /tiger/v3/web/accounts/phone/login/silence

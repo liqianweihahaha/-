@@ -9,7 +9,7 @@
 
 - test:
     name: 发送注册验证码：手机号未注册
-    skipUnless: ${is_dev()}
+    skipUnless: ${is_dev_or_test()}
     setup_hooks:
         - ${clear_phone_number($unregistered_phone_number)}
     api: api/account/v3_for_web/send_register_captcha.yaml
@@ -21,7 +21,7 @@
 
 - test:
     name: 手机号未注册-验证码错误-密码格式正确
-    skipUnless: ${is_dev()}
+    skipUnless: ${is_dev_or_test()}
     request:
         method: POST
         url: /tiger/v3/web/accounts/register/phone
@@ -36,7 +36,7 @@
 
 - test:
     name: 手机号未注册-验证码正确-密码不传递
-    skipUnless: ${is_dev()}
+    skipUnless: ${is_dev_or_test()}
     request:
         method: POST
         url: /tiger/v3/web/accounts/register/phone
@@ -50,7 +50,7 @@
 
 - test:
     name: 手机号未注册-验证码正确-密码格式正确
-    skipUnless: ${is_dev()}
+    skipUnless: ${is_dev_or_test()}
     request:
         method: POST
         url: /tiger/v3/web/accounts/register/phone
@@ -72,7 +72,7 @@
 
 - test:
     name: 验证手机号注册成功后，使用手机号+密码登录成功
-    skipUnless: ${is_dev()}
+    skipUnless: ${is_dev_or_test()}
     api: api/account/account_login.yaml
     variables:
         - identity: $unregistered_phone_number
