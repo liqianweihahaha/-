@@ -2,24 +2,23 @@
     name: 普通账户注册
     base_url: ${platform_tiger_api_host()}
     variables:
-        # - registered_email: maxiaoqian@qq.com
         - unregister_phone_number: ${test_phone_number()}
         - wrong_email_type: ma
         - wrong_password_value: 12
         - correct_password_value: m1234567
 
-# - test:
-#     name: 邮箱已注册
-#     request:
-#         method: POST
-#         url: /accounts
-#         json:
-#             email: $registered_email
-#             password: $correct_password_value
-#             pid: 65edCTyg
-#     validate:
-#         - eq: [status_code, 403]
-#         - eq: [content.error_code, Account_13]
+- test:
+    name: 邮箱已注册
+    request:
+        method: POST
+        url: /accounts
+        json:
+            email: ${source_user_email()}
+            password: $correct_password_value
+            pid: 65edCTyg
+    validate:
+        - eq: [status_code, 403]
+        - eq: [content.error_code, Account_13]
 
 - test:
     name: 邮箱格式错误
@@ -39,7 +38,7 @@
         method: POST
         url: /accounts
         json:
-            email: $registered_email
+            email: ${source_user_email()}
             password: $wrong_password_value
             pid: 65edCTyg
     validate:
