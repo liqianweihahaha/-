@@ -6,7 +6,7 @@
         - wrong_type_work_id: aaa
 
 - test:
-    name: 未登录-已发布作品
+    name: 未登录-已发布IDE作品
     request:
         method: GET
         url: /tiger/work/source/${source_user_ide_published_work_id()}
@@ -15,7 +15,7 @@
         - eq: [content.error_code, E_0]
 
 - test:
-    name: 已登录-个人已发布作品
+    name: 已登录-个人已发布IDE作品
     request:
         method: GET
         url: /tiger/work/source/${source_user_ide_published_work_id()}
@@ -24,13 +24,13 @@
     validate:
         - eq: [status_code, 200]
         - eq: [content.config, '']
-        # - length_equals: [content, 4]
+        - length_equals: [content, 5]
+        - length_greater_than_or_equals: [content.source_urls, 1]
         - contains: [content, name]
         - contains: [content, preview]
-        - contains: [content, source_urls]
-
+        
 - test:
-    name: 已登录用户-个人未发布作品
+    name: 已登录-个人未发布IDE作品
     request:
         method: GET
         url: /tiger/work/source/${source_user_ide_unpublish_work_id()}
@@ -39,13 +39,13 @@
     validate:
         - eq: [status_code, 200]
         - eq: [content.config, '']
-        # - length_equals: [content, 4]
+        - length_equals: [content, 5]
+        - length_greater_than_or_equals: [content.source_urls, 1]
         - contains: [content, name]
         - contains: [content, preview]
-        - contains: [content, source_urls]
 
 - test:
-    name: 已登录-个人临时删除的作品
+    name: 已登录-个人临时删除的IDE作品
     request:
         method: GET
         url: /tiger/work/source/${source_user_ide_deleted_temporarily_work_id()}
@@ -67,7 +67,7 @@
         - eq: [content.error_code, W_1]
 
 - test:
-    name: 已登录用户-他人已发布作品
+    name: 已登录用户-他人已发布IDE作品
     request:
         method: GET
         url: /tiger/work/source/${target_user_ide_published_work_id()}
@@ -76,6 +76,36 @@
     validate:
         - eq: [status_code, 403]
         - eq: [content.error_code, E_3]
+
+- test:
+    name: 已登录-个人未发布Wood作品
+    request:
+        method: GET
+        url: /tiger/work/source/${source_user_wood_work_id()}
+        headers:
+            Authorization: ${source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.config, '']
+        - length_equals: [content, 5]
+        - length_equals: [content.source_urls, 0]
+        - contains: [content, name]
+        - contains: [content, preview]
+
+- test:
+    name: 已登录-个人未发布Nemo作品
+    request:
+        method: GET
+        url: /tiger/work/source/${source_user_nemo_work_id()}
+        headers:
+            Authorization: ${source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.config, '']
+        - length_equals: [content, 5]
+        - length_equals: [content.source_urls, 0]
+        - contains: [content, name]
+        - contains: [content, preview]
 
 - test:
     name: 已登录-不存在的作品id

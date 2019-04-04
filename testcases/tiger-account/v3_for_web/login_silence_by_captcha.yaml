@@ -3,7 +3,7 @@
     base_url: ${tiger_api_host()}
     variables:
         - unregister_phone_number: ${test_phone_number()}
-        - correct_pid: UvOFXx2tfv
+        - existed_pid: unknown
 
 # 手机号未注册
 - test:
@@ -28,7 +28,7 @@
             phone_number: $unregister_phone_number
             # 为了保证获取验证码在发送验证码之后，这里不将request抽象成api再引用
             captcha: ${get_captcha_account_v3(login_with_register, $unregister_phone_number)}
-            pid: $correct_pid
+            pid: $existed_pid
     validate:
         - eq: [status_code, 200]
         - eq: [content.is_first_login, true]
@@ -61,7 +61,7 @@
             phone_number: $unregister_phone_number
             # 为了保证获取验证码在发送验证码之后，这里不将request抽象成api再引用
             captcha: ${get_captcha_account_v3(login_with_register, $unregister_phone_number)}
-            pid: $correct_pid
+            pid: $existed_pid
     validate:
         - eq: [status_code, 200]
         - eq: [content.is_first_login, false]

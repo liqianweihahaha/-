@@ -2,7 +2,7 @@
     name: 账号密码登录
     base_url: ${tiger_api_host()}
     variables:
-        - pc_client_pid: UvOFXx2tfv
+        - existed_pid: unknown
         - wrong_password_source_user: abc
 
 - test:
@@ -13,7 +13,7 @@
         json:
             identity: ${source_user_username()}
             password: ${source_user_password()}
-            pid: $pc_client_pid
+            pid: $existed_pid
     validate:
         - eq: [status_code, 200]
         - eq: [content.user_info.id, '${source_user_id()}']
@@ -26,7 +26,7 @@
         json:
             identity: ${source_user_email()}
             password: ${source_user_password()}
-            pid: $pc_client_pid
+            pid: $existed_pid
     validate:
         - eq: [status_code, 200]
         - eq: [content.user_info.id, '${source_user_id()}']
@@ -39,7 +39,7 @@
         json:
             identity: ${source_user_username()}
             password: $wrong_password_source_user
-            pid: $pc_client_pid
+            pid: $existed_pid
     validate:
         - eq: [status_code, 403]
         - eq: [content.error_code, AC3_2]
@@ -51,7 +51,7 @@
         url: /tiger/v3/app/accounts/login
         json:
             identity: ${source_user_username()}
-            pid: $pc_client_pid
+            pid: $existed_pid
     validate:
         - eq: [status_code, 400]
         - eq: [content.error_code, A_5]

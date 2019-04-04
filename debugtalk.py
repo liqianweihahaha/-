@@ -150,7 +150,7 @@ def type_json():
     return 'application/json'
 
 # 获取登录token
-def login_token(identity, password, pid='UvOFXx2tfv'):
+def login_token(identity, password, pid='unknown'):
     data = {
         "identity": identity,
         "password": password,
@@ -217,7 +217,7 @@ def get_captcha_account_v2(catpcha_type, phone_number):
 
 # 获取发送图形验证码的ticket
 def get_captcha_ticket():
-    res = requests.get('https://backend-dev.codemao.cn'+'/tiger/captcha/graph/ticket')
+    res = requests.get(tiger_host+'/tiger/captcha/graph/ticket')
     if res.status_code == 200:
         return res.json()['ticket']
     else:

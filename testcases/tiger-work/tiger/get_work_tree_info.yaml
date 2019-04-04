@@ -13,7 +13,7 @@
     validate:
         - eq: [status_code, 200]
         - eq: [content.id, '${source_user_ide_published_work_id()}']
-        - length_equals: [content, 12]
+        - length_equals: [content, 13]
         - contains: [content, children]
         - type_match: [content.children, list]
 

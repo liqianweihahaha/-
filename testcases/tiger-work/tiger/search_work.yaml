@@ -1,5 +1,5 @@
 - config:
-    name: 搜索作品（Public）
+    name: 搜索作品（Public）需要opensearch
     base_url: ${tiger_api_host()}
     variables:
         - query_text: 天空
@@ -24,3 +24,4 @@
         - contains: [content, searchtime]
         - contains: [content, total]
         - contains: [content, items]
+        - length_equals: [content.items.0, 16]

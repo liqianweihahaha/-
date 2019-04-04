@@ -15,7 +15,7 @@
         - contains: [content, n_likes]
 
 - test:
-    name: 未登录-已发布ide作品
+    name: 未登录-已发布IDE作品
     request:
         method: PUT
         url: /tiger/nemo/works/${source_user_ide_published_work_id()}/like
@@ -24,7 +24,7 @@
         - contains: [content, n_likes]
 
 - test:
-    name: 未登录-未发布ide作品
+    name: 未登录-未发布IDE作品
     request:
         method: PUT
         url: /tiger/nemo/works/${source_user_ide_unpublish_work_id()}/like
@@ -33,7 +33,7 @@
         - contains: [content, n_likes]
 
 - test:
-    name: 未登录-临时删除的ide作品
+    name: 未登录-临时删除的IDE作品
     request:
         method: PUT
         url: /tiger/nemo/works/${source_user_ide_deleted_temporarily_work_id()}/like
@@ -42,7 +42,7 @@
         - contains: [content, n_likes]
 
 - test:
-    name: 未登录-永久删除的ide作品
+    name: 未登录-永久删除的IDE作品
     request:
         method: PUT
         url: /tiger/nemo/works/${source_user_ide_deleted_permanently_work_id()}/like

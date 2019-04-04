@@ -5,7 +5,7 @@
         - unregistered_phone_number: ${test_phone_number()}
         - wrong_captcha: '123456'
         - correct_password: m1234567
-        - exist_pid: UvOFXx2tfv
+        - existed_pid: unknown
 
 - test:
     name: 发送注册验证码：手机号未注册
@@ -29,7 +29,7 @@
             phone_number: $unregistered_phone_number
             captcha: $wrong_captcha
             password: $correct_password
-            pid: $exist_pid
+            pid: $existed_pid
     validate:
         - eq: [status_code, 403]
         - eq: [content.error_code, AC3_13]
@@ -43,7 +43,7 @@
         json:
             phone_number: $unregistered_phone_number
             captcha: ${get_captcha_account_v3(register, $unregistered_phone_number)}
-            pid: $exist_pid
+            pid: $existed_pid
     validate:
         - eq: [status_code, 400]
         - eq: [content.error_code, A_5]
@@ -58,7 +58,7 @@
             phone_number: $unregistered_phone_number
             captcha: ${get_captcha_account_v3(register, $unregistered_phone_number)}
             password: $correct_password
-            pid: $exist_pid
+            pid: $existed_pid
     validate:
         - eq: [status_code, 200]
         - length_equals: [content.user_info, 8]

@@ -19,6 +19,7 @@
 # 手机号已注册
 - test:
     name: 准备：注册手机号
+    skipUnless: ${is_dev_or_test()}
     api: api/platform-user-tiger/register_phone_number.yaml
     variables:
         - phone_number: $unregister_phone_number

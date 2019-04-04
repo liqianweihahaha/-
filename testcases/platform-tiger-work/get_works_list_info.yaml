@@ -35,7 +35,7 @@
         - length_equals: [content.0, 16]
 
 - test:
-    name: work_ids只包含已发布ide作品-fields包含所有支持字段
+    name: work_ids只包含已发布IDE作品-fields包含所有支持字段
     request:
         url: /works/list
         method: POST
@@ -49,7 +49,7 @@
         - eq: [content.0.user_id, '${source_user_id()}']
         - eq: [content.0.is_published, true]
         - eq: [content.0.type, 1]
-        - eq: [content.0.language_type, 0]
+        - eq: [content.0.language_type, 1]
         - eq: [content.0.is_published, true]
         - greater_than: [content.0.publish_time, 0]
         # - length_equals: [content.0, 23]

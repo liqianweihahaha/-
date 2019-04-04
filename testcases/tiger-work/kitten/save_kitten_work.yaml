@@ -3,10 +3,10 @@
     base_url: ${tiger_api_host()}
     variables:
         - work_sub_config: '{\"kind\":\"theatre_config\",\"stage\":{\"width\":620,\"height\":900}}'
-        - orientation: 1
+        - varchar_length_51: '111111111122222222223333333333444444444455555555556'
 
 - test:
-    name: 未登录-保存kitten作品(创建作品)
+    name: 未登录-创建IDE作品
     request:
         method: POST
         url: /tiger/work/kitten
@@ -15,14 +15,14 @@
             work_url: ${source_user_ide_work_url()}
             preview: ${source_user_ide_preview_url()}
             sub_config: $work_sub_config
-            orientation: $orientation
+            orientation: 1
             bcmc_url: ${source_user_ide_bcmc_url()}
     validate:
         - eq: [status_code, 403]
         - eq: [content.error_code, E_0]
 
 - test:
-    name: 已登录-创建kitten作品
+    name: 已登录-创建kitten作品-orientation为1
     api: api/tiger-work/kitten/save_kitten_work.yaml
     variables:
         - token: ${source_user_login_token()}
@@ -34,7 +34,86 @@
         - created_kitten_work_id: content.id
 
 - test:
-    name: 已登录-修改kitten作品
+    name: 已登录-创建IDE作品-ide_type为Matrix
+    request:
+        method: POST
+        url: /tiger/work/kitten
+        headers:
+            Authorization: ${source_user_login_token()}
+        json: 
+            name: 测试创建Matrix作品
+            work_url: ${source_user_ide_work_url()}
+            preview: ${source_user_ide_preview_url()}
+            sub_config: $work_sub_config
+            orientation: 1
+            bcmc_url: ${source_user_ide_bcmc_url()}
+            ide_type: MATRIX
+    validate:
+        - eq: [status_code, 200]
+        - contains: [content, id]
+        - length_equals: [content, 1]
+
+- test:
+    name: 创建IDE作品(已登录)-ide_type为KITTEN-orientation为2
+    request:
+        method: POST
+        url: /tiger/work/kitten
+        headers:
+            Authorization: ${source_user_login_token()}
+        json: 
+            name: 测试创建Matrix作品
+            work_url: ${source_user_ide_work_url()}
+            preview: ${source_user_ide_preview_url()}
+            sub_config: $work_sub_config
+            orientation: 2
+            bcmc_url: ${source_user_ide_bcmc_url()}
+            ide_type: KITTEN
+    validate:
+        - eq: [status_code, 200]
+        - contains: [content, id]
+        - length_equals: [content, 1]
+
+- test:
+    name: 创建IDE作品(已登录)-ide_type为KITTEN-orientation为3
+    request:
+        method: POST
+        url: /tiger/work/kitten
+        headers:
+            Authorization: ${source_user_login_token()}
+        json: 
+            name: 测试创建Matrix作品
+            work_url: ${source_user_ide_work_url()}
+            preview: ${source_user_ide_preview_url()}
+            sub_config: $work_sub_config
+            orientation: 3
+            bcmc_url: ${source_user_ide_bcmc_url()}
+            ide_type: KITTEN
+    validate:
+        - eq: [status_code, 200]
+        - contains: [content, id]
+        - length_equals: [content, 1]
+
+- test:
+    name: 创建IDE作品(已登录)-ide_type为KITTEN-orientation为4
+    request:
+        method: POST
+        url: /tiger/work/kitten
+        headers:
+            Authorization: ${source_user_login_token()}
+        json: 
+            name: 测试创建Matrix作品
+            work_url: ${source_user_ide_work_url()}
+            preview: ${source_user_ide_preview_url()}
+            sub_config: $work_sub_config
+            orientation: 4
+            bcmc_url: ${source_user_ide_bcmc_url()}
+            ide_type: KITTEN
+    validate:
+        - eq: [status_code, 400]
+        - eq: [content.error_code, A_5]
+
+- test:
+    name: 修改kitten作品:修改name
     request:
         method: POST
         url: /tiger/work/kitten
@@ -45,7 +124,7 @@
             work_url: ${source_user_ide_work_url()}
             preview: ${source_user_ide_preview_url()}
             sub_config: $work_sub_config
-            orientation: $orientation
+            orientation: 1
             bcmc_url: ${source_user_ide_bcmc_url()}
             work_id: $created_kitten_work_id
     validate:
@@ -64,11 +143,46 @@
             work_url: ${source_user_ide_work_url()}
             preview: ${source_user_ide_preview_url()}
             sub_config: $work_sub_config
-            orientation: $orientation
+            orientation: 1
             bcmc_url: ${source_user_ide_bcmc_url()}
     validate:
         - eq: [status_code, 400]
         - eq: [content.error_code, A_5]
+
+- test:
+    name: 已登录-创建IDE作品-name为空字符串
+    request:
+        method: POST
+        url: /tiger/work/kitten
+        headers:
+            Authorization: ${source_user_login_token()}
+        json: 
+            work_url: ${source_user_ide_work_url()}
+            preview: ${source_user_ide_preview_url()}
+            sub_config: $work_sub_config
+            orientation: 1
+            bcmc_url: ${source_user_ide_bcmc_url()}
+    validate:
+        - eq: [status_code, 400]
+        - eq: [content.error_code, A_5]
+
+- test:
+    name: 已登录-保存kitten作品(创建作品)-name超过50位字符
+    request:
+        method: POST
+        url: /tiger/work/kitten
+        headers:
+            Authorization: ${source_user_login_token()}
+        json: 
+            name: $varchar_length_51
+            work_url: ${source_user_ide_work_url()}
+            preview: ${source_user_ide_preview_url()}
+            sub_config: $work_sub_config
+            orientation: 1
+            bcmc_url: ${source_user_ide_bcmc_url()}
+    validate:
+        - eq: [status_code, 400]
+        - eq: [content.error_code, A_11]
 
 - test:
     name: 已登录-保存kitten作品(创建作品)-不传递work_url
@@ -81,7 +195,7 @@
             name: 测试保存kitten作品
             preview: ${source_user_ide_preview_url()}
             sub_config: $work_sub_config
-            orientation: $orientation
+            orientation: 1
             bcmc_url: ${source_user_ide_bcmc_url()}
             preview: ${source_user_ide_preview_url()}
     validate:
@@ -99,7 +213,7 @@
             name: 测试创建kitten作品
             work_url: ${source_user_ide_work_url()}
             sub_config: $work_sub_config
-            orientation: $orientation
+            orientation: 1
             bcmc_url: ${source_user_ide_bcmc_url()}
     validate:
         - eq: [status_code, 400]

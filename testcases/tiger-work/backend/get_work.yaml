@@ -5,9 +5,8 @@
         unexist_work_id: 100
         wrong_type_work_id: aaa
 
-
 - test:
-    name: 未登录-已发布作品
+    name: 未登录-已发布IDE作品
     request:
         method: GET
         url: /api/work/${source_user_ide_published_work_id()}
@@ -16,9 +15,11 @@
         - eq: [content.code, 200]
         - eq: [content.msg, 成功]
         - length_equals: [content.data, 2]
+        - contains: [content.data, config]
+        - contains: [content.data, parentid]
 
 - test:
-    name: 未登录-未发布作品
+    name: 未登录-未发布IDE作品
     request:
         method: GET
         url: /api/work/${source_user_ide_unpublish_work_id()}
@@ -29,7 +30,7 @@
         - length_equals: [content.data, 2]
 
 - test:
-    name: 未登录-临时删除作品
+    name: 未登录-临时删除IDE作品
     request:
         method: GET
         url: /api/work/${source_user_ide_deleted_temporarily_work_id()}
@@ -39,7 +40,7 @@
         - length_equals: [content.data, 0]
 
 - test:
-    name: 未登录-永久删除作品
+    name: 未登录-永久删除IDE作品
     request:
         method: GET
         url: /api/work/${source_user_ide_deleted_permanently_work_id()}
@@ -48,6 +49,19 @@
         - eq: [content.code, 500]
         - eq: [content.msg, '网络繁忙,请稍后再试']
         - length_equals: [content.data, 0]
+
+- test:
+    name: 未登录-Wood作品
+    request:
+        method: GET
+        url: /api/work/${source_user_wood_work_id()}
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.code, 200]
+        - eq: [content.msg, 成功]
+        - length_equals: [content.data, 2]
+        - contains: [content.data, config]
+        - contains: [content.data, parentid]
 
 - test:
     name: 未登录-不存在的作品id

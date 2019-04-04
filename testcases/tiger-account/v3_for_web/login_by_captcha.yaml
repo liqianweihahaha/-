@@ -4,6 +4,7 @@
     variables:
         - unregister_phone_number: ${test_phone_number()}
         - wrong_captcha: '123456'
+        - existed_pid: unknown
 
 - test:
     name: 准备1：注册手机号
@@ -34,7 +35,7 @@
         json:
             phone_number: $unregister_phone_number
             captcha: ${get_captcha_account_v3(login, $unregister_phone_number)}
-            pid: UvOFXx2tfv
+            pid: $existed_pid
     validate:
         - eq: [status_code, 200]
 
@@ -47,7 +48,7 @@
         json:
             phone_number: $unregister_phone_number
             captcha: $wrong_captcha
-            pid: UvOFXx2tfv
+            pid: $existed_pid
     validate:
         - eq: [status_code, 403]
         - eq: [content.error_code, AC3_13]

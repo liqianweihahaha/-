@@ -26,7 +26,7 @@
         - eq: [content.n_public_variables, 0]
         - eq: [content.n_private_variables, 0]
         - eq: [content.n_variables, 0]
-        - length_equals: [content, 7]
+        # - length_equals: [content, 7]
 
 - test:
     name: 已登录-不存在的作品id

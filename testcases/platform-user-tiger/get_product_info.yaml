@@ -1,10 +1,9 @@
 - config:
     name: 获取产品信息
     base_url: ${platform_tiger_api_host()}
-    
     variables:
-        - pc_client_pid: UvOFXx2tfv
-        - pc_client_name: 客户端
+        - existed_pid: unknown
+        - existed_pid_name: 旧接口专用
         - unsupport_fields_element: aaa
         - wrong_type_fields: {}
         - unexist_pid: aaa
@@ -13,11 +12,11 @@
     name: pid存在
     api: api/platform-user-tiger/get_product_info.yaml
     variables:
-        - pid: $pc_client_pid
+        - pid: $existed_pid
     validate:
         - eq: [status_code, 200]
-        - eq: [content.pid, $pc_client_pid]
-        - eq: [content.name, $pc_client_name]
+        - eq: [content.pid, $existed_pid]
+        - eq: [content.name, $existed_pid_name]
         - length_equals: [content, 4]
         - contains: [content, id]
         - contains: [content, description]

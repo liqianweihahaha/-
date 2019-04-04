@@ -22,7 +22,7 @@
         - eq: [status_code, 204]
 
 - test:
-    name: 判断作品是否更新为未发布
+    name: 验证：判断作品是否更新为未发布
     api: api/platform-tiger-work/get_work_info.yaml
     variables:
         - work_id: ${source_user_ide_published_work_id()}
@@ -32,7 +32,7 @@
         - eq: [content.publish_time, 0]
         
 - test:
-    name: 修改作品为已发布
+    name: 重新修改作品为已发布
     api: api/tiger-work/tiger/publish_work.yaml
     variables:
         - work_id: ${source_user_ide_published_work_id()}
@@ -40,11 +40,11 @@
     validate:
         - eq: [status_code, 204]
 
-- test:
-    name: 判断作品是否更新为已发布
-    api: api/platform-tiger-work/get_work_info.yaml
-    variables:
-        - work_id: ${source_user_ide_published_work_id()}
-    validate:
-        - eq: [content.is_published, true]
-        - greater_than: [content.publish_time, 0]    
+# - test:
+#     name: 验证：判断作品是否更新为已发布
+#     api: api/platform-tiger-work/get_work_info.yaml
+#     variables:
+#         - work_id: ${source_user_ide_published_work_id()}
+#     validate:
+#         - eq: [content.is_published, true]
+#         - greater_than: [content.publish_time, 0]

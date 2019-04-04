@@ -2,7 +2,7 @@
     name: 批量创建用户
     base_url: ${platform_tiger_api_host()}
     variables:
-        - pc_pid: UvOFXx2tfv
+        - existed_pid: unknown
         - password: m1234567
         - test_prefix: testbach
 
@@ -14,7 +14,7 @@
         json:
             prefix: $test_prefix
             users: [{"password": $password}, {"password": $password}]
-            pid: $pc_pid
+            pid: $existed_pid
     extract:
         - user1_id: content.0.id
         - user1_username: content.0.username

@@ -2,7 +2,8 @@
     name: 我的作品列表
     base_url: ${tiger_api_host()}
     variables:
-        ide_work_type: 1
+        - ide_work_type: 1
+        - unexist_work_type: 100
 
 - test:
     name: 未登录
@@ -13,7 +14,7 @@
         - eq: [status_code, 400]
 
 - test:
-    name: 未登录-传递type
+    name: 未登录-传递type为1
     request:
         method: GET
         url: /tiger/work/list?type=$ide_work_type
@@ -22,7 +23,7 @@
         - eq: [content.error_code, E_0]
         
 - test:
-    name: 已登录-传递type
+    name: 已登录-传递type为1
     request:
         method: GET
         url: /tiger/work/list?type=$ide_work_type
@@ -32,3 +33,77 @@
         - eq: [status_code, 200]
         - eq: [content.0.type, 1]
         - eq: [content.0.is_old, 0]
+        - eq: [content.0.ide_type, KITTEN]
+        - length_equals: [content.0, 17]
+  
+- test:
+    name: 已登录-传递type为1-orientation为1
+    request:
+        method: GET
+        url: /tiger/work/list?type=$ide_work_type&orientation=1
+        headers:
+            Authorization: ${source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+
+- test:
+    name: 已登录-传递type为1-orientation为2
+    request:
+        method: GET
+        url: /tiger/work/list?type=$ide_work_type&orientation=2
+        headers:
+            Authorization: ${source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+
+- test:
+    name: 已登录-传递type为1-orientation为4
+    request:
+        method: GET
+        url: /tiger/work/list?type=$ide_work_type&orientation=4
+        headers:
+            Authorization: ${source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, list]
+        - length_equals: [content, 0]
+
+- test:
+    name: 已登录-传递type为BOX1.0作品
+    request:
+        method: GET
+        url: /tiger/work/list?type=3
+        headers:
+            Authorization: ${source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+
+- test:
+    name: 已登录-传递type为BOX2.0作品
+    request:
+        method: GET
+        url: /tiger/work/list?type=5
+        headers:
+            Authorization: ${source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+
+# - test:
+#     name: 已登录-传递type为Wood作品
+#     request:
+#         method: GET
+#         url: /tiger/work/list?type=7
+#         headers:
+#             Authorization: ${source_user_login_token()}
+#     validate:
+#         - eq: [status_code, 200]
+
+# - test:
+#     name: 已登录-传递type不存在
+#     request:
+#         method: GET
+#         url: /tiger/work/list?type=$unexist_work_type
+#         headers:
+#             Authorization: ${source_user_login_token()}
+#     validate:
+#         - eq: [status_code, 200]
