@@ -7,7 +7,7 @@
 
 - test:
     name: 手机号未注册
-    skipUnless: ${is_dev()}
+    skipUnless: ${is_dev_or_test()}
     setup_hooks:
         - ${clear_phone_number($unregistered_phone_number)}
     api: api/account/v3_for_web/send_register_captcha.yaml
@@ -19,7 +19,7 @@
 
 - test:
     name: 注册手机号
-    skipUnless: ${is_dev()}
+    skipUnless: ${is_dev_or_test()}
     setup_hooks:
         - ${clear_phone_number($unregistered_phone_number)}
     api: api/platform-user-tiger/register_phone_number.yaml
@@ -30,7 +30,7 @@
 
 - test:
     name: 手机号已注册
-    skipUnless: ${is_dev()}
+    skipUnless: ${is_dev_or_test()}
     api: api/account/v3_for_web/send_register_captcha.yaml
     variables:
         - ticket: ${get_captcha_ticket()}
@@ -43,7 +43,7 @@
 
 - test:
     name: 手机号格式错误
-    skipUnless: ${is_dev()}
+    skipUnless: ${is_dev_or_test()}
     api: api/account/v3_for_web/send_register_captcha.yaml
     variables:
         - ticket: ${get_captcha_ticket()}
@@ -54,7 +54,7 @@
 
 - test:
     name: 手机号为空
-    skipUnless: ${is_dev()}
+    skipUnless: ${is_dev_or_test()}
     api: api/account/v3_for_web/send_register_captcha.yaml
     variables:
         - ticket: ${get_captcha_ticket()}

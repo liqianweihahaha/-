@@ -3,6 +3,15 @@
     base_url: ${tiger_api_host()}
 
 - test:
+    name: 未登录
+    request:
+        method: GET
+        url: /tiger/v3/web/accounts/oauths
+    validate:
+        - eq: [status_code, 403]
+        - eq: [content.error_code, E_0]
+        
+- test:
     name: 已登录
     request:
         method: GET
@@ -25,12 +34,3 @@
         - eq: [content.4.id, 5]
         - eq: [content.4.name, baobaolong]
         - contains: [content.0, is_bound]
-
-- test:
-    name: 未登录
-    request:
-        method: GET
-        url: /tiger/v3/web/accounts/oauths
-    validate:
-        - eq: [status_code, 403]
-        - eq: [content.error_code, E_0]
