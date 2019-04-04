@@ -17,7 +17,7 @@
         - eq: [content.is_deleted, false]
         - eq: [content.type, 1]
         - greater_than: [content.publish_time, 0]
-        - length_equals: [content, 10]
+        - length_equals: [content, 14]
         - contains: [content, is_share_allowed]
         - contains: [content, created_at]
 
@@ -47,7 +47,7 @@
         - eq: [content.id, '${source_user_ide_published_work_id()}']
         - eq: [content.is_published, true]
         - eq: [content.type, 1]
-        - length_equals: [content, 10]
+        - length_equals: [content, 14]
 
 - test:
     name: 已发布ide作品-fields只包含id和user_id
@@ -59,7 +59,7 @@
         - eq: [content.id, '${source_user_ide_published_work_id()}']
         - eq: [content.user_id, '${source_user_id()}']
         - eq: [content.is_published, true]
-        - length_equals: [content, 11]
+        - length_equals: [content, 14]
 
 - test:
     name: 已发布ide作品-fields为空数组
@@ -97,7 +97,7 @@
         - eq: [status_code, 200]
         - eq: [content.id, '${source_user_boxv2_published_work_id()}']
         - eq: [content.type, 5]
-        - length_equals: [content, 10]
+        - length_equals: [content, 14]
 
 - test:
     name: wood作品-fields不传递
