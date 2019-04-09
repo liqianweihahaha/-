@@ -7,7 +7,7 @@
 # 手机已注册
 - test:
     name: 准备工作：注册手机号
-    skipUnless: ${is_dev_or_test()}
+    skipUnless: ${is_dev()}
     setup_hooks:
         - ${clear_phone_number($test_phone_number)}
     api: api/platform-user-tiger/register_phone_number.yaml
@@ -18,7 +18,7 @@
 
 - test:
     name: 手机号已注册
-    skipUnless: ${is_dev_or_test()}
+    skipUnless: ${is_dev()}
     api: api/account/backend/send_login_captcha.yaml
     variables:
         - phone_number: $test_phone_number
@@ -29,7 +29,7 @@
 # 手机号未注册
 - test:
     name: 手机号未注册
-    skipUnless: ${is_dev_or_test()}
+    skipUnless: ${is_dev()}
     setup_hooks:
         - ${clear_phone_number($test_phone_number)}
     api: api/account/backend/send_login_captcha.yaml

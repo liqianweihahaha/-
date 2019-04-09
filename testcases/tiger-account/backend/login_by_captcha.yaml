@@ -8,7 +8,7 @@
 
 - test:
     name: 准备工作1：注册手机号
-    skipUnless: ${is_dev_or_test()}
+    skipUnless: ${is_dev()}
     setup_hooks:
         - ${clear_phone_number($test_phone_number)}
     api: api/platform-user-tiger/register_phone_number.yaml
@@ -22,7 +22,7 @@
 # 使用/api/user/phone/login/code的验证码登录
 - test:
     name: 准备工作2：已注册手机号发送登录验证码（/api/user接口）
-    skipUnless: ${is_dev_or_test()}
+    skipUnless: ${is_dev()}
     api: api/account/backend/send_login_captcha.yaml
     variables:
         - phone_number: $test_phone_number
@@ -32,7 +32,7 @@
 
 - test:
     name: 手机号已注册-验证码错误
-    skipUnless: ${is_dev_or_test()}
+    skipUnless: ${is_dev()}
     request:
         method: POST
         url: /api/user/phone/login/check
@@ -46,7 +46,7 @@
 
 - test:
     name: 手机号已注册-验证码正确
-    skipUnless: ${is_dev_or_test()}
+    skipUnless: ${is_dev()}
     request:
         method: POST
         url: /api/user/phone/login/check
@@ -72,7 +72,7 @@
 
 - test:
     name: 手机号已注册-验证码正确
-    skipUnless: ${is_dev_or_test()}
+    skipUnless: ${is_dev()}
     request:
         method: POST
         url: /api/user/phone/login/check
@@ -88,7 +88,7 @@
 # 手机号未注册
 - test:
     name: 准备工作：未注册手机号发送验证码
-    skipUnless: ${is_dev_or_test()}
+    skipUnless: ${is_dev()}
     setup_hooks:
         - ${clear_phone_number($test_phone_number)}
     api: api/account/backend/send_login_captcha.yaml
@@ -100,7 +100,7 @@
 
 - test:
     name: 手机号未注册-验证码正确
-    skipUnless: ${is_dev_or_test()}
+    skipUnless: ${is_dev()}
     request:
         method: POST
         url: /api/user/phone/login/check

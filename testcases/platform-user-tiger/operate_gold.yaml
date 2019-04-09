@@ -24,17 +24,17 @@
     validate:
         - eq: [status_code, 204]
 
-- test:
-    name: 用户id存在-event_id正确-offset正确（用户金币不足）
-    request:
-        method: PATCH
-        url: /accounts/${source_user_id()}/gold
-        json:
-            event_id: $event_id_decrease
-            offset: $large_offset_gold
-    validate:
-        - eq: [status_code, 403]
-        - eq: [content.error_code, Account_35]
+# - test:
+    # name: 用户id存在-event_id正确-offset正确（用户金币不足）
+    # request:
+    #     method: PATCH
+    #     url: /accounts/${source_user_id()}/gold
+    #     json:
+    #         event_id: $event_id_decrease
+    #         offset: $large_offset_gold
+    # validate:
+    #     - eq: [status_code, 403]
+    #     - eq: [content.error_code, Account_35]
 
 - test:
     name: 用户id存在-event_id不支持-offset正确
