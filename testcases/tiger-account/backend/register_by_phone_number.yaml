@@ -42,8 +42,9 @@
         - eq: [content.error_code, B_5]
 
 # 手机号未注册
+# 使用/api/user/register/phone/code的验证码注册
 - test:
-    name: 准备工作：给未注册手机号发送验证码
+    name: 准备工作：给未注册手机号发送验证码（/api/user接口）
     skipUnless: ${is_dev()}
     setup_hooks:
         - ${clear_phone_number($test_phone_number)}
@@ -83,3 +84,43 @@
     teardown_hooks:
         - ${clear_phone_number($test_phone_number)}
 
+# 使用/tiger/user/phone/code/registration的验证码注册
+- test:
+    name: 准备工作：给未注册手机号发送验证码（/tiger/user接口）
+    skipUnless: ${is_dev()}
+    setup_hooks:
+        - ${clear_phone_number($test_phone_number)}
+    api: api/account/v1/send_register_captcha.yaml
+    variables:
+        - phone_number: $test_phone_number
+    validate:
+        - eq: [status_code, 204]
+
+- test:
+    name: 未注册手机号-验证码正确-password正确
+    skipUnless: ${is_dev()}
+    request:
+        method: POST
+        url: /api/user/register/phone
+        json:
+            username: $test_phone_number
+            password: $correct_password
+            code: ${get_captcha_account_v3(register, $test_phone_number)}
+    validate:
+        - eq: [status_code, 200]
+        - contains: [content, token]
+    extract:
+        - created_user_id: content.userInfo.id
+
+- test:
+    name: 验证：注册成功的手机号+密码可以登录
+    skipUnless: ${is_dev()}
+    api: api/account/account_login.yaml
+    variables:
+        - identity: $test_phone_number
+        - password: $correct_password
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.user_info.id, $created_user_id]
+    teardown_hooks:
+        - ${clear_phone_number($test_phone_number)}

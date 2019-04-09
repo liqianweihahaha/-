@@ -1,0 +1,110 @@
+- config:
+    name: 修改用户信息
+    base_url: ${tiger_api_host()}
+    variables:
+        - existed_nickname: '哈哈'
+        - unexist_nickname: '测试修改昵称1212'
+
+# 修改nickname
+- test:
+    name: 未登录-传递nickname
+    request:
+        method: PUT
+        url: /api/user/info
+        json:
+            nickname: test_update_nickname
+    validate:
+        - eq: [status_code, 403]
+        - eq: [content.error_code, E_0]
+
+- test:
+    name: 已登录-nickname符合规则且不存在
+    request:
+        method: PUT
+        url: /api/user/info
+        headers:
+            AUthorization: ${source_user_login_token()}
+        json:
+            nickname: $unexist_nickname
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.code, 200]
+
+- test:
+    name: 已登录-nickname已经存在
+    request:
+        method: PUT
+        url: /api/user/info
+        headers:
+            AUthorization: ${source_user_login_token()}
+        json:
+            nickname: $existed_nickname
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.code, 3005]
+
+- test:
+    name: 已登录-nickname为空字符串
+    request:
+        method: PUT
+        url: /api/user/info
+        headers:
+            AUthorization: ${source_user_login_token()}
+        json:
+            nickname: ''
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.code, 2001]
+
+# 修改sex
+- test:
+    name: 已登录-sex为0
+    request:
+        method: PUT
+        url: /api/user/info
+        headers:
+            AUthorization: ${source_user_login_token()}
+        json:
+            sex: 0
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.code, 200]
+
+- test:
+    name: 已登录-sex为1
+    request:
+        method: PUT
+        url: /api/user/info
+        headers:
+            AUthorization: ${source_user_login_token()}
+        json:
+            sex: 0
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.code, 200]
+
+- test:
+    name: 已登录-sex为2
+    request:
+        method: PUT
+        url: /api/user/info
+        headers:
+            AUthorization: ${source_user_login_token()}
+        json:
+            sex: 2
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.code, 2001]
+
+- test:
+    name: 已登录-sex为f
+    request:
+        method: PUT
+        url: /api/user/info
+        headers:
+            AUthorization: ${source_user_login_token()}
+        json:
+            sex: 'f'
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.code, 2001]

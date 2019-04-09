@@ -47,6 +47,7 @@
     validate:
         - eq: [status_code, 200]
         - eq: [content.code, 3020]
+        
 - test:
     name: 已登录-work_id不存在
     request:
