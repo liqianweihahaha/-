@@ -20,7 +20,7 @@
     validate:
         - eq: [status_code, 200]
         - eq: [content.id, '${source_user_id()}']
-        - length_equals: [content, 7]
+        - length_equals: [content, 8]
         - contains: [content, nickname]
         - contains: [content, fullname]
         - contains: [content, avatar_url]
