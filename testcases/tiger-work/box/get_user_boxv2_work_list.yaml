@@ -1,5 +1,5 @@
 - config:
-    name: 获取用户box2.0作品已发布列表
+    name: 我的作品列表（Box app）
     base_url: ${tiger_api_host()}
     variables:
         - unsupport_is_published: aa

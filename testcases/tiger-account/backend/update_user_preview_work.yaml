@@ -56,7 +56,8 @@
         headers:
             Authorization: ${source_user_login_token()}
     validate:
-        - eq: [status_code, 200]
+        - eq: [status_code, 404]
+        - eq: [content.error_code, A_8]
 
 - test:
     name: 已登录-work_id格式错误

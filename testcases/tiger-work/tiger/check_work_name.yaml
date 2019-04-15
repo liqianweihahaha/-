@@ -33,6 +33,7 @@
     validate:
         - eq: [status_code, 200]
         - contains: [content.name, $work_name]
+
 - test:
     name: 已登录-name传递-work_id为个人已发布作品
     request:
@@ -43,6 +44,7 @@
     validate:
         - eq: [status_code, 200]
         - contains: [content.name, $work_name]
+        
 - test:
     name: 已登录-name传递-work_id为不存在的作品id
     request:
@@ -51,5 +53,5 @@
         headers:
             Authorization: ${source_user_login_token()}
     validate:
-        - eq: [status_code, 200]
-        - contains: [content.name, $work_name]
+        - eq: [status_code, 404]
+        - contains: [content.error_code, W_0]

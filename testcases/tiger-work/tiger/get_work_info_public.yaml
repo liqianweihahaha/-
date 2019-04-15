@@ -20,6 +20,7 @@
         - contains: [content, n_tree_nodes]
         - contains: [content, abilities]
         - contains: [content, player_url]
+
 - test:
     name: 未登录-未发布ide作品
     api: api/tiger-work/kitten/get_work_info_public.yaml
@@ -69,6 +70,7 @@
         - eq: [content.type, 1]
         - eq: [content.user_info.id, '${source_user_id()}']
         # - length_equals: [content, 23]
+
 - test:
     name: 已登录-他人未发布ide作品
     request:
@@ -79,6 +81,7 @@
     validate:
         - eq: [status_code, 403]
         - eq: [content.error_code, W_3]
+
 - test:
     name: 已登录-个人未发布wood作品
     request:
@@ -98,7 +101,8 @@
         - contains: [content, work_labels]
         - contains: [content, n_tree_nodes]
         - contains: [content, abilities]
-        - contains: [content, player_url] 
+        - contains: [content, player_url]
+
 - test:
     name: 已登录-个人未发布nemo作品
     request:
@@ -117,6 +121,7 @@
         - contains: [content, n_tree_nodes]
         - contains: [content, abilities]
         - contains: [content, player_url] 
+        
 # - test:
 #     name: 创建kitten作品
 #     api: create_kitten_work(${source_user_login_token()})

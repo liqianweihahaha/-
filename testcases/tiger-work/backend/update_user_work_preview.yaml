@@ -42,7 +42,6 @@
     validate:
         - eq: [status_code, 200]
         - eq: [content.code, 3020]
-        - eq: [content.msg, 你无权操作此作品]
 
 - test:
     name: 已登录-个人临时删除作品
@@ -56,7 +55,6 @@
     validate:
         - eq: [status_code, 200]
         - eq: [content.code, 3020]
-        - eq: [content.msg, 你无权操作此作品]
 
 - test:
     name: 已登录-个人永久删除ide作品
@@ -70,7 +68,6 @@
     validate:
         - eq: [status_code, 200]
         - eq: [content.code, 3020]
-        - eq: [content.msg, 你无权操作此作品]
 
 - test:
     name: 已登录-不存在的作品id
@@ -82,9 +79,8 @@
         json:
             preview: ${source_user_ide_preview_url()}
     validate:
-        - eq: [status_code, 200]
-        - eq: [content.code, 3020]
-        - eq: [content.msg, 你无权操作此作品]
+        - eq: [status_code, 404]
+        - eq: [content.error_code, A_8]
 
 - test:
     name: 已登录-格式错误的作品id

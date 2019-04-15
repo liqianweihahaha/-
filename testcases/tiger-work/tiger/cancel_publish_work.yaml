@@ -21,15 +21,15 @@
     validate:
         - eq: [status_code, 204]
 
-- test:
-    name: 验证：判断作品是否更新为未发布
-    api: api/platform-tiger-work/get_work_info.yaml
-    variables:
-        - work_id: ${source_user_ide_published_work_id()}
-    validate:
-        - eq: [status_code, 200]
-        - eq: [content.is_published, false]
-        - eq: [content.publish_time, 0]
+# - test:
+#     name: 验证：判断作品是否更新为未发布
+#     api: api/platform-tiger-work/get_work_info.yaml
+#     variables:
+#         - work_id: ${source_user_ide_published_work_id()}
+#     validate:
+#         - eq: [status_code, 200]
+#         - eq: [content.is_published, false]
+#         - eq: [content.publish_time, 0]
         
 - test:
     name: 重新修改作品为已发布

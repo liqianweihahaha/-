@@ -36,19 +36,8 @@
         headers:
             Authorization: ${source_user_login_token()}
     validate:
-        - eq: [status_code, 403]
-        - eq: [content.error_code, Wood_0]
-
-- test:
-    name: 已登录-个人nemo作品
-    request: 
-        method: GET
-        url: /tiger/wood/works/${source_user_nemo_work_id()}
-        headers:
-            Authorization: ${source_user_login_token()}
-    validate:
-        - eq: [status_code, 403]
-        - eq: [content.error_code, Wood_0]
+        - eq: [status_code, 404]
+        - eq: [content.error_code, W_0]
         
 - test:
     name: 已登录-不存在的作品id

@@ -1,5 +1,5 @@
 - config:
-    name: 搜索作品（Public）需要opensearch
+    name: 社区搜索作品（Public）需要opensearch
     base_url: ${tiger_api_host()}
     variables:
         - query_text: 天空
