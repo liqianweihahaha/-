@@ -5,10 +5,10 @@ source_user:
   password: m1234567
   work:
     ide:
-      published_work_id: 20000112
-      unpublish_work_id: 20000113
-      deleted_temporarily_work_id: 20000114
-      deleted_permanently_work_id: 20000116
+      published_work_id: 22000032
+      unpublish_work_id: 22000033
+      deleted_temporarily_work_id: 22000034
+      deleted_permanently_work_id: 22000035
       # 用于测试创建作品/修改作品/修改作品封面
       # work_url未加密，bcmc_url有加密(可选)，作品播放内容根据bcmc_url展示
       work_url: https://static.codemao.cn/kitten/rke4Ju2VkN.bcm
@@ -18,15 +18,15 @@ source_user:
       work_url: https://static.codemao.cn/f34a12bd-619c-4b4e-8b6e-21f753a738a3.bcm
       preview_url: https://preview.codemao.cn/Fiji8FtyQbOq3tU61xhos1H1XU6Y
     boxv2:
-      published_work_id: 20000117
-      unpublish_work_id: 20000118
+      published_work_id: 22000039
+      unpublish_work_id: 22000041
       work_url: https://static.codemao.cn/box/BJbmF0EbN.bcm
       preview_url: https://obxuuymk6.qnssl.com/default_preview.png
       bcmc_url: https://static.codemao.cn/box/B1e-QtRNb4.bcmc
     wood:
-      work_id: 20000119
+      work_id: 22000042
     nemo:
-      work_id: 20000120
+      work_id: 22000043
       work_url: https://static.codemao.cn/nemo/SJk18U1eV.bcm
       preview_url: https://static.codemao.cn/nemo/rJJJL8keN.cover
   sprite:
@@ -39,11 +39,11 @@ target_user:
   password: m1234567
   work:
     ide:
-      published_work_id: 20000122
-      published_unfork_work_id: 20000123
-      unpublish_work_id: 20000124
-      deleted_temporarily_work_id: 20000125
-      deleted_permanently_work_id: 20000126
+      published_work_id: 22000045
+      published_unfork_work_id: 22000046
+      unpublish_work_id: 22000047
+      deleted_temporarily_work_id: 22000051
+      deleted_permanently_work_id: 22000052
     nemo:
-      work_id: 20000121
+      work_id: 22000044
   # 用户无代表精灵
