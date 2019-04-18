@@ -4,30 +4,20 @@
     variables:
         unexist_user_id: 100
         wrong_type_user_id: aaa
-    variables:
-        - unexist_user_id: 100
-        - wrong_type_user_id: aaa
-
 
 - test:
     name: 未登录-传递user_id用户存在
     request:
         method: GET
-        url: /api/user/works/published?user_id=${source_user_id()}
+        url: /api/user/works/collection?user_id=${source_user_id()}
     validate:
         - eq: [status_code, 200]
-        - eq: [content.code, 200]
-        - eq: [content.msg, 成功]
-        - contains: [content.data, works]
-        - contains: [content.data, total_page]
-        - contains: [content.data, total_num]
-        - type_match: [content.data.works, list]
         
 - test:
     name: 未登录-传递的user_id用户不存在
     request:
         method: GET
-        url: /api/user/works/published?user_id=$unexist_user_id
+        url: /api/user/works/collection?user_id=$unexist_user_id
     validate:
         - eq: [status_code, 200]
         - eq: [content.code, 7001]
@@ -38,7 +28,7 @@
     name: 未登录-不传递user_id
     request:
         method: GET
-        url: /api/user/works/published
+        url: /api/user/works/collection
     validate:
         - eq: [status_code, 200]
         - eq: [content.code, 2010]
@@ -48,7 +38,7 @@
     name: 未登录-传递格式错误的user_id
     request:
         method: GET
-        url: /api/user/works/published?user_id=$wrong_type_user_id
+        url: /api/user/works/collection?user_id=$wrong_type_user_id
     validate:
         - eq: [status_code, 200]
         - eq: [content.code, 2010]

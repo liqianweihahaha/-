@@ -44,6 +44,8 @@ target_user:
       unpublish_work_id: 4781940
       deleted_temporarily_work_id: 4781940
       deleted_permanently_work_id: 2676257
+    boxv2:
+      published_work_id: 21525288
     nemo:
       work_id: 5372930
   # 用户无代表精灵

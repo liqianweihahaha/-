@@ -46,6 +46,8 @@ target_user:
       unpublish_work_id: 2682408         # 未发布不可购买
       deleted_temporarily_work_id: 2682409
       deleted_permanently_work_id: 2682412
+    boxv2:
+      published_work_id: 21006119
     nemo:
       work_id: 2682415    # 未发布作品
   # 用户未设置本命精灵：user_extension.familiar_sprite为null

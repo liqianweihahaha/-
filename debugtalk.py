@@ -142,6 +142,10 @@ def target_user_ide_deleted_temporarily_work_id():
 def target_user_ide_deleted_permanently_work_id():
     return target_user.get('work').get('ide').get('deleted_permanently_work_id')
 
+# box2.0
+def target_user_boxv2_published_work_id():
+    return target_user.get('work').get('boxv2').get('published_work_id')
+
 # nemo作品
 def target_user_nemo_work_id():
     return target_user.get('work').get('nemo').get('work_id')
@@ -223,3 +227,6 @@ def get_captcha_ticket():
     else:
         print('获取发送图形验证码的ticket失败，状态码：%s' % res.status_code)
 
+# 因为test中None会被解析为字符串，所以这里增加此函数
+def is_none(source):
+    return True if source == None else False

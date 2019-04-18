@@ -4,29 +4,12 @@
     variables:
         - ide_work_type: 1
         - unexist_work_type: 100
-
-- test:
-    name: 未登录
-    request:
-        method: GET
-        url: /tiger/work/list
-    validate:
-        - eq: [status_code, 400]
-
-- test:
-    name: 未登录-传递type为1
-    request:
-        method: GET
-        url: /tiger/work/list?type=$ide_work_type
-    validate:
-        - eq: [status_code, 403]
-        - eq: [content.error_code, E_0]
         
 - test:
-    name: 已登录-传递type为1
+    name: 已登录-type为1-orientation为0
     request:
         method: GET
-        url: /tiger/work/list?type=$ide_work_type
+        url: /tiger/work/list?type=1&orientation=0&amount_items=30&page_number=1
         headers:
             Authorization: ${source_user_login_token()}
     validate:
@@ -37,30 +20,41 @@
         - length_equals: [content.0, 17]
   
 - test:
-    name: 已登录-传递type为1-orientation为1
+    name: 已登录-type为1-orientation为1
     request:
         method: GET
-        url: /tiger/work/list?type=$ide_work_type&orientation=1
+        url: /tiger/work/list?type=1&orientation=1&amount_items=30&page_number=1
         headers:
             Authorization: ${source_user_login_token()}
     validate:
         - eq: [status_code, 200]
 
 - test:
-    name: 已登录-传递type为1-orientation为2
+    name: 已登录-type为1-orientation为2
     request:
         method: GET
-        url: /tiger/work/list?type=$ide_work_type&orientation=2
+        url: /tiger/work/list?type=1&orientation=2&amount_items=30&page_number=1
         headers:
             Authorization: ${source_user_login_token()}
     validate:
         - eq: [status_code, 200]
 
 - test:
-    name: 已登录-传递type为1-orientation为4
+    name: 已登录-type为1-orientation为3
     request:
         method: GET
-        url: /tiger/work/list?type=$ide_work_type&orientation=4
+        url: /tiger/work/list?type=1&orientation=3&amount_items=30&page_number=1
+        headers:
+            Authorization: ${source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, list]
+
+- test:
+    name: 已登录-type为1-orientation为4
+    request:
+        method: GET
+        url: /tiger/work/list?type=1&orientation=4&amount_items=30&page_number=1
         headers:
             Authorization: ${source_user_login_token()}
     validate:
@@ -69,7 +63,7 @@
         - length_equals: [content, 0]
 
 - test:
-    name: 已登录-传递type为BOX1.0作品
+    name: 已登录-type为3-orientation不传递
     request:
         method: GET
         url: /tiger/work/list?type=3
@@ -79,31 +73,41 @@
         - eq: [status_code, 200]
 
 - test:
-    name: 已登录-传递type为BOX2.0作品
+    name: 已登录-type为5-orientation为0
     request:
         method: GET
-        url: /tiger/work/list?type=5
+        url: /tiger/work/list?type=5&orientation=0&amount_items=30&page_number=1
         headers:
             Authorization: ${source_user_login_token()}
     validate:
         - eq: [status_code, 200]
 
-# - test:
-#     name: 已登录-传递type为Wood作品
-#     request:
-#         method: GET
-#         url: /tiger/work/list?type=7
-#         headers:
-#             Authorization: ${source_user_login_token()}
-#     validate:
-#         - eq: [status_code, 200]
+- test:
+    name: 已登录-type为7
+    request:
+        method: GET
+        url: /tiger/work/list?type=7
+        headers:
+            Authorization: ${source_user_login_token()}
+    validate:
+        - eq: [status_code, 400]
+        - eq: [content.error_code, A_5]
 
-# - test:
-#     name: 已登录-传递type不存在
-#     request:
-#         method: GET
-#         url: /tiger/work/list?type=$unexist_work_type
-#         headers:
-#             Authorization: ${source_user_login_token()}
-#     validate:
-#         - eq: [status_code, 200]
+- test:
+    name: 已登录-type不存在
+    request:
+        method: GET
+        url: /tiger/work/list?type=$unexist_work_type
+        headers:
+            Authorization: ${source_user_login_token()}
+    validate:
+        - eq: [status_code, 400]
+
+- test:
+    name: 未登录-type为1
+    request:
+        method: GET
+        url: /tiger/work/list?type=$ide_work_type
+    validate:
+        - eq: [status_code, 403]
+        - eq: [content.error_code, E_0]

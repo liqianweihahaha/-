@@ -51,6 +51,8 @@ target_user:
       unpublish_work_id: 21000011           # 未发布
       deleted_temporarily_work_id: 21000013  # 临时删除
       deleted_permanently_work_id: 21000014  # 永久删除
+    boxv2:
+      published_work_id: 21002974
     nemo:
       work_id: 21000015    # 未发布
   

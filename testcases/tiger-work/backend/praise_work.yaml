@@ -3,7 +3,7 @@
     base_url: ${tiger_api_host()} 
 
 - test:
-    name: 未登录-已发布作品(未点赞)
+    name: 未登录-已发布IDE作品(未点赞)
     request:
         method: POST
         url: /api/work/praise/${source_user_ide_published_work_id()}
@@ -12,10 +12,10 @@
         - eq: [content.code, 200]
         - eq: [content.msg, 成功]
         - contains: [content.data, sign]
-        - eq: [content.data.sign, 1]
+        # - eq: [content.data.sign, 1]
 
 - test:
-    name: 未登录-已发布作品(已点赞)
+    name: 未登录-已发布IDE作品(已点赞)
     request:
         method: POST
         url: /api/work/praise/${source_user_ide_published_work_id()}
@@ -24,10 +24,10 @@
         - eq: [content.code, 200]
         - eq: [content.msg, 成功]
         - contains: [content.data, sign]
-        - eq: [content.data.sign, -1]
+        # - eq: [content.data.sign, -1]
 
 - test:
-    name: 未登录-未发布作品
+    name: 未登录-未发布IDE作品
     request:
         method: POST
         url: /api/work/praise/${source_user_ide_unpublish_work_id()}
@@ -38,7 +38,7 @@
         - contains: [content.data, sign]
 
 - test:
-    name: 未登录-临时删除作品
+    name: 未登录-临时删除IDE作品
     request:
         method: POST
         url: /api/work/praise/${source_user_ide_deleted_temporarily_work_id()}
@@ -49,7 +49,7 @@
         - contains: [content.data, sign]
 
 - test:
-    name: 未登录-永久删除作品
+    name: 未登录-永久删除IDE作品
     request:
         method: POST
         url: /api/work/praise/${source_user_ide_deleted_permanently_work_id()}

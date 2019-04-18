@@ -39,6 +39,9 @@
         - length_equals: [content.user_info, 8]
         - contains: [content.auth.token, access]
         - contains: [content.auth.token, refresh]
+    teardown_hooks:
+        # 验证：验证码登录成功后，redis中的数据会被清除
+        - ${is_none(${get_captcha_account_v3(login_with_register, $unregister_phone_number)})}
 
 # 手机号已注册
 - test:
@@ -72,3 +75,6 @@
         - length_equals: [content.user_info, 8]
         - contains: [content.auth.token, access]
         - contains: [content.auth.token, refresh]
+    teardown_hooks:
+        # 验证：验证码登录成功后，redis中的数据会被清除
+        - ${is_none(${get_captcha_account_v3(login_with_register, $unregister_phone_number)})}

@@ -1,4 +1,0 @@
-name: 获取作品通用属性
-request:
-    method: GET
-    url: /works/core/$work_id

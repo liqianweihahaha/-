@@ -10,25 +10,18 @@ class OpRedis(object):
         self.r = redis.Redis(connection_pool=pool)
 
     # 获取账号3.0登录、注册等验证码，value为hash类型
+    # return None值或验证码值
     def get_captcha_account_v3(self, captcha_type, phone_number):
         r_key = 'platform:account:captcha:'+str(captcha_type)+':'+str(phone_number)
         h_key = 'captcha'
         captcha_value = self.r.hget(r_key, h_key)
-        if captcha_value != None:
-            return captcha_value
-        else:
-            # print('Redis中未获取到手机号：%s 对应的验证码' % phone_number)
-            pass
+        return captcha_value
 
     # 获取账号2.0登录、注册等验证码，value为string类型
     def get_captcha_account_v2(self, captcha_type, phone_number):
         key_name = 'tiger:account:captcha:'+str(captcha_type)+':'+str(phone_number)
         captcha_value = self.r.get(key_name)
-        if captcha_value != None:
-            return captcha_value
-        else:
-            # print('Redis中未获取到手机号：%s 对应的验证码' % phone_number)
-            pass
+        return captcha_value
 
     # 获取产品信息
     # return: List

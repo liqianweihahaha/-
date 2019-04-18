@@ -38,6 +38,9 @@
             pid: $existed_pid
     validate:
         - eq: [status_code, 200]
+    teardown_hooks:
+        # 验证：验证码登录成功后，redis中的数据会被清除
+        - ${is_none(${get_captcha_account_v3(login, $unregister_phone_number)})}
 
 - test:
     name: 手机号已注册-验证码错误

@@ -1,0 +1,112 @@
+- config:
+    name: 彻底删除Nemo作品
+    base_url: ${tiger_api_host()}
+    variables:
+        - nemo_n_blocks: 7
+        - nemo_n_roles: 7
+        - unexist_work_id: 100
+        - wrong_type_work_id: aaa
+        - nemo_bcm_version: '0.1.0'
+
+- test:
+    name: 准备工作：创建Nemo作品
+    request:
+        method: POST
+        url: /tiger/work/nemo
+        headers:
+            Authorization: ${source_user_login_token()}
+        json: 
+            name: 测试创建nemo作品
+            work_url: ${source_user_nemo_work_url()}
+            preview: ${source_user_nemo_preview_url()}
+            n_blocks: $nemo_n_blocks
+            n_roles: $nemo_n_roles
+            bcm_version: $nemo_bcm_version
+    validate:
+        - eq: [status_code, 200]
+        - contains: [content, work_id] 
+    extract:
+        - created_nemo_work_id: content.work_id
+
+- test:
+    name: 彻底删除Nemo作品(已登录)-work_id为个人nemo作品
+    request:
+        url: /tiger/work/nemo/$created_nemo_work_id
+        method: DELETE
+        headers:
+            Authorization: ${source_user_login_token()}
+    validate:
+        - eq: [status_code, 204]
+
+- test:
+    name: 验证：彻底删除nemo作品后，作品status为-100
+    api: api/platform-tiger-work/get_work_info.yaml
+    variables:
+        - work_id: $created_nemo_work_id
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.status, -100]
+
+- test:
+    name: 彻底删除Nemo作品(已登录)-work_id为个人已发布IDE作品
+    request:
+        url: /tiger/work/nemo/${source_user_ide_published_work_id()}
+        method: DELETE
+        headers:
+            Authorization: ${source_user_login_token()}
+    validate:
+        - eq: [status_code, 404]
+        - eq: [content.error_code, W_0]
+
+- test:
+    name: 彻底删除Nemo作品(已登录)-work_id为他人nemo作品
+    request:
+        url: /tiger/work/nemo/${target_user_nemo_work_id()}
+        method: DELETE
+        headers:
+            Authorization: ${source_user_login_token()}
+    validate:
+        - eq: [status_code, 403]
+        - eq: [content.error_code, W_3]
+
+- test:
+    name: 彻底删除Nemo作品(已登录)-不存在的作品id(大于0)
+    request:
+        url: /tiger/work/nemo/$unexist_work_id
+        method: DELETE
+        headers:
+            Authorization: ${source_user_login_token()}
+    validate:
+        - eq: [status_code, 404]
+        - eq: [content.error_code, W_0]
+
+- test:
+    name: 彻底删除Nemo作品(已登录)-不存在的作品id(不大于0)
+    request:
+        url: /tiger/work/nemo/0
+        method: DELETE
+        headers:
+            Authorization: ${source_user_login_token()}
+    validate:
+        - eq: [status_code, 404]
+        - eq: [content.error_code, A_8]
+
+- test:
+    name: 彻底删除Nemo作品(已登录)-格式错误的作品id
+    request:
+        url: /tiger/work/nemo/$wrong_type_work_id
+        method: DELETE
+        headers:
+            Authorization: ${source_user_login_token()}
+    validate:
+        - eq: [status_code, 400]
+        - eq: [content.error_code, A_5]
+
+- test:
+    name: 彻底删除Nemo作品-未登录-存在的nemo作品
+    request:
+        url: /tiger/work/nemo/$created_nemo_work_id
+        method: DELETE
+    validate:
+        - eq: [status_code, 403]
+        - eq: [content.error_code, E_0]

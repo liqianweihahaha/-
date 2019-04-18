@@ -5,7 +5,6 @@
         unexist_user_id: 100
         wrong_type_user_id: aaa
 
-
 - test:
     name: 未登录-传递user_id用户存在
     request:

@@ -69,6 +69,9 @@
         - eq: [content.auth.has_password, True]
     extract:
         - registered_user_id: content.user_info.id
+    teardown_hooks:
+        # 验证：验证码登录成功后，redis中的数据会被清除
+        - ${is_none(${get_captcha_account_v3(register, $unregistered_phone_number)})}
 
 - test:
     name: 验证手机号注册成功后，使用手机号+密码登录成功

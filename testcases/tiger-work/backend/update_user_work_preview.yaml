@@ -69,18 +69,18 @@
         - eq: [status_code, 200]
         - eq: [content.code, 3020]
 
-- test:
-    name: 已登录-不存在的作品id
-    request:
-        method: PUT
-        url: /api/user/preview/work/$unexist_work_id
-        headers:
-            Authorization: ${source_user_login_token()}
-        json:
-            preview: ${source_user_ide_preview_url()}
-    validate:
-        - eq: [status_code, 404]
-        - eq: [content.error_code, A_8]
+# - test:
+#     name: 已登录-不存在的作品id
+#     request:
+#         method: PUT
+#         url: /api/user/preview/work/$unexist_work_id
+#         headers:
+#             Authorization: ${source_user_login_token()}
+#         json:
+#             preview: ${source_user_ide_preview_url()}
+#     validate:
+#         - eq: [status_code, 404]
+#         - eq: [content.error_code, A_8]
 
 - test:
     name: 已登录-格式错误的作品id

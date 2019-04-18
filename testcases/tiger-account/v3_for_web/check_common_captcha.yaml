@@ -40,6 +40,9 @@
             captcha: ${get_captcha_account_v3(common, $test_phone_number)}
     validate:
         - eq: [status_code, 204]
+    teardown_hooks:
+        # 验证：验证码登录成功后，redis中的数据会被清除
+        - ${is_none(${get_captcha_account_v3(common, $test_phone_number)})}
 
 # 手机号已注册
 - test:
@@ -88,3 +91,6 @@
             captcha: ${get_captcha_account_v3(common, $test_phone_number)}
     validate:
         - eq: [status_code, 204]
+    teardown_hooks:
+        # 验证：验证码登录成功后，redis中的数据会被清除
+        - ${is_none(${get_captcha_account_v3(common, $test_phone_number)})}
