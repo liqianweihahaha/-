@@ -1,4 +1,5 @@
-# 根据不同的测试环境，不同的域名
+# 根据不同的测试环境，获取不同的域名
+# return dict
 def get_hosts(env):
     if env == 'dev':
         tiger_api_host = 'https://backend-dev.codemao.cn'
@@ -12,7 +13,8 @@ def get_hosts(env):
         # tiger_api_host = 'https://staging-account-api.codemao.cn'
         platform_tiger_api_host = 'http://staging-internal.platform.codemao.cn'
     elif env == 'production':
-        tiger_api_host = 'https://api.codemao.cn'
+        # tiger_api_host = 'https://api.codemao.cn'
+        tiger_api_host = 'https://account-api.codemao.cn'
         platform_tiger_api_host = 'http://internal.platform.codemao.cn'
     # 压测环境
     elif env == 'press':
@@ -22,11 +24,7 @@ def get_hosts(env):
     elif env == 'preview':
         tiger_api_host = 'https://preview-api.codemao.cn'
         platform_tiger_api_host = 'http://preview-internal.platform.codemao.cn'
-    hosts = {
-        'tiger_api_host': tiger_api_host,
-        'platform_tiger_api_host': platform_tiger_api_host
-        }
-    return hosts
+    return dict(tiger_api_host=tiger_api_host, platform_tiger_api_host=platform_tiger_api_host)
 
 # 判断是否是dev或者test环境
 def is_dev_or_test_environment(env):
