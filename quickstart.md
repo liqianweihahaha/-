@@ -45,6 +45,7 @@ variables:
 - api文件中的name会覆盖testcases文件test用例中的name
 - testcases中yaml文件内容为空，会导致生成报告失败
 - 加载顺序：.env文件---》加载testcase中定义的变量(执行其中可执行部分)---》运行testcase
+- 读取可能有延迟的接口（例如MQ同步数据），需要添加sleep数据（ ${sleep_N_secs(1)} ）
 
 #### 错误写法总结
 

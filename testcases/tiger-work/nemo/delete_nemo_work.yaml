@@ -40,6 +40,8 @@
 
 - test:
     name: 验证：彻底删除nemo作品后，作品status为-100
+    setup_hooks:
+        - ${sleep_N_secs(1)} 
     api: api/platform-tiger-work/get_work_info.yaml
     variables:
         - work_id: $created_nemo_work_id
