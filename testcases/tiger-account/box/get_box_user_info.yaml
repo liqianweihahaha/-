@@ -2,7 +2,8 @@
     name: 获取box用户信息（Public）
     base_url: ${tiger_api_host()}
     variables:
-        - unexisit_user_id: aaa
+        - unexist_user_id: 100
+        - wrong_type_user_id: aaa
 
 - test:
     name: 未登录-user_id存在
@@ -27,7 +28,7 @@
       name: 未登录-user_id不存在
       request:
           method: GET
-          url: /tiger/box/user/$unexisit_user_id
+          url: /tiger/box/user/$unexist_user_id
       validate:
           - eq: [status_code, 404]
 
@@ -35,7 +36,7 @@
     name: 未登录-user_id格式错误
     request: 
         method: GET
-        url: /tiger/box/user/$unexsit_user_id
+        url: /tiger/box/user/$wrong_type_user_id
     validate:
         - eq: [status_code, 400]
         - eq: [content.error_code,A_5]

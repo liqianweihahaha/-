@@ -150,9 +150,6 @@ def target_user_boxv2_published_work_id():
 def target_user_nemo_work_id():
     return target_user.get('work').get('nemo').get('work_id')
 
-def type_json():
-    return 'application/json'
-
 # 获取登录token
 def login_token(identity, password, pid='unknown'):
     data = {
