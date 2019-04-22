@@ -13,8 +13,8 @@ def get_hosts(env):
         # tiger_api_host = 'https://staging-account-api.codemao.cn'
         platform_tiger_api_host = 'http://staging-internal.platform.codemao.cn'
     elif env == 'production':
-        # tiger_api_host = 'https://api.codemao.cn'
-        tiger_api_host = 'https://account-api.codemao.cn'
+        tiger_api_host = 'https://api.codemao.cn'
+        # tiger_api_host = 'https://account-api.codemao.cn'
         platform_tiger_api_host = 'http://internal.platform.codemao.cn'
     # 压测环境
     elif env == 'press':

@@ -1,0 +1,51 @@
+- config:
+    name: 老师端获取学生作品列表
+    base_url: ${tiger_api_host()}
+    variables:
+        - unexist_user_id: 100
+        - wrong_type_user_id: aa
+
+- test:
+    name: 未登录-不传递student_id
+    request:
+        method: GET
+        url: /tiger/user/work/list
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.code, 200]
+        - length_equals: [content, 2]
+        - length_equals: [content.work_list, 0]
+        - type_match: [content.work_list, list]
+
+- test:
+    name: 未登录-student_id存在且有未删除作品
+    request:
+        method: GET
+        url: /tiger/user/work/list?student_id=${source_user_id()}
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.code, 200]
+        - length_equals: [content, 2]
+        - length_greater_than: [content.work_list, 0]
+
+- test:
+    name: 未登录-student_id不存在
+    request:
+        method: GET
+        url: /tiger/user/work/list?student_id=$unexist_user_id
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.code, 200]
+        - length_equals: [content, 2]
+        - length_equals: [content.work_list, 0]
+
+- test:
+    name: 未登录-student_id格式错误
+    request:
+        method: GET
+        url: /tiger/user/work/list?student_id=$wrong_type_user_id
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.code, 200]
+        - length_equals: [content, 2]
+        - length_equals: [content.work_list, 0]
