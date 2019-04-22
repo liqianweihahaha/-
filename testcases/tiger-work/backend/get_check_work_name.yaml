@@ -63,8 +63,9 @@
             Authorization: ${source_user_login_token()}
     validate:
         - eq: [status_code, 200]
-        - eq: [content.code, 3023]
-        - eq: [content.msg, 作品不存在]
+        - eq: [content.code, 200]
+        - eq: [content.msg, 成功]
+        - eq: [content.data.work_name, $unexist_work_name]
 
 - test:
     name: 已登录-传递work_name(不同于用户名下的Box2.0作品)-work_id不存在（大于0）
@@ -75,8 +76,9 @@
             Authorization: ${source_user_login_token()}
     validate:
         - eq: [status_code, 200]
-        - eq: [content.code, 3023]
-        - eq: [content.msg, 作品不存在]
+        - eq: [content.code, 200]
+        - eq: [content.msg, 成功]
+        - eq: [content.data.work_name, $unexist_work_name]
 
 - test:
     name: 未登录-传递work_name

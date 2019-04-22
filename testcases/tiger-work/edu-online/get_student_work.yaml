@@ -1,0 +1,12 @@
+- config:
+    name: 猫老祖获取学生作品列表
+    base_url: ${tiger_api_host()}
+
+- test:
+    name: 未登录-获取学生作品
+    request:
+        method: GET
+        url: /tiger/user/work/list
+    validate:
+        - eq: [status_code, 200]
+        - len_eq: [content.work_list.0, 6]
