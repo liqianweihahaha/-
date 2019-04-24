@@ -3,18 +3,15 @@
 def get_hosts(env):
     if env == 'dev':
         tiger_api_host = 'https://backend-dev.codemao.cn'
-        # tiger_api_host = 'https://dev-account-api.codemao.cn'
         platform_tiger_api_host = 'http://dev-internal.platform.codemao.cn'
     elif env == 'test':
         tiger_api_host = 'https://test-api.codemao.cn'
         platform_tiger_api_host = 'http://test-internal.platform.codemao.cn'
     elif env == 'staging':
         tiger_api_host = 'https://backend-test.codemao.cn'
-        # tiger_api_host = 'https://staging-account-api.codemao.cn'
         platform_tiger_api_host = 'http://staging-internal.platform.codemao.cn'
     elif env == 'production':
         tiger_api_host = 'https://api.codemao.cn'
-        # tiger_api_host = 'https://account-api.codemao.cn'
         platform_tiger_api_host = 'http://internal.platform.codemao.cn'
     # 压测环境
     elif env == 'press':

@@ -1,5 +1,5 @@
 - config:
-    name: 保存 Box2.0 作品（创建或者修改）
+    name: 保存Box2.0作品（创建或者修改）
     base_url: ${tiger_api_host()}
 
 - test:

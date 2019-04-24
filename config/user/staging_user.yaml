@@ -5,8 +5,8 @@ source_user:
   password: m1234567
   work:
     ide:
-      published_work_id: 22000032
-      unpublish_work_id: 22000033
+      published_work_id: 22166393
+      unpublish_work_id: 22166394
       deleted_temporarily_work_id: 22000034
       deleted_permanently_work_id: 22000035
       # 用于测试创建作品/修改作品/修改作品封面
@@ -18,8 +18,8 @@ source_user:
       work_url: https://static.codemao.cn/f34a12bd-619c-4b4e-8b6e-21f753a738a3.bcm
       preview_url: https://preview.codemao.cn/Fiji8FtyQbOq3tU61xhos1H1XU6Y
     boxv2:
-      published_work_id: 22000039
-      unpublish_work_id: 22000041
+      published_work_id: 22166395
+      unpublish_work_id: 22166396
       work_url: https://static.codemao.cn/box/BJbmF0EbN.bcm
       preview_url: https://obxuuymk6.qnssl.com/default_preview.png
       bcmc_url: https://static.codemao.cn/box/B1e-QtRNb4.bcmc

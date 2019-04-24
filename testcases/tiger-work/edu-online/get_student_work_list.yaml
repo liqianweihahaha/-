@@ -27,6 +27,11 @@
         - eq: [content.code, 200]
         - length_equals: [content, 2]
         - length_greater_than: [content.work_list, 0]
+        - length_equals: [content.work_list.0, 7]
+        - contains: [content.work_list.0, id]
+        - contains: [content.work_list.0, name]
+        - contains: [content.work_list.0, type]
+        - contains: [content.work_list.0, orientation]
 
 - test:
     name: 未登录-student_id不存在
