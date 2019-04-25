@@ -205,6 +205,11 @@ def clear_phone_number(phone_number):
     global opmysql_account
     opmysql_account.clear_phone_number(phone_number)
 
+# 清除数据库basic_auth表的username字段
+def clear_username(username):
+    global opmysql_account
+    opmysql_account.clear_username(username)
+
 # 获取账号3.0的redis中存储的验证码
 def get_captcha_account_v3(catpcha_type, phone_number):
     global op_redis
