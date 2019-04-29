@@ -52,7 +52,7 @@
         - eq: [content.0.language_type, 1]
         - eq: [content.0.is_published, true]
         - greater_than: [content.0.publish_time, 0]
-        # - length_equals: [content.0, 23]
+        - length_equals: [content.0, 25]
         - type_match: [content.0.work_urls, list]
 
 - test:
