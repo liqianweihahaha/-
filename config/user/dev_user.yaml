@@ -1,8 +1,13 @@
 source_user:
+  # 基本账号信息
   id: 1000012631
-  username: mxq0001
-  email: mxq0001@qq.com
+  username: autotest_dev1
+  email: autotest_dev1@qq.com
   password: m1234567
+  sprite:
+    owned: 34    # 草灵灵
+    unown: 1     # 编程猫
+  # 作品相关信息
   work:
     ide:
       published_work_id: 2682142
@@ -31,14 +36,13 @@ source_user:
       work_id: 2682156  # 未发布
       work_url: https://test.bcmcdn.com/nemo/HJq-zvZpX.bcm
       preview_url: https://test.bcmcdn.com/nemo/Bk9-MD-pQ.cover
-  sprite:
-    owned: 34    # 草灵灵
-    unown: 1     # 编程猫
+
 
 target_user:
   id: 1000002872
-  username: mxq0002
+  username: autotest_dev2
   password: m1234567
+  # 用户未设置本命精灵：user_extension.familiar_sprite为Null或0
   work:
     ide:
       published_work_id: 2682404         # 已发布可购买
@@ -50,4 +54,3 @@ target_user:
       published_work_id: 21006119
     nemo:
       work_id: 2682415    # 未发布作品
-  # 用户未设置本命精灵：user_extension.familiar_sprite为null

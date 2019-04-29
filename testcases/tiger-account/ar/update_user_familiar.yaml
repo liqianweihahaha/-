@@ -6,7 +6,7 @@
         - unexist_sprite_id: 100
 
 - test:
-    name: 用户未登录-精灵id存在
+    name: 未登录-精灵id存在
     request:
         method: POST
         url: /tiger/ar/familiar/${source_user_owned_sprite_id()}
@@ -15,7 +15,7 @@
         - eq: [content.error_code, E_0]
 
 - test:
-    name: 用户已登录-用户拥有的精灵id
+    name: 已登录-用户拥有的精灵id
     request:
         method: POST
         url: /tiger/ar/familiar/${source_user_owned_sprite_id()}
@@ -25,7 +25,7 @@
         - eq: [status_code, 204]
 
 - test:
-    name: 用户已登录-用户不拥有的精灵id
+    name: 已登录-用户不拥有的精灵id
     request:
         method: POST
         url: /tiger/ar/familiar/${source_user_unown_sprite_id()}
@@ -36,7 +36,7 @@
         - eq: [content.error_code, R_3]
 
 - test:
-    name: 用户已登录-不存在的精灵id
+    name: 已登录-不存在的精灵id
     request:
         method: POST
         url: /tiger/ar/familiar/$unexist_sprite_id
@@ -47,7 +47,7 @@
         - eq: [content.error_code, R_3]
 
 - test:
-    name: 用户已登录-格式错误的精灵id
+    name: 已登录-格式错误的精灵id
     request:
         method: POST
         url: /tiger/ar/familiar/$wrong_type_sprite_id
@@ -58,7 +58,7 @@
         - eq: [content.error_code, A_5]
 
 - test:
-    name: 用户已登录-不传递精灵id
+    name: 已登录-不传递精灵id
     request:
         method: POST
         url: /tiger/ar/familiar

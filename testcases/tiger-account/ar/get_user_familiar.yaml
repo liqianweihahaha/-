@@ -28,7 +28,7 @@
         - contains: [content.0, name]
 
 - test:
-    name: 测试用户2登录
+    name: 准备：测试账号2登录
     api: api/account/account_login.yaml
     variables:
         identity: ${target_user_username()}

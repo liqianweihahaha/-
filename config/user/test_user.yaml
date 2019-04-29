@@ -1,8 +1,8 @@
 source_user:
   # 账号相关信息
   id: 1000012631
-  username: mxq0001
-  email: mxq0001@qq.com
+  username: autotest_test1
+  email: autotest_test1@qq.com
   password: m1234567
   sprite:
     owned: 50    # 象牙螺
@@ -25,13 +25,12 @@ source_user:
     # 为了避免产生脏数据导致打开作品时报错，所以work_url必须是同类型url
     boxv2:
       published_work_id: 21000006    # 已发布
-      unpublish_work_id: 21000597  # 未发布
+      unpublish_work_id: 21000597    # 未发布
       work_url: https://static.codemao.cn/box/H1vYhAE-V.bcm
       preview_url: https://obxuuymk6.qnssl.com/default_preview.png
       bcmc_url: https://static.codemao.cn/box/HkDY2RVbE.bcmc
     wood:
-      # 未发布
-      work_id: 21000007
+      work_id: 21000007   # 未发布
     nemo:
       work_id: 21000008
       work_url: https://test.bcmcdn.com/nemo/HJq-zvZpX.bcm
@@ -41,7 +40,7 @@ source_user:
 target_user:
   # 账号相关信息
   id: 1000012686
-  username: mxq0002
+  username: autotest_test2
   password: m1234567
   # 用户无代表精灵
   work:
