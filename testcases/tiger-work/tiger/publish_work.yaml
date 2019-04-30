@@ -12,24 +12,51 @@
         - test_update_work_description: 测试发布作品时更新作品说明
         - test_update_work_instruction: 测试发布作品时更新作品操作说明
 
-# - test:
-#     name: 未登录-已发布ide作品
-#     api: api/tiger-work/tiger/publish_work.yaml
-#     variables:
-#         - work_id: ${source_user_ide_published_work_id()}
-#         - token: None
-#     validate:
-#         - eq: [status_code, 403]
-#         - eq: [content.error_code, E_0]
+- test:
+    name: 未登录-已发布IDE作品-body为空
+    request:
+        method: PUT
+        url: /tiger/work/${source_user_ide_published_work_id()}/publish
+        headers:
+            Content-Type: application/json
+    validate:
+        - eq: [status_code, 403]
+        - eq: [content.error_code, E_0]
 
 - test:
-    name: 已登录-个人已发布ide作品-body为空
+    name: 已登录-个人已发布IDE作品-body为空
     api: api/tiger-work/tiger/publish_work.yaml
     variables:
         - work_id: ${source_user_ide_published_work_id()}
         - token: ${source_user_login_token()}
     validate:
         - eq: [status_code, 204]
+
+- test:
+    name: 已登录-个人已发布ide作品-name为空字符串
+    request:
+        method: PUT
+        url: /tiger/work/${source_user_ide_published_work_id()}/publish
+        headers:
+            Authorization: ${source_user_login_token()}
+        json:
+            name: ''
+    validate:
+        - eq: [status_code, 400]
+        - eq: [content.error_code, A_5]
+
+- test:
+    name: 已登录-个人已发布ide作品-name长度超过30
+    request:
+        method: PUT
+        url: /tiger/work/${source_user_ide_published_work_id()}/publish
+        headers:
+            Authorization: ${source_user_login_token()}
+        json:
+            name: '1111111111111111111111111111112'
+    validate:
+        - eq: [status_code, 400]
+        - eq: [content.error_code, A_5]
 
 - test:
     name: 已登录-个人已发布ide作品-传递name、description、operation
@@ -46,7 +73,7 @@
         - eq: [status_code, 204]
 
 - test:
-    name: 判断作品名称和作品说明和作品操作说明是否更新成功
+    name: 验证：作品名称和作品说明和作品操作说明是否更新成功
     api: api/tiger-work/kitten/get_work_info_public.yaml
     variables:
         - work_id: ${source_user_ide_published_work_id()}
@@ -56,7 +83,7 @@
         - eq: [content.operation_instruction, $test_update_work_instruction]
 
 - test:
-    name: 已登录-个人已发布ide作品-body只传递preview
+    name: 已登录-个人已发布ide作品-preview格式正确
     request:
         method: PUT
         url: /tiger/work/${source_user_ide_published_work_id()}/publish
@@ -66,8 +93,9 @@
             preview: $preview_work_url
     validate:
         - eq: [status_code, 204]
+
 - test:
-    name: 判断作品封面是否更新成功
+    name: 验证：作品封面是否更新成功
     api: api/tiger-work/kitten/get_work_info_public.yaml
     variables:
         - work_id: ${source_user_ide_published_work_id()}
@@ -75,7 +103,7 @@
         - eq: [content.preview, $preview_work_url]
 
 - test:
-    name: 已登录-个人已发布ide作品-body只传递label
+    name: 已登录-个人已发布IDE作品-body只传递label
     request:
         method: PUT
         url: /tiger/work/${source_user_ide_published_work_id()}/publish
@@ -85,6 +113,7 @@
             labels: [$work_label_id]
     validate:
         - eq: [status_code, 204]
+
 - test:
     name: 已登录-个人已发布ide作品-body传递不存在的label_id
     request:
@@ -99,7 +128,7 @@
         - eq: [content.error_code, W_4]
 
 - test:
-    name: 已登录-个人已发布ide作品-body传递的allow_fork为0
+    name: 已登录-个人已发布IDE作品-allow_fork为0
     request:
         method: PUT
         url: /tiger/work/${source_user_ide_published_work_id()}/publish
@@ -109,8 +138,9 @@
             allow_fork: 0
     validate:
         - eq: [status_code, 204]
+
 - test:
-    name: 判断作品是否更新为不可购买
+    name: 验证：作品更新为不可购买
     api: api/tiger-work/kitten/get_work_info_public.yaml
     variables:
         - work_id: ${source_user_ide_published_work_id()}
@@ -118,7 +148,7 @@
         - eq: [content.is_fork_allowed, false]
 
 - test:
-    name: 已登录-个人已发布ide作品-body传递的allow_fork为1
+    name: 已登录-个人已发布IDE作品-allow_fork为1
     request:
         method: PUT
         url: /tiger/work/${source_user_ide_published_work_id()}/publish
@@ -128,8 +158,9 @@
             allow_fork: 1
     validate:
         - eq: [status_code, 204]
+
 - test:
-    name: 判断作品是否更新为可购买
+    name: 验证：作品更新为可购买
     api: api/tiger-work/kitten/get_work_info_public.yaml
     variables:
         - work_id: ${source_user_ide_published_work_id()}
@@ -137,7 +168,7 @@
         - eq: [content.is_fork_allowed, true]
 
 - test:
-    name: 已登录-个人已发布ide作品-body传递的allow_fork为2
+    name: 已登录-个人已发布ide作品-allow_fork为2
     request:
         method: PUT
         url: /tiger/work/${source_user_ide_published_work_id()}/publish
