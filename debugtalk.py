@@ -213,12 +213,12 @@ def clear_username(username):
 # 获取账号3.0的redis中存储的验证码
 def get_captcha_account_v3(catpcha_type, phone_number):
     global op_redis
-    captcha = op_redis.get_captcha_account_v3(catpcha_type, phone_number)
+    captcha = op_redis.get_captcha_account('v3', catpcha_type, phone_number)
     return captcha
 
 # 获取账号2.0的redi中存储的验证码
 def get_captcha_account_v2(catpcha_type, phone_number):
-    captcha = op_redis.get_captcha_account_v2(catpcha_type, phone_number)
+    captcha = op_redis.get_captcha_account('v2', catpcha_type, phone_number)
     return captcha
 
 # 获取发送图形验证码的ticket
