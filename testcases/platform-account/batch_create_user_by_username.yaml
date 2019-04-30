@@ -215,14 +215,12 @@
         json:
             users: [{'username': '${source_user_username()}', 'password': '${source_user_password()}'},{'username': '${target_user_username()}', 'password': '${target_user_password()}'}]
             pid: $exist_pid
-    extract:
-        - response_user1_id: content.0.id
-        - response_user2_id: content.1.id
     validate:
         - eq: [status_code, 200]
         - length_equals: [content, 2]
         - length_equals: [content.0, 3]
-        - less_than: [$response_user1_id, $response_user2_id]
+        # - eq: [content.0.username, '${source_user_username()}']
+        # - eq: [content.1.username, '${target_user_username()}']
 
 - test:
     name: users包含两个元素-username均已注册-两个username相同

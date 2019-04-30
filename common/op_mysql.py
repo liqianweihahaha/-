@@ -22,15 +22,10 @@ class OpMysql(object):
         except BaseException as e:
             return '001'
 
-    # 清除用户的手机号
-    def clear_phone_number(self, phone_number):
-        result = self.cur.execute('UPDATE basic_auth SET phone_number=%s WHERE phone_number=%s', (None, phone_number,))
-        if self.cur.rowcount == 1:
-            self.conn.commit()
-
-    # 清除用户名
-    def clear_username(self, username):
-        result = self.cur.execute('UPDATE basic_auth SET username=%s WHERE username=%s', (None, username,))
+    # 清除用户主账号信息：手机号、用户名
+    def clear_basic_auth(self, column_name, column_value):
+        table_name = 'basic_auth'
+        result = self.cur.execute('UPDATE {} SET {}=%s WHERE {}=%s'.format(table_name, column_name, column_name), (None, column_value))
         if self.cur.rowcount == 1:
             self.conn.commit()
 
