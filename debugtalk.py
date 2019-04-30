@@ -1,41 +1,40 @@
-import requests
 import os
 from common import read_config
 from common.util import *
 from common.environment import *
-from builtins import str
 from common.db_user import *
 from common.op_mysql import OpMysql
 from common.op_redis import OpRedis
 
 # 读取 .env 配置
-env = os.environ['environment']
-# 因为会发送验证码，所以最好是用自己的手机号
+TEST_ENV = os.environ['environment']
+# 因为会发送验证码，所以最好是用自己的手机号测试
 TEST_PHONE_NUMBER = os.environ['test_phone_number']
+# 获取测试域名
+TIGER_API_HOST = get_hosts(TEST_ENV).get('tiger_api_host')
+PLATFORM_TIGER_API_HOST = get_hosts(TEST_ENV).get('platform_tiger_api_host')
 
 def test_phone_number():
     return TEST_PHONE_NUMBER
 
-# 获取测试hosts
+# 获取测试域名hosts
 def tiger_api_host():
-    return get_hosts(env).get('tiger_api_host')
+    return TIGER_API_HOST
 
 def platform_tiger_api_host():
-    return get_hosts(env).get('platform_tiger_api_host')
-
-tiger_host = tiger_api_host()
+    return PLATFORM_TIGER_API_HOST
 
 # 判断是否是dev或者test环境
 def is_dev_or_test():
-    return is_dev_or_test_environment(env)
+    return is_dev_or_test_env(TEST_ENV)
 
 # 判断是dev环境（因为账号2.0只有dev关闭了极验）
 def is_dev():
-    return is_dev_environment(env)
+    return is_dev_env(TEST_ENV)
 
-# 源用户信息
+# 读取配置文件：源用户信息
 global source_user
-source_user = read_config.source_user(env)
+source_user = read_config.source_user(TEST_ENV)
 
 def source_user_id():
     return source_user.get('id')
@@ -55,6 +54,12 @@ def source_user_owned_sprite_id():
 
 def source_user_unown_sprite_id():
     return source_user.get('sprite').get('unown')
+
+# 获取原用户登录token，避免测试用例中多次调用登录态都初始化函数，这里先定义变量
+SOURCE_USER_LOGIN_TOKEN = login_token_v2(TIGER_API_HOST, source_user_username(), source_user_password())
+
+def source_user_login_token():
+    return SOURCE_USER_LOGIN_TOKEN
 
 # Kitten作品
 def source_user_ide_published_work_id():
@@ -115,7 +120,7 @@ def source_user_nemo_preview_url():
 
 # 目标用户信息
 global target_user
-target_user = read_config.target_user(env)
+target_user = read_config.target_user(TEST_ENV)
 
 def target_user_id():
     return target_user.get('id')
@@ -150,55 +155,12 @@ def target_user_boxv2_published_work_id():
 def target_user_nemo_work_id():
     return target_user.get('work').get('nemo').get('work_id')
 
-# 获取登录token
-def login_token(identity, password, pid='unknown'):
-    data = {
-        "identity": identity,
-        "password": password,
-        "pid": pid
-    }
-    params = {'Content-Type': 'application/json'}
-    res = requests.post(tiger_host+'/tiger/accounts/login', json=data, params=params)
-    if res.status_code == 200 and 'application/json' in res.headers['Content-Type']:
-        token = res.json()['token']
-        bearer_token = 'Bearer '+ token
-        return bearer_token
-
-def source_user_login_token():
-    return login_token(source_user_username(), source_user_password())
-
-# 取消收藏作品
-def uncollection_work(work_id):
-    res = requests.delete(tiger_host+'/api/work/collection/'+str(work_id), headers={'Authorization': source_user_login_token})
-    if res.status_code == 200:
-        if res.json()['code'] == 200:
-            return True
-        elif res.json()['code'] == 500:
-            print('用户未收藏此作品')
-            return False
-    else:
-        print('用户取消收藏作品失败，返回状态码：%s' % res.status_code)
-        return False
-
-# 收藏作品
-def collection_work(work_id):
-    res = requests.post(tiger_host+'/api/work/collection/'+str(work_id), headers={'Authorization': source_user_login_token})
-    if res.status_code == 200:
-        if res.json()['code'] == 200:
-            return True
-        elif res.json()['code'] == 2001:
-            print('用户已收藏此作品')
-            return False
-    else:
-        print('用户收藏作品失败，返回状态码：%s' % res.status_code)
-        return False
-
 # 读取mysql配置数据
-mysql_config_data = read_config.read_config_mysql(env)
-opmysql_account = OpMysql(host=mysql_config_data['host'], user=mysql_config_data['user'], password=mysql_config_data['password'], database='account')
+mysql_config = read_config.read_config_mysql(TEST_ENV)
+opmysql_account = OpMysql(host=mysql_config['host'], user=mysql_config['user'], password=mysql_config['password'], database='account')
 # 读取redis配置
-redis_config_data = read_config.read_config_redis(env)
-op_redis = OpRedis(host=redis_config_data['host'], port=redis_config_data['port'], password=redis_config_data['password'], db=1)
+redis_config = read_config.read_config_redis(TEST_ENV)
+op_redis = OpRedis(host=redis_config['host'], port=redis_config['port'], password=redis_config['password'], db=1)
 
 # 清除数据库basic_auth表的phone_number字段
 def clear_phone_number(phone_number):
@@ -223,11 +185,7 @@ def get_captcha_account_v2(catpcha_type, phone_number):
 
 # 获取发送图形验证码的ticket
 def get_captcha_ticket():
-    res = requests.get(tiger_host+'/tiger/captcha/graph/ticket')
-    if res.status_code == 200:
-        return res.json()['ticket']
-    else:
-        print('获取发送图形验证码的ticket失败，状态码：%s' % res.status_code)
+    return get_captcha_ticket_account_v3(TIGER_API_HOST)
 
 # 因为test中None会被解析为字符串，所以这里增加此函数
 def is_none(source):

@@ -24,11 +24,11 @@ def get_hosts(env):
     return dict(tiger_api_host=tiger_api_host, platform_tiger_api_host=platform_tiger_api_host)
 
 # 判断是否是dev或者test环境
-def is_dev_or_test_environment(env):
+def is_dev_or_test_env(env):
     stat = True if env not in ('staging', 'production') else False
     return stat
 
 # 判断是否是dev 环境
-def is_dev_environment(env):
+def is_dev_env(env):
     stat = True if env == 'dev' else False
     return stat

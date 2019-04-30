@@ -4,6 +4,25 @@ import hmac
 import hashlib
 import json
 
+# 获取账号2.0登录token
+def login_token_v2(host, identity, password, pid='unknown'):
+    data = {
+        "identity": identity,
+        "password": password,
+        "pid": pid
+    }
+    res = requests.post(host+'/tiger/accounts/login', json=data)
+    if res.status_code == 200 and 'application/json' in res.headers['Content-Type']:
+        bearer_token = 'Bearer '+ res.json()['token']
+        return bearer_token
+
+# 获取账号3.0发送图形验证码的ticket
+def get_captcha_ticket_account_v3(host):
+    res = requests.get(host+'/tiger/captcha/graph/ticket')
+    if res.status_code == 200:
+        return res.json()['ticket']
+    else:
+        print('账号3.0获取发送图形验证码的ticket失败，状态码：%s' % res.status_code)
 
 # 获取某具体时间的时间戳
 def get_timeslot(time_date):
