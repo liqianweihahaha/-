@@ -1,5 +1,5 @@
 mysql:
-  host: rm-bp15t47j196je1u0l4o.mysql.rds.aliyuncs.com
+  host: rm-bp1orqjl80dle29ur.mysql.rds.aliyuncs.com
   user: TestDep
   password: 4Ehp1ndpfnlN9D0qvg4SZuig
 redis:
