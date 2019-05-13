@@ -18,6 +18,20 @@
         - created_kitten_work_id: content.id
 
 - test:
+    name: 验证：新创建的项目，作品信息可以正常获取
+    # 验证Workcore消费Workclub的MQ成功
+    setup_hooks:
+        - ${sleep_N_secs(1)}
+    api: api/platform-tiger-work/get_work_info.yaml
+    variables:
+        - work_id: $created_kitten_work_id
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.id, $created_kitten_work_id]
+        - eq: [content.type, 1]
+        - eq: [content.status, 1]
+
+- test:
     name: 已登录-创建IDE作品-ide_type为Matrix
     request:
         method: POST
