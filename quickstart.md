@@ -8,17 +8,19 @@
 - Available response attributes: status_code, cookies, elapsed, headers, content, text, json, encoding, ok, reason, url.
 - skip，skipIf, skipUnless
 - setup_hooks, teardown_hooks
+- output打印的变量，可以在不同测试用例之间访问
 
 #### hrun1.0 到 2.0
 
 | 不同点 | hrun 1.5.15 | hrun 2.0 |
 |----|----|----|
+|base_url|可以在config中的request下定义|只能在config下直接定义或者api中直接定义(不能在request下)|
+|request|可以在testcase的config中统一配置request的method、url等|只能在test中定义request|
+|parameters|可以在testcase中指定|只能在testsuites中指定|
 |api定义|通过api和def关键字定义|和test定义一样|
 |api调用|通过api关键字和函数名调用，传递函数参数|通过api指定文件路径，variables传递参数|
 |test定义|-|必须指定name|
 |debugtalk.py|可以直接引用其中定义的变量|不能直接引用其中定义的变量|
-|base_url|在config中的request下定义|在config下直接定义或者api中直接定义(不能在request下)|
-|method、url等|可以在config的request下统一配置|只能在test中指定|
 |testcase文件内容为空||执行报错|
 
 #### 框架源码学习
@@ -47,6 +49,7 @@ variables:
 - testcases中yaml文件内容为空，会导致生成报告失败
 - 加载顺序：.env文件---》加载testcase中定义的变量(执行其中可执行部分)---》运行testcase
 - 读取可能有延迟的接口（例如MQ同步数据），需要添加sleep数据（ ${sleep_N_secs(1)} ）
+- 同一个testcase的不同test之间，Cookies是继承的。（例如：第一个test用户登录成功，第二个test中如果不指定headers那么会使用默认的headers即带上Cookie）
 
 #### 错误写法总结
 

@@ -1,0 +1,36 @@
+- config:
+    name: 获取用户主账号信息（私密信息）
+    base_url: ${tiger_api_host()}
+
+- test:
+    name: 登录成功，返回新登录态
+    testcase: testcases/tiger-account/v3_for_web/login_new_auth.yaml
+
+# 请求头headers中带了上一个test返回的Cookie
+- test:
+    name: 使用返回Cookie获取用户信息
+    request:
+        url: /tiger/v3/web/accounts/privacy
+        method: GET
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.username, '${source_user_username()}']
+        - eq: [content.has_password, true]
+        - contains: [content, email]
+        - contains: [content, phone_number]
+        - length_equals: [content, 4]
+
+- test:
+    name: 使用返回access_token获取用户信息
+    request:
+        url: /tiger/v3/web/accounts/privacy
+        method: GET
+        headers:
+            Authorization: Bearer $login_token_new_auth
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.username, '${source_user_username()}']
+        - eq: [content.has_password, true]
+        - contains: [content, email]
+        - contains: [content, phone_number]
+        - length_equals: [content, 4]

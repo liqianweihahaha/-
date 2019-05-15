@@ -1,0 +1,53 @@
+- config:
+    name: 账号密码登录
+    base_url: ${tiger_api_host()}
+    variables:
+        - existed_pid: unknown
+        - auth_version_correct_value: '1.0.0'
+        - auth_version_wrong_value: '1.0.1'
+    output:
+        - login_token_new_auth
+
+# 新登录态
+- test:
+    name: 用户名已注册-密码正确-auth_version为1.0.0
+    request:
+        method: POST
+        url: /tiger/v3/web/accounts/login
+        json:
+            auth_version: $auth_version_correct_value
+            identity: ${source_user_username()}
+            password: ${source_user_password()}
+            pid: $existed_pid
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.user_info.id, '${source_user_id()}']
+    extract:
+        - login_token_new_auth: content.auth.token.access.token
+
+- test:
+    name: 用户名已注册-密码正确-auth_version不是1.0.0
+    request:
+        method: POST
+        url: /tiger/v3/web/accounts/login
+        json:
+            auth_version: $auth_version_wrong_value
+            identity: ${source_user_username()}
+            password: ${source_user_password()}
+            pid: $existed_pid
+    validate:
+        - eq: [status_code, 400]
+        - eq: [content.error_code, A_5]
+
+- test:
+    name: 用户名已注册-密码正确-pid不传递
+    request:
+        method: POST
+        url: /tiger/v3/web/accounts/login
+        json:
+            auth_version: $auth_version_correct_value
+            identity: ${source_user_username()}
+            password: ${source_user_password()}
+    validate:
+        - eq: [status_code, 400]
+        - eq: [content.error_code, A_5]
