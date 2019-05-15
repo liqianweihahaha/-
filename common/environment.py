@@ -25,10 +25,8 @@ def get_hosts(env):
 
 # 判断是否是dev或者test环境
 def is_dev_or_test_env(env):
-    stat = True if env not in ('staging', 'production') else False
-    return stat
+    return True if env not in ('staging', 'production') else False
 
 # 判断是否是dev 环境
 def is_dev_env(env):
-    stat = True if env == 'dev' else False
-    return stat
+    return True if env == 'dev' else False
