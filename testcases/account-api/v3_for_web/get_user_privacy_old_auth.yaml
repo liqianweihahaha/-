@@ -4,7 +4,7 @@
 
 - test:
     name: 用户登录成功，返回旧登录态
-    testcase: testcases/tiger-account/v3_for_web/login.yaml
+    testcase: testcases/account-api/v3_for_web/login.yaml
 
 - test:
     name: 使用已登录用户Cookies获取用户信息

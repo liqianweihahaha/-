@@ -17,15 +17,15 @@ httprunner==2.0+
 
 ```sh
 # 运行某目录下的所有测试用例
-hrun testcases/tiger-account
+hrun testcases/account-api
 
 # 运行某个测试用例文件
-hrun testcases/tiger-account/v1/login.yaml
+hrun testcases/account-api/v1/login.yaml
 
 # 指定html报告的路径和名称
-hrun testcases/tiger-account --html-report-name reports/result.html
+hrun testcases/account-api --html-report-name reports/result.html
 
 # 指定报告模板：例如只输出执行失败的testcase
 # 默认使用：~\httprunner\templates\report_template.html
-hrun testcases/tiger-account/v1/login.yaml --report-template=D:\Program\Python3.7\Lib\site-packages\httprunner\templates\report_template_default.html
+hrun testcases/account-api/v1/login.yaml --report-template=D:\Program\Python3.7\Lib\site-packages\httprunner\templates\report_template_default.html
 ```

@@ -3,8 +3,8 @@ config:
 
 testcases:
     success_by_old_token:
-        testcase: testcases/tiger-account/v3_for_web/get_user_privacy_success.yaml
+        testcase: testcases/account-api/v3_for_web/get_user_privacy_success.yaml
     success_by_new_auth:
-        testcase: testcases/tiger-account/v3_for_web/get_user_privacy_new_auth.yaml
+        testcase: testcases/account-api/v3_for_web/get_user_privacy_new_auth.yaml
     获取用户主账号信息（私密信息）失败:
-        testcase: testcases/tiger-account/v3_for_web/get_user_privacy_fail.yaml
+        testcase: testcases/account-api/v3_for_web/get_user_privacy_fail.yaml

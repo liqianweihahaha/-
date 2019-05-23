@@ -4,7 +4,7 @@
 
 - test:
     name: 登录成功，返回新登录态
-    testcase: testcases/tiger-account/v3_for_web/login_new_auth.yaml
+    testcase: testcases/account-api/v3_for_web/login_new_auth.yaml
 
 # 请求头headers中带了上一个test返回的Cookie
 - test:
