@@ -12,7 +12,9 @@
         method: GET
         url: /accounts/nickname/available
     validate:
-        - eq: [status_code, 400]
+        - eq: [status_code, 200]
+        - length_equals: [content, 1]
+        - contains: [content, nickname]
 
 - test:
     name: nickname格式正确且不存在

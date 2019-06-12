@@ -11,7 +11,7 @@
             Authorization: ${source_user_login_token()}
     validate:
         - eq: [status_code, 200]
-        - length_equals: [content, 5]
+        - length_equals: [content, 7]
         - length_equals: [content.0, 3]
         - type_match: [content, list]
         - eq: [content.0.id, 1]
@@ -24,6 +24,10 @@
         - eq: [content.3.name, eduyun]
         - eq: [content.4.id, 5]
         - eq: [content.4.name, baobaolong]
+        - eq: [content.5.id, 6]
+        - eq: [content.5.name, winshare]
+        - eq: [content.6.id, 7]
+        - eq: [content.6.name, unisound]
         - contains: [content.0, is_bound]
 
 - test:

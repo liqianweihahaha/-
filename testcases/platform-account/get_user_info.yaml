@@ -15,7 +15,7 @@
     validate:
         - eq: [status_code, 200]
         - eq: [content.id, '${source_user_id()}']
-        - length_equals: [content, 16]
+        - length_equals: [content, 17]
         - contains: [content, bcmid]
         - contains: [content, nickname]
         - contains: [content, fullname]
@@ -32,7 +32,7 @@
     validate:
         - eq: [status_code, 200]
         - eq: [content.id, '${source_user_id()}']
-        - length_equals: [content, 16]
+        - length_equals: [content, 17]
         - contains: [content, bcmid]
         - contains: [content, nickname]
         - contains: [content, fullname]
@@ -44,17 +44,18 @@
     name: 用户存在-fields为逗号表达式包含所有支持字段
     request:
         method: GET
-        url: /accounts/${source_user_id()}?fields=id,bcmid,nickname,fullname,avatar_url,username,email,phone_number,sex,birthday,description,qq,remark,grade,gold,product_id
+        url: /accounts/${source_user_id()}?fields=id,bcmid,nickname,fullname,avatar_url,username,email,phone_number,sex,birthday,description,qq,remark,grade,gold,product_id,created_at
     validate:
         - eq: [status_code, 200]
         - eq: [content.id, '${source_user_id()}']
-        - length_equals: [content, 16]
+        - length_equals: [content, 17]
         - contains: [content, bcmid]
         - contains: [content, nickname]
         - contains: [content, fullname]
         - contains: [content, username]
         - contains: [content, email]
         - contains: [content, phone_number]
+        - contains: [content, created_at]
 
 - test:
     name: 用户存在-fields为逗号表达式只包含字段id

@@ -13,7 +13,7 @@
     valiate:
         - eq: [status_code, 200]
         - type_match: [content, list]
-        - length_equals: [content, 5]
+        - length_equals: [content, 7]
         - length_equals: [content.0, 3]
         - eq: [content.0.id, 1]
         - eq: [content.0.name, WECHAT]
@@ -27,7 +27,7 @@
     valiate:
         - eq: [status_code, 200]
         - type_match: [content, list]
-        - length_equals: [content, 5]
+        - length_equals: [content, 7]
         - length_equals: [content.0, 3]
         - eq: [content.0.id, 1]
         - eq: [content.0.name, WECHAT]
