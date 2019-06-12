@@ -27,5 +27,5 @@ hrun testcases/account-api --html-report-name reports/result.html
 
 # 指定报告模板：例如只输出执行失败的testcase
 # 默认使用：~\httprunner\templates\report_template.html
-hrun testcases/account-api/v1/login.yaml --report-template=D:\Program\Python3.7\Lib\site-packages\httprunner\templates\report_template_default.html
+hrun testcases/account-api/v1/login.yaml --report-template=templates/report_fail_only.html
 ```
