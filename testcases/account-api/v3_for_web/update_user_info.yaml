@@ -7,6 +7,7 @@
         - nickname_length_21: '111111111122222222223'
         - correct_image_url: https://static-user-center.codemao.cn/user_0002.pn
 
+# 修改nickname
 - test:
     name: 未登录-传递nickname
     request:
@@ -18,7 +19,18 @@
         - eq: [status_code, 403]
         - eq: [content.error_code, E_0]
 
-# 修改nickname
+- test:
+    name: 已登录-nickname为空字符串
+    request:
+        method: PATCH
+        url: /tiger/v3/web/accounts/info
+        headers:
+            Authorization: ${source_user_login_token()}
+        json:
+            nickname: ''
+    validate:
+        - eq: [status_code, 400]
+
 - test:
     name: 已登录-nickname符合规则且未被使用
     request:
@@ -57,18 +69,90 @@
         - eq: [status_code, 400]
 
 - test:
-    name: 已登录-nickname为空字符串
+    name: 已登录-nickname长度为4但包含黑名单中的空格
     request:
         method: PATCH
         url: /tiger/v3/web/accounts/info
         headers:
             Authorization: ${source_user_login_token()}
         json:
-            nickname: ''
+            nickname: "aa bb"
     validate:
         - eq: [status_code, 400]
 
 # 修改fullname
+- test:
+    name: 已登录-fullname为空字符串
+    request:
+        method: PATCH
+        url: /tiger/v3/web/accounts/info
+        headers:
+            Authorization: ${source_user_login_token()}
+        json:
+            fullname: ''
+    validate:
+        - eq: [status_code, 204]
+
+- test:
+    name: 已登录-fullname为1位中文
+    request:
+        method: PATCH
+        url: /tiger/v3/web/accounts/info
+        headers:
+            Authorization: ${source_user_login_token()}
+        json:
+            fullname: '哈'
+    validate:
+        - eq: [status_code, 400]
+
+- test:
+    name: 已登录-fullname为2位纯中文
+    request:
+        method: PATCH
+        url: /tiger/v3/web/accounts/info
+        headers:
+            Authorization: ${source_user_login_token()}
+        json:
+            fullname: '哈哈'
+    validate:
+        - eq: [status_code, 204]
+
+- test:
+    name: 已登录-fullname为20位纯中文
+    request:
+        method: PATCH
+        url: /tiger/v3/web/accounts/info
+        headers:
+            Authorization: ${source_user_login_token()}
+        json:
+            fullname: 哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈
+    validate:
+        - eq: [status_code, 204]
+
+- test:
+    name: 已登录-fullname为21位纯中文
+    request:
+        method: PATCH
+        url: /tiger/v3/web/accounts/info
+        headers:
+            Authorization: ${source_user_login_token()}
+        json:
+            fullname: 哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈和
+    validate:
+        - eq: [status_code, 400]
+
+- test:
+    name: 已登录-fullname为1位英文
+    request:
+        method: PATCH
+        url: /tiger/v3/web/accounts/info
+        headers:
+            Authorization: ${source_user_login_token()}
+        json:
+            fullname: 'a'
+    validate:
+        - eq: [status_code, 400]
+
 - test:
     name: 已登录-fullname为4位纯英文
     request:
@@ -82,16 +166,16 @@
         - eq: [status_code, 204]
 
 - test:
-    name: 已登录-fullname为2位纯英文
+    name: 已登录-fullname为4位纯英文且包含空格
     request:
         method: PATCH
         url: /tiger/v3/web/accounts/info
         headers:
             Authorization: ${source_user_login_token()}
         json:
-            fullname: 'aa'
+            fullname: 'aa aa'
     validate:
-        - eq: [status_code, 400]
+        - eq: [status_code, 204]
 
 - test:
     name: 已登录-fullname为30位纯英文
@@ -118,16 +202,16 @@
         - eq: [status_code, 400]
 
 - test:
-    name: 已登录-fullname为空字符串
+    name: 已登录-fullname为3位中英文混合
     request:
         method: PATCH
         url: /tiger/v3/web/accounts/info
         headers:
             Authorization: ${source_user_login_token()}
         json:
-            fullname: ''
+            fullname: '哈哈a'
     validate:
-        - eq: [status_code, 204]
+        - eq: [status_code, 400]
 
 # 修改avatar_url
 - test:

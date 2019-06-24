@@ -14,19 +14,9 @@
         - existed_nickname: 哈哈
         - nickname_21: 哈哈哈哈哈呵呵呵呵呵哈哈哈哈哈呵呵呵呵呵哦
 
+# 修改nickname
 - test:
-    name: 未登录-修改qq信息
-    request:
-        method: PATCH
-        url: /tiger/accounts/user_info/update
-        json:
-            qq: '123456'
-    validate:
-        - eq: [status_code, 403]
-        - eq: [content.error_code, E_0]
-
-- test:
-    name: 已登录-修改昵称nickname为空字符串
+    name: 已登录-nickname为空字符串
     request:
         method: PATCH
         url: /tiger/accounts/user_info/update
@@ -39,20 +29,7 @@
         - eq: [content.error_code, A_5]
 
 - test:
-    name: 已登录-修改昵称nickname长度超过20
-    request:
-        method: PATCH
-        url: /tiger/accounts/user_info/update
-        headers:
-            Authorization: ${source_user_login_token()}
-        json:
-            nickname: $nickname_21
-    validate:
-        - eq: [status_code, 400]
-        - eq: [content.error_code, A_5]
-
-- test:
-    name: 已登录-修改昵称nickname已经存在
+    name: 已登录-nickname已经存在
     request:
         method: PATCH
         url: /tiger/accounts/user_info/update
@@ -65,7 +42,7 @@
         - eq: [content.error_code, AC_22]
 
 - test:
-    name: 已登录-修改昵称：nickname不存在
+    name: 已登录-nickname长度小于20位且不存在
     request:
         method: PATCH
         url: /tiger/accounts/user_info/update
@@ -77,6 +54,7 @@
         - eq: [status_code, 204]
     extract:
         - update_nickname_success_code: status_code
+
 - test:
     name: 判断nickname是否更新成功
     skipUnless: ${eval_equal($update_nickname_success_code, 204)}
@@ -85,6 +63,32 @@
         user_id: ${source_user_id()}
     validate:
         - eq: [content.nickname, $test_nickname]
+
+- test:
+    name: 已登录-nickname长度为4但包含黑名单中的空格
+    request:
+        method: PATCH
+        url: /tiger/accounts/user_info/update
+        headers:
+            Authorization: ${source_user_login_token()}
+        json:
+            nickname: "aa bb"
+    validate:
+        - eq: [status_code, 400]
+        - eq: [content.error_code, A_5]
+
+- test:
+    name: 已登录-nickname长度超过20
+    request:
+        method: PATCH
+        url: /tiger/accounts/user_info/update
+        headers:
+            Authorization: ${source_user_login_token()}
+        json:
+            nickname: $nickname_21
+    validate:
+        - eq: [status_code, 400]
+        - eq: [content.error_code, A_5]
 
 # 修改fullname
 - test:
@@ -100,6 +104,7 @@
         - eq: [status_code, 204]
     extract:
         - update_fullname_success_code: status_code
+
 - test:
     name: 判断fullname是否更新成功
     skipUnless: ${eval_equal($update_fullname_success_code, 204)}
@@ -110,7 +115,19 @@
         - eq: [content.fullname, '']
 
 - test:
-    name: 修改fullname：fullname为哈哈
+    name: 修改fullname为1位中文
+    request:
+        method: PATCH
+        url: /tiger/accounts/user_info/update
+        headers:
+            Authorization: ${source_user_login_token()}
+        json:
+            fullname: "哈"
+    validate:
+        - eq: [status_code, 400]
+
+- test:
+    name: 修改fullname为2位纯中文
     request:
         method: PATCH
         url: /tiger/accounts/user_info/update
@@ -131,6 +148,78 @@
         user_id: ${source_user_id()}
     validate:
         - eq: [content.fullname, $test_fullname]
+
+- test:
+    name: 修改fullname为20位纯中文
+    request:
+        method: PATCH
+        url: /tiger/accounts/user_info/update
+        headers:
+            Authorization: ${source_user_login_token()}
+        json:
+            fullname: "哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈"
+    validate:
+        - eq: [status_code, 204]
+
+- test:
+    name: 修改fullname为21位纯中文
+    request:
+        method: PATCH
+        url: /tiger/accounts/user_info/update
+        headers:
+            Authorization: ${source_user_login_token()}
+        json:
+            fullname: "哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈和"
+    validate:
+        - eq: [status_code, 400]
+
+- test:
+    name: 修改fullname为1位英文
+    request:
+        method: PATCH
+        url: /tiger/accounts/user_info/update
+        headers:
+            Authorization: ${source_user_login_token()}
+        json:
+            fullname: "a"
+    validate:
+        - eq: [status_code, 204]
+
+- test:
+    name: 修改fullname为20位纯英文
+    request:
+        method: PATCH
+        url: /tiger/accounts/user_info/update
+        headers:
+            Authorization: ${source_user_login_token()}
+        json:
+            fullname: "aaaaaaaaaaaaaaaaaaaa"
+    validate:
+        - eq: [status_code, 204]
+
+- test:
+    name: 修改fullname为21位纯英文
+    request:
+        method: PATCH
+        url: /tiger/accounts/user_info/update
+        headers:
+            Authorization: ${source_user_login_token()}
+        json:
+            fullname: "aaaaaaaaaaaaaaaaaaaab"
+    validate:
+        - eq: [status_code, 400]
+
+- test:
+    name: 修改fullname为3位中英文混合
+    request:
+        method: PATCH
+        url: /tiger/accounts/user_info/update
+        headers:
+            Authorization: ${source_user_login_token()}
+        json:
+            fullname: "哈哈a"
+    validate:
+        - eq: [status_code, 400]
 
 # 修改头像
 - test:
@@ -303,3 +392,14 @@
         user_id: ${source_user_id()}
     validate:
         - eq: [content.qq, $test_qq]
+
+- test:
+    name: 未登录-修改qq信息
+    request:
+        method: PATCH
+        url: /tiger/accounts/user_info/update
+        json:
+            qq: '123456'
+    validate:
+        - eq: [status_code, 403]
+        - eq: [content.error_code, E_0]
