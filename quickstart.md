@@ -8,7 +8,11 @@
 - Available response attributes: status_code, cookies, elapsed, headers, content, text, json, encoding, ok, reason, url.
 - skip，skipIf, skipUnless
 - setup_hooks, teardown_hooks
-- output打印的变量，可以在不同测试用例之间访问
+- output：可以用于调试时打印变量的值，也可以用于在不同测试用例之间传递output指定的变量。
+```
+output:
+  - login_token_old_auth
+```
 
 #### hrun1.0 到 2.0
 
