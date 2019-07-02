@@ -27,8 +27,8 @@ def read_db(env, file_dir=conf_dir):
         data = yaml.load(f)
         return data
 
-def read_config_mysql(env):
-    mysql_data = read_db(env)['mysql']
+def read_config_mysql(env, database_name):
+    mysql_data = read_db(env)['mysql'][database_name]
     return mysql_data
 
 def read_config_redis(env):

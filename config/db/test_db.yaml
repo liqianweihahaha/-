@@ -1,7 +1,9 @@
 mysql:
-  host: rm-bp1orqjl80dle29ur.mysql.rds.aliyuncs.com
-  user: TestDep
-  password: 4Ehp1ndpfnlN9D0qvg4SZuig
+  account:
+    host: rm-bp1orqjl80dle29ur.mysql.rds.aliyuncs.com
+    user: TestDep
+    password: 4Ehp1ndpfnlN9D0qvg4SZuig
+    databse: account
 redis:
   # 需要开启VPN
   host: r-bp1a97853b5914d4.redis.rds.aliyuncs.com

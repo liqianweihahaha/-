@@ -155,9 +155,9 @@ def target_user_boxv2_published_work_id():
 def target_user_nemo_work_id():
     return target_user.get('work').get('nemo').get('work_id')
 
-# 读取mysql配置数据
-mysql_config = read_config.read_config_mysql(TEST_ENV)
-opmysql_account = OpMysql(host=mysql_config['host'], user=mysql_config['user'], password=mysql_config['password'], database='account')
+# 读取account库mysql配置
+mysql_account_config = read_config.read_config_mysql(TEST_ENV, 'account')
+opmysql_account = OpMysql(host=mysql_account_config['host'], user=mysql_account_config['user'], password=mysql_account_config['password'], database=mysql_account_config['database'])
 # 读取redis配置
 redis_config = read_config.read_config_redis(TEST_ENV)
 op_redis = OpRedis(host=redis_config['host'], port=redis_config['port'], password=redis_config['password'], db=1)
