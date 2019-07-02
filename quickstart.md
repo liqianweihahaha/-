@@ -8,7 +8,7 @@
 - Available response attributes: status_code, cookies, elapsed, headers, content, text, json, encoding, ok, reason, url.
 - skip，skipIf, skipUnless
 - setup_hooks, teardown_hooks
-- output：可以用于调试时打印变量的值，也可以用于在不同测试用例之间传递output指定的变量。
+- output：可以用于调试时打印变量的值，也可以用于在不同测试用例之间传递output指定的变量(通过testcase关键字引用其他用例时)。
 ```
 output:
   - login_token_old_auth
@@ -31,6 +31,14 @@ output:
 - html报告生成：report.py中的render_html_report函数，使用的是jinja2的模板文件templates/report_template.html
 
 #### 经验总结
+- testcase关键字：用于引用其他测试用例。注意通过testcase定义的test中，extract的变量无效
+```
+- test:
+    name: 登录
+    testcase: testcases/login.yaml
+    extract:
+        - login_token: content.token   # 导出的login_token无效，不能被后面的test引用
+```
 - `- eq: [content.id, ${str(${source_user_id()})}]`会报错，解决：`- eq: [content.id, '${str(${source_user_id()})}']`
 - variables定义多个变量时，前一个定义的变量并不能被同级后一个变量立马引用到，例如下面的写法会报错
 ```
