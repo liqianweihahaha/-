@@ -26,6 +26,7 @@ output:
 |test定义|-|必须指定name|
 |debugtalk.py|可以直接引用其中定义的变量|不能直接引用其中定义的变量|
 |testcase文件内容为空||执行报错|
+|varibales优先级不同|-|testcase config中的variables优先级最高|
 
 #### 框架源码学习
 - html报告生成：report.py中的render_html_report函数，使用的是jinja2的模板文件templates/report_template.html
@@ -93,6 +94,84 @@ variables:
 ```
 - 实际效果：先执行了获取验证码，然后再执行发送验证码，导致获取的验证码为空（原因：test的variables中调用debugtalk.py的函数会在所有用例执行之前先执行）
 - 解决方法：执行获取验证码的方法放在request中，而不是variables中，因此只要不复用api即可。
+
+##### variables优先级问题
+> variables priority: testcase config > testcase test > testcase_def config > testcase_def test > api，output（export）的变量高于 teststep，这样更符合常理。
+
+- 例如：下面的test中，最终传递到API层的identity和password都是正确的，而不是期望的错误的。因为优先级`testcase config > testcase test > api`
+
+```
+- config:
+    name: 账号登录-正常场景
+    base_url: ${tiger_api_host()}
+    variables:
+        - identity: mxq100
+        - password: m1234567
+
+- test:
+    name: 用户名正确-密码错误
+    api: api/login.yaml
+    variables:
+        - identity: "rrrrrrrr"
+        - password: "000"
+    validate:
+        - eq: [status_code, 403]
+        - eq: [content.error_code, AC3_2]
+```
+
+##### testcase中引用需要传参的函数
+- 例如：引用debugtalk.py中的函数source_user_value(key)时，test中传递的函数的参数值，需要先定义再引用。不能直接传递字符串。下图中identity传递的是"${source_user_value('username')}"，password传递的是${source_user_value("password")}
+```
+- test:
+    name: 用户名正确-密码正确
+    api: api/login.yaml
+    variables:
+        - key_username: username
+        - key_password: password
+        - identity: ${source_user_value('username')}
+        - password: ${source_user_value($key_password)}
+    validate:
+        - eq: [status_code, 200]
+        - contains: [content.auth, token]
+```
+
+##### 响应的cookies
+- 问题1： cookies传递问题
+cookies提取的值是dict类型，相当于dict(res.cookies)，
+{'dev-authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxMDAwNzM3NjI5LCJ1c2VyX3R5cGUiOiJzdHVkZW50IiwianRpIjoiNDM3OTBlMTUtODgwNC00NjA4LWE2NGItYjkzYzdmYjBkYzNmIiwiaWF0IjoxNTYzMjU5MjIzfQ.FfzXNKB3Expxngsbvh6yHe-Lyg56gNkg_zp8jMwzImw', 'master-v1-codemao-dev': 's%3A5vh94DSJjlMQflKxNTnsFAI2tzqQBR_R.nnCgQ7VBGn37qs%2FwDDKTzJjDwPyEdO6zPPC6wWOVhBA'}
+正确的请求：
+```
+headers: 
+    Cookie: headers.Set-Cookie
+```
+- 问题2：cookies继承问题，teststep会继承上一个teststep返回的Cookies。如下：teststep2中并没有设置cookies或者token，但仍然可以正常获取用户信息，是因为teststep1中登录成功后，返回的cookies直接在teststep2中引用了
+```
+- test:
+    name: 准备工作：登录账号
+    api: api/account/v3_for_web/login.yaml
+    variables:
+        - identity: ${source_user_username()}
+        - password: ${source_user_password()}
+    validate:
+        - eq: [status_code, 200]
+
+- test:
+    name: 获取用户信息
+    request:
+        method: GET
+        url: /tiger/v3/web/accounts/profile
+    validate:
+        - eq: [status_code, 200]
+
+```
+
+##### extract和validate
+- 一个testcase中，会先执行extract再执行validate，与定义的先后顺序无关。
+- 如下代码实际运行：先extract变量status_code，然后再validate
+```
+validate:
+    - eq: [status_code, 200]
+```
 
 #### Hook
 - 测试用例的准备和清理工作没有使用setup_hooks/teardown_hoos，而是直接调用DB层的接口（因为DB层涉及的CRUD操作的接口已经有了）
