@@ -10,7 +10,7 @@
 
 - test:
     name: pid存在
-    api: api/platform-user-tiger/get_product_info.yaml
+    api: api/platform-account/get_product_info.yaml
     variables:
         - pid: $existed_pid
     validate:
@@ -22,7 +22,7 @@
         - contains: [content, description]
 - test:
     name: pid不存在
-    api: api/platform-user-tiger/get_product_info.yaml
+    api: api/platform-account/get_product_info.yaml
     variables:
         - pid: $unexist_pid
     validate:

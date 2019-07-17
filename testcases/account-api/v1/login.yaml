@@ -37,7 +37,7 @@
     skipUnless: ${is_dev_or_test()}
     setup_hooks:
         - ${clear_phone_number($unregister_phone_number)}
-    api: api/platform-user-tiger/register_phone_number_with_password.yaml
+    api: api/platform-account/register_phone_number_with_password.yaml
     variables:
         - phone_number: $unregister_phone_number
         - password: $correct_password

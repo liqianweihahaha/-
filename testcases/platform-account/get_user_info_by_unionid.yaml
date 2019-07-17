@@ -11,7 +11,7 @@
 # 后端语言为kotlin时，fields只支持逗号表达式（字段之间不包含空格）
 - test:
     name: 用户未绑定微信-绑定微信
-    api: api/platform-user-tiger/bind_oauth.yaml
+    api: api/platform-account/bind_oauth.yaml
     variables:
         - user_id: ${source_user_id()}
         - unionid: $test_wexin_unioinid1
@@ -82,7 +82,7 @@
 
 - test:
     name: 用户解绑微信
-    api: api/platform-user-tiger/unbind_oauth.yaml
+    api: api/platform-account/unbind_oauth.yaml
     variables:
         - user_id: ${source_user_id()}
         - oauth_type: WECHAT

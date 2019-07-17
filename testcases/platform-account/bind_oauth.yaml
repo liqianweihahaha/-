@@ -14,7 +14,7 @@
 # 测试绑定微信，先给用户解绑微信确保用户未绑定微信
 - test:
     name: 用户解绑微信
-    api: api/platform-user-tiger/unbind_oauth.yaml
+    api: api/platform-account/unbind_oauth.yaml
     variables:
         user_id: ${source_user_id()}
         oauth_type: WECHAT
@@ -23,7 +23,7 @@
 
 - test:
     name: 用户未绑定微信-unionid未被绑定
-    api: api/platform-user-tiger/bind_oauth.yaml
+    api: api/platform-account/bind_oauth.yaml
     variables:
         - user_id: ${source_user_id()}
         - unionid: $test_wexin_unioinid1
@@ -31,9 +31,10 @@
         - appid: $wexin_appid
     validate:
         - eq: [status_code, 204]
+        
 - test:
     name: 判断用户绑定微信后，绑定列表中微信为true
-    api: api/platform-user-tiger/get_user_oauth_bind_status.yaml
+    api: api/platform-account/get_user_oauth_bind_status.yaml
     variables:
         - user_id: ${source_user_id()}
     validate:
@@ -42,7 +43,7 @@
 
 - test:
     name: 用户未绑定微信-unionid已被绑定
-    api: api/platform-user-tiger/bind_oauth.yaml
+    api: api/platform-account/bind_oauth.yaml
     variables:
         - user_id: ${target_user_id()}
         - unionid: $test_wexin_unioinid1
@@ -54,7 +55,7 @@
 
 - test:
     name: 用户已绑定微信-unionid未被绑定
-    api: api/platform-user-tiger/bind_oauth.yaml
+    api: api/platform-account/bind_oauth.yaml
     variables:
         - user_id: ${source_user_id()}
         - unionid: $test_wexin_unioinid2
@@ -66,7 +67,7 @@
 
 - test:
     name: 用户已绑定微信-unionid已被绑定
-    api: api/platform-user-tiger/bind_oauth.yaml
+    api: api/platform-account/bind_oauth.yaml
     variables:
         - user_id: ${source_user_id()}
         - unionid: $test_wexin_unioinid1
@@ -78,7 +79,7 @@
 
 - test:
     name: 用户未绑定微信-appid不存在
-    api: api/platform-user-tiger/bind_oauth.yaml
+    api: api/platform-account/bind_oauth.yaml
     variables:
         - user_id: ${source_user_id()}
         - unionid: $test_wexin_unioinid1
@@ -90,7 +91,7 @@
 
 - test:
     name: 用户id不存在
-    api: api/platform-user-tiger/bind_oauth.yaml
+    api: api/platform-account/bind_oauth.yaml
     variables:
         - user_id: $unexist_user_id
         - unionid: $test_wexin_unioinid1
@@ -102,7 +103,7 @@
 # 解绑第三方账号:微信
 - test:
     name: 用户解绑微信
-    api: api/platform-user-tiger/unbind_oauth.yaml
+    api: api/platform-account/unbind_oauth.yaml
     variables:
         user_id: ${source_user_id()}
         oauth_type: WECHAT
@@ -112,7 +113,7 @@
 # 测试绑定QQ
 - test:
     name: 用户解绑QQ
-    api: api/platform-user-tiger/unbind_oauth.yaml
+    api: api/platform-account/unbind_oauth.yaml
     variables:
         user_id: ${source_user_id()}
         oauth_type: QQ
@@ -121,7 +122,7 @@
 
 - test:
     name: 用户未绑定QQ-unionid未被绑定
-    api: api/platform-user-tiger/bind_oauth.yaml
+    api: api/platform-account/bind_oauth.yaml
     variables:
         - user_id: ${source_user_id()}
         - unionid: $test_qq_unioinid1
@@ -131,7 +132,7 @@
         - eq: [status_code, 204]
 - test:
     name: 判断用户绑定QQ后，绑定列表中QQ为true
-    api: api/platform-user-tiger/get_user_oauth_bind_status.yaml
+    api: api/platform-account/get_user_oauth_bind_status.yaml
     variables:
         - user_id: ${source_user_id()}
     validate:
@@ -140,7 +141,7 @@
 
 - test:
     name: 用户未绑定QQ-unionid已被绑定
-    api: api/platform-user-tiger/bind_oauth.yaml
+    api: api/platform-account/bind_oauth.yaml
     variables:
         - user_id: ${target_user_id()}
         - unionid: $test_qq_unioinid1
@@ -151,7 +152,7 @@
         - eq: [content.error_code, '10001006']
 - test:
     name: 用户已绑定QQ-unionid未被绑定
-    api: api/platform-user-tiger/bind_oauth.yaml
+    api: api/platform-account/bind_oauth.yaml
     variables:
         - user_id: ${source_user_id()}
         - unionid: $test_qq_unioinid2
@@ -163,7 +164,7 @@
 
 - test:
     name: 用户已绑定QQ-unionid已被绑定
-    api: api/platform-user-tiger/bind_oauth.yaml
+    api: api/platform-account/bind_oauth.yaml
     variables:
         - user_id: ${source_user_id()}
         - unionid: $test_qq_unioinid1
@@ -175,7 +176,7 @@
 # 解绑QQ
 - test:
     name: 用户解绑QQ
-    api: api/platform-user-tiger/unbind_oauth.yaml
+    api: api/platform-account/unbind_oauth.yaml
     variables:
         user_id: ${source_user_id()}
         oauth_type: QQ

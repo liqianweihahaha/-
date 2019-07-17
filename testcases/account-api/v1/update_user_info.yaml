@@ -58,7 +58,7 @@
 - test:
     name: 判断nickname是否更新成功
     skipUnless: ${eval_equal($update_nickname_success_code, 204)}
-    api: api/platform-user-tiger/get_user_info.yaml
+    api: api/platform-account/get_user_info.yaml
     variables:
         user_id: ${source_user_id()}
     validate:
@@ -108,7 +108,7 @@
 - test:
     name: 判断fullname是否更新成功
     skipUnless: ${eval_equal($update_fullname_success_code, 204)}
-    api: api/platform-user-tiger/get_user_info.yaml
+    api: api/platform-account/get_user_info.yaml
     variables:
         user_id: ${source_user_id()}
     validate:
@@ -143,7 +143,7 @@
 - test:
     name: 判断fullname是否更新成功
     skipUnless: ${eval_equal($update_fullname_success_code, 204)}
-    api: api/platform-user-tiger/get_user_info.yaml
+    api: api/platform-account/get_user_info.yaml
     variables:
         user_id: ${source_user_id()}
     validate:
@@ -247,7 +247,7 @@
         - eq: [status_code, 204]
 - test:
     name: 判断头像是否更新成功
-    api: api/platform-user-tiger/get_user_info.yaml
+    api: api/platform-account/get_user_info.yaml
     variables:
         user_id: ${source_user_id()}
     validate:
@@ -267,7 +267,7 @@
         - eq: [status_code, 204]
 - test:
     name: 判断性别是否更新成功
-    api: api/platform-user-tiger/get_user_info.yaml
+    api: api/platform-account/get_user_info.yaml
     variables:
         user_id: ${source_user_id()}
     validate:
@@ -285,7 +285,7 @@
         - eq: [status_code, 204]
 - test:
     name: 判断性别是否更新成功
-    api: api/platform-user-tiger/get_user_info.yaml
+    api: api/platform-account/get_user_info.yaml
     variables:
         user_id: ${source_user_id()}
     validate:
@@ -317,7 +317,7 @@
         - eq: [status_code, 204]
 - test:
     name: 判断出生日期是否更新成功
-    api: api/platform-user-tiger/get_user_info.yaml
+    api: api/platform-account/get_user_info.yaml
     variables:
         user_id: ${source_user_id()}
     validate:
@@ -335,7 +335,7 @@
         - eq: [status_code, 204]
 - test:
     name: 判断出生日期是否更新成功
-    api: api/platform-user-tiger/get_user_info.yaml
+    api: api/platform-account/get_user_info.yaml
     variables:
         user_id: ${source_user_id()}
     validate:
@@ -367,7 +367,7 @@
         - eq: [status_code, 204]
 - test:
     name: 判断出生日期是否更新成功
-    api: api/platform-user-tiger/get_user_info.yaml
+    api: api/platform-account/get_user_info.yaml
     variables:
         user_id: ${source_user_id()}
     validate:
@@ -387,7 +387,7 @@
         - eq: [status_code, 204]
 - test:
     name: 判断qq是否更新成功
-    api: api/platform-user-tiger/get_user_info.yaml
+    api: api/platform-account/get_user_info.yaml
     variables:
         user_id: ${source_user_id()}
     validate:
