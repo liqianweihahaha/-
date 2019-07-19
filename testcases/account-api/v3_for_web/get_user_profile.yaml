@@ -37,7 +37,7 @@
     extract: 
         - login_cookies: headers.Set-Cookie
 
-# 即使不再headers中指定Cookie，也会默认传递之前返回的Cookie
+# 即使不再headers中指定Set-Cookie，也会默认传递之前返回的Set-Cookie
 - test:
     name: 传递登录后返回的cookies-获取用户信息
     request:

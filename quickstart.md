@@ -4,7 +4,6 @@
 - testcases： 测试用例/测试场景文件
 - testsuites: 测试套件
 - debugtalk.py: 函数定义
-- yaml: 第一级结构收紧必须是4个空格
 - Available response attributes: status_code, cookies, elapsed, headers, content, text, json, encoding, ok, reason, url.
 - skip，skipIf, skipUnless
 - setup_hooks, teardown_hooks
@@ -13,12 +12,15 @@
 output:
   - login_token_old_auth
 ```
+- testcase中的yaml文件格式，根目录是数组格式。使用：`- config`,  `- test`
+- testsuite中的yaml文件格式，根目录是dict类型。使用：`config`，`testcases`
 
 #### hrun1.0 到 2.0
 
 | 不同点 | hrun 1.5.15 | hrun 2.0 |
 |----|----|----|
-|base_url|可以在config中的request下定义|只能在config下直接定义或者api中直接定义(不能在request下)|
+|yaml文件中的缩进空格数|必须4个|2个也可以执行，但是会报警告|
+|base_url|可以在config中的request下定义|只能在config下直接定义或者api中直接定义或者teststep中(不能在request下)|
 |request|可以在testcase的config中统一配置request的method、url等|只能在test中定义request|
 |parameters|可以在testcase中指定|只能在testsuites中指定|
 |api定义|通过api和def关键字定义|和test定义一样|
@@ -82,7 +84,8 @@ cookies提取的值是dict类型，相当于dict(res.cookies)，
 headers: 
     Cookie: headers.Set-Cookie
 ```
-- 问题2：cookies继承问题，teststep会继承上一个teststep返回的Cookies。如下：teststep2中并没有设置cookies或者token，但仍然可以正常获取用户信息，是因为teststep1中登录成功后，返回的cookies直接在teststep2中引用了
+- 问题2：cookie seesion共享问题。同一个testcase文件下的testcase共享相同的session。(each teststeps in one testcase share the same session)
+- 如下：teststep2中并没有设置Cookie，但仍然可以正常获取用户信息，是因为teststep1中登录成功后，返回的Set-Cookie直接在teststep2中引用了
 ```
 - test:
     name: 准备工作：登录账号
@@ -93,6 +96,7 @@ headers:
     validate:
         - eq: [status_code, 200]
 
+# teststep会共享之前的teststep返回的Set-Cookie作为请求头Cookie
 - test:
     name: 获取用户信息
     request:
@@ -110,7 +114,22 @@ headers:
 validate:
     - eq: [status_code, 200]
 ```
+extract关键字，其结构为数组，数组中的元素，可以是dict类型，也可以是字符串。
+```
+# 用于提取response
+extract:
+    - login_token: content.auth.token
 
+# 提取另一个testcase中export的变量
+extract:
+    - output_login_token
+```
+
+##### setup_hooks和teardown_hooks
+- 在同一个test中，teardown_hooks无法直接引用当前test中extract的变量。
+- 在同一个test中，setup_hooks、teardown_hooks可以直接引用当前test中定义的variables。
+
+##### testcase关键字
 
 - testcase关键字：用于引用其他测试用例。注意通过testcase定义的test中，extract的变量无效
 ```
@@ -186,5 +205,10 @@ variables:
 - 退出登录后会导致其他用例中的source_user_login_token失效，所以退出登录用例中的已登录token需要单独获取
 - 账号3.0修改密码，导致source_user_login_token失效，所以使用测试账号2（target_user）测试
 
-#### HttpRunner已知缺陷
+#### 用例编写注意事项
 1. api定义中不支持可选参数
+2. testcase中不支持函数嵌套调用
+3. variables变量优先级问题：testcase config > testcase test > testcase_def config > testcase_def test > api，output（export）的变量高于 teststep
+4. base_url优先级: testcase test > testcase config > testsuite test > testsuite config > api
+5. verify 优先级: testcase teststep (api) > testcase config > testsuite config
+6. 同一个testcase文件下的testcase共享相同的session。(each teststeps in one testcase share the same session)
