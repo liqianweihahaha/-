@@ -1,6 +1,0 @@
-name: 取消收藏作品
-request:
-    method: DELETE
-    url: /api/work/collection/$work_id
-    headers:
-        Authorization: $token

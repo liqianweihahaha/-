@@ -1,5 +1,0 @@
-name: 获取作品详情
-base_url:  ${platform_tiger_api_host()}
-request:
-    method: GET
-    url: /works/$work_id?fields=["id","user_id", "name", "description", "type", "n_forks", "work_urls", "root_id", "parent_id", "preview", "latest_work_url", "praise_times", "operation_instruction", "publish_time"]
