@@ -1,4 +1,5 @@
 #### 框架说明
+
 - 脚手架： hrun --startproject demo
 - api： 接口的定义，避免重复定义
 - testcases： 测试用例/测试场景文件
@@ -31,11 +32,13 @@ output:
 |varibales优先级不同|-|testcase config中的variables优先级最高|
 
 #### 框架源码学习
+
 - html报告生成：report.py中的render_html_report函数，使用的是jinja2的模板文件templates/report_template.html
 
 #### 经验总结
 
 ##### variables优先级问题
+
 > variables priority: testcase config > testcase test > testcase_def config > testcase_def test > api，output（export）的变量高于 teststep，这样更符合常理。
 
 - 例如：下面的test中，最终传递到API层的identity和password都是正确的，而不是期望的错误的。因为优先级`testcase config > testcase test > api`
@@ -60,6 +63,7 @@ output:
 ```
 
 ##### testcase中引用需要传参的函数
+
 - 例如：引用debugtalk.py中的函数source_user_value(key)时，test中传递的函数的参数值，需要先定义再引用。不能直接传递字符串。下图中identity传递的是"${source_user_value('username')}"，password传递的是${source_user_value("password")}
 ```
 - test:
@@ -76,6 +80,7 @@ output:
 ```
 
 ##### 响应的cookies
+
 - 问题1： cookies传递问题
 cookies提取的值是dict类型，相当于dict(res.cookies)，
 {'dev-authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxMDAwNzM3NjI5LCJ1c2VyX3R5cGUiOiJzdHVkZW50IiwianRpIjoiNDM3OTBlMTUtODgwNC00NjA4LWE2NGItYjkzYzdmYjBkYzNmIiwiaWF0IjoxNTYzMjU5MjIzfQ.FfzXNKB3Expxngsbvh6yHe-Lyg56gNkg_zp8jMwzImw', 'master-v1-codemao-dev': 's%3A5vh94DSJjlMQflKxNTnsFAI2tzqQBR_R.nnCgQ7VBGn37qs%2FwDDKTzJjDwPyEdO6zPPC6wWOVhBA'}
@@ -108,6 +113,7 @@ headers:
 ```
 
 ##### extract和validate
+
 - 一个testcase中，会先执行extract再执行validate，与定义的先后顺序无关。
 - 如下代码实际运行：先extract变量status_code，然后再validate
 ```
@@ -126,6 +132,7 @@ extract:
 ```
 
 ##### setup_hooks和teardown_hooks
+
 - 在同一个test中，teardown_hooks无法直接引用当前test中extract的变量。
 - 在同一个test中，setup_hooks、teardown_hooks可以直接引用当前test中定义的variables。
 
@@ -166,6 +173,7 @@ variables:
 #### 错误写法总结
 
 ##### 错误写法1
+
 - 预期效果：先执行发送登录验证码接口，再获取验证码，执行验证码登录接口。
 
 ```
@@ -196,16 +204,19 @@ variables:
 
 
 #### Hook
+
 - 测试用例的准备和清理工作没有使用setup_hooks/teardown_hoos，而是直接调用DB层的接口（因为DB层涉及的CRUD操作的接口已经有了）
 - 缺点：用例之间耦合性大，依赖于底层的DB操作接口的正确性
 - 优点：减少直接操作数据库（并且正式库还没法直接修改表）
 - 涉及到手机号注册相关，不会通过解绑接口清空手机号，因为业务限制太多，所以直接操作数据库
 
 #### 注意点
+
 - 退出登录后会导致其他用例中的source_user_login_token失效，所以退出登录用例中的已登录token需要单独获取
 - 账号3.0修改密码，导致source_user_login_token失效，所以使用测试账号2（target_user）测试
 
 #### 用例编写注意事项
+
 1. api定义中不支持可选参数
 2. testcase中不支持函数嵌套调用
 3. variables变量优先级问题：testcase config > testcase test > testcase_def config > testcase_def test > api，output（export）的变量高于 teststep
