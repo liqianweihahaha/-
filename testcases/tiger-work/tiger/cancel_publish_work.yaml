@@ -1,0 +1,50 @@
+- config:
+    name: 取消发布作品
+    base_url: ${tiger_api_host()}
+
+- test:
+    name: 未登录-已发布IDE作品
+    request:
+        method: PATCH
+        url: /tiger/work/${source_user_ide_published_work_id()}/unpublish
+    validate:
+        - eq: [status_code, 403]
+        - eq: [content.error_code, E_0]
+
+- test:
+    name: 已登录-个人已发布IDE作品
+    request:
+        method: PATCH
+        url: /tiger/work/${source_user_ide_published_work_id()}/unpublish
+        headers:
+            Authorization: ${source_user_login_token()}
+    validate:
+        - eq: [status_code, 204]
+
+# - test:
+#     name: 验证：判断作品是否更新为未发布
+#     api: api/platform-tiger-work/get_work_info.yaml
+#     variables:
+#         - work_id: ${source_user_ide_published_work_id()}
+#     validate:
+#         - eq: [status_code, 200]
+#         - eq: [content.is_published, false]
+#         - eq: [content.publish_time, 0]
+        
+- test:
+    name: 重新修改作品为已发布
+    api: api/tiger-work/tiger/publish_work.yaml
+    variables:
+        - work_id: ${source_user_ide_published_work_id()}
+        - token: ${source_user_login_token()}
+    validate:
+        - eq: [status_code, 204]
+
+# - test:
+#     name: 验证：判断作品是否更新为已发布
+#     api: api/platform-tiger-work/get_work_info.yaml
+#     variables:
+#         - work_id: ${source_user_ide_published_work_id()}
+#     validate:
+#         - eq: [content.is_published, true]
+#         - greater_than: [content.publish_time, 0]

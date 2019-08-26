@@ -1,0 +1,162 @@
+- config:
+    name: 保存 Wood 作品（创建或者修改）
+    base_url: ${tiger_api_host()}
+    variables:
+        - wood_work_content: print(test-wood_work)
+
+- test:
+    name: 创建Wood作品-传递name-传递content-language_type为1
+    request:
+        method: POST
+        url: /tiger/work/wood
+        headers:
+            Authorization: ${source_user_login_token()}
+        json: 
+            name: 测试创建wood作品
+            content: $wood_work_content
+            language_type: 1
+    validate:
+        - eq: [status_code, 200]
+        - contains: [content, work_id]
+        - contains: [content, name]
+        - length_equals: [content, 2]
+    extract:
+        - wood_work_id: content.work_id
+
+- test:
+    name: 创建Wood作品-name为空字符串-传递content-language_type为1
+    request:
+        method: POST
+        url: /tiger/work/wood
+        headers:
+            Authorization: ${source_user_login_token()}
+        json: 
+            name: ''
+            content: $wood_work_content
+            language_type: 1
+    validate:
+        - eq: [status_code, 400]
+        - eq: [content.error_code, A_5]
+
+- test:
+    name: 创建Wood作品-name长度超过50-传递content-language_type为1
+    request:
+        method: POST
+        url: /tiger/work/wood
+        headers:
+            Authorization: ${source_user_login_token()}
+        json: 
+            name: '111111111111111111111111111111111111111111111111112'
+            content: $wood_work_content
+            language_type: 1
+    validate:
+        - eq: [status_code, 400]
+        - eq: [content.error_code, A_5]
+
+- test:
+    name: 创建Wood作品-name正确-传递content-language_type为0
+    request:
+        method: POST
+        url: /tiger/work/wood
+        headers:
+            Authorization: ${source_user_login_token()}
+        json: 
+            name: '测试创建wood作品'
+            content: $wood_work_content
+            language_type: 0
+    validate:
+        - eq: [status_code, 400]
+        - eq: [content.error_code, A_5]
+
+- test:
+    name: 创建Wood作品-name正确-传递content-language_type为2
+    request:
+        method: POST
+        url: /tiger/work/wood
+        headers:
+            Authorization: ${source_user_login_token()}
+        json: 
+            name: '测试创建wood作品'
+            content: '#microbit'
+            language_type: 2
+    validate:
+        - eq: [status_code, 200]
+
+- test:
+    name: 修改wood作品-work_id为个人wood作品
+    request:
+        method: POST
+        url: /tiger/work/wood
+        headers:
+            Authorization: ${source_user_login_token()}
+        json: 
+            name: 测试修改wood作品
+            content: $wood_work_content
+            language_type: 1
+            work_id: $wood_work_id
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.work_id, $wood_work_id]
+        - contains: [content, name]
+        - length_equals: [content, 2]
+
+- test:
+    name: 修改wood作品-work_id为个人IDE作品
+    request:
+        method: POST
+        url: /tiger/work/wood
+        headers:
+            Authorization: ${source_user_login_token()}
+        json: 
+            name: 测试修改wood作品
+            content: $wood_work_content
+            language_type: 1
+            work_id: ${source_user_ide_published_work_id()}
+    validate:
+        - eq: [status_code, 404]
+        - eq: [content.error_code, W_0]
+
+- test:
+    name: 修改wood作品-work_id为不存在的作品id(大于0)
+    request:
+        method: POST
+        url: /tiger/work/wood
+        headers:
+            Authorization: ${source_user_login_token()}
+        json: 
+            name: 测试修改wood作品
+            content: $wood_work_content
+            language_type: 1
+            work_id: 100
+    validate:
+        - eq: [status_code, 404]
+        - eq: [content.error_code, W_0]
+
+- test:
+    name: 修改wood作品-work_id为不存在的作品id(不大于0)
+    request:
+        method: POST
+        url: /tiger/work/wood
+        headers:
+            Authorization: ${source_user_login_token()}
+        json: 
+            name: 测试修改wood作品
+            content: $wood_work_content
+            language_type: 1
+            work_id: 0
+    validate:
+        - eq: [status_code, 404]
+        - eq: [content.error_code, A_8]
+
+- test:
+    name: 未登录-创建wood作品
+    request:
+        method: POST
+        url: /tiger/work/wood
+        json: 
+            name: 测试创建wood作品
+            content: $wood_work_content
+            language_type: 1
+    validate:
+        - eq: [status_code, 403]
+        - eq: [content.error_code, E_0]

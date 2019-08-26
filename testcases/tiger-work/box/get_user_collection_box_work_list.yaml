@@ -1,0 +1,34 @@
+- config:
+    name: 获取用户收藏的box作品列表（Public）
+    base_url: ${tiger_api_host()}
+    variables:
+        - unexist_user_id: 100
+        - wrong_type_user_id: aaa
+
+- test:
+    name: 未登录-用户id存在
+    request:
+        method: GET
+        url: /tiger/box/work/collection/${source_user_id()}
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, list]
+
+- test:
+    name: 未登录-用户id不存在
+    request:
+        method: GET
+        url: /tiger/box/work/collection/$unexist_user_id
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, list]
+        - length_equals: [content, 0]
+
+- test:
+    name: 未登录-格式错误的用户id
+    request:
+        method: GET
+        url: /tiger/box/work/collection/$wrong_type_user_id
+    validate:
+        - eq: [status_code, 400]
+        - eq: [content.error_code, A_5]

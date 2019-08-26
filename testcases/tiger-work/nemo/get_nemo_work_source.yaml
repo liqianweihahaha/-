@@ -1,0 +1,84 @@
+- config:
+    name: 获取Nemo作品source详情
+    base_url: ${tiger_api_host()}
+    variables:
+        - unexist_work_id: 100
+        - wrong_type_work_id: aaa
+
+- test:
+    name: 未登录-nemo作品
+    request:
+        method: GET
+        url: /tiger/nemo/works/${source_user_nemo_work_id()}/source
+    validate:
+        - eq: [status_code, 403]
+        - eq: [content.error_code, E_0]
+
+- test:
+    name: 已登录-个人nemo作品
+    request:
+        method: GET
+        url: /tiger/nemo/works/${source_user_nemo_work_id()}/source
+        headers:
+            Authorization: ${source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.work_id, '${source_user_nemo_work_id()}']
+        - length_equals: [content, 7]
+        - length_greater_than_or_equals: [content.work_urls, 1]
+        - type_match: [content.work_urls, list]
+
+- test:
+    name: 已登录-个人已发布IDE作品
+    request:
+        method: GET
+        url: /tiger/nemo/works/${source_user_ide_published_work_id()}/source
+        headers:
+            Authorization: ${source_user_login_token()}
+    validate:
+        - eq: [status_code, 404]
+        - eq: [content.error_code, W_0]
+
+- test:
+    name: 已登录-个人已发布BOX2.0作品
+    request:
+        method: GET
+        url: /tiger/nemo/works/${source_user_boxv2_published_work_id()}/source
+        headers:
+            Authorization: ${source_user_login_token()}
+    validate:
+        - eq: [status_code, 404]
+        - eq: [content.error_code, W_0]
+
+- test:
+    name: 已登录-个人wood作品
+    request:
+        method: GET
+        url: /tiger/nemo/works/${source_user_wood_work_id()}/source
+        headers:
+            Authorization: ${source_user_login_token()}
+    validate:
+        - eq: [status_code, 404]
+        - eq: [content.error_code, W_0]
+
+- test:
+    name: 已登录-不存在的作品id
+    request:
+        method: GET
+        url: /tiger/nemo/works/$unexist_work_id/source
+        headers:
+            Authorization: ${source_user_login_token()}
+    validate:
+        - eq: [status_code, 404]
+        - eq: [content.error_code, W_0]
+
+- test:
+    name: 已登录-格式错误的作品id
+    request:
+        method: GET
+        url: /tiger/nemo/works/$wrong_type_work_id/source
+        headers:
+            Authorization: ${source_user_login_token()}
+    validate:
+        - eq: [status_code, 400]
+        - eq: [content.error_code, A_5]

@@ -1,0 +1,175 @@
+- config:
+    name: 收藏作品
+    base_url: ${tiger_api_host()}
+    variables:
+        - unexist_work_id: 100
+        - wrong_type_work_id: aaa
+
+- test:
+    name: 未登录-已发布IDE作品
+    request:
+        method: POST
+        url: /api/work/collection/${source_user_ide_published_work_id()}
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.code, 2002]
+        - eq: [content.msg, 用户未登陆]
+
+- test:
+    name: 准备工作：取消收藏个人已发布IDE作品
+    api: api/tiger-work/backend/uncollection_work.yaml
+    variables:
+        - work_id: ${source_user_ide_published_work_id()}
+        - token: ${source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+
+- test:
+    name: 已登录-个人已发布IDE作品(未收藏)
+    api: api/tiger-work/backend/collection_work.yaml
+    variables:
+        - work_id: ${source_user_ide_published_work_id()}
+        - token: ${source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.code, 200]
+        - eq: [content.msg, 成功]
+        - length_equals: [content.data, 0]
+
+- test:
+    name: 已登录-个人已发布IDE作品(已收藏) 
+    api: api/tiger-work/backend/collection_work.yaml
+    variables:
+        - work_id: ${source_user_ide_published_work_id()}
+        - token: ${source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.code, 2001]
+        - eq: [content.msg, 输入数据格式错误]
+        - length_equals: [content.data, 0]
+
+- test:
+    name: 准备工作：取消收藏个人未发布IDE作品
+    api: api/tiger-work/backend/uncollection_work.yaml
+    variables:
+        - work_id: ${source_user_ide_unpublish_work_id()}
+        - token: ${source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+
+- test:
+    name: 已登录-个人未发布IDE作品(未收藏) 
+    api: api/tiger-work/backend/collection_work.yaml
+    variables:
+        - work_id: ${source_user_ide_unpublish_work_id()}
+        - token: ${source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.code, 200]
+        - eq: [content.msg, 成功]
+        - length_equals: [content.data, 0]
+
+- test:
+    name: 已登录-个人未发布IDE作品(已收藏) 
+    api: api/tiger-work/backend/collection_work.yaml
+    variables:
+        - work_id: ${source_user_ide_unpublish_work_id()}
+        - token: ${source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.code, 2001]
+        - eq: [content.msg, 输入数据格式错误]
+        - length_equals: [content.data, 0]
+
+- test:
+    name: 准备工作：取消收藏个人临时删除IDE作品
+    api: api/tiger-work/backend/uncollection_work.yaml
+    variables:
+        - work_id: ${source_user_ide_deleted_temporarily_work_id()}
+        - token: ${source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+
+- test:
+    name: 已登录-个人临时删除IDE作品(未收藏)
+    request:
+        method: POST
+        url: /api/work/collection/${source_user_ide_deleted_temporarily_work_id()}
+        headers:
+            Authorization: ${source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.code, 200]
+        - eq: [content.msg, 成功]
+        - length_equals: [content.data, 0]
+
+- test:
+    name: 已登录-个人临时删除IDE作品(已收藏) 
+    request:
+        method: POST
+        url: /api/work/collection/${source_user_ide_deleted_temporarily_work_id()}
+        headers:
+            Authorization: ${source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.code, 2001]
+        - eq: [content.msg, 输入数据格式错误]
+        - length_equals: [content.data, 0]
+
+- test:
+    name: 准备工作：取消收藏个人永久删除IDE作品
+    api: api/tiger-work/backend/uncollection_work.yaml
+    variables:
+        - work_id: ${source_user_ide_deleted_permanently_work_id()}
+        - token: ${source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+
+- test:
+    name: 已登录-个人永久删除IDE作品(未收藏) 
+    request:
+        method: POST
+        url: /api/work/collection/${source_user_ide_deleted_permanently_work_id()}
+        headers:
+            Authorization: ${source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.code, 200]
+        - eq: [content.msg, 成功]
+        - length_equals: [content.data, 0]
+
+- test:
+    name: 已登录-个人永久删除IDE作品(已收藏) 
+    request:
+        method: POST
+        url: /api/work/collection/${source_user_ide_deleted_permanently_work_id()}
+        headers:
+            Authorization: ${source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.code, 2001]
+        - eq: [content.msg, 输入数据格式错误]
+        - length_equals: [content.data, 0]
+
+- test:
+    name: 已登录-作品id不存在 
+    request:
+        method: POST
+        url: /api/work/collection/$unexist_work_id
+        headers:
+            Authorization: ${source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.code, 500]
+        - length_equals: [content.data, 0]
+        
+- test:
+    name: 已登录-格式错误的作品id 
+    request:
+        method: POST
+        url: /api/work/collection/$wrong_type_work_id
+        headers:
+            Authorization: ${source_user_login_token()}
+    validate:
+        - eq: [status_code, 400]
+        - eq: [content.error_code, A_5]

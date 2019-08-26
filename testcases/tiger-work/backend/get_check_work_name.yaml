@@ -1,0 +1,92 @@
+- config:
+    name: 检查作品名称（保存Box2.0作品）
+    base_url: ${tiger_api_host()}
+    variables:
+        - unexist_work_name: 哈哈呵呵呵呵呵呵11
+
+- test:
+    name: 已登录-不传递work_name
+    request:
+        method: GET
+        url: /api/v2/work/checkname
+        headers:
+            Authorization: ${source_user_login_token()}
+    validate:
+        - eq: [status_code, 400]
+        - eq: [content.error_code, A_5]
+
+- test:
+    name: 已登录-传递work_name(不同于用户名下的Box2.0作品)-work_id不传递
+    request:
+        method: GET
+        url: /api/v2/work/checkname?work_name=$unexist_work_name
+        headers:
+            Authorization: ${source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.code, 200]
+        - eq: [content.msg, 成功]
+        - eq: [content.data.work_name, $unexist_work_name]
+
+- test:
+    name: 已登录-传递work_name(不同于用户名下的Box2.0作品)-work_id为undefined
+    request:
+        method: GET
+        url: /api/v2/work/checkname?work_name=$unexist_work_name&work_id=undefined
+        headers:
+            Authorization: ${source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.code, 200]
+        - eq: [content.msg, 成功]
+        - eq: [content.data.work_name, $unexist_work_name]
+
+- test:
+    name: 已登录-传递work_name(不同于用户名下的Box2.0作品)-work_id为个人已发布Box2.0作品
+    request:
+        method: GET
+        url: /api/v2/work/checkname?work_name=$unexist_work_name&work_id=${source_user_boxv2_published_work_id()}
+        headers:
+            Authorization: ${source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.code, 200]
+        - eq: [content.msg, 成功]
+        - eq: [content.data.work_name, $unexist_work_name]
+
+- test:
+    name: 已登录-传递work_name(不同于用户名下的Box2.0作品)-work_id为个人已发布IDE作品
+    request:
+        method: GET
+        url: /api/v2/work/checkname?work_name=$unexist_work_name&work_id=${source_user_ide_published_work_id()}
+        headers:
+            Authorization: ${source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.code, 200]
+        - eq: [content.msg, 成功]
+        - eq: [content.data.work_name, $unexist_work_name]
+
+- test:
+    name: 已登录-传递work_name(不同于用户名下的Box2.0作品)-work_id不存在（大于0）
+    request:
+        method: GET
+        url: /api/v2/work/checkname?work_name=$unexist_work_name&work_id=100
+        headers:
+            Authorization: ${source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.code, 200]
+        - eq: [content.msg, 成功]
+        - eq: [content.data.work_name, $unexist_work_name]
+
+- test:
+    name: 未登录-传递work_name
+    request:
+        method: GET
+        url: /api/v2/work/checkname?work_name=''
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.code, 2002]
+        - eq: [content.msg, 用户未登陆]
+        - length_equals: [content.data, 0]

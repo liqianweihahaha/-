@@ -1,0 +1,11 @@
+- config:
+    name: 解绑微信
+    base_url: ${tiger_api_host()}
+
+- test:
+    name: 用户未绑定微信
+    api: api/account/v3_for_web/unbind_wechat.yaml
+    variables:
+        - token: ${source_user_login_token()}
+    validate:
+        - eq: [status_code, 204]

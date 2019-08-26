@@ -1,0 +1,104 @@
+- config:
+    name: kitten作品管理页面
+    base_url: ${tiger_api_host()}
+
+- test:
+    name: 已登录-orientation为1-offset为0-limit为20
+    request:
+        method: GET
+        url: /tiger/work/user/management/kitten?offset=0&limit=20&orientation=1
+        headers:
+            Authorization: ${source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.limit, 20]
+        - eq: [content.offset, 0]
+        - length_equals: [content, 4]
+        - contains: [content, total]
+
+- test:
+    name: 已登录-orientation为2-offset为0-limit为20
+    request:
+        method: GET
+        url: /tiger/work/user/management/kitten?offset=0&limit=20&orientation=2
+        headers:
+            Authorization: ${source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.limit, 20]
+        - eq: [content.offset, 0]
+        - length_equals: [content, 4]
+        - contains: [content, total]
+
+- test:
+    name: 已登录-orientation为3-offset为0-limit为20
+    request:
+        method: GET
+        url: /tiger/work/user/management/kitten?offset=0&limit=20&orientation=3
+        headers:
+            Authorization: ${source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.limit, 20]
+        - eq: [content.offset, 0]
+        - length_equals: [content, 4]
+        - contains: [content, total]
+
+- test:
+    name: 已登录-orientation为0-offset为0-limit为20
+    request:
+        method: GET
+        url: /tiger/work/user/management/kitten?offset=0&limit=20&orientation=0
+        headers:
+            Authorization: ${source_user_login_token()}
+    validate:
+        - eq: [status_code, 400]
+        - eq: [content.error_code, A_5]
+
+- test:
+    name: 已登录-orientation为1-offset为0-limit为1
+    request:
+        method: GET
+        url: /tiger/work/user/management/kitten?offset=0&limit=1&orientation=1
+        headers:
+            Authorization: ${source_user_login_token()}
+    validate:
+        - eq: [status_code, 400]
+        - eq: [content.error_code, A_11]
+
+- test:
+    name: 已登录-orientation为1-offset为0-limit为5
+    request:
+        method: GET
+        url: /tiger/work/user/management/kitten?offset=0&limit=5&orientation=1
+        headers:
+            Authorization: ${source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.limit, 5]
+        - eq: [content.offset, 0]
+        - length_equals: [content, 4]
+        - contains: [content, total]
+
+- test:
+    name: 已登录-orientation为1-offset为1-limit为5
+    request:
+        method: GET
+        url: /tiger/work/user/management/kitten?offset=1&limit=5&orientation=1
+        headers:
+            Authorization: ${source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.limit, 5]
+        - eq: [content.offset, 1]
+        - length_equals: [content, 4]
+        - contains: [content, total]
+
+- test:
+    name: 未登录-orientation为1-offset为0-limit为20
+    request:
+        method: GET
+        url: /tiger/work/user/management/kitten?offset=1&limit=20&orientation=1
+    validate:
+        - eq: [status_code, 403]
+        - eq: [content.error_code, E_0]

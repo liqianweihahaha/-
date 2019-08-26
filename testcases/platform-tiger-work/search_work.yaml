@@ -1,0 +1,53 @@
+- config:
+    name: 搜索作品（OpenSearch）
+    base_url: ${platform_tiger_api_host()}
+    variables:
+        - search_name: nemo
+
+- test:
+    name: name传递-is_published为1-type为8
+    request:
+        method: GET
+        url: /works/search?name=$search_name&is_published=1&type=8&page=1&limit=20
+    validate:
+        - eq: [status_code, 200]
+        - length_equals: [content, 3]
+        - contains: [content, searchtime]
+        - contains: [content, total]
+        - contains: [content, items]
+        - type_match: [content.items, list]
+
+- test:
+    name: name传递-is_published为0-type为8
+    request:
+        method: GET
+        url: /works/search?name=$search_name&is_published=0&type=8&page=1&limit=20
+    validate:
+        - eq: [status_code, 200]
+        - length_equals: [content, 3]
+        - contains: [content, searchtime]
+        - contains: [content, total]
+        - contains: [content, items]
+        - type_match: [content.items, list]
+
+- test:
+    name: name传递-is_published为2-type为8
+    request:
+        method: GET
+        url: /works/search?name=$search_name&is_published=0&type=8&page=1&limit=20
+    validate:
+        - eq: [status_code, 200]
+        - length_equals: [content, 3]
+        - contains: [content, searchtime]
+        - contains: [content, total]
+        - contains: [content, items]
+        - type_match: [content.items, list]
+
+- test:
+    name: name传递-is_published不传递-type为8
+    request:
+        method: GET
+        url: /works/search?name=$search_name&type=8&page=1&limit=20
+    validate:
+        - eq: [status_code, 400]
+        - eq: [content.error_code, A_5]

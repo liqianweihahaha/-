@@ -1,0 +1,40 @@
+- config:
+    name: 发送注册验证码
+    base_url: ${tiger_api_host()}
+    variables:
+        - test_phone_number: ${test_phone_number()}
+
+- test:
+    name: phone_number未注册-极验参数正确
+    skipUnless: ${is_dev()}
+    setup_hooks:
+        - ${clear_phone_number($test_phone_number)}
+    api: api/account/v1/send_register_captcha.yaml
+    variables:
+        - phone_number: $test_phone_number
+    validate:
+        - eq: [status_code, 204]
+
+# 手机号已注册
+- test:
+    name: 准备工作：注册手机号
+    skipUnless: ${is_dev()}
+    setup_hooks:
+        - ${clear_phone_number($test_phone_number)}
+    api: api/platform-account/register_phone_number.yaml
+    variables:
+        - phone_number: $test_phone_number
+    validate:
+        - eq: [status_code, 200]
+
+- test:
+    name: phone_number已注册-极验参数正确
+    skipUnless: ${is_dev()}
+    api: api/account/v1/send_register_captcha.yaml
+    variables:
+        - phone_number: $test_phone_number
+    validate:
+        - eq: [status_code, 403]
+        - eq: [content.error_code, B_16]
+    teardown_hooks:
+        - ${clear_phone_number($test_phone_number)}

@@ -1,0 +1,51 @@
+source_user:
+  id: 771783
+  username: sandy000
+  email: sandy000@qq.com
+  password: m1234567
+  work:
+    ide:
+      published_work_id: 4781713
+      unpublish_work_id: 4781733
+      deleted_temporarily_work_id: 4781751
+      deleted_permanently_work_id: 3433227
+      # 用于测试创建作品/修改作品/修改作品封面
+      # work_url未加密，bcmc_url有加密(可选)，作品播放内容根据bcmc_url展示
+      work_url: https://static.codemao.cn/kitten/rke4Ju2VkN.bcm
+      preview_url: https://static.codemao.cn/kitten/B1bmyOn41N
+      bcmc_url: https://static.codemao.cn/kitten/SJEJ_nV1N.bcmc
+    boxv1:
+      work_url: https://static.codemao.cn/f34a12bd-619c-4b4e-8b6e-21f753a738a3.bcm
+      preview_url: https://preview.codemao.cn/Fiji8FtyQbOq3tU61xhos1H1XU6Y
+    boxv2:
+      published_work_id: 6173018
+      unpublish_work_id: 20935446
+      work_url: https://static.codemao.cn/box/BJbmF0EbN.bcm
+      preview_url: https://preview.codemao.cn/default_preview.png
+      bcmc_url: https://static.codemao.cn/box/B1e-QtRNb4.bcmc
+    wood:
+      work_id: 4817480
+    nemo:
+      work_id: 4952126
+      work_url: https://static.codemao.cn/nemo/SJk18U1eV.bcm
+      preview_url: https://static.codemao.cn/nemo/rJJJL8keN.cover
+  sprite:
+    owned: 50   # 象牙螺
+    unown: 1    # 编程猫
+    
+target_user:
+  id: 1855538
+  username: sandy001
+  password: m1234567
+  work:
+    ide:
+      published_work_id: 4781921
+      published_unfork_work_id: 4781927
+      unpublish_work_id: 4781940
+      deleted_temporarily_work_id: 4781940
+      deleted_permanently_work_id: 2676257
+    boxv2:
+      published_work_id: 21525288
+    nemo:
+      work_id: 5372930
+  # 用户无代表精灵

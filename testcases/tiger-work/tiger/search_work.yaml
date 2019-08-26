@@ -1,0 +1,26 @@
+- config:
+    name: 社区搜索作品（Public）需要opensearch
+    base_url: ${tiger_api_host()}
+    variables:
+        - query_text: 天空
+
+- test:
+    name: 不传递任何参数
+    request:
+        method: GET
+        url: /tiger/work/search
+    validate:
+        - eq: [status_code, 400]
+        - eq: [content.error_code, A_5]
+        
+- test:
+    name: 只传递query-page=1-per_page=20
+    request:
+        method: GET
+        url: /tiger/work/search?query=$query_text&page=1&per_page=20
+    validate:
+        - eq: [status_code, 200]
+        - length_equals: [content, 3]
+        - contains: [content, searchtime]
+        - contains: [content, total]
+        - contains: [content, items]

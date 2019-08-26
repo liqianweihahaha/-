@@ -1,0 +1,29 @@
+- config:
+    name: 获取用户信息（Public）
+    base_url: ${tiger_api_host()}
+
+- test:
+    name: 未登录
+    request:
+        method: GET
+        url: /tiger/community/user/info
+    validate:
+        - eq: [status_code, 200]
+        - length_equals: [content, 3]
+        - eq: [content.attention_count, 0]
+        - eq: [content.fans_count, 0]
+        - eq: [content.work_count, 0]
+
+- test:
+    name: 已登录
+    request:
+        method: GET
+        url: /tiger/community/user/info
+        headers:
+            Authorization: ${source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+        - length_equals: [content, 3]
+        - contains: [content, attention_count]
+        - contains: [content, fans_count]
+        - contains: [content, work_count]

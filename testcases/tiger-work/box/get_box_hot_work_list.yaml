@@ -1,0 +1,43 @@
+- config:
+    name: 列出BOX热门作品（Public）
+    base_url: ${tiger_api_host()}
+
+- test:
+    name: 未登录-不传递任何参数
+    request:
+        method: GET
+        url: /tiger/box/work/list/hot
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, list]
+        - length_equals: [content.0, 14]
+        - eq: [content.0.is_hot, true]
+        - eq: [content.0.type, 5]
+        - length_less_than_or_equals: [content, 20]
+
+# - test:
+#     name: 未登录-per_page=1
+#     request:
+#         method: GET
+#         url: /tiger/box/work/list/hot?page=1&per_page=1
+#     validate:
+#         - eq: [status_code, 400]
+#         - eq: [content.error_code, A_11]
+
+- test:
+    name: 未登录-per_page=0
+    request:
+        method: GET
+        url: /tiger/box/work/list/hot?page=1&per_page=0
+    validate:
+        - eq: [status_code, 400]
+        
+- test:
+    name: 未登录-per_page=21
+    request:
+        method: GET
+        url: /tiger/box/work/list/hot?page=1&per_page=21
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, list]
+        - length_less_than_or_equals: [content, 20]

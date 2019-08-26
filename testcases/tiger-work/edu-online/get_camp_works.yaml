@@ -1,0 +1,60 @@
+- config:
+    name: 获取不同类型的作品（百元课）
+    base_url: ${tiger_api_host()}
+    variables:
+        - types: 5
+        - unsuport_type: 6
+
+- test:
+    name: 未登录-传递type等字段
+    request:
+        method: GET
+        url: /tiger/codecamp/works?type=5&limit=15&page=1
+    validate:
+        - eq: [status_code, 403]
+        - eq: [content.error_code, E_0]
+
+- test:
+    name: 已登录-不传递type字段
+    request:
+        method: GET
+        url: /tiger/codecamp/works?limit=15&page=1
+    validate:
+        - eq: [status_code, 400]
+        - eq: [content.error_code, A_5]
+
+- test:
+    name: 已登录-传递支持的type
+    request:
+        method: GET
+        url: /tiger/codecamp/works?type=$types&limit=15&page=1
+        headers:
+            Authorization: ${source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+        - len_eq: [content.0, 5]
+        - eq: [content.0.type,$types]
+
+- test:
+    name: 已登录-传递不支持的type
+    request:
+        method: GET
+        url: /tiger/codecamp/works?type=$unsuport_type&limit=15&page=1
+        headers:
+            Authorization: ${source_user_login_token()}
+    validate:
+        - eq: [status_code, 400]
+        - eq: [content.error_code, A_5]
+
+- test:
+    name: 已登录-limit字段传入小于5的整数
+    request:
+        method: GET
+        url: /tiger/codecamp/works?type=$types&limit=1&page=1
+        headers:
+            Authorization: ${source_user_login_token()}
+    validate:
+        - eq: [status_code, 400]
+        - eq: [content.error_code, A_11]
+
+

@@ -1,0 +1,4 @@
+name: 获取作品详情（Public）
+request:
+    method: GET
+    url: /tiger/work/$work_id

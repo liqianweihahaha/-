@@ -1,0 +1,39 @@
+- config:
+    name: 发送绑定手机验证码
+    base_url: ${tiger_api_host()}
+    variables:
+        - test_phone_number: ${test_phone_number()}
+
+# phone_number未注册
+- test:
+    name: 已登录(未绑定手机号)-phone_number未注册
+    skipUnless: ${is_dev_or_test()}
+    setup_hooks:
+        - ${clear_phone_number($test_phone_number)}
+    api: api/account/v3_for_web/send_bind_phone_captcha.yaml
+    variables:
+        - token: ${source_user_login_token()}
+        - phone_number: $test_phone_number
+    validate:
+        - eq: [status_code, 204]
+
+# phone_number已注册
+- test:
+    name: 准备工作：注册手机号
+    skipUnless: ${is_dev_or_test()}
+    api: api/platform-account/register_phone_number.yaml
+    variables:
+        - phone_number: $test_phone_number
+    validate:
+        - eq: [status_code, 200]
+
+- test:
+    name: 已登录(未绑定手机号)-phone_number已注册
+    skipUnless: ${is_dev_or_test()}
+    api: api/account/v3_for_web/send_bind_phone_captcha.yaml
+    variables:
+        - token: ${source_user_login_token()}
+        - phone_number: $test_phone_number
+    validate:
+        - eq: [status_code, 403]
+        - eq: [content.error_code, AC3_0]

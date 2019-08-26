@@ -1,0 +1,17 @@
+- config:
+    name: 搜索box 作品（Public）
+    base_url: ${tiger_api_host()}
+    variables:
+        - query_text: 测试
+
+- test:
+    name: 未登录-传递query
+    request:
+        method: GET
+        url: /tiger/box/work/search?query=$query_text
+    validate:
+        - eq: [status_code, 200]
+        - contains: [content, searchtime]
+        - contains: [content, total]
+        - contains: [content, items]
+        - type_match: [content.items, list]
