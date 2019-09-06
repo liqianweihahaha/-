@@ -5,6 +5,10 @@
 3. 将登录token放在debugtalk.py中避免多个test多次请求登录方法
 4. 执行完某个测试用例后，teardown_hooks将测试数据重置为开始状态
 
+- user：普通账号和作品配置
+- internal_user：内部账号配置
+- db：数据库配置
+
 #### 依赖包
 
 ```
