@@ -29,15 +29,6 @@ class OpMysql(object):
         if self.cur.rowcount == 1:
             self.conn.commit()
 
-    # 获取work_base表的作品信息，用于判断workclub生产MQ和workcore消费MQ是否成功
-    # def get_work_from_work_base(self, work_id):
-    #     result = self.cur.execute('SELECT * FROM work_base WHERE id=%s', (work_id,))
-    #     if self.cur.rowcount == 1:
-    #         return self.cur.fetchone()
-    #     else：
-    #         return False
-
-
 if __name__ == '__main__':
     # 连接dev环境
     opmysql = OpMysql(host='rm-bp173j25673ah67z8ko.mysql.rds.aliyuncs.com', user='TestDep', password='4Ehp1ndpfnlN9D0qvg4SZuig', database='account')

@@ -21,14 +21,6 @@ def get_hosts(env):
         platform_tiger_api_host = 'http://internal.platform.codemao.cn'
         internal_account_api_host = 'https://internal-account-api.codemao.cn'
         transaction_admin_api_host = 'https://api-admin-transaction.codemao.cn'
-    # # 压测环境
-    # elif env == 'press':
-    #     tiger_api_host = 'https://press-api.codemao.cn'
-    #     platform_tiger_api_host = 'http://press-internal.platform.codemao.cn'
-    # # 预演环境
-    # elif env == 'preview':
-    #     tiger_api_host = 'https://preview-api.codemao.cn'
-    #     platform_tiger_api_host = 'http://preview-internal.platform.codemao.cn'
     return dict(tiger_api_host=tiger_api_host, platform_tiger_api_host=platform_tiger_api_host, 
         internal_account_api_host=internal_account_api_host, transaction_admin_api_host=transaction_admin_api_host)
 

@@ -1,6 +1,0 @@
-name: 收藏作品
-request:
-    method: POST
-    url: /api/work/collection/$work_id
-    headers:
-        Authorization: $token

@@ -1,7 +1,0 @@
-name: 发布作品（body参数为空）
-request:
-    url: /tiger/work/$work_id/publish
-    method: PUT
-    headers:
-        Authorization: $token
-        Content-Type: application/json

@@ -1,6 +1,0 @@
-name: 购买作品
-request:
-    url: /tiger/work/$work_id/fork
-    method: PATCH
-    headers:
-        Authorization: $token

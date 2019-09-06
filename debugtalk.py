@@ -55,63 +55,6 @@ def source_user_owned_sprite_id():
 def source_user_unown_sprite_id():
     return source_user.get('sprite').get('unown')
 
-# Kitten作品
-def source_user_ide_published_work_id():
-    return source_user.get('work').get('ide').get('published_work_id')
-
-def source_user_ide_unpublish_work_id():
-    return source_user.get('work').get('ide').get('unpublish_work_id')
-
-def source_user_ide_deleted_temporarily_work_id():
-    return source_user.get('work').get('ide').get('deleted_temporarily_work_id')
-
-def source_user_ide_deleted_permanently_work_id():
-    return source_user.get('work').get('ide').get('deleted_permanently_work_id')
-
-def source_user_ide_work_url():
-    return source_user.get('work').get('ide').get('work_url')
-
-def source_user_ide_preview_url():
-    return source_user.get('work').get('ide').get('preview_url')
-
-def source_user_ide_bcmc_url():
-    return source_user.get('work').get('ide').get('bcmc_url')
-
-# box1.0作品
-def source_user_boxv1_work_url():
-    return source_user.get('work').get('boxv1').get('work_url')
-
-def source_user_boxv1_preview_url():
-    return source_user.get('work').get('boxv1').get('preview_url')
-
-# box2.0作品
-def source_user_boxv2_published_work_id():
-    return source_user.get('work').get('boxv2').get('published_work_id')
-
-def source_user_boxv2_unpublish_work_id():
-    return source_user.get('work').get('boxv2').get('unpublish_work_id')
-
-def source_user_boxv2_work_url():
-    return source_user.get('work').get('boxv2').get('work_url')
-
-def source_user_boxv2_preview_url():
-    return source_user.get('work').get('boxv2').get('preview_url')
-
-def source_user_boxv2_bcmc_url():
-    return source_user.get('work').get('boxv2').get('bcmc_url')
-# wood
-def source_user_wood_work_id():
-    return source_user.get('work').get('wood').get('work_id')
-# nemo
-def source_user_nemo_work_id():
-    return source_user.get('work').get('nemo').get('work_id')
-
-def source_user_nemo_work_url():
-    return source_user.get('work').get('nemo').get('work_url')
-
-def source_user_nemo_preview_url():
-    return source_user.get('work').get('nemo').get('preview_url')
-
 # 获取原用户登录token，避免测试用例中多次调用登录态都初始化函数，这里先定义变量
 source_user_login_token_v2 = login_token_v2(TIGER_API_HOST, source_user_username(), source_user_password())
 def source_user_login_token():
@@ -126,30 +69,6 @@ def target_user_username():
 
 def target_user_password():
     return target_user.get('password')
-
-# Kitten作品
-def target_user_ide_published_work_id():
-    return target_user.get('work').get('ide').get('published_work_id')
-
-def target_user_ide_published_unfork_work_id():
-    return target_user.get('work').get('ide').get('published_unfork_work_id')
-
-def target_user_ide_unpublish_work_id():
-    return target_user.get('work').get('ide').get('unpublish_work_id')
-
-def target_user_ide_deleted_temporarily_work_id():
-    return target_user.get('work').get('ide').get('deleted_temporarily_work_id')
-
-def target_user_ide_deleted_permanently_work_id():
-    return target_user.get('work').get('ide').get('deleted_permanently_work_id')
-
-# box2.0
-def target_user_boxv2_published_work_id():
-    return target_user.get('work').get('boxv2').get('published_work_id')
-
-# nemo作品
-def target_user_nemo_work_id():
-    return target_user.get('work').get('nemo').get('work_id')
 
 # 获取内部账号配置数据
 internal_source_user = read_config.internal_source_user(TEST_ENV)

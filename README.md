@@ -1,11 +1,10 @@
+#### 项目说明
+- master分支：账号相关APi层和服务层测试
+- release-work分支：作品相关接口测试
+
 #### 测试数据准备
-
-1. 用户信息准备：创建2个用户
-2. 用户作品：IDE、BOX2.0、WOOD、NEMO（最好存在多个存档记录的）
-3. 将登录token放在debugtalk.py中避免多个test多次请求登录方法
-4. 执行完某个测试用例后，teardown_hooks将测试数据重置为开始状态
-
-- user：普通账号和作品配置
+- config目录用于配置测试数据
+- user：普通账号配置
 - internal_user：内部账号配置
 - db：数据库配置
 
