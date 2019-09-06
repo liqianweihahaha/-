@@ -1,8 +1,10 @@
 #### 项目说明
+
 - master分支：账号相关APi层和服务层测试
 - release-work分支：作品相关接口测试
 
 #### 测试数据准备
+
 - config目录用于配置测试数据
 - user：普通账号配置
 - internal_user：内部账号配置
