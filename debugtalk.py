@@ -10,31 +10,31 @@ from common.op_redis import OpRedis
 TEST_ENV = os.environ['environment']
 # 因为会发送验证码，所以最好是用自己的手机号测试
 TEST_PHONE_NUMBER = os.environ['test_phone_number']
-# 获取测试域名
+
+# 获取测试域名hosts
 TIGER_API_HOST = get_hosts(TEST_ENV).get('tiger_api_host')
 PLATFORM_TIGER_API_HOST = get_hosts(TEST_ENV).get('platform_tiger_api_host')
+INTERNAL_ACCOUNT_API_HOST = get_hosts(TEST_ENV).get('internal_account_api_host')
+TRANSACTION_ADMIN_API_HOST = get_hosts(TEST_ENV).get('transaction_admin_api_host')
 
 def test_phone_number():
     return TEST_PHONE_NUMBER
 
-# 获取测试域名hosts
-def tiger_api_host():
+def tiger_api_host(): 
     return TIGER_API_HOST
 
-def platform_tiger_api_host():
+def platform_tiger_api_host(): 
     return PLATFORM_TIGER_API_HOST
 
-# 判断是否是dev或者test环境
-def is_dev_or_test():
-    return is_dev_or_test_env(TEST_ENV)
+def internal_account_api_host():
+    return INTERNAL_ACCOUNT_API_HOST
 
-# 判断是dev环境（因为账号2.0只有dev关闭了极验）
-def is_dev():
-    return is_dev_env(TEST_ENV)
+def transaction_admin_api_host():  
+    return TRANSACTION_ADMIN_API_HOST
 
-# 读取配置文件：源用户信息
-global source_user
+# 获取配置文件：源用户信息
 source_user = read_config.source_user(TEST_ENV)
+target_user = read_config.target_user(TEST_ENV)
 
 def source_user_id():
     return source_user.get('id')
@@ -54,12 +54,6 @@ def source_user_owned_sprite_id():
 
 def source_user_unown_sprite_id():
     return source_user.get('sprite').get('unown')
-
-# 获取原用户登录token，避免测试用例中多次调用登录态都初始化函数，这里先定义变量
-SOURCE_USER_LOGIN_TOKEN = login_token_v2(TIGER_API_HOST, source_user_username(), source_user_password())
-
-def source_user_login_token():
-    return SOURCE_USER_LOGIN_TOKEN
 
 # Kitten作品
 def source_user_ide_published_work_id():
@@ -118,10 +112,12 @@ def source_user_nemo_work_url():
 def source_user_nemo_preview_url():
     return source_user.get('work').get('nemo').get('preview_url')
 
-# 目标用户信息
-global target_user
-target_user = read_config.target_user(TEST_ENV)
+# 获取原用户登录token，避免测试用例中多次调用登录态都初始化函数，这里先定义变量
+source_user_login_token_v2 = login_token_v2(TIGER_API_HOST, source_user_username(), source_user_password())
+def source_user_login_token():
+    return source_user_login_token_v2
 
+# 目标用户信息
 def target_user_id():
     return target_user.get('id')
 
@@ -155,9 +151,23 @@ def target_user_boxv2_published_work_id():
 def target_user_nemo_work_id():
     return target_user.get('work').get('nemo').get('work_id')
 
+# 获取内部账号配置数据
+internal_source_user = read_config.internal_source_user(TEST_ENV)
+
+def internal_source_user_email():
+    return internal_source_user.get('email')
+
+def internal_source_user_password():
+    return internal_source_user.get('password')
+
+# 获取内部账号系统token
+def source_user_login_token_internal_account():
+    login_token= login_token_internal_account(INTERNAL_ACCOUNT_API_HOST, internal_source_user_email(), internal_source_user_password())
+    return login_token
+
 # 读取account库mysql配置
-mysql_account_config = read_config.read_config_mysql(TEST_ENV, 'account')
-opmysql_account = OpMysql(host=mysql_account_config['host'], user=mysql_account_config['user'], password=mysql_account_config['password'], database=mysql_account_config['database'])
+mysql_config_account = read_config.read_config_mysql(TEST_ENV, 'account')
+opmysql_account = OpMysql(host=mysql_config_account['host'], user=mysql_config_account['user'], password=mysql_config_account['password'], database=mysql_config_account['database'])
 # 读取redis配置
 redis_config = read_config.read_config_redis(TEST_ENV)
 op_redis = OpRedis(host=redis_config['host'], port=redis_config['port'], password=redis_config['password'], db=1)
@@ -186,6 +196,14 @@ def get_captcha_account_v2(catpcha_type, phone_number):
 # 获取发送图形验证码的ticket
 def get_captcha_ticket():
     return get_captcha_ticket_account_v3(TIGER_API_HOST)
+
+# 判断是否是dev或者test环境
+def is_dev_or_test():
+    return is_dev_or_test_env(TEST_ENV)
+
+# 判断是dev环境（因为账号2.0只有dev关闭了极验）
+def is_dev():
+    return is_dev_env(TEST_ENV)
 
 # 因为test中None会被解析为字符串，所以这里增加此函数
 def is_none(source):
