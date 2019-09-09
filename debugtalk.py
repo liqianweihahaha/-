@@ -10,6 +10,8 @@ from common.op_redis import OpRedis
 TEST_ENV = os.environ['environment']
 # 因为会发送验证码，所以最好是用自己的手机号测试
 TEST_PHONE_NUMBER = os.environ['test_phone_number']
+# 获取账号2.0的极验配置，用于测试验证码时是否跳过极验
+GEETEST_V2 = os.environ['geetest_v2']
 
 # 获取测试域名hosts
 TIGER_API_HOST = get_hosts(TEST_ENV).get('tiger_api_host')
@@ -120,9 +122,9 @@ def get_captcha_ticket():
 def is_dev_or_test():
     return is_dev_or_test_env(TEST_ENV)
 
-# 判断是dev环境（因为账号2.0只有dev关闭了极验）
-def is_dev():
-    return is_dev_env(TEST_ENV)
+# 判断账号2.0接口，极验是否开启
+def is_geetest_v2_on():
+    return True if GEETEST_V2 == 'on' else False
 
 # 因为test中None会被解析为字符串，所以这里增加此函数
 def is_none(source):

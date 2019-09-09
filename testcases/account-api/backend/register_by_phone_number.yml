@@ -8,7 +8,7 @@
 # 手机已注册
 - test:
     name: 准备工作：注册手机号
-    skipUnless: ${is_dev()}
+    skipIf: ${is_geetest_v2_on()}
     setup_hooks:
         - ${clear_phone_number($test_phone_number)}
     api: api/platform-account/register_phone_number.yaml
@@ -19,7 +19,7 @@
 
 - test:
     name: 准备工作：给已注册手机号发送验证码
-    skipUnless: ${is_dev()}
+    skipIf: ${is_geetest_v2_on()}
     api: api/account/backend/send_register_captcha.yaml
     variables:
         - phone_number: $test_phone_number
@@ -29,7 +29,7 @@
 
 - test:
     name: 已注册手机号-验证码正确-password正确
-    skipUnless: ${is_dev()}
+    skipIf: ${is_geetest_v2_on()}
     request:
         method: POST
         url: /api/user/register/phone
@@ -45,7 +45,7 @@
 # 使用/api/user/register/phone/code的验证码注册
 - test:
     name: 准备工作：给未注册手机号发送验证码（/api/user接口）
-    skipUnless: ${is_dev()}
+    skipIf: ${is_geetest_v2_on()}
     setup_hooks:
         - ${clear_phone_number($test_phone_number)}
     api: api/account/backend/send_register_captcha.yaml
@@ -57,7 +57,7 @@
 
 - test:
     name: 未注册手机号-验证码正确-password正确
-    skipUnless: ${is_dev()}
+    skipIf: ${is_geetest_v2_on()}
     request:
         method: POST
         url: /api/user/register/phone
@@ -73,7 +73,7 @@
 
 - test:
     name: 验证：注册成功的手机号+密码可以登录
-    skipUnless: ${is_dev()}
+    skipIf: ${is_geetest_v2_on()}
     api: api/account/account_login.yaml
     variables:
         - identity: $test_phone_number
@@ -87,7 +87,7 @@
 # 使用/tiger/user/phone/code/registration的验证码注册
 - test:
     name: 准备工作：给未注册手机号发送验证码（/tiger/user接口）
-    skipUnless: ${is_dev()}
+    skipIf: ${is_geetest_v2_on()}
     setup_hooks:
         - ${clear_phone_number($test_phone_number)}
     api: api/account/v1/send_register_captcha.yaml
@@ -98,7 +98,7 @@
 
 - test:
     name: 未注册手机号-验证码正确-password正确
-    skipUnless: ${is_dev()}
+    skipIf: ${is_geetest_v2_on()}
     request:
         method: POST
         url: /api/user/register/phone
@@ -114,7 +114,7 @@
 
 - test:
     name: 验证：注册成功的手机号+密码可以登录
-    skipUnless: ${is_dev()}
+    skipIf: ${is_geetest_v2_on()}
     api: api/account/account_login.yaml
     variables:
         - identity: $test_phone_number

@@ -6,7 +6,7 @@
 
 - test:
     name: phone_number未注册-极验参数正确
-    skipUnless: ${is_dev()}
+    skipIf: ${is_geetest_v2_on()}
     setup_hooks:
         - ${clear_phone_number($test_phone_number)}
     api: api/account/v1/send_login_captcha.yaml
@@ -19,7 +19,7 @@
 # 手机号已注册
 - test:
     name: 准备工作：注册手机号
-    skipUnless: ${is_dev()}
+    skipIf: ${is_geetest_v2_on()}
     setup_hooks:
         - ${clear_phone_number($test_phone_number)}
     api: api/platform-account/register_phone_number.yaml
@@ -30,7 +30,7 @@
 
 - test:
     name: phone_number已注册-极验参数正确
-    skipUnless: ${is_dev()}
+    skipIf: ${is_geetest_v2_on()}
     api: api/account/v1/send_login_captcha.yaml
     variables:
         - phone_number: $test_phone_number
