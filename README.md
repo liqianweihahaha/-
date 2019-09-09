@@ -10,6 +10,12 @@
 - internal_user：内部账号配置
 - db：数据库配置
 
+#### .env配置文件
+
+- environment表示测试环境：dev、test、staging、production
+- test_phone_number表示测试的手机号，主要用于测试手机号+验证码相关。建议使用自己的手机号
+- geetest_v2表示极验2.0状态，on表示开启，off表示未开启
+
 #### 依赖包
 
 ```
