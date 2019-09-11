@@ -1,0 +1,14 @@
+- config:
+    name: 获取应用列表
+    base_url: ${internal_account_api_host()}
+
+- test:
+    name: 已登录
+    request:
+        method: GET
+        url: /applications/all
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, list]

@@ -1,0 +1,50 @@
+- config:
+    name: 通过用户ID拉取个人信息
+    base_url: ${internal_account_service_host()}
+    variables:
+        - unexist_internal_user_id: 100000
+
+- test:
+    name: 用户ID存在（正式员工-未冻结）-fields包含所有支持参数
+    request:
+        method: GET
+        url: /accounts/${internal_source_user_id()}/base?fields=id,email,fullname,gender,birthday,id_card,phone_number
+    validate:
+        - eq: [status_code, 200]
+        - length_equals: [content, 7]
+        - eq: [content.id, '${internal_source_user_id()}']
+        - eq: [content.email, '${internal_source_user_email()}']
+        - contains: [content, gender]
+        - contains: [content, id_card]
+
+- test:
+    name: 用户ID存在（正式员工-未冻结）-fields只包含email
+    request:
+        method: GET
+        url: /accounts/${internal_source_user_id()}/base?fields=email
+    validate:
+        - eq: [status_code, 200]
+        - length_equals: [content, 1]
+        - eq: [content.email, '${internal_source_user_email()}']
+
+- test:
+    name: 用户ID存在（正式员工-未冻结）-fields不传递
+    request:
+        method: GET
+        url: /accounts/${internal_source_user_id()}/base
+    validate:
+        - eq: [status_code, 200]
+        - length_equals: [content, 7]
+        - eq: [content.id, '${internal_source_user_id()}']
+        - eq: [content.email, '${internal_source_user_email()}']
+        - contains: [content, gender]
+        - contains: [content, id_card]
+
+- test:
+    name: 用户ID不存在(大于0)-fields包含所有支持参数
+    request:
+        method: GET
+        url: /accounts/$unexist_internal_user_id/base?fields=id,email,fullname,gender,birthday,id_card,phone_number
+    validate:
+        - eq: [status_code, 422]
+        - eq: [content.error_code, '10007000']

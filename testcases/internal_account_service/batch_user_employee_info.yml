@@ -1,0 +1,66 @@
+- config:
+    name: 批量用户ID拉取任职信息
+    base_url: ${internal_account_service_host()}
+    variables:
+        - unexist_internal_user_id: 10000
+
+- test:
+    name: user_ids长度为1（用户ID存在）-fields包含所有支持参数
+    request:
+        method: POST
+        url: /accounts/employee
+        json:
+            user_ids: ['${internal_source_user_id()}']
+            fields: ["id", "department", "job_post", "job_position", "job_grade", "job_level", "admin_tree_path", "reserve_tree_path", "person_in_charge", "admin", "reserve","entry_date","last_work_date"]
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, list]
+        - length_equals: [content, 1]
+        - length_equals: [content.0, 13]
+        - eq: [content.0.id, '${internal_source_user_id()}']
+        - contains: [content.0, department]
+        - contains: [content.0, last_work_date]
+
+- test:
+    name: user_ids长度为1（用户ID存在）-fields只包含last_work_date
+    request:
+        method: POST
+        url: /accounts/employee
+        json:
+            user_ids: ['${internal_source_user_id()}']
+            fields: ["last_work_date"]
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, list]
+        - length_equals: [content, 1]
+        - length_equals: [content.0, 1]
+        - contains: [content.0, last_work_date]
+
+- test:
+    name: user_ids长度为1（用户ID存在）-fields不传递
+    request:
+        method: POST
+        url: /accounts/employee
+        json:
+            user_ids: ['${internal_source_user_id()}']
+            fields: ["id", "department", "job_post", "job_position", "job_grade", "job_level", "admin_tree_path", "reserve_tree_path", "person_in_charge", "admin", "reserve","entry_date","last_work_date"]
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, list]
+        - length_equals: [content, 1]
+        - length_equals: [content.0, 13]
+        - eq: [content.0.id, '${internal_source_user_id()}']
+        - contains: [content.0, department]
+        - contains: [content.0, last_work_date]
+
+- test:
+    name: user_ids长度为1（用户ID不存在）-fields不传递
+    request:
+        method: POST
+        url: /accounts/employee
+        json:
+            user_ids: [$unexist_internal_user_id]
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, list]
+        - length_equals: [content, 0]

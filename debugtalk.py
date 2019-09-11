@@ -17,6 +17,7 @@ GEETEST_V2 = os.environ['geetest_v2']
 TIGER_API_HOST = get_hosts(TEST_ENV).get('tiger_api_host')
 PLATFORM_TIGER_API_HOST = get_hosts(TEST_ENV).get('platform_tiger_api_host')
 INTERNAL_ACCOUNT_API_HOST = get_hosts(TEST_ENV).get('internal_account_api_host')
+INTERNAL_ACCOUNT_SERVICE_HOST = get_hosts(TEST_ENV).get('internal_account_service_host')
 TRANSACTION_ADMIN_API_HOST = get_hosts(TEST_ENV).get('transaction_admin_api_host')
 
 def test_phone_number():
@@ -30,6 +31,9 @@ def platform_tiger_api_host():
 
 def internal_account_api_host():
     return INTERNAL_ACCOUNT_API_HOST
+
+def internal_account_service_host():
+    return INTERNAL_ACCOUNT_SERVICE_HOST
 
 def transaction_admin_api_host():  
     return TRANSACTION_ADMIN_API_HOST
@@ -81,8 +85,11 @@ def internal_source_user_email():
 def internal_source_user_password():
     return internal_source_user.get('password')
 
+def internal_source_user_id():
+    return internal_source_user.get('id')
+
 # 获取内部账号系统token
-def source_user_login_token_internal_account():
+def internal_source_user_login_token():
     login_token= login_token_internal_account(INTERNAL_ACCOUNT_API_HOST, internal_source_user_email(), internal_source_user_password())
     return login_token
 

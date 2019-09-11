@@ -1,0 +1,18 @@
+- config:
+    name: 获取用户信息
+    base_url: ${internal_account_api_host()}
+
+- test:
+    name: 已登录(传递正确的Authorization)
+    request:
+        method: GET
+        url: /auth/info
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+        - length_equals: [content, 4]
+        - eq: [content.id, '${internal_source_user_id()}']
+        - eq: [content.email, '${internal_source_user_email()}']
+        - contains: [content, phone_number]
+        - contains: [content, fullname]

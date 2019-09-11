@@ -1,0 +1,50 @@
+- config:
+    name: 批量用户ID拉取个人信息
+    base_url: ${internal_account_service_host()}
+
+- test:
+    name: user_ids长度为1（用户ID存在）-fields包含所有支持参数
+    request:
+        method: POST
+        url: /accounts/base
+        json:
+            user_ids: ['${internal_source_user_id()}']
+            fields: ["id", "email", "phone_number", "fullname", "gender", "birthday", "id_card"]
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, list]
+        - length_equals: [content, 1]
+        - eq: [content.0.id, '${internal_source_user_id()}']
+        - eq: [content.0.email, '${internal_source_user_email()}']
+        - contains: [content.0, gender]
+        - contains: [content.0, id_card]
+
+- test:
+    name: user_ids长度为1（用户ID存在）-fields只包含email
+    request:
+        method: POST
+        url: /accounts/base
+        json:
+            user_ids: ['${internal_source_user_id()}']
+            fields: ["email"]
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, list]
+        - length_equals: [content, 1]
+        - eq: [content.0.email, '${internal_source_user_email()}']
+
+- test:
+    name: user_ids长度为1（用户ID存在）-fields不传递
+    request:
+        method: POST
+        url: /accounts/base
+        json:
+            user_ids: ['${internal_source_user_id()}']
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, list]
+        - length_equals: [content, 1]
+        - eq: [content.0.id, '${internal_source_user_id()}']
+        - eq: [content.0.email, '${internal_source_user_email()}']
+        - contains: [content.0, gender]
+        - contains: [content.0, id_card]

@@ -1,0 +1,32 @@
+- config:
+    name: 退出登录
+    base_url: ${internal_account_api_host()}
+
+- test:
+    name: 准备：用户登录成功
+    request:
+        method: POST
+        url: /auth/login
+        json:
+            identity: ${internal_source_user_email()}
+            password: ${internal_source_user_password()}
+    validate:
+        - eq: [status_code, 200]
+        - length_equals: [content, 5]
+        - eq: [content.id, '${internal_source_user_id()}']
+        - eq: [content.email, '${internal_source_user_email()}']
+        - contains: [content, token]
+        - contains: [content, phone_number]
+        - contains: [content, fullname]
+    extract:
+        - login_token: content.token
+
+- test:
+    name: 已登录-退出登录
+    request:
+        method: POST
+        url: /auth/logout
+        headers:
+            Authorization: Bearer $login_token
+    validate:
+        - eq: [status_code, 204]

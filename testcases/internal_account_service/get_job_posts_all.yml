@@ -1,0 +1,17 @@
+- config:
+    name: 获取所有职务列表
+    base_url: ${internal_account_service_host()}
+
+- test:
+    name: 职务列表不为空
+    request:
+        method: GET
+        url: /accounts/job-posts/all
+    validate:
+        - eq: [status_code, 200]
+        - length_greater_than: [content, 1]
+        - length_equals: [content.0, 4]
+        - contains: [content.0, id]
+        - contains: [content.0, name]
+        - contains: [content.0, status]
+        - contains: [content.0, deleted]
