@@ -19,6 +19,7 @@ PLATFORM_TIGER_API_HOST = get_hosts(TEST_ENV).get('platform_tiger_api_host')
 INTERNAL_ACCOUNT_API_HOST = get_hosts(TEST_ENV).get('internal_account_api_host')
 INTERNAL_ACCOUNT_SERVICE_HOST = get_hosts(TEST_ENV).get('internal_account_service_host')
 TRANSACTION_ADMIN_API_HOST = get_hosts(TEST_ENV).get('transaction_admin_api_host')
+ORDER_SERVICE_HOST = get_hosts(TEST_ENV).get('order_service_host')
 
 def test_phone_number():
     return TEST_PHONE_NUMBER
@@ -37,6 +38,9 @@ def internal_account_service_host():
 
 def transaction_admin_api_host():  
     return TRANSACTION_ADMIN_API_HOST
+
+def order_service_host():
+    return ORDER_SERVICE_HOST
 
 # 获取配置文件：源用户信息
 source_user = read_config.source_user(TEST_ENV)
@@ -136,3 +140,13 @@ def is_geetest_v2_on():
 # 因为test中None会被解析为字符串，所以这里增加此函数
 def is_none(source):
     return True if source == None else False
+
+
+# 读取sku配置信息
+sku_config = read_config.sku(TEST_ENV)
+
+def sku_number_config():
+    return sku_config.get('number')
+
+def sku_price_config():
+    return sku_config.get('price')

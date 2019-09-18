@@ -47,6 +47,17 @@ def read_config_redis(env):
     redis_data = read_db(env)['redis']
     return redis_data
 
+# 读取商品配置
+def read_config_product(env, file_dir=conf_dir):
+    file_name = str(env) + '_product.yml'
+    file_path = os.path.join(file_dir, 'product', file_name)
+    with open(file_path, 'r', encoding='utf-8') as f:
+        data = yaml.load(f)
+        return data
+
+def sku(env):
+    sku_info = read_config_product(env)['sku']
+    return sku_info
 
 if __name__ == '__main__':
     env = 'dev'
