@@ -40,5 +40,5 @@ hrun testcases/account-api --html-report-name reports/result.html
 
 # 自定义报告模板。默认使用：~\httprunner\templates\report_template.html
 hrun testcases/account-api/v1/login.yaml --report-template=templates/report_fail_only.html
-hrun testcases/account-api/v1/login.yaml --report-template=templates/extent_reports_httprunner2.0.html   # 引入extent reports
+hrun testcases/account-api/v1/login.yaml --report-template=templates/extent_reports.html   # 引入extent reports
 ```

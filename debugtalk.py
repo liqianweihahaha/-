@@ -55,13 +55,6 @@ def source_user_email():
 def source_user_password():
     return source_user.get('password')
 
-# 用户拥有的精灵，不拥有的精灵
-def source_user_owned_sprite_id():
-    return source_user.get('sprite').get('owned')
-
-def source_user_unown_sprite_id():
-    return source_user.get('sprite').get('unown')
-
 # 获取原用户登录token，避免测试用例中多次调用登录态都初始化函数，这里先定义变量
 source_user_login_token_v2 = login_token_v2(TIGER_API_HOST, source_user_username(), source_user_password())
 def source_user_login_token():
@@ -133,7 +126,6 @@ def is_dev_or_test():
 # 因为test中None会被解析为字符串，所以这里增加此函数
 def is_none(source):
     return True if source == None else False
-
 
 # 读取sku配置信息
 sku_config = read_config.sku(TEST_ENV)
