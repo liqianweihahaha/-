@@ -17,6 +17,7 @@ INTERNAL_ACCOUNT_API_HOST = get_hosts(TEST_ENV).get('internal_account_api_host')
 INTERNAL_ACCOUNT_SERVICE_HOST = get_hosts(TEST_ENV).get('internal_account_service_host')
 TRANSACTION_ADMIN_API_HOST = get_hosts(TEST_ENV).get('transaction_admin_api_host')
 ORDER_SERVICE_HOST = get_hosts(TEST_ENV).get('order_service_host')
+PRODUCT_SERVICE_HOST = get_hosts(TEST_ENV).get('product_service_host')
 
 def test_phone_number():
     return TEST_PHONE_NUMBER
@@ -38,6 +39,9 @@ def transaction_admin_api_host():
 
 def order_service_host():
     return ORDER_SERVICE_HOST
+
+def product_service_host():
+    return PRODUCT_SERVICE_HOST
 
 # 获取配置文件：源用户信息
 source_user = read_config.source_user(TEST_ENV)

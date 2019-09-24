@@ -1,0 +1,9 @@
+name: 创建商品SPU
+request:
+    method: POST
+    url: /spu
+    json:
+        category_id: $category_id
+        department_id: $department_id
+        type: $type
+        title: $title

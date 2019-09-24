@@ -1,0 +1,19 @@
+- config:
+    name: 创建SPU
+    base_url: ${product_service_host()}
+    variables:
+        - existed_category_id: 1
+        - existed_department_id: 1
+
+- test:
+    name: 只传递必选参数-type为VIRTUAL
+    api: api/product_service/create_spu.yml
+    variables:
+        - category_id: $existed_category_id
+        - department_id: $existed_department_id
+        - type: VIRTUAL
+        - title: 测试创建商品
+    validate:
+        - eq: [status_code, 200]
+        - startswith: [content, "G"]
+
