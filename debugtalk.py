@@ -86,6 +86,17 @@ def internal_source_user_password():
 def internal_source_user_id():
     return internal_source_user.get('id')
 
+# 获取不同环境的用户的fish_id，用于测试将fish_id转化为内部账号id
+def fish_id():
+    fish_id = 0
+    if TEST_ENV in ('dev', 'test'):
+        fish_id = 639
+    elif TEST_ENV in ('staging', 'production'):
+        fish_id = 704
+    else:
+        print("环境变量配置错误，%s" % TEST_ENV)
+    return fish_id
+
 # 获取内部账号系统token
 def internal_source_user_login_token():
     login_token= login_token_internal_account(INTERNAL_ACCOUNT_API_HOST, internal_source_user_email(), internal_source_user_password())

@@ -1,0 +1,6 @@
+name: 更新用户信息（冻结账号）
+request:
+    method: PUT
+    url: /accounts/$user_id
+    json:
+        frozen: $frozen_status

@@ -1,0 +1,50 @@
+- config:
+    name: 更新用户信息（冻结账号）
+    base_url: ${internal_account_service_host()}
+
+- test:
+    name: 用户ID存在-冻结账号
+    api: api/internal_account_service/update_user_frozen.yml
+    variables:
+        - user_id: ${internal_source_user_id()}
+        - frozen_status: true
+    validate:
+        - eq: [status_code, 200]
+
+- test:
+    name: 验证：用户被冻结后登录失败
+    api: api/internal_account_api/login.yml
+    variables:
+        - identity: ${internal_source_user_email()}
+        - password: ${internal_source_user_password()}
+    validate:
+        - eq: [status_code, 422]
+        - eq: [content.error_code, '10010001']
+
+- test:
+    name: 用户ID存在-解冻账号
+    api: api/internal_account_service/update_user_frozen.yml
+    variables:
+        - user_id: ${internal_source_user_id()}
+        - frozen_status: false
+    validate:
+        - eq: [status_code, 200]
+
+- test:
+    name: 验证：用户被解冻后登录成功
+    api: api/internal_account_api/login.yml
+    variables:
+        - identity: ${internal_source_user_email()}
+        - password: ${internal_source_user_password()}
+    validate:
+        - eq: [status_code, 200]
+        - contains: [content, token]
+
+- test:
+    name: 用户ID存在-frozen的值不支持
+    api: api/internal_account_service/update_user_frozen.yml
+    variables:
+        - user_id: ${internal_source_user_id()}
+        - frozen_status: "aaaaa"
+    validate:
+        - eq: [status_code, 400]
