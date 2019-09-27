@@ -3,11 +3,7 @@
     base_url: ${internal_account_service_host()}
 
 - test:
-<<<<<<< HEAD
-    name: fish_id存在并且在内部长啊后中存在对应的邮箱
-=======
     name: fish_id存在并且在内部账号中存在对应的邮箱
->>>>>>> caba88a0c9300d38034a6aa4eb724c3d23faaa87
     request:
         method: GET
         url: /accounts/convert/id/fish-to-internal?fish_id=${fish_id()}

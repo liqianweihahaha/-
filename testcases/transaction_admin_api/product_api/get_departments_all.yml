@@ -8,7 +8,7 @@
         method: GET
         url: /products/departments/all
         headers:
-            Authorization: ${source_user_login_token_internal_account()}
+            Authorization: ${internal_source_user_login_token()}
     validate:
         - eq: [status_code, 200]
         - type_match: [content, list]
