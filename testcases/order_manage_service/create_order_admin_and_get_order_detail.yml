@@ -4,6 +4,7 @@
     variables:
         - test_phone_number: ${test_phone_number()}
 
+# 避免创建订单和获取订单详情，手机号对应客户ID不一致导致报错。
 # - test:
 #     name: 准备工作：注册手机号
 #     setup_hooks:

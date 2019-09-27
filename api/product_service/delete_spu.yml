@@ -1,6 +1,0 @@
-name: 更新SPU状态-删除
-request:
-    method: PATCH
-    url: /spu/$spu_number/status
-    json:
-        status: DELETED

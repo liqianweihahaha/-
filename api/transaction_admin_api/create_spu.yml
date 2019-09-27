@@ -1,0 +1,12 @@
+name: 创建SPU
+base_url: ${transaction_admin_api_host()}
+request:
+    method: POST
+    url: /products/spu
+    headers:
+        Authorization: $login_token
+    json:
+        category_id: $category_id
+        department_id: $department_id
+        type: $type
+        title: $title

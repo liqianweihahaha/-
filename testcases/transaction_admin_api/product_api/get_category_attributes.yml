@@ -11,7 +11,7 @@
         method: GET
         url: /products/spu/categories/$existed_category_id/attributes/options/all
         headers:
-            Authorization: ${source_user_login_token_internal_account()}
+            Authorization: ${internal_source_user_login_token()}
     validate:
         - eq: [status_code, 200]
         - type_match: [content, list]
@@ -22,7 +22,7 @@
         method: GET
         url: /products/spu/categories/$unexisted_category_id/attributes/options/all
         headers:
-            Authorization: ${source_user_login_token_internal_account()}
+            Authorization: ${internal_source_user_login_token()}
     validate:
         - eq: [status_code, 200]
         - type_match: [content, list]

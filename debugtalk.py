@@ -15,6 +15,7 @@ TIGER_API_HOST = get_hosts(TEST_ENV).get('tiger_api_host')
 PLATFORM_TIGER_API_HOST = get_hosts(TEST_ENV).get('platform_tiger_api_host')
 INTERNAL_ACCOUNT_API_HOST = get_hosts(TEST_ENV).get('internal_account_api_host')
 INTERNAL_ACCOUNT_SERVICE_HOST = get_hosts(TEST_ENV).get('internal_account_service_host')
+EZBUY_API_HOST = get_hosts(TEST_ENV).get('ezbuy_api_host')
 TRANSACTION_ADMIN_API_HOST = get_hosts(TEST_ENV).get('transaction_admin_api_host')
 ORDER_SERVICE_HOST = get_hosts(TEST_ENV).get('order_service_host')
 PRODUCT_SERVICE_HOST = get_hosts(TEST_ENV).get('product_service_host')
@@ -33,6 +34,9 @@ def internal_account_api_host():
 
 def internal_account_service_host():
     return INTERNAL_ACCOUNT_SERVICE_HOST
+
+def ezbuy_api_host():
+    return EZBUY_API_HOST
 
 def transaction_admin_api_host():  
     return TRANSACTION_ADMIN_API_HOST
@@ -86,6 +90,11 @@ def internal_source_user_password():
 def internal_source_user_id():
     return internal_source_user.get('id')
 
+# 获取内部账号系统token
+def internal_source_user_login_token():
+    login_token= login_token_internal_account(INTERNAL_ACCOUNT_API_HOST, internal_source_user_email(), internal_source_user_password())
+    return login_token
+
 # 获取不同环境的用户的fish_id，用于测试将fish_id转化为内部账号id
 def fish_id():
     fish_id = 0
@@ -96,11 +105,6 @@ def fish_id():
     else:
         print("环境变量配置错误，%s" % TEST_ENV)
     return fish_id
-
-# 获取内部账号系统token
-def internal_source_user_login_token():
-    login_token= login_token_internal_account(INTERNAL_ACCOUNT_API_HOST, internal_source_user_email(), internal_source_user_password())
-    return login_token
 
 # 读取account库mysql配置
 mysql_config_account = read_config.read_config_mysql(TEST_ENV, 'account')
@@ -137,6 +141,10 @@ def get_captcha_ticket():
 # 判断是否是dev或者test环境
 def is_dev_or_test():
     return is_dev_or_test_env(TEST_ENV)
+
+# 判断是否是正式环境
+def is_production():
+    return True if TEST_ENV == 'production' else False
 
 # 因为test中None会被解析为字符串，所以这里增加此函数
 def is_none(source):
