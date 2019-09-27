@@ -1,0 +1,8 @@
+name: 登录内部账号系统
+base_url: ${internal_account_api_host()}
+request:
+    method: POST
+    url: /auth/login
+    json:
+        identity: $identity
+        password: $password
