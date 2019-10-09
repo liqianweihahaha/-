@@ -17,11 +17,7 @@
 #### 依赖包
 
 - python版本：3.0+
-- 安装所有依赖包
-
-```
-pip instal -r requirements.txt
-```
+- 安装所有依赖包: `pip install -r requirements.txt`
 
 #### 运行脚本
 
