@@ -6,7 +6,7 @@ source_user:
   sprite:
     owned: 50  # 象牙螺
     unown: 1   # 编程猫
-    
+
 target_user:
   id: 1855538
   username: sandy001

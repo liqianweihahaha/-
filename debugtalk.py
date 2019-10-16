@@ -7,8 +7,6 @@ from common.op_redis import OpRedis
 
 # 读取 .env 配置
 TEST_ENV = os.environ['environment']
-# 因为会发送验证码，所以最好是用自己的手机号测试
-TEST_PHONE_NUMBER = os.environ['test_phone_number']
 
 # 获取测试域名hosts
 TIGER_API_HOST = get_hosts(TEST_ENV).get('tiger_api_host')
@@ -19,14 +17,12 @@ EZBUY_API_HOST = get_hosts(TEST_ENV).get('ezbuy_api_host')
 TRANSACTION_ADMIN_API_HOST = get_hosts(TEST_ENV).get('transaction_admin_api_host')
 ORDER_SERVICE_HOST = get_hosts(TEST_ENV).get('order_service_host')
 PRODUCT_SERVICE_HOST = get_hosts(TEST_ENV).get('product_service_host')
+AUHTORITY_API_HOST = get_hosts(TEST_ENV).get('authority_api_host')
 
-def test_phone_number():
-    return TEST_PHONE_NUMBER
-
-def tiger_api_host(): 
+def tiger_api_host():
     return TIGER_API_HOST
 
-def platform_tiger_api_host(): 
+def platform_tiger_api_host():
     return PLATFORM_TIGER_API_HOST
 
 def internal_account_api_host():
@@ -38,7 +34,7 @@ def internal_account_service_host():
 def ezbuy_api_host():
     return EZBUY_API_HOST
 
-def transaction_admin_api_host():  
+def transaction_admin_api_host():
     return TRANSACTION_ADMIN_API_HOST
 
 def order_service_host():
@@ -46,6 +42,9 @@ def order_service_host():
 
 def product_service_host():
     return PRODUCT_SERVICE_HOST
+
+def authority_api_host():
+    return AUHTORITY_API_HOST
 
 # 获取配置文件：源用户信息
 source_user = read_config.source_user(TEST_ENV)
@@ -105,38 +104,6 @@ def fish_id():
     else:
         print("环境变量配置错误，%s" % TEST_ENV)
     return fish_id
-
-# 读取account库mysql配置
-mysql_config_account = read_config.read_config_mysql(TEST_ENV, 'account')
-opmysql_account = OpMysql(host=mysql_config_account['host'], user=mysql_config_account['user'], password=mysql_config_account['password'], database=mysql_config_account['database'])
-# 读取redis配置
-redis_config = read_config.read_config_redis(TEST_ENV)
-op_redis = OpRedis(host=redis_config['host'], port=redis_config['port'], password=redis_config['password'], db=1)
-
-# 清除数据库basic_auth表的phone_number字段
-def clear_phone_number(phone_number):
-    global opmysql_account
-    opmysql_account.clear_basic_auth(column_name='phone_number', column_value=phone_number)
-
-# 清除数据库basic_auth表的username字段
-def clear_username(username):
-    global opmysql_account
-    opmysql_account.clear_basic_auth(column_name='username', column_value=username)
-
-# 获取账号3.0的redis中存储的验证码
-def get_captcha_account_v3(catpcha_type, phone_number):
-    global op_redis
-    captcha = op_redis.get_captcha_account('v3', catpcha_type, phone_number)
-    return captcha
-
-# 获取账号2.0的redi中存储的验证码
-def get_captcha_account_v2(catpcha_type, phone_number):
-    captcha = op_redis.get_captcha_account('v2', catpcha_type, phone_number)
-    return captcha
-
-# 获取发送图形验证码的ticket
-def get_captcha_ticket():
-    return get_captcha_ticket_account_v3(TIGER_API_HOST)
 
 # 判断是否是dev或者test环境
 def is_dev_or_test():

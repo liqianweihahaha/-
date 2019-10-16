@@ -1,0 +1,26 @@
+- config:
+    name: 获取用户对目标应用的可访问菜单列表
+    base_url: ${transaction_admin_api_host()}
+
+- test:
+    name: 运营管理后台已接入权限系统-已登录内部账号
+    request:
+        method: GET
+        url: /authority/application/menus
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+        - length_equals: [content, 3]
+        - contains: [content, app_id]
+        - contains: [content, app_name]
+        - contains: [content, menu_list]
+
+- test:
+    name: 运营管理后台已接入权限系统-未登录内部账号
+    request:
+        method: GET
+        url: /authority/application/menus
+    validate:
+        - eq: [status_code, 403]
+        - eq: [content.error_code, '10020004']
