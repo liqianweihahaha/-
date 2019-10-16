@@ -11,12 +11,12 @@
         url: /accounts/employee
         json:
             user_ids: ['${internal_source_user_id()}']
-            fields: ["id", "department", "job_post", "job_position", "job_grade", "job_level", "admin_tree_path", "reserve_tree_path", "person_in_charge", "admin", "reserve","entry_date","last_work_date"]
+            fields: ["id", "job_number", "department", "job_post", "job_position", "job_grade", "job_level", "admin_tree_path", "reserve_tree_path", "person_in_charge", "admin", "reserve","entry_date","last_work_date"]
     validate:
         - eq: [status_code, 200]
         - type_match: [content, list]
         - length_equals: [content, 1]
-        - length_equals: [content.0, 13]
+        - length_equals: [content.0, 14]
         - eq: [content.0.id, '${internal_source_user_id()}']
         - contains: [content.0, department]
         - contains: [content.0, last_work_date]
@@ -43,12 +43,11 @@
         url: /accounts/employee
         json:
             user_ids: ['${internal_source_user_id()}']
-            fields: ["id", "department", "job_post", "job_position", "job_grade", "job_level", "admin_tree_path", "reserve_tree_path", "person_in_charge", "admin", "reserve","entry_date","last_work_date"]
     validate:
         - eq: [status_code, 200]
         - type_match: [content, list]
         - length_equals: [content, 1]
-        - length_equals: [content.0, 13]
+        - length_equals: [content.0, 14]
         - eq: [content.0.id, '${internal_source_user_id()}']
         - contains: [content.0, department]
         - contains: [content.0, last_work_date]
