@@ -12,6 +12,7 @@
     validate:
         - eq: [status_code, 200]
         - eq: [content.existed, true]
+        - eq: [content.user_id, '${internal_source_user_id()}']
 
 - test:
     name: email未注册
@@ -21,6 +22,15 @@
     validate:
         - eq: [status_code, 200]
         - eq: [content.existed, false]
+        - eq: [content.user_id, -1]
+
+- test:
+    name: email传递但为空
+    request:
+        method: GET
+        url: /accounts/email/checked?email=
+    validate:
+        - eq: [status_code, 400]
 
 - test:
     name: email不传递
