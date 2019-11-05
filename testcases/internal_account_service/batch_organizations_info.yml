@@ -1,0 +1,31 @@
+- config:
+    name: 通过批量组织id获取组织信息
+    base_url: ${internal_account_service_host()}
+
+- test:
+    name: ids长度为1组织存在
+    request:
+        method: POST
+        url: /accounts/organizations
+        json:
+            ids: ['${internal_source_user_department_id()}']
+    validate:
+        - eq: [status_code, 200]
+        - length_equals: [content, 1]
+        - length_equals: [content.0, 10]
+        - eq: [content.0.id, '${internal_source_user_department_id()}']
+        - contains: [content.0, name]
+        - contains: [content.0, short_name]
+        - contains: [content.0, person_in_charge_id]
+        - contains: [content.0, status]
+        - contains: [content.0, is_deleted]
+
+- test:
+    name: ids长度为0(空数组)
+    request:
+        method: POST
+        url: /accounts/organizations
+        json:
+            ids: []
+    validate:
+        - eq: [status_code, 400]

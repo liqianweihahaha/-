@@ -6,9 +6,9 @@
     name: fish_id存在并且在内部账号中存在对应的邮箱
     request:
         method: GET
-        url: /accounts/convert/id/fish-to-internal?fish_id=${fish_id()}
+        url: /accounts/convert/id/fish-to-internal?fish_id=${internal_source_user_fish_id()}
     validate:
         - eq: [status_code, 200]
         - length_equals: [content, 2]
-        - eq: [content.fish_id, '${fish_id()}']
+        - eq: [content.fish_id, '${internal_source_user_fish_id()}']
         - contains: [content, internal_id]

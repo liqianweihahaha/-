@@ -2,3 +2,5 @@ source_user:
   id: 1248
   email: autotester1@qq.com
   password: "Test123456"
+  department_id: 1061538
+  relation_fish_id: 880

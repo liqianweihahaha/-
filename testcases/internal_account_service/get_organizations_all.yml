@@ -1,0 +1,12 @@
+- config:
+    name: 获取所有组织列表
+    base_url: ${internal_account_service_host()}
+
+- test:
+    name: 组织列表不为空
+    request:
+        method: GET
+        url: /accounts/organizations/all
+    validate:
+        - eq: [status_code, 200]
+        - length_equals: [content.0, 10]
