@@ -120,3 +120,7 @@ def sku_number_config():
 
 def sku_price_config():
     return sku_config.get('price')
+
+# 获取当前时间的秒级时间戳
+def get_timeslot_now():
+    return int(time.time())
