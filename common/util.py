@@ -35,10 +35,6 @@ def get_captcha_ticket_account_v3(host):
     else:
         print('账号3.0获取发送图形验证码的ticket失败，状态码：%s' % res.status_code)
 
-# 获取当前时间的秒级时间戳
-def get_timestamp_now():
-    return int(time.time())
-
 # 获取某具体时间的时间戳
 def get_timeslot(time_date):
     return int(time.mktime(time.strptime(str(time_date), '%Y-%m-%d')))

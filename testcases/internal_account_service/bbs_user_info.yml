@@ -10,6 +10,6 @@
 #         json:
 #             identity: ${internal_source_user_email()}
 #             identity_type: EMAIL
-#             timestamp: ${get_timeslot_now()}
+#             timestamp: ${get_timeslot(10)}
 #             nonce_str: 'string'
 #             sign: ${get_internal_account_bss_sign()}
