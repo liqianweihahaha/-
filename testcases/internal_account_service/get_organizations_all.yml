@@ -9,4 +9,13 @@
         url: /accounts/organizations/all
     validate:
         - eq: [status_code, 200]
-        - length_equals: [content.0, 10]
+        - length_equals: [content.0, 12]
+        - contains: [content.0, id]
+        - contains: [content.0, name]
+        - contains: [content.0, short_name]
+        - contains: [content.0, admin_tree_path]
+        - contains: [content.0, reserve_tree_path]
+        - contains: [content.0, status]
+        - contains: [content.0, is_deleted]
+        - contains: [content.0, created_at]
+        - contains: [content.0, updated_at]
