@@ -120,3 +120,25 @@ def sku_number_config():
 
 def sku_price_config():
     return sku_config.get('price')
+
+
+#读取order配置信息
+order_config = read_config.order(TEST_ENV)
+
+def order_customerId_config():
+    return order_config.get('customerId')
+
+def order_placedBy_config():
+    return order_config.get('placedBy')
+
+def order_customerPhoneNumber_config():
+    return order_config.get('customerPhoneNumber')
+
+# #获取时间戳开始时间
+# def get_start_time():
+#     return int(time.time())-86400*2
+#
+# #获取当前时间戳结束时间
+# def get_end_time():
+#     return int(time.time())
+

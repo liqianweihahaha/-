@@ -63,3 +63,22 @@ if __name__ == '__main__':
     env = 'dev'
     user = read_user(env)
     print(user['source_user'])
+
+
+#读取订单配置
+
+def read_config_order(env, file_dir=conf_dir):
+    file_name = str(env) + '_order.yml'
+    file_path = os.path.join(file_dir, 'order', file_name)
+    with open(file_path, 'r', encoding='utf-8') as f:
+        data = yaml.load(f)
+        return data
+
+def order(env):
+    orderList = read_config_order(env)['orderList']
+    return orderList
+
+# if __name__ == '__main__':
+#     env = 'dev'
+#     order = order(env)
+#     print(order['customerId'])
