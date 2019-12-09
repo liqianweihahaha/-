@@ -1,0 +1,23 @@
+- config:
+    name: 内部账号Service生成token
+    base_url: ${internal_account_service_host()}
+    variables:
+        - unexist_internal_account_id: 1000000
+
+- test:
+    name: 内部用户ID存在
+    api: api/internal_account_service/generate_token.yml
+    variables:
+        - id: ${internal_source_user_id()}
+    validate:
+        - eq: [status_code, 200]
+        - contains: [content, token]
+
+- test:
+    name: 内部用户ID不存在
+    api: api/internal_account_service/generate_token.yml
+    variables:
+        - id: $unexist_internal_account_id
+    validate:
+        - eq: [status_code, 422]
+        - eq: [content.error_code, '10007000']

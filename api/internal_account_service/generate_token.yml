@@ -4,5 +4,5 @@ request:
     method: POST
     url: /accounts/auth/sign
     json:
-        id: $user_id
+        id: $id
         authorities: [ROLE_ADMIN]

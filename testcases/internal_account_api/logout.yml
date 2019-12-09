@@ -6,7 +6,7 @@
     name: 准备：生成登录token
     api: api/internal_account_service/generate_token.yml
     variables:
-        - user_id: ${internal_source_user_id()}
+        - id: ${internal_source_user_id()}
     extract:
         - login_token: content.token
 
