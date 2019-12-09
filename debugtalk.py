@@ -97,12 +97,13 @@ def internal_source_user_fish_id():
 
 # 获取内部账号系统token
 def internal_source_user_login_token():
-    login_token= login_token_internal_account(INTERNAL_ACCOUNT_API_HOST, internal_source_user_email(), internal_source_user_password())
+    #login_token= login_token_internal_account(INTERNAL_ACCOUNT_API_HOST, internal_source_user_email(), internal_source_user_password())
+    login_token = generate_internal_account_token(INTERNAL_ACCOUNT_SERVICE_HOST, internal_source_user_id())
     return login_token
 
 # 判断是否是dev或者test环境
 def is_dev_or_test():
-    return is_dev_or_test_env(TEST_ENV)
+    return True if TEST_ENV not in ('staging', 'production') else False
 
 # 判断是否是正式环境
 def is_production():

@@ -17,15 +17,28 @@ def login_token_v2(host, identity, password, pid='unknown'):
         return bearer_token
 
 # 获取内部账号系统登录token
-def login_token_internal_account(host, identity, password):
+# 因加有极验，目前无法获取内部账号的极验ticket，因此先用服务层生成token
+# def login_token_internal_account(host, identity, password):
+#     data = {
+#         "identity": identity,
+#         "password": password
+#     }
+#     res = requests.post(host+'/auth/login', json=data)
+#     if res.status_code == 200 and 'application/json' in res.headers['Content-Type']:
+#         bearer_token = 'Bearer '+ res.json()['token']
+#         return bearer_token
+
+# 内部账号服务层生成token
+def generate_internal_account_token(host, user_id):
     data = {
-        "identity": identity,
-        "password": password
+        "id": user_id,
+        "authorities": ["ROLE_ADMIN"]
     }
-    res = requests.post(host+'/auth/login', json=data)
-    if res.status_code == 200 and 'application/json' in res.headers['Content-Type']:
-        bearer_token = 'Bearer '+ res.json()['token']
-        return bearer_token
+    res = requests.post(host+'/accounts/auth/sign', json=data)
+    if res.status_code == 200:
+        return 'Bearer '+res.json()['token']
+    else:
+        print("内部账号Service生成token失败，状态码为：{}".format(res.status_code))
 
 # 获取账号3.0发送图形验证码的ticket
 def get_captcha_ticket_account_v3(host):

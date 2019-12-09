@@ -3,26 +3,15 @@
     base_url: ${internal_account_api_host()}
 
 - test:
-    name: 准备：用户登录成功
-    request:
-        method: POST
-        url: /auth/login
-        json:
-            identity: ${internal_source_user_email()}
-            password: ${internal_source_user_password()}
-    validate:
-        - eq: [status_code, 200]
-        - length_equals: [content, 5]
-        - eq: [content.id, '${internal_source_user_id()}']
-        - eq: [content.email, '${internal_source_user_email()}']
-        - contains: [content, token]
-        - contains: [content, phone_number]
-        - contains: [content, fullname]
+    name: 准备：生成登录token
+    api: api/internal_account_service/generate_token.yml
+    variables:
+        - user_id: ${internal_source_user_id()}
     extract:
         - login_token: content.token
 
 - test:
-    name: 已登录-退出登录
+    name: 用户已登录
     request:
         method: POST
         url: /auth/logout
@@ -30,3 +19,11 @@
             Authorization: Bearer $login_token
     validate:
         - eq: [status_code, 204]
+
+- test:
+    name: 用户未登录
+    request:
+        method: POST
+        url: /auth/logout
+    validate:
+        - eq: [status_code, 401]

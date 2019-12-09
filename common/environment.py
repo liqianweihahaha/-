@@ -44,11 +44,3 @@ def get_hosts(env):
     return dict(tiger_api_host=tiger_api_host, platform_tiger_api_host=platform_tiger_api_host,
         internal_account_api_host=internal_account_api_host,internal_account_service_host=internal_account_service_host, ezbuy_api_host=ezbuy_api_host,
         transaction_admin_api_host=transaction_admin_api_host, order_service_host=order_service_host, product_service_host=product_service_host, authority_api_host=authority_api_host)
-
-# 判断是否是dev或者test环境
-def is_dev_or_test_env(env):
-    return True if env not in ('staging', 'production') else False
-
-# 判断是否是dev 环境
-def is_dev_env(env):
-    return True if env == 'dev' else False
