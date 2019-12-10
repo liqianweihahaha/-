@@ -1,0 +1,13 @@
+name: 订单Service上传支付凭证
+request:
+    method: POST
+    url: /orders/$order_id/payments
+    json:
+        handledById: $handledById
+        transactionNumber: $transactionNumber
+        orderPlatform: $orderPlatform
+        actualPayment: $actualPayment
+        receiptURL: https://www.baidu.com
+        remark: 自动化测试线下转账
+validate:
+    - eq: [status_code, 200]

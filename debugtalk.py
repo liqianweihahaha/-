@@ -1,4 +1,5 @@
 import os
+import time
 from common import read_config
 from common.util import *
 from common.op_mysql import OpMysql
@@ -88,10 +89,16 @@ def is_none(source):
 sku_config = read_config.sku(TEST_ENV)
 
 def sku_number_config():
-    return sku_config.get('number')
+    return sku_config.get('sku_number')
 
 def sku_price_config():
     return sku_config.get('price')
+
+# 获取订金商品配置信息
+sku_deposit_config = read_config.sku_deposit(TEST_ENV)
+
+def sku_number_deposit():
+    return sku_deposit_config.get('sku_number')
 
 # 读取order配置信息
 order_config = read_config.order(TEST_ENV)
@@ -104,6 +111,11 @@ def order_placedBy_config():
 
 def order_customerPhoneNumber_config():
     return order_config.get('customerPhoneNumber')
+
+# 随机生成交易流水号
+def random_transaction_number():
+    return "AutoTestTransaction"+str(int(time.time()))
+
 
 # #获取时间戳开始时间
 # def get_start_time():

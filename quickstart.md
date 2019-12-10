@@ -16,24 +16,26 @@ output:
 - testcase中的yaml文件格式，根目录是数组格式。使用：`- config`,  `- test`
 - testsuite中的yaml文件格式，根目录是dict类型。使用：`config`，`testcases`
 
-#### hrun1.0 到 2.0
-
-| 不同点 | hrun 1.5.15 | hrun 2.0 |
-|----|----|----|
-|yaml文件中的缩进空格数|必须4个|2个也可以执行，但是会报警告|
-|base_url|可以在config中的request下定义|只能在config下直接定义或者api中直接定义或者teststep中(不能在request下)|
-|request|可以在testcase的config中统一配置request的method、url等|只能在test中定义request|
-|parameters|可以在testcase中指定|只能在testsuites中指定|
-|api定义|通过api和def关键字定义|和test定义一样|
-|api调用|通过api关键字和函数名调用，传递函数参数|通过api指定文件路径，variables传递参数|
-|test定义|-|必须指定name|
-|debugtalk.py|可以直接引用其中定义的变量|不能直接引用其中定义的变量|
-|testcase文件内容为空||执行报错|
-|varibales优先级不同|-|testcase config中的variables优先级最高|
-
 #### 环境变量的引用
 - debugtalk.py中引用 .env 中的变量： tiger_api_host = os.environ['tiger_api_host']
 - testcases中引用 .env 中的变量：${ENV(tiger_api_host)}
+
+#### skipIf
+- 目前skipIf等过滤函数，只支持过滤单个teststep，不支持过滤整合testcase...
+
+##### extract
+
+- 一个testcase中，会先执行extract再执行validate，与定义的先后顺序无关。
+- extract关键字，其结构为数组，数组中的元素，可以是dict类型，也可以是字符串。
+```
+# 用于提取response
+extract:
+    - login_token: content.auth.token
+
+# 提取另一个testcase中export的变量
+extract:
+    - output_login_token
+```
 
 #### 框架源码学习
 
@@ -114,25 +116,6 @@ headers:
     validate:
         - eq: [status_code, 200]
 
-```
-
-##### extract和validate
-
-- 一个testcase中，会先执行extract再执行validate，与定义的先后顺序无关。
-- 如下代码实际运行：先extract变量status_code，然后再validate
-```
-validate:
-    - eq: [status_code, 200]
-```
-extract关键字，其结构为数组，数组中的元素，可以是dict类型，也可以是字符串。
-```
-# 用于提取response
-extract:
-    - login_token: content.auth.token
-
-# 提取另一个testcase中export的变量
-extract:
-    - output_login_token
 ```
 
 ##### setup_hooks和teardown_hooks
