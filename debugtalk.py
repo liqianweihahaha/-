@@ -34,9 +34,9 @@ def source_user_password():
     return source_user.get('password')
 
 # 获取原用户登录token，避免测试用例中多次调用登录态都初始化函数，这里先定义变量
-source_user_login_token_v2 = login_token_v2(TIGER_API_HOST, source_user_username(), source_user_password())
+source_user_login_token_account_v2 = login_token_account_v2(TIGER_API_HOST, source_user_username(), source_user_password())
 def source_user_login_token():
-    return source_user_login_token_v2
+    return source_user_login_token_account_v2
 
 # 目标用户信息
 def target_user_id():

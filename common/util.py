@@ -5,7 +5,7 @@ import hashlib
 import json
 
 # 获取账号2.0登录token
-def login_token_v2(host, identity, password, pid='unknown'):
+def login_token_account_v2(host, identity, password, pid='unknown'):
     data = {
         "identity": identity,
         "password": password,
