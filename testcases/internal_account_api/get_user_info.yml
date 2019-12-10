@@ -1,6 +1,6 @@
 - config:
     name: 获取用户信息
-    base_url: ${internal_account_api_host()}
+    base_url: ${ENV(internal_account_api_host)}
 
 - test:
     name: 已登录(传递正确的Authorization)

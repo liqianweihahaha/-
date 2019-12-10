@@ -1,5 +1,5 @@
 name: 创建订单
-base_url: ${order_service_host()}
+base_url: ${ENV(order_service_host)}
 
 request:
     method: POST

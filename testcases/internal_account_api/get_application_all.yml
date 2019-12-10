@@ -1,6 +1,6 @@
 - config:
     name: 获取应用列表
-    base_url: ${internal_account_api_host()}
+    base_url: ${ENV(internal_account_api_host)}
 
 - test:
     name: 已登录

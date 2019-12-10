@@ -1,5 +1,5 @@
 name: 手机号注册不设置密码
-base_url: ${platform_tiger_api_host()}
+base_url: ${ENV(platform_tiger_api_host)}
 request:
     method: POST
     url: /accounts

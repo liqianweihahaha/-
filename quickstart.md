@@ -31,6 +31,10 @@ output:
 |testcase文件内容为空||执行报错|
 |varibales优先级不同|-|testcase config中的variables优先级最高|
 
+#### 环境变量的引用
+- debugtalk.py中引用 .env 中的变量： tiger_api_host = os.environ['tiger_api_host']
+- testcases中引用 .env 中的变量：${ENV(tiger_api_host)}
+
 #### 框架源码学习
 
 - html报告生成：report.py中的render_html_report函数，使用的是jinja2的模板文件templates/report_template.html
@@ -46,7 +50,7 @@ output:
 ```
 - config:
     name: 账号登录-正常场景
-    base_url: ${tiger_api_host()}
+    base_url: ${ENV(tiger_api_host)}
     variables:
         - identity: mxq100
         - password: m1234567

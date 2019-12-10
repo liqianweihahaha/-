@@ -6,7 +6,6 @@ from common.op_redis import OpRedis
 
 # 读取 .env 配置
 TEST_ENV = os.environ['environment']
-
 # 获取测试域名hosts
 TIGER_API_HOST = os.environ['tiger_api_host']
 PLATFORM_TIGER_API_HOST = os.environ['platform_tiger_api_host']
@@ -18,34 +17,7 @@ ORDER_SERVICE_HOST = os.environ['order_service_host']
 PRODUCT_SERVICE_HOST = os.environ['product_service_host']
 AUHTORITY_API_HOST = os.environ['authority_api_host']
 
-def tiger_api_host():
-    return TIGER_API_HOST
-
-def platform_tiger_api_host():
-    return PLATFORM_TIGER_API_HOST
-
-def internal_account_api_host():
-    return INTERNAL_ACCOUNT_API_HOST
-
-def internal_account_service_host():
-    return INTERNAL_ACCOUNT_SERVICE_HOST
-
-def ezbuy_api_host():
-    return EZBUY_API_HOST
-
-def transaction_admin_api_host():
-    return TRANSACTION_ADMIN_API_HOST
-
-def order_service_host():
-    return ORDER_SERVICE_HOST
-
-def product_service_host():
-    return PRODUCT_SERVICE_HOST
-
-def authority_api_host():
-    return AUHTORITY_API_HOST
-
-# 获取配置文件：源用户信息
+# 获取config配置文件：源用户信息
 source_user = read_config.source_user(TEST_ENV)
 target_user = read_config.target_user(TEST_ENV)
 
@@ -121,8 +93,7 @@ def sku_number_config():
 def sku_price_config():
     return sku_config.get('price')
 
-
-#读取order配置信息
+# 读取order配置信息
 order_config = read_config.order(TEST_ENV)
 
 def order_customerId_config():

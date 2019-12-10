@@ -1,6 +1,6 @@
 - config:
     name: 获取所有商品分类列表
-    base_url: ${transaction_admin_api_host()}
+    base_url: ${ENV(transaction_admin_api_host)}
 
 - test:
     name: 已登录内部账号系统

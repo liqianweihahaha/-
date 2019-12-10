@@ -1,6 +1,6 @@
 - config:
     name: 获取单个SPU详情
-    base_url: ${transaction_admin_api_host()}
+    base_url: ${ENV(transaction_admin_api_host)}
     variables:
         - existed_category_id: 1
         - existed_department_id: 1
