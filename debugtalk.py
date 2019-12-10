@@ -1,7 +1,6 @@
 import os
 from common import read_config
 from common.util import *
-from common.environment import *
 from common.op_mysql import OpMysql
 from common.op_redis import OpRedis
 
@@ -9,15 +8,15 @@ from common.op_redis import OpRedis
 TEST_ENV = os.environ['environment']
 
 # 获取测试域名hosts
-TIGER_API_HOST = get_hosts(TEST_ENV).get('tiger_api_host')
-PLATFORM_TIGER_API_HOST = get_hosts(TEST_ENV).get('platform_tiger_api_host')
-INTERNAL_ACCOUNT_API_HOST = get_hosts(TEST_ENV).get('internal_account_api_host')
-INTERNAL_ACCOUNT_SERVICE_HOST = get_hosts(TEST_ENV).get('internal_account_service_host')
-EZBUY_API_HOST = get_hosts(TEST_ENV).get('ezbuy_api_host')
-TRANSACTION_ADMIN_API_HOST = get_hosts(TEST_ENV).get('transaction_admin_api_host')
-ORDER_SERVICE_HOST = get_hosts(TEST_ENV).get('order_service_host')
-PRODUCT_SERVICE_HOST = get_hosts(TEST_ENV).get('product_service_host')
-AUHTORITY_API_HOST = get_hosts(TEST_ENV).get('authority_api_host')
+TIGER_API_HOST = os.environ['tiger_api_host']
+PLATFORM_TIGER_API_HOST = os.environ['platform_tiger_api_host']
+INTERNAL_ACCOUNT_API_HOST = os.environ['internal_account_api_host']
+INTERNAL_ACCOUNT_SERVICE_HOST = os.environ['internal_account_service_host']
+EZBUY_API_HOST = os.environ['ezbuy_api_host']
+TRANSACTION_ADMIN_API_HOST = os.environ['transaction_admin_api_host']
+ORDER_SERVICE_HOST = os.environ['order_service_host']
+PRODUCT_SERVICE_HOST = os.environ['product_service_host']
+AUHTORITY_API_HOST = os.environ['authority_api_host']
 
 def tiger_api_host():
     return TIGER_API_HOST
