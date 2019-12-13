@@ -1,9 +1,9 @@
 # 普通商品
 sku:
-  sku_number: '193556000001'
+  sku_number: '198806140001'
   price: 1
   lowest_price: 0
-  spu_number: 'G193556000'
+  spu_number: 'G198806140'
 # 订金商品
 sku_deposit:
   sku_number: '198831000001'

@@ -18,6 +18,7 @@ request:
                quantity: 1
         businessTypeId: 1
         businessUnitId: 1
+        totalDiscount: $total_discount
         shippingInfo:
              consigneeId: $customer_id
              consignee: 'test'

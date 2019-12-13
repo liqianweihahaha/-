@@ -117,11 +117,3 @@ def random_transaction_number():
     return "AutoTestTransaction"+str(int(time.time()))
 
 
-# #获取时间戳开始时间
-# def get_start_time():
-#     return int(time.time())-86400*2
-#
-# #获取当前时间戳结束时间
-# def get_end_time():
-#     return int(time.time())
-
