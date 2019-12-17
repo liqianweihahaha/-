@@ -12,14 +12,14 @@
         - eq: [status_code, 200]
 
 - test:
-    name: 验证：用户被冻结后登录失败
-    api: api/internal_account_api/login.yml
+    name: 验证：用户被冻结后登录账号验证失败
+    api: api/internal_account_service/check_login_identity.yml
     variables:
         - identity: ${internal_source_user_email()}
         - password: ${internal_source_user_password()}
     validate:
         - eq: [status_code, 422]
-        - eq: [content.error_code, '10010001']
+        - eq: [content.error_code, '10007000']
 
 - test:
     name: 用户ID存在-解冻账号
@@ -31,14 +31,14 @@
         - eq: [status_code, 200]
 
 - test:
-    name: 验证：用户被解冻后登录成功
-    api: api/internal_account_api/login.yml
+    name: 验证：用户被解冻后账号登录验证成功
+    api: api/internal_account_service/check_login_identity.yml
     variables:
         - identity: ${internal_source_user_email()}
         - password: ${internal_source_user_password()}
     validate:
         - eq: [status_code, 200]
-        - contains: [content, token]
+        - eq: [content.id, '${internal_source_user_id()}']
 
 - test:
     name: 用户ID存在-frozen的值不支持

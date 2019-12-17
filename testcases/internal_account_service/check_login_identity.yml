@@ -6,12 +6,10 @@
 
 - test:
     name: 邮箱正确-密码正确-账号为正式员工-未冻结
-    request:
-        method: POST
-        url: /accounts/auth
-        json:
-            identity: ${internal_source_user_email()}
-            password: ${internal_source_user_password()}
+    api: api/internal_account_service/check_login_identity.yml
+    variables:
+        - identity: ${internal_source_user_email()}
+        - password: ${internal_source_user_password()}
     validate:
         - eq: [status_code, 200]
         - type_match: [content, dict]
@@ -20,12 +18,10 @@
 
 - test:
     name: 邮箱正确-密码错误-账号为正式员工-未冻结
-    request:
-        method: POST
-        url: /accounts/auth
-        json:
-            identity: ${internal_source_user_email()}
-            password: $wrong_internal_source_user_password
+    api: api/internal_account_service/check_login_identity.yml
+    variables:
+        - identity: ${internal_source_user_email()}
+        - password: $wrong_internal_source_user_password
     validate:
         - eq: [status_code, 422]
         - eq: [content.error_code, '10007001']

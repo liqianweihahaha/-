@@ -20,11 +20,11 @@
 #         - contains: [content, fullname]
 
 - test:
-    name: 邮箱正确-密码错误
+    name: 邮箱正确-密码正确-不传递极验ticket
     api: api/internal_account_api/login.yml
     variables:
         - identity: ${internal_source_user_email()}
-        - password: $wrong_internal_source_user_password
+        - password: ${internal_source_user_password()}
     validate:
         - eq: [status_code, 422]
-        - eq: [content.error_code, '10010001']
+        - eq: [content.error_code, '10010003']

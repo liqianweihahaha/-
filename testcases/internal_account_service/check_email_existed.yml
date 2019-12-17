@@ -22,7 +22,7 @@
     validate:
         - eq: [status_code, 200]
         - eq: [content.existed, false]
-        - eq: [content.user_id, -1]
+        - eq: [content.user_id, 0]
 
 - test:
     name: email传递但为空
