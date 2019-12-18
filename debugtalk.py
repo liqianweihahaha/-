@@ -61,6 +61,9 @@ def internal_source_user_password():
 def internal_source_user_id():
     return internal_source_user.get('id')
 
+def internal_source_user_phone_number():
+    return internal_source_user.get('phone_number')
+
 def internal_source_user_department_id():
     return internal_source_user.get('department_id')
 
@@ -72,6 +75,18 @@ def internal_source_user_login_token():
     #login_token= login_token_internal_account(INTERNAL_ACCOUNT_API_HOST, internal_source_user_email(), internal_source_user_password())
     login_token = generate_internal_account_token(INTERNAL_ACCOUNT_SERVICE_HOST, internal_source_user_id())
     return login_token
+
+# 读取内部账号 redis 配置
+redis_config = read_config.read_config_redis(TEST_ENV)
+op_redis_internal_account = OpRedis(host=redis_config['host'], port=redis_config['port'], password=redis_config['password'], db=2)
+
+# 获取内部账号手机号验证码
+def get_phone_number_captcha_internal_account(phone_number):
+    return op_redis_internal_account.get_phone_number_captcha_internal_account(phone_number)
+
+# 设置内部账号邮件发送验证码的总次数
+def set_send_email_captcha_limit(email, value):
+    return op_redis_internal_account.set_send_email_captcha_limit(email, value)
 
 # 判断是否是dev或者test环境
 def is_dev_or_test():

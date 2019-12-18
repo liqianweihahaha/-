@@ -1,0 +1,8 @@
+name: 内部账号Service：校验手机验证码
+base_url: ${ENV(internal_account_service_host)}
+request:
+    method: POST
+    url: /accounts/auth/captcha/check
+    json:
+        phone_number: $phone_number
+        captcha: $captcha

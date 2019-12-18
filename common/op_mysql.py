@@ -1,4 +1,5 @@
 import pymysql
+import sys
 
 class OpMysql(object):
     # 连接ali云数据库，使用云数据库外网地址
@@ -8,6 +9,7 @@ class OpMysql(object):
             self.cur = self.conn.cursor()
         except pymysql.Error as e:
             print('connect mysql error')
+            sys.exit(0)
 
     def select_one(self, query, params=None):
         try:

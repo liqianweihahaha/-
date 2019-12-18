@@ -1,0 +1,7 @@
+name: 内部账号Service：发送手机验证码
+base_url: ${ENV(internal_account_service_host)}
+request:
+    method: POST
+    url: /accounts/auth/captcha/send
+    json:
+        phone_number: $phone_number
