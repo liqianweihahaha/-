@@ -1,0 +1,31 @@
+- config:
+    name: 判断用户是否需要进行二次验证
+    base_url: ${ENV(internal_account_service_host)}
+
+- test:
+    name: user_id存在并且用户不在二次验证名单中
+    api: api/internal_account_service/post_two_step_verification.yml
+    variables:
+        - user_id: ${internal_source_user_id()}
+    validate:
+        - eq: [status_code, 200]
+
+- test:
+    name: 用户在二次验证名单中-state应该返回true
+    api: api/internal_account_service/check_user_two_step_verification_state.yml
+    variables:
+        - user_id: ${internal_source_user_id()}
+    validate:
+        - eq: [status_code, 200]
+        - length_equals: [content, 1]
+        - eq: [content.state, true]
+
+# - test:
+#     name: 用户不在二次验证名单中-state应该返回false
+#     api: api/internal_account_service/check_user_two_step_verification_state.yml
+#     variables:
+#         - user_id: ${internal_source_user_id()}
+#     validate:
+#         - eq: [status_code, 200]
+#         - length_equals: [content, 1]
+#         - eq: [content.state, false]

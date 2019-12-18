@@ -1,0 +1,38 @@
+- config:
+    name: 内部账号Service：添加需要二次验证的用户
+    base_url: ${ENV(internal_account_service_host)}
+    variables:
+        - unexist_internal_account_user_id: 1000000
+
+- test:
+    name: user_id存在并且用户不在二次验证名单中
+    api: api/internal_account_service/post_two_step_verification.yml
+    variables:
+        - user_id: ${internal_source_user_id()}
+    validate:
+        - eq: [status_code, 200]
+
+- test:
+    name: user_id存在并且用户在二次验证名单中
+    api: api/internal_account_service/post_two_step_verification.yml
+    variables:
+        - user_id: ${internal_source_user_id()}
+    validate:
+        - eq: [status_code, 200]
+
+- test:
+    name: user_id不存在（例如：0）
+    api: api/internal_account_service/post_two_step_verification.yml
+    variables:
+        - user_id: 0
+    validate:
+        - eq: [status_code, 400]
+
+- test:
+    name: user_id不存在（例如：1000000）
+    api: api/internal_account_service/post_two_step_verification.yml
+    variables:
+        - user_id: $unexist_internal_account_user_id
+    validate:
+        - eq: [status_code, 422]
+        - eq: [content.error_code, '10007000']
