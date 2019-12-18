@@ -8,6 +8,7 @@
 
 - test:
     name: email存在-且未达到10次
+    skipIf: ${is_production()}
     setup_hooks:
         - ${set_send_email_captcha_limit($exist_internal_account_email, 0)}
         - ${sleep_N_secs(1)}
@@ -19,6 +20,7 @@
 
 - test:
     name: 重复请求：email存在且未达到10次
+    skipIf: ${is_production()}
     api: api/internal_account_service/send_email_captcha.yml
     variables:
         - email: $exist_internal_account_email
