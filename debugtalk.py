@@ -76,6 +76,34 @@ def internal_source_user_login_token():
     login_token = generate_internal_account_token(INTERNAL_ACCOUNT_SERVICE_HOST, internal_source_user_id())
     return login_token
 
+# 获取Fish账号配置信息
+fish_account_beisen = read_config.read_config_fish_account(TEST_ENV)['fish_account_beisen']
+fish_account_without_beisen = read_config.read_config_fish_account(TEST_ENV)['fish_account_without_beisen']
+
+def fish_account_beisen_username():
+    return fish_account_beisen.get('username')
+
+def fish_account_beisen_password():
+    return fish_account_beisen.get('password')
+
+def fish_account_beisen_encypted_password():
+    return fish_account_beisen.get('encrypted_password')
+
+def fish_account_beisen_email():
+    return fish_account_beisen.get('email')
+
+def fish_account_beisen_fishId():
+    return fish_account_beisen.get('email')
+
+def fish_account_without_beisen_username():
+    return fish_account_beisen.get('username')
+
+def fish_account_without_beisen_password():
+    return fish_account_beisen.get('username')
+
+def fish_account_without_beisen_fishId():
+    return fish_account_beisen.get('fish_id')
+
 # 读取内部账号 redis 配置
 redis_config = read_config.read_config_redis(TEST_ENV)
 op_redis_internal_account = OpRedis(host=redis_config['host'], port=redis_config['port'], password=redis_config['password'], db=2)
