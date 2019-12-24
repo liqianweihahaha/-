@@ -154,3 +154,12 @@
             Authorization: ${internal_source_user_login_token()}
     validate:
         - eq: [status_code, 400]
+
+- test:
+    name: 未登录-订单优惠审批列表
+    request:
+        method: GET
+        url: orders/reviews
+    validate:
+        - eq: [status_code, 403]
+        - eq: [content.error_code, '10020004']

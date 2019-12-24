@@ -127,6 +127,9 @@ def order_placedBy_config():
 def order_customerPhoneNumber_config():
     return order_config.get('customerPhoneNumber')
 
+def order_handledById_config():
+    return order_config.get('handledById')
+
 # 随机生成交易流水号
 def random_transaction_number():
     return "AutoTestTransaction"+str(int(time.time()))

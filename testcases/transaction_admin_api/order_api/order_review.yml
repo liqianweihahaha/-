@@ -25,6 +25,19 @@
         - create_order_orderId1: content.orderId
 
 - test:
+    name: 未登录-订单优惠审批-待人工审核-订单编号存在-人工审核通过
+    skipUnless: ${eval_equal($create_order_status1, 200)}
+    request:
+        method: PATCH
+        url: /orders/$create_order_orderId1/review
+        json:
+             reviewPassed: true
+             remark: '人工审核通过'
+    validate:
+        - eq: [status_code, 403]
+        - eq: [content.error_code, '10020004']
+
+- test:
     name: 已登录内部账号系统-订单优惠审批-待人工审核-订单编号存在-人工审核通过
     skipUnless: ${eval_equal($create_order_status1, 200)}
     request:

@@ -27,4 +27,4 @@ request:
              city: '深圳市'
              district: '宝安区'
              streetAddress: '宝安大道花样年花乡'
-        remark: 测试创建订单
+        remark: 自动化测试创建订单
