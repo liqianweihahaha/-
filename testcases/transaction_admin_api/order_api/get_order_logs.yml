@@ -57,15 +57,3 @@
     validate:
         - eq: [status_code, 403]
         - eq: [content.error_code, '10020004']
-
-- test:
-    name: 已登录内部账号系统-订单轨迹-订单编号不存在
-    skipUnless: ${eval_equal($create_order_status, 200)}
-    request:
-        method: GET
-        url: /orders/logs?orderId=$unexisted_order_orderId
-        headers:
-            Authorization: ${internal_source_user_login_token()}
-    validate:
-        - eq: [status_code, 200]
-        - eq: [content.total, 0]
