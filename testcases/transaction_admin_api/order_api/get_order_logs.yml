@@ -57,3 +57,14 @@
     validate:
         - eq: [status_code, 403]
         - eq: [content.error_code, '10020004']
+
+
+- test:
+    name: 未登录-订单轨迹-订单编号存在
+    skipUnless: ${eval_equal($create_order_status, 200)}
+    request:
+        method: GET
+        url: /orders/logs?orderId=$create_order_orderId
+    validate:
+        - eq: [status_code, 403]
+        - eq: [content.error_code, '10020004']
