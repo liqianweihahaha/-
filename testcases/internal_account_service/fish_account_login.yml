@@ -22,7 +22,7 @@
         url: /fish/login
         json:
             identity: ${fish_account_beisen_username()}
-            password: ${fish_account_beisen_encypted_password()}
+            password: ${fish_account_beisen_password()}
     validate:
         - eq: [status_code, 422]
         - eq: [content.error_code, '10007001']

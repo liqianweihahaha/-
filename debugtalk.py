@@ -104,6 +104,13 @@ def fish_account_without_beisen_password():
 def fish_account_without_beisen_fishId():
     return fish_account_beisen.get('fish_id')
 
+# 读取内部账号 mysql 配置
+mysql_config_internal_account = read_config.read_config_mysql(TEST_ENV, 'internal_account')
+opmysql_internal_account = OpMysql(host=mysql_config_internal_account['host'], user=mysql_config_internal_account['user'], password=mysql_config_internal_account['password'], database=mysql_config_internal_account['database'])
+
+def internal_account_delete_two_step_verification(user_id):
+    opmysql_internal_account.internal_account_delete_two_step_verification(user_id)
+
 # 读取内部账号 redis 配置
 redis_config = read_config.read_config_redis(TEST_ENV)
 op_redis_internal_account = OpRedis(host=redis_config['host'], port=redis_config['port'], password=redis_config['password'], db=2)

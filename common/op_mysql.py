@@ -31,8 +31,19 @@ class OpMysql(object):
         if self.cur.rowcount == 1:
             self.conn.commit()
 
+    # 删除内部账号二次验证名单，返回None
+    def internal_account_delete_two_step_verification(self, user_id):
+        result = self.cur.execute('DELETE FROM two_step_verification WHERE user_id=%s', (user_id, ))
+        if self.cur.rowcount == 1:
+            self.conn.commit()
+
 if __name__ == '__main__':
-    # 连接dev环境
-    opmysql = OpMysql(host='rm-bp173j25673ah67z8ko.mysql.rds.aliyuncs.com', user='TestDep', password='4Ehp1ndpfnlN9D0qvg4SZuig', database='account')
-    data = opmysql.select_one("SELECT * from basic_auth where user_id=%s", (1000002450, ))
+    # 连接dev环境account库
+    opmysql_account = OpMysql(host='rm-bp173j25673ah67z8ko.mysql.rds.aliyuncs.com', user='TestDep', password='4Ehp1ndpfnlN9D0qvg4SZuig', database='account')
+    data = opmysql_account.select_one("SELECT * from basic_auth where user_id=%s", (1000002450, ))
+    print(data)
+
+    # 连接dev环境internal_account库
+    opmysql_internal_account = OpMysql(host='rm-bp1udh67050zd1n0b115.mysql.rds.aliyuncs.com', user='TestDep', password='4Ehp1ndpfnlN9D0qvg4SZuig', database='internal_account')
+    data = opmysql_internal_account.internal_account_delete_two_step_verification(438)
     print(data)

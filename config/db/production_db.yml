@@ -5,8 +5,14 @@ mysql:
     user: TestDep
     password: 4Ehp1ndpfnlN9D0qvg4SZuig
     database: account
+  internal_account:
+    host: rm-bp1udh67050zd1n0b115.mysql.rds.aliyuncs.com
+    user: TestDep
+    password: 4Ehp1ndpfnlN9D0qvg4SZuig
+    database: internal_account
+    
 redis:
-  # dev环境的redis配置
+  # 需要开启VPN
   host: r-bp19c78721368bd4371.redis.rds.aliyuncs.com
   port: 6379
   password: liuWcl8hj3InVQONzonkIeNa
