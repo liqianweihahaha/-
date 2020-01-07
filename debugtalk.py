@@ -82,7 +82,6 @@ def internal_source_user_login_token():
 
 # 获取Fish账号配置信息
 fish_account_beisen = read_config.read_config_fish_account(TEST_ENV)['fish_account_beisen']
-fish_account_without_beisen = read_config.read_config_fish_account(TEST_ENV)['fish_account_without_beisen']
 
 def fish_account_beisen_username():
     return fish_account_beisen.get('username')
@@ -98,15 +97,6 @@ def fish_account_beisen_email():
 
 def fish_account_beisen_fishId():
     return fish_account_beisen.get('email')
-
-def fish_account_without_beisen_username():
-    return fish_account_beisen.get('username')
-
-def fish_account_without_beisen_password():
-    return fish_account_beisen.get('username')
-
-def fish_account_without_beisen_fishId():
-    return fish_account_beisen.get('fish_id')
 
 # 读取内部账号 mysql 配置
 mysql_config_internal_account = read_config.read_config_mysql(TEST_ENV, 'internal_account')
