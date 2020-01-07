@@ -96,7 +96,7 @@ def fish_account_beisen_email():
     return fish_account_beisen.get('email')
 
 def fish_account_beisen_fishId():
-    return fish_account_beisen.get('email')
+    return fish_account_beisen.get('fish_id')
 
 # 读取内部账号 mysql 配置
 mysql_config_internal_account = read_config.read_config_mysql(TEST_ENV, 'internal_account')

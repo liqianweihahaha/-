@@ -1,0 +1,48 @@
+- config:
+    name: 批量拉取fish用户信息，目前只支持 id, username 筛选
+    base_url: ${ENV(internal_account_service_host)}
+    variables:
+        - unexist_fish_account_id: 1111111111
+
+- test:
+    name: type为ID-items长度为1对应用户存在
+    request:
+        method: POST
+        url: /fish/list
+        json:
+            type: ID
+            items: ['${fish_account_beisen_fishId()}']
+            filter: ALL
+    validate:
+        - eq: [status_code, 200]
+        - length_equals: [content, 1]
+        - type_match: [content, list]
+
+- test:
+    name: type为ID-items长度为1对应用户不存在
+    request:
+        method: POST
+        url: /fish/list
+        json:
+            type: ID
+            items: [$unexist_fish_account_id]
+            filter: ALL
+    validate:
+        - eq: [status_code, 200]
+
+- test:
+    name: type为USERNAME-items长度为1对应用户存在
+    request:
+        method: POST
+        url: /fish/list
+        json:
+            type: USERNAME
+            items: ['${fish_account_beisen_username()}']
+            filter: ALL
+    validate:
+        - eq: [status_code, 200]
+        - length_equals: [content, 1]
+        - length_equals: [content.0, 8]
+        - contains: [content.0, real_name]
+        - contains: [content.0, role_id]
+        - contains: [content.0, disabled]
