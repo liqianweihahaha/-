@@ -1,6 +1,7 @@
 - config:
     name: 获取所有业务部门列表
     base_url: ${ENV(transaction_admin_api_host)}
+    verify: False
 
 - test:
     name: 已登录内部账号系统

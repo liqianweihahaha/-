@@ -1,6 +1,7 @@
 - config:
     name: 获取用户对目标应用的可访问菜单列表
     base_url: ${ENV(transaction_admin_api_host)}
+    verify: False
 
 - test:
     name: 运营管理后台已接入权限系统-已登录内部账号-menu_id为0
