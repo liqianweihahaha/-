@@ -1,6 +1,7 @@
 - config:
     name: 获取某商品分类下的所有属性
     base_url: ${ENV(transaction_admin_api_host)}
+    verify: False
     variables:
         - existed_category_id : 1
         - unexisted_category_id: 10000

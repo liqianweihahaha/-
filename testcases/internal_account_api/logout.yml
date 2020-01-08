@@ -1,6 +1,7 @@
 - config:
     name: 退出登录
     base_url: ${ENV(internal_account_api_host)}
+    verify: False
 
 - test:
     name: 准备：生成登录token

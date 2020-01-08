@@ -1,0 +1,52 @@
+- config:
+    name: 拉取fish用户信息（通过邮箱/用户名/id/姓名）
+    base_url: ${ENV(internal_account_service_host)}
+    variables:
+        - unexist_fish_account_username: 'mxq111'
+
+- test:
+    name: type为USERNAME-value对应用户存在
+    request:
+        method: GET
+        url: /fish/info?type=USERNAME&value=${fish_account_beisen_username()}
+    validate:
+        - eq: [status_code, 200]
+        # LazyString(${fish_account_beisen_fishId()})
+        # - eq: [content.id, '${fish_account_beisen_fishId()}']
+        - length_equals: [content, 8]
+        - contains: [content, real_name]
+        - contains: [content, role_id]
+        - contains: [content, disabled]
+
+- test:
+    name: type为USERNAME-value对应用户不存在
+    request:
+        method: GET
+        url: /fish/info?type=USERNAME&value=$unexist_fish_account_username
+    validate:
+        - eq: [status_code, 200]
+        - length_equals: [content, 0]
+
+- test:
+    name: type为ID-value对应用户存在
+    request:
+        method: GET
+        url: /fish/info?type=ID&value=${fish_account_beisen_fishId()}
+    validate:
+        - eq: [status_code, 200]
+        - length_equals: [content, 8]
+        - contains: [content, real_name]
+        - contains: [content, role_id]
+        - contains: [content, disabled]
+
+- test:
+    name: type为EMAIL-value对应用户存在
+    request:
+        method: GET
+        url: /fish/info?type=EMAIL&value=${fish_account_beisen_email()}
+    validate:
+        - eq: [status_code, 200]
+        - length_equals: [content, 8]
+        - contains: [content, real_name]
+        - contains: [content, role_id]
+        - contains: [content, disabled]
