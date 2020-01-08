@@ -13,4 +13,4 @@ mysql:
 redis:
   host: r-bp1a97853b5914d4289.redis.rds.aliyuncs.com
   port: 6379
-  password: HjKxGkp3jbWbxGgQzSrKBBc6
+  password: 1dVIrGV24PcgOELF5rNphq1L
