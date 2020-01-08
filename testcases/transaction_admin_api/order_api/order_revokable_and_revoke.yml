@@ -1,5 +1,5 @@
 - config:
-    name: 组合测试：线下转账-业务经理审核&财务经理审核-订单状态检查-发货状态检查
+    name: 组合测试：创建订单-上传支付凭证-业务经理审核-订单是否可作废-订单作废-订单状态检查-付款单审核状态检查
     base_url: ${ENV(transaction_admin_api_host)}
     verify: False
     variables:
@@ -15,6 +15,7 @@
 
 
 - test:
+    skipIf: ${is_production()}
     name: 创建普通订单
     api: api/order_manage_service/create_order.yml
     variables:
@@ -30,6 +31,7 @@
         - create_order_orderId: content.orderId
 
 - test:
+    skipIf: ${is_production()}
     name: 线下转账-上传支付凭证
     skipUnless: ${eval_equal($create_order_status1, 200)}
     api: api/order_manage_service/upload_payment.yml
@@ -45,7 +47,8 @@
         - upload_payment_status: status_code
 
 - test:
-    name: 已登录内部账号系统-线下转账-订单付款业务审核列表-订单id查询-订单id存在
+    skipIf: ${is_production()}
+    name: 已登录内部账号系统-线下转账-订单付款业务审核列表-订单id查询-获取paymentReviewId
     skipUnless: ${eval_equal($create_order_status1, 200)}
     request:
         method: GET
@@ -62,19 +65,7 @@
         - paymentReviewId: content.items.0.paymentReviewId
 
 - test:
-    name: 未登录-线下转账-业务经理审核-通过
-    skipUnless: ${eval_equal($search_status_code, 200)}
-    request:
-        method: PATCH
-        url: /orders/$create_order_orderId/payments/reviews/$paymentReviewId/review/bm
-        json:
-            reviewPassed: true
-            remark: '业务经理审核通过'
-    validate:
-        - eq: [status_code, 403]
-        - eq: [content.error_code, '10020004']
-
-- test:
+    skipIf: ${is_production()}
     name: 已登录内部账号系统-线下转账-业务经理审核-通过
     skipUnless: ${eval_equal($search_status_code, 200)}
     request:
@@ -91,55 +82,64 @@
         - bm_review_status_code: status_code
 
 - test:
-    name: 已登录内部账号系统-线下转账-业务经理审核通过-查看-审核状态检查
+    skipIf: ${is_production()}
+    name: 未登录内部账号系统-订单是否可作废
     skipUnless: ${eval_equal($bm_review_status_code, 200)}
     request:
         method: GET
-        url: /orders/$create_order_orderId/payments/reviews/$paymentReviewId
+        url: /orders/$create_order_orderId/revokable
+    validate:
+        - eq: [status_code, 403]
+        - eq: [content.error_code, '10020004']
+
+- test:
+    skipIf: ${is_production()}
+    name: 已登录内部账号系统-订单是否可作废
+    skipUnless: ${eval_equal($bm_review_status_code, 200)}
+    request:
+        method: GET
+        url: /orders/$create_order_orderId/revokable
         headers:
             Authorization: ${internal_source_user_login_token()}
     validate:
         - eq: [status_code, 200]
-        - eq: [content.orderId, $create_order_orderId]
-        - eq: [content.reviewState, BM_REVIEW_PASSED]
+        - eq: [content.revokable, true]
 
 - test:
-    setup_hooks:
-        - ${sleep_N_secs(1)}
-    name: 已登录内部账号系统-线下转账-业务经理审核通过-订单状态&支付状态检查
-    skipUnless: ${eval_equal($bm_review_status_code, 200)}
-    request:
-        method: GET
-        url: /orders/$create_order_orderId/details
-        headers:
-            Authorization: ${internal_source_user_login_token()}
-    validate:
-        - eq: [status_code, 200]
-        - eq: [content.orderId, $create_order_orderId]
-        - eq: [content.state, AWAITING_CONFIRMATION]
-        - eq: [content.normalOrderInfo.paymentInfo.0.paymentStateEnum, SUCCESS]
-
-
-- test:
-    name: 已登录内部账号系统-线下转账-财务经理审核-通过
+    skipIf: ${is_production()}
+    name: 未登录内部账号系统-订单作废
     skipUnless: ${eval_equal($bm_review_status_code, 200)}
     request:
         method: PATCH
-        url: /orders/$create_order_orderId/payments/reviews/$paymentReviewId/review/fm
+        url: /orders/$create_order_orderId/revoke
+        json:
+            revokedById: $existed_handledById
+            revokedBy: "管理台"
+    validate:
+        - eq: [status_code, 403]
+        - eq: [content.error_code, '10020004']
+
+- test:
+    skipIf: ${is_production()}
+    name: 已登录内部账号系统-订单作废
+    skipUnless: ${eval_equal($bm_review_status_code, 200)}
+    request:
+        method: PATCH
+        url: /orders/$create_order_orderId/revoke
         headers:
             Authorization: ${internal_source_user_login_token()}
         json:
-            reviewPassed: true
-            remark: '财务经理审核通过'
-            receivedAt: ${get_timestamp(10)}
+            revokedById: $existed_handledById
+            revokedBy: "管理台"
     validate:
         - eq: [status_code, 200]
     extract:
-        - fm_review_status_code: status_code
+        - revoke_status_code: status_code
 
 - test:
-    name: 已登录内部账号系统-线下转账-财务经理审核通过-查看-审核状态检查
-    skipUnless: ${eval_equal($fm_review_status_code, 200)}
+    skipIf: ${is_production()}
+    name: 已登录内部账号系统-订单已作废-付款审核单状态检查
+    skipUnless: ${eval_equal($revoke_status_code, 200)}
     request:
         method: GET
         url: /orders/$create_order_orderId/payments/reviews/$paymentReviewId
@@ -147,14 +147,14 @@
             Authorization: ${internal_source_user_login_token()}
     validate:
         - eq: [status_code, 200]
-        - eq: [content.orderId, $create_order_orderId]
-        - eq: [content.reviewState, FM_REVIEW_PASSED]
+        - eq: [content.reviewState, CLOSED]
 
 - test:
+    skipIf: ${is_production()}
     setup_hooks:
         - ${sleep_N_secs(1)}
-    name: 已登录内部账号系统-线下转账-财务经理审核通过-订单状态检查
-    skipUnless: ${eval_equal($fm_review_status_code, 200)}
+    name: 已登录内部账号系统-订单已作废-订单状态&支付状态检查
+    skipUnless: ${eval_equal($revoke_status_code, 200)}
     request:
         method: GET
         url: /orders/$create_order_orderId/details
@@ -163,19 +163,5 @@
     validate:
         - eq: [status_code, 200]
         - eq: [content.orderId, $create_order_orderId]
-        - eq: [content.state, COMPLETED]
-
-- test:
-    setup_hooks:
-        - ${sleep_N_secs(1)}
-    name: 已登录内部账号系统-线下转账-财务经理审核通过-发货状态检查
-    skipUnless: ${eval_equal($fm_review_status_code, 200)}
-    request:
-        method: GET
-        url: /orders/$create_order_orderId/details
-        headers:
-            Authorization: ${internal_source_user_login_token()}
-    validate:
-        - eq: [status_code, 200]
-        - eq: [content.orderId, $create_order_orderId]
-        - eq: [content.normalOrderInfo.shippingInfo.0.shippingStateEnum, SUCCESS]
+        - eq: [content.state, REVOKED]
+        - length_equals: [content.normalOrderInfo.paymentInfo,0]
