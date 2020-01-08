@@ -5,6 +5,10 @@ from common.util import *
 from common.op_mysql import OpMysql
 from common.op_redis import OpRedis
 
+# 解决Jenkins执行python文件时遇到中文报错
+import sys, codecs
+sys.stdout = codecs.getwriter("utf-8")(sys.stdout.detach())
+
 # 读取 .env 配置
 TEST_ENV = os.environ['environment']
 # 获取测试域名hosts
@@ -75,6 +79,31 @@ def internal_source_user_login_token():
     #login_token= login_token_internal_account(INTERNAL_ACCOUNT_API_HOST, internal_source_user_email(), internal_source_user_password())
     login_token = generate_internal_account_token(INTERNAL_ACCOUNT_SERVICE_HOST, internal_source_user_id())
     return login_token
+
+# 获取Fish账号配置信息
+fish_account_beisen = read_config.read_config_fish_account(TEST_ENV)['fish_account_beisen']
+
+def fish_account_beisen_username():
+    return fish_account_beisen.get('username')
+
+def fish_account_beisen_password():
+    return fish_account_beisen.get('password')
+
+def fish_account_beisen_encypted_password():
+    return fish_account_beisen.get('encrypted_password')
+
+def fish_account_beisen_email():
+    return fish_account_beisen.get('email')
+
+def fish_account_beisen_fishId():
+    return fish_account_beisen.get('fish_id')
+
+# 读取内部账号 mysql 配置
+mysql_config_internal_account = read_config.read_config_mysql(TEST_ENV, 'internal_account')
+opmysql_internal_account = OpMysql(host=mysql_config_internal_account['host'], user=mysql_config_internal_account['user'], password=mysql_config_internal_account['password'], database=mysql_config_internal_account['database'])
+
+def internal_account_delete_two_step_verification(user_id):
+    opmysql_internal_account.internal_account_delete_two_step_verification(user_id)
 
 # 读取内部账号 redis 配置
 redis_config = read_config.read_config_redis(TEST_ENV)

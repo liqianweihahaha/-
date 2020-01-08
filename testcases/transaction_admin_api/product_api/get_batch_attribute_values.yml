@@ -1,6 +1,7 @@
 - config:
     name: 根据属性值ids批量获取属性值信息
     base_url: ${ENV(transaction_admin_api_host)}
+    verify: False
     variables:
         - existed_attribute_value_id: 1
         - unexist_attribute_value_id: 100000

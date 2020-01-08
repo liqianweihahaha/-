@@ -4,6 +4,12 @@ mysql:
     user: TestDep
     password: 4Ehp1ndpfnlN9D0qvg4SZuig
     database: account
+  internal_account:
+    host: rm-bp1va24i42upn6l22.mysql.rds.aliyuncs.com
+    user: TestDep
+    password: 4Ehp1ndpfnlN9D0qvg4SZuig
+    database: internal_account
+
 redis:
   host: r-bp1eeeb51fc1af04.redis.rds.aliyuncs.com
   port: 6379

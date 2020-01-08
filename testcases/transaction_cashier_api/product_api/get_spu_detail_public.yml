@@ -1,6 +1,7 @@
 - config:
     name: 获取某SPU详情（Public）
     base_url: ${ENV(ezbuy_api_host)}
+    verify: False
     variables:
         - existed_category_id: 1
         - existed_department_id: 1
