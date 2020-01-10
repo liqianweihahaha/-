@@ -3,5 +3,5 @@ fish_account_beisen:
     fish_id: 704
     username: maxiaoqian
     password: ma@13026
-    encrypted_password: Ma123456
     email: maxiaoqian@codemao.cn
+    encrypted_password: Ma123456
