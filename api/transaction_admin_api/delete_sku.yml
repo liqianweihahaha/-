@@ -1,0 +1,8 @@
+name: 根据SKU编码删除SKU
+request:
+    method: DELETE
+    url: /products/sku/$skuNumber
+    headers:
+        Authorization: $login_token
+    json:
+        skuNumber: $skuNumber

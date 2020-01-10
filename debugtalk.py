@@ -5,9 +5,9 @@ from common.util import *
 from common.op_mysql import OpMysql
 from common.op_redis import OpRedis
 
-# # 解决Jenkins执行python文件时遇到中文报错
-# import sys, codecs
-# sys.stdout = codecs.getwriter("utf-8")(sys.stdout.detach())
+# 解决Jenkins执行python文件时遇到中文报错
+import sys, codecs
+sys.stdout = codecs.getwriter("utf-8")(sys.stdout.detach())
 
 # 读取 .env 配置
 TEST_ENV = os.environ['environment']
@@ -139,8 +139,12 @@ sku_config = read_config.sku(TEST_ENV)
 def sku_number_config():
     return sku_config.get('sku_number')
 
+def spu_number_config():
+    return sku_config.get('spu_number')
+
 def sku_price_config():
     return sku_config.get('price')
+
 
 # 获取订金商品配置信息
 sku_deposit_config = read_config.sku_deposit(TEST_ENV)

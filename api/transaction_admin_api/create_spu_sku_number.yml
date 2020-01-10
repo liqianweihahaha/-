@@ -1,0 +1,9 @@
+name: 根据SPU编号生成SKU编号
+request:
+    method: POST
+    url: /products/spu/$spuNumber/sku/number?number=$number
+    headers:
+        Authorization: $login_token
+    json:
+        spuNumber: $spuNumber
+        number: $number
