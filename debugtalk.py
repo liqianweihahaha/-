@@ -20,7 +20,6 @@ EZBUY_API_HOST = os.environ['ezbuy_api_host']
 TRANSACTION_ADMIN_API_HOST = os.environ['transaction_admin_api_host']
 ORDER_SERVICE_HOST = os.environ['order_service_host']
 PRODUCT_SERVICE_HOST = os.environ['product_service_host']
-AUHTORITY_API_HOST = os.environ['authority_api_host']
 
 # 获取config配置文件：源用户信息
 source_user = read_config.source_user(TEST_ENV)
@@ -37,6 +36,9 @@ def source_user_email():
 
 def source_user_password():
     return source_user.get('password')
+
+def test_phone_number():
+    return os.environ['test_phone_number']
 
 # 获取原用户登录token，避免测试用例中多次调用登录态都初始化函数，这里先定义变量
 source_user_login_token_account_v2 = login_token_account_v2(TIGER_API_HOST, source_user_username(), source_user_password())
@@ -79,24 +81,6 @@ def internal_source_user_login_token():
     #login_token= login_token_internal_account(INTERNAL_ACCOUNT_API_HOST, internal_source_user_email(), internal_source_user_password())
     login_token = generate_internal_account_token(INTERNAL_ACCOUNT_SERVICE_HOST, internal_source_user_id())
     return login_token
-
-# 获取Fish账号配置信息
-fish_account_beisen = read_config.read_config_fish_account(TEST_ENV)['fish_account_beisen']
-
-def fish_account_beisen_username():
-    return fish_account_beisen.get('username')
-
-def fish_account_beisen_password():
-    return fish_account_beisen.get('password')
-
-def fish_account_beisen_encypted_password():
-    return fish_account_beisen.get('encrypted_password')
-
-def fish_account_beisen_email():
-    return fish_account_beisen.get('email')
-
-def fish_account_beisen_fishId():
-    return fish_account_beisen.get('fish_id')
 
 # 读取内部账号 mysql 配置
 def get_mysql_config_internal_account():
