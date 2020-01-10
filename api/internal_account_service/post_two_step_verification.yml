@@ -1,7 +1,0 @@
-name: 添加需要二次验证的用户
-base_url: ${ENV(internal_account_service_host)}
-request:
-    method: POST
-    url: /accounts/auth/2-step-verification
-    json:
-        user_id: $user_id

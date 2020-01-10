@@ -1,8 +1,0 @@
-name: 内部账号登录验证
-base_url: ${ENV(internal_account_service_host)}
-request:
-    method: POST
-    url: /accounts/auth
-    json:
-        identity: $identity
-        password: $password
