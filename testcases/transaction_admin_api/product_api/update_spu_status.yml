@@ -1,0 +1,76 @@
+- config:
+    name: 组合测试：创建spu-更新spu状态（上下架/删除）
+    base_url: ${ENV(transaction_admin_api_host)}
+    verify: False
+    variables:
+        - existed_category_id: 1
+        - existed_department_id: 1
+        - existed_number: 2
+        - existed_status: "DELETED"
+        - unexisted_spu_number: G1111111
+        - unexisted_status: aaaa
+
+- test:
+    skipIf: ${is_production()}
+    name: 已登录内部账号-创建spu-type为VIRTUAL
+    api: api/transaction_admin_api/create_spu.yml
+    variables:
+        - login_token: ${internal_source_user_login_token()}
+        - category_id: $existed_category_id
+        - department_id: $existed_department_id
+        - type: VIRTUAL
+        - title: 测试创建虚拟商品
+    validate:
+        - eq: [status_code, 200]
+        - startswith: [content, "G"]
+    extract:
+        - spu_status_code: status_code
+        - spu_number: content
+
+- test:
+    skipIf: ${is_production()}
+    name: 已登录内部账号-删除spu-spuNumber存在
+    skipUnless: ${eval_equal($spu_status_code, 200)}
+    api: api/transaction_admin_api/delete_spu.yml
+    variables:
+        - login_token: ${internal_source_user_login_token()}
+        - spuNumber: $spu_number
+        - status: $existed_status
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content, true]
+
+- test:
+    skipIf: ${is_production()}
+    name: 已登录内部账号-删除spu-spuNumber不存在
+    skipUnless: ${eval_equal($spu_status_code, 200)}
+    api: api/transaction_admin_api/delete_spu.yml
+    variables:
+        - login_token: ${internal_source_user_login_token()}
+        - spuNumber: $unexisted_spu_number
+        - status: $existed_status
+    validate:
+        - eq: [status_code, 200]
+
+- test:
+    skipIf: ${is_production()}
+    name: 已登录内部账号-删除spu-status不存在
+    skipUnless: ${eval_equal($spu_status_code, 200)}
+    api: api/transaction_admin_api/delete_spu.yml
+    variables:
+        - login_token: ${internal_source_user_login_token()}
+        - spuNumber: $unexisted_spu_number
+        - status: $unexisted_status
+    validate:
+        - eq: [status_code, 400]
+
+- test:
+    skipIf: ${is_production()}
+    name: 未登录内部账号-删除spu-spuNumber存在
+    skipUnless: ${eval_equal($spu_status_code, 200)}
+    request:
+        method: PATCH
+        url: /products/spu/$spu_number/status
+    validate:
+        - eq: [status_code, 403]
+        - eq: [content.error_code, "10020004"]

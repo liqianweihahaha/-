@@ -1,0 +1,9 @@
+name: 更新spu的状态（DELETED, HIDDEN, VISIBLE）
+request:
+    method: PATCH
+    url: /products/spu/$spuNumber/status
+    headers:
+        Authorization: $login_token
+    json:
+        spuNumber: $spuNumber
+        status: $status
