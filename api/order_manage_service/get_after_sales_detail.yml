@@ -1,0 +1,7 @@
+name: 订单服务Service：获取单个售后单详情
+base_url: ${ENV(order_service_host)}
+request:
+    method: GET
+    url: /after_sales/$afterSaleId
+validate:
+    - eq: [status_code, 200]

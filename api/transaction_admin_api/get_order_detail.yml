@@ -1,0 +1,11 @@
+name: 订单api：获取单个订单详情
+base_url: ${ENV(transaction_admin_api_host)}
+#variables:
+#    - actualRefundAmount: 0.03
+request:
+    method: GET
+    url: /orders/$orderId/details
+    headers:
+        Authorization: $login_token
+validate:
+    - eq: [status_code, 200]
