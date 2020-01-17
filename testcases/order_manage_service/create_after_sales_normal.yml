@@ -1,5 +1,5 @@
 - config:
-    name: 测试组合：能否申请售后-创建售后单-售后状态检查
+    name: 测试组合：能否申请售后-获得可退金额-创建售后单-售后单详情状态检查-获取售后项-获取售后列表
     base_url: ${ENV(order_service_host)}
     variables:
         - existed_customerPhoneNumber: ${order_customerPhoneNumber_config()}
@@ -17,6 +17,7 @@
         - unexisted_actualPayment: 100
         - unexisted_orderId: 123456
         - unexisted_afterSaleType: "aaaaa"
+        - unexisted_afterSaleId: 123456
         - unexisted_ownerId: ""
         - unexisted_materialNumber: "SU000000"
         - unexisted_returnsCount: 10000
@@ -387,7 +388,7 @@
 
 - test:
     skipIf: ${is_production()}
-    name: 查看售后单详情-检查售后状态
+    name: 通过id获取售后单-检查售后状态-afterSaleId存在
     skipUnless: ${eval_equal($order_state, "COMPLETED")}
     api: api/order_manage_service/get_after_sales_detail.yml
     variables:
@@ -395,6 +396,17 @@
     validate:
         - eq: [status_code, 200]
         - eq: [content.state, "200"]
+
+- test:
+    skipIf: ${is_production()}
+    name: 通过id获取售后单-afterSaleId不存在
+    skipUnless: ${eval_equal($order_state, "COMPLETED")}
+    api: api/order_manage_service/get_after_sales_detail.yml
+    variables:
+        - afterSaleId: $unexisted_afterSaleId
+    validate:
+        - eq: [status_code, 200]
+
 
 - test:
     name: 订单能否申请售后-有未完成的售后单
@@ -406,3 +418,25 @@
     validate:
         - eq: [status_code, 200]
         - eq: [content.issuable, false]
+
+- test:
+    name: 获取售后单列表-售后ID查询-存在
+    request:
+        method: GET
+        url: /after_sales?afterSaleIds=$afterSaleId
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.items.0.afterSaleId, $afterSaleId]
+        - length_equals: [content.items, 1]
+
+
+- test:
+    name: 获取售后单列表-订单ID查询-存在
+    request:
+        method: GET
+        url: /after_sales?orderIds=$create_order_orderId
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.items.0.orderId, $create_order_orderId]
+        - length_equals: [content.items, 1]
+

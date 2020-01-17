@@ -1,0 +1,39 @@
+- config:
+    name: 获取所有售后原因&通过ID获取售后原因
+    base_url: ${ENV(order_service_host)}
+
+- test:
+    name: 获取所有售后原因
+    request:
+        method: GET
+        url: /after_sales/reasons
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, list]
+        - length_equals: [content, 11]
+
+- test:
+    name: 通过ID获取售后原因-ID存在
+    request:
+        method: GET
+        url: /after_sales/reasons/1
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, object]
+        - eq: [content.id, 1]
+
+- test:
+    name: 通过ID获取售后原因-ID不存在
+    request:
+        method: GET
+        url: /after_sales/reasons/10000
+    validate:
+        - eq: [status_code, 200]
+
+- test:
+    name: 通过ID获取售后原因-不传ID
+    request:
+        method: GET
+        url: /after_sales/reasons/
+    validate:
+        - eq: [status_code, 200]

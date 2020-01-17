@@ -1,0 +1,88 @@
+- config:
+    name: 获取售后单列表
+    base_url: ${ENV(order_service_host)}
+    variables:
+        - existed_customerPhoneNumber: ${order_customerPhoneNumber_config()}
+        - existed_customerId: ${order_customerId_config()}
+        - existed_afterSaleType: 2
+        - existed_afterSaleStates: 200
+        - unexisted_customerId: 11111111111
+        - unexisted_customerPhoneNumber: 155111111111
+        - unexisted_afterSaleStates: 200000
+
+
+- test:
+    name: 获取售后单列表-不带任何参数
+    request:
+        method: GET
+        url: /after_sales
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, object]
+        - type_match: [content.items, list]
+        - length_equals: [content.items.0, 25]
+
+- test:
+    name: 获取售后单列表-客户ID查询-存在
+    request:
+        method: GET
+        url: /after_sales?customerId=$existed_customerId
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, object]
+        - type_match: [content.items, list]
+        - length_equals: [content.items.0, 25]
+
+- test:
+    name: 获取售后单列表-客户ID查询-不存在
+    request:
+        method: GET
+        url: /after_sales?customerId=$unexisted_customerId
+    validate:
+        - eq: [status_code, 200]
+        - length_equals: [content.items, 0]
+
+- test:
+    name: 获取售后单列表-手机号查询-存在
+    request:
+        method: GET
+        url: /after_sales?customerPhoneNumbe=$existed_customerPhoneNumber
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, object]
+        - type_match: [content.items, list]
+        - length_equals: [content.items.0, 25]
+
+- test:
+    name: 获取售后单列表-手机号查询-不存在
+    request:
+        method: GET
+        url: /after_sales?customerPhoneNumbe=$unexisted_customerPhoneNumber
+    validate:
+        - eq: [status_code, 200]
+
+
+- test:
+    name: 获取售后单列表-售后类型查询-存在
+    request:
+        method: GET
+        url: /after_sales?afterSaleType=$existed_afterSaleType
+    validate:
+        - eq: [status_code, 200]
+
+- test:
+    name: 获取售后单列表-售后状态查询-存在
+    request:
+        method: GET
+        url: /after_sales?afterSaleStates=$existed_afterSaleStates
+    validate:
+        - eq: [status_code, 200]
+
+- test:
+    name: 获取售后单列表-售后状态查询-不存在
+    request:
+        method: GET
+        url: /after_sales?afterSaleStates=$unexisted_afterSaleStates
+    validate:
+        - eq: [status_code, 200]
+        - length_equals: [content.items, 0]
