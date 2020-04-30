@@ -109,7 +109,7 @@ def is_dev_or_test():
 
 # 判断是否是正式环境
 def is_production():
-    return True if TEST_ENV == 'production' else False
+    return True if TEST_ENV == 'staging' else False
 
 # 因为test中None会被解析为字符串，所以这里增加此函数
 def is_none(source):
@@ -148,6 +148,9 @@ def order_customerPhoneNumber_config():
 
 def order_handledById_config():
     return order_config.get('handledById')
+
+def order_handledByName_config():
+    return order_config.get('handledByName')
 
 # 随机生成交易流水号
 def random_transaction_number():

@@ -8,8 +8,8 @@
         - existed_placedBy: ${order_placedBy_config()}
         - existed_total_discount: null
         - existed_handledById: ${order_handledById_config()}
-        - existed_transactionNumber: ${random_transaction_number()}
-        - existed_orderPlatform: CODEMAO
+        - existed_transactionNumber: ${gen_random_string(20)}
+        - existed_orderPlatform: ALIPAY
         - existed_actualPayment: 0.03
         - existed_afterSaleType: 'RETURN_REFUND'
         - existed_handledById: ${order_handledById_config()}
@@ -24,11 +24,14 @@
         - unexisted_skuNumber: "1111111111111"
 
 - test:
+    skipIf: ${is_production()}
     name: 创建普通订单(数据准备1)
     api: api/order_manage_service/create_order.yml
     variables:
+        - placedMethod: BY_ADMIN
+        - orderPlatform: $existed_orderPlatform
         - customer_phone_number: $existed_customerPhoneNumber
-        - customer_id: 1000845917
+        - customer_id: $existed_customerId
         - sku_number: $existed_skuNumber
         - total_discount: $existed_total_discount
     validate:
@@ -39,6 +42,7 @@
         - create_order_orderId: content.orderId
 
 - test:
+    skipIf: ${is_production()}
     name: 上传支付凭证(数据准备2)
     skipUnless: ${eval_equal($create_order_status, 200)}
     api: api/order_manage_service/upload_payment.yml
@@ -54,8 +58,9 @@
         - upload_payment_status: status_code
 
 - test:
+    skipIf: ${is_production()}
     name: 付款业务审核列表-订单id查询-获取paymentReviewId(数据准备3)
-    skipUnless: ${eval_equal($create_order_status, 200)}
+    skipUnless: ${eval_equal($upload_payment_status, 200)}
     api: api/order_manage_service/get_payments_reviews_list.yml
     variables:
         - orderIds: $create_order_orderId
@@ -66,6 +71,7 @@
         - paymentReviewId: content.items.0.paymentReviewId
 
 - test:
+    skipIf: ${is_production()}
     name: 业务经理审核通过(数据准备4)
     skipUnless: ${eval_equal($search_status_code, 200)}
     api: api/order_manage_service/bm_review_payment_reviews.yml
@@ -80,6 +86,7 @@
         - bm_review_status_code: status_code
 
 - test:
+    skipIf: ${is_production()}
     name: 财务经理审核通过（数据准备5）
     skipUnless: ${eval_equal($bm_review_status_code, 200)}
     api: api/order_manage_service/fm_review_payment_reviews.yml
@@ -95,23 +102,25 @@
         - fm_review_status_code: status_code
 
 - test:
+    skipIf: ${is_production()}
     setup_hooks:
-        - ${sleep_N_secs(1)}
-    name: 订单详情页-获取materialNumber、shippingId（数据准备6）
+        - ${sleep_N_secs(5)}
+    name: 售后申请预览-获取物料发货单等信息（数据准备6）
     skipUnless: ${eval_equal($fm_review_status_code, 200)}
-    api: api/transaction_admin_api/get_order_detail.yml
-    variables:
-        - orderId: $create_order_orderId
-        - login_token: ${internal_source_user_login_token()}
+    request:
+        method: GET
+        url: ${ENV(transaction_admin_api_host)}/after_sales/previews/issuing?orderId=$create_order_orderId
+        headers:
+            Authorization: ${internal_source_user_login_token()}
     validate:
         - eq: [status_code, 200]
     extract:
-        - shipmentId_1: content.normalOrderInfo.shippingInfo.0.shipmentId
-        - material_id_1: content.normalOrderInfo.shippingInfo.0.materials.0.material_id
-        - material_count_1: content.normalOrderInfo.shippingInfo.0.materials.0.material_count
-        - shipmentId_2: content.normalOrderInfo.shippingInfo.1.shipmentId
-        - material_id_2: content.normalOrderInfo.shippingInfo.1.materials.0.material_id
-        - material_count_2: content.normalOrderInfo.shippingInfo.1.materials.0.material_count
+        - shipmentId_1: content.items.0.shippingId
+        - material_id_1: content.items.0.materialNumber
+        - material_count_1: content.items.0.returnableCount
+        - shipmentId_2: content.items.1.shippingId
+        - material_id_2: content.items.1.materialNumber
+        - material_count_2: content.items.1.returnableCount
 
 - test:
     skipIf: ${is_production()}
@@ -419,7 +428,7 @@
         - afterSaleId: $create_afterSaleId
     validate:
         - eq: [status_code, 200]
-        - eq: [content.state, "200"]
+        - eq: [content.state, "1000"]
 
 - test:
     setup_hooks:

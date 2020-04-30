@@ -8,8 +8,8 @@
         - existed_placedById: ${order_handledById_config()}
         - existed_deposit: 0.01
         - existed_handledById: ${order_handledById_config()}
-        - existed_transactionNumber: ${random_transaction_number()}
-        - existed_orderPlatform: CODEMAO
+        - existed_transactionNumber: ${gen_random_string(20)}
+        - existed_orderPlatform: ALIPAY
         - existed_afterSaleType: 'REFUND'
         - existed_handledById: ${order_handledById_config()}
         - existed_issued: false
@@ -20,9 +20,12 @@
         - unexisted_skuNumber: "1111111111111"
 
 - test:
+    skipIf: ${is_production()}
     name: 创建订金订单(数据准备1)
     api: api/order_manage_service/create_order_deposit.yml
     variables:
+        - placedMethod: BY_ADMIN
+        - orderPlatform: $existed_orderPlatform
         - placedById: $existed_placedById
         - customerId: $existed_customerId
         - skuNumber: $existed_skuNumber
@@ -35,6 +38,7 @@
         - create_order_orderId: content.orderId
 
 - test:
+    skipIf: ${is_production()}
     name: 上传支付凭证(数据准备2)
     skipUnless: ${eval_equal($create_order_status, 200)}
     api: api/order_manage_service/upload_payment.yml
@@ -50,6 +54,7 @@
         - upload_payment_status: status_code
 
 - test:
+    skipIf: ${is_production()}
     name: 付款业务审核列表-订单id查询-获取paymentReviewId(数据准备3)
     skipUnless: ${eval_equal($create_order_status, 200)}
     api: api/order_manage_service/get_payments_reviews_list.yml
@@ -62,6 +67,7 @@
         - paymentReviewId: content.items.0.paymentReviewId
 
 - test:
+    skipIf: ${is_production()}
     name: 业务经理审核通过(数据准备4)
     skipUnless: ${eval_equal($search_status_code, 200)}
     api: api/order_manage_service/bm_review_payment_reviews.yml
@@ -76,6 +82,7 @@
         - bm_review_status_code: status_code
 
 - test:
+    skipIf: ${is_production()}
     name: 财务经理审核通过（数据准备5）
     skipUnless: ${eval_equal($bm_review_status_code, 200)}
     api: api/order_manage_service/fm_review_payment_reviews.yml
@@ -90,21 +97,9 @@
     extract:
         - fm_review_status_code: status_code
 
-- test:
-    setup_hooks:
-        - ${sleep_N_secs(5)}
-    name: 订单详情页-获取materialNumber、shippingId（数据准备6）
-    skipUnless: ${eval_equal($fm_review_status_code, 200)}
-    api: api/transaction_admin_api/get_order_detail.yml
-    variables:
-        - orderId: $create_order_orderId
-        - login_token: ${internal_source_user_login_token()}
-    validate:
-        - eq: [status_code, 200]
-    extract:
-        - order_state: content.state
 
 - test:
+    skipIf: ${is_production()}
     name: 能否申请售后-订单存在/已完成/没有有未完成的售后单/剩余可退金额大于0
     skipUnless: ${eval_equal($order_state, "COMPLETED")}
     request:
@@ -115,6 +110,7 @@
         - eq: [content.issuable, true]
 
 - test:
+    skipIf: ${is_production()}
     name: 能否申请售后-订单为空或不存在
     skipUnless: ${eval_equal($order_state, "COMPLETED")}
     request:
@@ -125,6 +121,7 @@
         - eq: [content.error_code, "10017006"]
 
 - test:
+    skipIf: ${is_production()}
     name: 获得可退金额-订单存在，符合申请售后的条件
     skipUnless: ${eval_equal($order_state, "COMPLETED")}
     request:
@@ -135,6 +132,7 @@
         - greater_than: [content.refundableAmount, 0]
 
 - test:
+    skipIf: ${is_production()}
     name: 获得可退金额-订单为空或不存在
     skipUnless: ${eval_equal($order_state, "COMPLETED")}
     request:
@@ -256,4 +254,4 @@
         - afterSaleId: $afterSaleId
     validate:
         - eq: [status_code, 200]
-        - eq: [content.state, "200"]
+        - eq: [content.state, "1000"]

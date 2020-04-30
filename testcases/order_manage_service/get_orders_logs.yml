@@ -5,13 +5,17 @@
         - existed_customerPhoneNumber: ${order_customerPhoneNumber_config()}
         - existed_skuNumber: ${sku_number_config()}
         - existed_total_discount: null
+        - existed_orderPlatform: ALIPAY
         - existed_customerId: ${order_customerId_config()}
         - unexisted_orderId: 123456
 
 - test:
+    skipIf: ${is_production()}
     name: 创建普通订单
     api: api/order_manage_service/create_order.yml
     variables:
+        - placedMethod: BY_ADMIN
+        - orderPlatform: $existed_orderPlatform
         - customer_phone_number: $existed_customerPhoneNumber
         - customer_id: $existed_customerId
         - sku_number: $existed_skuNumber
@@ -32,6 +36,7 @@
         - length_equals: [content.items.0, 9]
 
 - test:
+    skipIf: ${is_production()}
     name: 通过orderIds查询-orderIds存在
     skipUnless: ${eval_equal($create_order_status, 200)}
     request:
@@ -44,7 +49,6 @@
 
 - test:
     name: 通过orderIds查询-orderIds不存在
-    skipUnless: ${eval_equal($create_order_status, 200)}
     request:
         method: GET
         url: /orders/logs?orderIds=$unexisted_orderId
@@ -54,7 +58,6 @@
 
 - test:
     name: 通过customerId查询-customerId存在
-    skipUnless: ${eval_equal($create_order_status, 200)}
     request:
         method: GET
         url: /orders/logs?customerId=$existed_customerId

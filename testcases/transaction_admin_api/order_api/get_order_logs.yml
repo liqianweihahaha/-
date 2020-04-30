@@ -11,6 +11,7 @@
         - existed_total_discount1: null
 
 - test:
+    skipIf: ${is_production()}
     name: 创建普通订单
     api: api/order_manage_service/create_order.yml
     variables:
@@ -26,6 +27,7 @@
         - create_order_orderId: content.orderId
 
 - test:
+    skipIf: ${is_production()}
     name: 已登录内部账号系统-订单轨迹-订单编号存在
     skipUnless: ${eval_equal($create_order_status, 200)}
     request:
@@ -50,6 +52,7 @@
         - eq: [content.total, 0]
 
 - test:
+    skipIf: ${is_production()}
     name: 未登录-订单轨迹-订单编号存在
     skipUnless: ${eval_equal($create_order_status, 200)}
     request:

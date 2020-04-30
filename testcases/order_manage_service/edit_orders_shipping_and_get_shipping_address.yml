@@ -1,0 +1,224 @@
+- config:
+    name: 测试组合：创建普通订单->编辑订单收货地址->批量获取收货地址->根据Order Id获取收货地址
+    base_url: ${ENV(order_service_host)}
+    variables:
+        - existed_customerPhoneNumber: ${order_customerPhoneNumber_config()}
+        - existed_skuNumber: ${sku_number_config()}
+        - existed_customerId: ${order_customerId_config()}
+        - existed_placedBy: ${order_placedBy_config()}
+        - existed_orderPlatform: ALIPAY
+        - existed_total_discount: null
+        - existed_handledById: ${order_handledById_config()}
+        - existed_handledByName: ${order_handledByName_config()}
+        - unexisted_OrderId: 123456
+
+
+- test:
+    skipIf: ${is_production()}
+    name: 创建普通订单
+    api: api/order_manage_service/create_order.yml
+    variables:
+        - placedMethod: BY_ADMIN
+        - orderPlatform: $existed_orderPlatform
+        - customer_phone_number: $existed_customerPhoneNumber
+        - customer_id: 1000845917
+        - sku_number: $existed_skuNumber
+        - total_discount: $existed_total_discount
+    validate:
+        - eq: [status_code, 200]
+        - length_equals: [content.orderId, 20]
+    extract:
+        - create_order_status: status_code
+        - create_order_orderId: content.orderId
+
+
+- test:
+    skipIf: ${is_production()}
+    name: 编辑订单收货地址-不传province参数-编辑失败
+    request:
+        method: PUT
+        url: /orders/$create_order_orderId/shipping
+        json:
+            city: 深圳市
+            cityId: 2
+            consignee: 聂蕾蕾
+            district: 宝安区
+            districtId: 3
+            phoneNumber: 15558193388
+            provinceId: 1
+            streetAddress: 宝安大道888号幸福花园1123号
+    validate:
+        - eq: [status_code, 400]
+
+
+- test:
+    skipIf: ${is_production()}
+    name: 编辑订单收货地址-不传city参数-编辑失败
+    request:
+        method: PUT
+        url: /orders/$create_order_orderId/shipping
+        json:
+            cityId: 2
+            consignee: 聂蕾蕾
+            district: 宝安区
+            districtId: 3
+            phoneNumber: 15558193388
+            province: 广东省
+            provinceId: 1
+            streetAddress: 宝安大道888号幸福花园1123号
+    validate:
+        - eq: [status_code, 400]
+
+
+- test:
+    skipIf: ${is_production()}
+    name: 编辑订单收货地址-不传district参数-编辑失败
+    request:
+        method: PUT
+        url: /orders/$create_order_orderId/shipping
+        json:
+            city: 深圳市
+            cityId: 2
+            consignee: 聂蕾蕾
+            districtId: 3
+            phoneNumber: 15558193388
+            province: 广东省
+            provinceId: 1
+            streetAddress: 宝安大道888号幸福花园1123号
+    validate:
+        - eq: [status_code, 400]
+
+- test:
+    skipIf: ${is_production()}
+    name: 编辑订单收货地址-不传consignee参数
+    request:
+        method: PUT
+        url: /orders/$create_order_orderId/shipping
+        json:
+            city: 深圳市
+            cityId: 2
+            district: 宝安区
+            districtId: 3
+            phoneNumber: 15558193388
+            province: 广东省
+            provinceId: 1
+            streetAddress: 宝安大道888号幸福花园1123号
+    validate:
+        - eq: [status_code, 400]
+
+- test:
+    skipIf: ${is_production()}
+    name: 编辑订单收货地址-不传streetAddress参数
+    request:
+        method: PUT
+        url: /orders/$create_order_orderId/shipping
+        json:
+            city: 深圳市
+            cityId: 2
+            consignee: 聂蕾蕾
+            district: 宝安区
+            districtId: 3
+            phoneNumber: 15558193388
+            province: 广东省
+            provinceId: 1
+    validate:
+        - eq: [status_code, 400]
+
+- test:
+    skipIf: ${is_production()}
+    name: 编辑订单收货地址-不传phoneNumber参数
+    request:
+        method: PUT
+        url: /orders/$create_order_orderId/shipping
+        json:
+            city: 深圳市
+            cityId: 2
+            consignee: 聂蕾蕾
+            district: 宝安区
+            districtId: 3
+            province: 广东省
+            provinceId: 1
+            streetAddress: 宝安大道888号幸福花园1123
+    validate:
+        - eq: [status_code, 400]
+
+
+- test:
+    skipIf: ${is_production()}
+    name: 编辑订单收货地址-所有必填参数都填写正确
+    request:
+        method: PUT
+        url: /orders/$create_order_orderId/shipping
+        json:
+            city: 深圳市
+            cityId: 2
+            consignee: 测试账号
+            district: 宝安区
+            districtId: 3
+            phoneNumber: 15558193388
+            province: 广东省
+            provinceId: 1
+            streetAddress: 宝安大道888号幸福花园1123号
+    validate:
+        - eq: [status_code, 200]
+
+- test:
+    skipIf: ${is_production()}
+    name: 编辑订单收货地址-订单地址已编辑1次-无法再次编辑
+    request:
+        method: PUT
+        url: /orders/$create_order_orderId/shipping
+        json:
+            city: 深圳市
+            cityId: 2
+            consignee: 测试账号
+            district: 宝安区
+            districtId: 3
+            phoneNumber: 15558193388
+            province: 广东省
+            provinceId: 1
+            streetAddress: 宝安大道888号幸福花园1123号
+    validate:
+        - eq: [status_code, 422]
+        - eq: [content.error_code, "10017041"]
+
+- test:
+    skipIf: ${is_production()}
+    name: 根据OrderId获取收货地址-OrderId存在
+    request:
+        method: Get
+        url: /orders/$create_order_orderId/shipping
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, object]
+        - length_equals: [content, 15]
+
+- test:
+    skipIf: ${is_production()}
+    name: 根据OrderId获取收货地址-OrderId不存在
+    request:
+        method: Get
+        url: /orders/$unexisted_OrderId/shipping
+    validate:
+        - eq: [status_code, 200]
+
+- test:
+    name: 批量获取收货地址-不带任何参数
+    request:
+        method: Get
+        url: /orders/shipping
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, object]
+        - length_equals: [content.items.0, 15]
+
+- test:
+    skipIf: ${is_production()}
+    name: 批量获取收货地址-orderIds存在
+    request:
+        method: Get
+        url: /orders/shipping?orderIds=$create_order_orderId
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, object]
+        - length_equals: [content.items.0, 15]

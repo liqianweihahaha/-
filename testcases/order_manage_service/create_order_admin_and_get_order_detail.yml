@@ -16,6 +16,7 @@
 #         - eq: [status_code, 200]
 
 - test:
+    skipIf: ${is_production()}
     name: 创建代下单全款订单：sku对应spu已上架-客户存在-优惠金额不传递
     request:
         method: POST
@@ -49,6 +50,7 @@
         - created_orderId1: content.orderId
 
 - test:
+    skipIf: ${is_production()}
     name: 获取订单详情-订单ID存在(代下单全款订单)
     request:
         method: GET

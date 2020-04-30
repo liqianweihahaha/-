@@ -1,0 +1,12 @@
+name: 订单api:业务审核付款审核单
+base_url: ${ENV(transaction_admin_api_host)}
+request:
+    method: PATCH
+    url: /orders/$orderId/payments/reviews/$paymentReviewId/review/bm
+    headers:
+        Authorization: $login_token
+    json:
+        reviewPassed: $reviewPassed
+        remark: 业务审核付款审核单
+validate:
+    - eq: [status_code, 200]
