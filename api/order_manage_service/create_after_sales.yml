@@ -13,9 +13,10 @@ request:
         owner: '自动化测试'
         ownerId: $ownerId
         refundMethod: "ORIGINAL"
+        detailedReason: "测试订单"
         remarks:
               -
-               remark: "自动化测试申请售后"
+               remark: "自动化测试申请售后"         
         items:
               -
                materialNumber: $materialNumber_1

@@ -3,7 +3,7 @@
     base_url: ${ENV(order_service_host)}
 
 - test:
-    name: 获取所有售后原因
+    name: 获取所有售后原因-不带参数
     request:
         method: GET
         url: /after_sales/reasons

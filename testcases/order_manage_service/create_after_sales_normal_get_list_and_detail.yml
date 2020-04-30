@@ -1,5 +1,5 @@
 - config:
-    name: 测试组合：能否申请售后-获得可退金额-创建售后单-售后单详情状态检查-获取售后项-获取售后列表
+    name: 测试组合：能否申请售后-获得可退金额-创建售后单-售后单详情状态检查-获取售后项-获取售后单详情
     base_url: ${ENV(order_service_host)}
     variables:
         - existed_customerPhoneNumber: ${order_customerPhoneNumber_config()}
@@ -8,11 +8,10 @@
         - existed_placedBy: ${order_placedBy_config()}
         - existed_total_discount: null
         - existed_handledById: ${order_handledById_config()}
-        - existed_transactionNumber: ${random_transaction_number()}
-        - existed_orderPlatform: CODEMAO
+        - existed_transactionNumber: ${gen_random_string(20)}
+        - existed_orderPlatform: ALIPAY
         - existed_actualPayment: 0.03
         - existed_afterSaleType: 'RETURN_REFUND'
-        - existed_handledById: ${order_handledById_config()}
         - existed_issued: false
         - unexisted_actualPayment: 100
         - unexisted_orderId: 123456
@@ -25,11 +24,14 @@
         - unexisted_skuNumber: "1111111111111"
 
 - test:
+    skipIf: ${is_production()}
     name: 创建普通订单(数据准备1)
     api: api/order_manage_service/create_order.yml
     variables:
+        - placedMethod: BY_ADMIN
+        - orderPlatform: $existed_orderPlatform
         - customer_phone_number: $existed_customerPhoneNumber
-        - customer_id: 1000845917
+        - customer_id: $existed_customerId
         - sku_number: $existed_skuNumber
         - total_discount: $existed_total_discount
     validate:
@@ -40,6 +42,7 @@
         - create_order_orderId: content.orderId
 
 - test:
+    skipIf: ${is_production()}
     name: 上传支付凭证(数据准备2)
     skipUnless: ${eval_equal($create_order_status, 200)}
     api: api/order_manage_service/upload_payment.yml
@@ -55,6 +58,7 @@
         - upload_payment_status: status_code
 
 - test:
+    skipIf: ${is_production()}
     name: 付款业务审核列表-订单id查询-获取paymentReviewId(数据准备3)
     skipUnless: ${eval_equal($create_order_status, 200)}
     api: api/order_manage_service/get_payments_reviews_list.yml
@@ -67,6 +71,7 @@
         - paymentReviewId: content.items.0.paymentReviewId
 
 - test:
+    skipIf: ${is_production()}
     name: 业务经理审核通过(数据准备4)
     skipUnless: ${eval_equal($search_status_code, 200)}
     api: api/order_manage_service/bm_review_payment_reviews.yml
@@ -81,6 +86,7 @@
         - bm_review_status_code: status_code
 
 - test:
+    skipIf: ${is_production()}
     name: 财务经理审核通过（数据准备5）
     skipUnless: ${eval_equal($bm_review_status_code, 200)}
     api: api/order_manage_service/fm_review_payment_reviews.yml
@@ -96,27 +102,29 @@
         - fm_review_status_code: status_code
 
 - test:
+    skipIf: ${is_production()}
     setup_hooks:
         - ${sleep_N_secs(5)}
-    name: 订单详情页-获取materialNumber、shippingId（数据准备6）
+    name: 售后申请预览-获取物料发货单等信息（数据准备6）
     skipUnless: ${eval_equal($fm_review_status_code, 200)}
-    api: api/transaction_admin_api/get_order_detail.yml
-    variables:
-        - orderId: $create_order_orderId
-        - login_token: ${internal_source_user_login_token()}
+    request:
+        method: GET
+        url: ${ENV(transaction_admin_api_host)}/after_sales/previews/issuing?orderId=$create_order_orderId
+        headers:
+            Authorization: ${internal_source_user_login_token()}
     validate:
         - eq: [status_code, 200]
     extract:
-        - order_state: content.state
-        - shipmentId_1: content.normalOrderInfo.shippingInfo.0.shipmentId
-        - material_id_1: content.normalOrderInfo.shippingInfo.0.materials.0.material_id
-        - material_count_1: content.normalOrderInfo.shippingInfo.0.materials.0.material_count
-        - shipmentId_2: content.normalOrderInfo.shippingInfo.1.shipmentId
-        - material_id_2: content.normalOrderInfo.shippingInfo.1.materials.0.material_id
-        - material_count_2: content.normalOrderInfo.shippingInfo.1.materials.0.material_count
+        - shipmentId_1: content.items.0.shippingId
+        - material_id_1: content.items.0.materialNumber
+        - material_count_1: content.items.0.returnableCount
+        - shipmentId_2: content.items.1.shippingId
+        - material_id_2: content.items.1.materialNumber
+        - material_count_2: content.items.1.returnableCount
 
 - test:
-    name: 能否申请售后-订单存在/已完成/没有有未完成的售后单/剩余可退金额大于0
+    skipIf: ${is_production()}
+    name: 能否申请售后-订单存在/已完成/没有未完成的售后单/剩余可退金额大于0
     skipUnless: ${eval_equal($order_state, "COMPLETED")}
     request:
         method: GET
@@ -126,6 +134,7 @@
         - eq: [content.issuable, true]
 
 - test:
+    skipIf: ${is_production()}
     name: 能否申请售后-订单为空或不存在
     skipUnless: ${eval_equal($order_state, "COMPLETED")}
     request:
@@ -137,6 +146,7 @@
 
 
 - test:
+    skipIf: ${is_production()}
     name: 获得可退金额-订单存在，符合申请售后的条件
     skipUnless: ${eval_equal($order_state, "COMPLETED")}
     request:
@@ -157,6 +167,7 @@
         - eq: [content.error_code, "10017006"]
 
 - test:
+    skipIf: ${is_production()}
     skipIf: ${is_production()}
     name: 创建售后单（普通订单）-申请售后金额>可退金额-保存失败
     skipUnless: ${eval_equal($order_state, "COMPLETED")}
@@ -385,22 +396,23 @@
         - eq: [status_code, 200]
     extract:
         - afterSaleId: content.afterSaleId
+        - afterSale_status: status_code
 
 - test:
     skipIf: ${is_production()}
     name: 通过id获取售后单-检查售后状态-afterSaleId存在
-    skipUnless: ${eval_equal($order_state, "COMPLETED")}
+    skipUnless: ${eval_equal($afterSale_status, 200)}
     api: api/order_manage_service/get_after_sales_detail.yml
     variables:
         - afterSaleId: $afterSaleId
     validate:
         - eq: [status_code, 200]
-        - eq: [content.state, "200"]
+        - eq: [content.state, "1000"]
 
 - test:
     skipIf: ${is_production()}
     name: 通过id获取售后单-afterSaleId不存在
-    skipUnless: ${eval_equal($order_state, "COMPLETED")}
+    skipUnless: ${eval_equal($afterSale_status, 200)}
     api: api/order_manage_service/get_after_sales_detail.yml
     variables:
         - afterSaleId: $unexisted_afterSaleId
@@ -409,8 +421,9 @@
 
 
 - test:
+    skipIf: ${is_production()}
     name: 订单能否申请售后-有未完成的售后单
-    skipUnless: ${eval_equal($order_state, "COMPLETED")}
+    skipUnless: ${eval_equal($afterSale_status, 200)}
     skipUnless: ${eval_equal($fm_review_status_code, 200)}
     request:
         method: GET
@@ -420,6 +433,7 @@
         - eq: [content.issuable, false]
 
 - test:
+    skipIf: ${is_production()}
     name: 获取售后单列表-售后ID查询-存在
     request:
         method: GET
@@ -431,6 +445,7 @@
 
 
 - test:
+    skipIf: ${is_production()}
     name: 获取售后单列表-订单ID查询-存在
     request:
         method: GET
@@ -440,3 +455,46 @@
         - eq: [content.items.0.orderId, $create_order_orderId]
         - length_equals: [content.items, 1]
 
+
+- test:
+    skipIf: ${is_production()}
+    name: 获取售后项-afterSaleId存在
+    skipUnless: ${eval_equal($afterSale_status, 200)}
+    request:
+        method: GET
+        url: /after_sales/$afterSaleId/items
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, list]
+        - length_equals: [content.0, 13]
+
+- test:
+    skipIf: ${is_production()}
+    name: 获取售后项-afterSaleId不存在
+    request:
+        method: GET
+        url: /after_sales/$unexisted_afterSaleId/items
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, list]
+        - length_equals: [content, 0]
+
+- test:
+    skipIf: ${is_production()}
+    name: 获取售后单详情-afterSaleId存在
+    skipUnless: ${eval_equal($afterSale_status, 200)}
+    request:
+        method: GET
+        url: /after_sales/$afterSaleId
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, object]
+        - length_equals: [content, 27]
+
+- test:
+    name: 获取售后单详情-afterSaleId不存在
+    request:
+        method: GET
+        url: /after_sales/$unexisted_afterSaleId
+    validate:
+        - eq: [status_code, 200]

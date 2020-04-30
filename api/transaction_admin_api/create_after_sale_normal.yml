@@ -1,18 +1,19 @@
-name: 编辑售后单
-base_url: ${ENV(order_service_host)}
-
+name: 订单api:创建售后单(普通订单)
+base_url: ${ENV(transaction_admin_api_host)}
 request:
-    method: PUT
-    url: /after_sales/$afterSaleId
+    method: POST
+    url: /after_sales
     json:
         actualRefundAmount: $actualRefundAmount
         afterSaleReasonId: 1
         afterSaleType: $afterSaleType
         issued: $issued
-        owner: '自动化测试'
-        ownerId: $ownerId
+        orderId: $orderId
         refundMethod: "ORIGINAL"
-        detailedReason: "测试订单"
+        detailedReason: "测试售后单详细原因"
+        remarks:
+              -
+               remark: "自动化测试申请售后"         
         items:
               -
                materialNumber: $materialNumber_1

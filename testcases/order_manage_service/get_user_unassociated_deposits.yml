@@ -2,7 +2,7 @@
     name: 获取用户可关联的订金订单列表
     base_url: ${ENV(order_service_host)}
     variables:
-        - unexist_user_id: 100
+        - unexist_user_id: 100111111111
 
 - test:
     name: customerId存在

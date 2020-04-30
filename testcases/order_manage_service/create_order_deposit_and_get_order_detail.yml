@@ -19,14 +19,14 @@
         - new_created_order_deposit: content.orderId
 
 - test:
-    name: 获取订金订单详情
     skipIf: ${is_production()}
+    name: 获取订金订单详情
     api: api/order_manage_service/get_order_detail.yml
     variables:
         - orderId: $new_created_order_deposit
     validate:
         - eq: [status_code, 200]
-        - length_equals: [content, 39]
+        - length_equals: [content, 42]
         - eq: [content.orderId, $new_created_order_deposit]
         - eq: [content.orderType, '1']
         - eq: [content.renewed, 0]
@@ -35,7 +35,7 @@
         - eq: [content.subtotal, $deposit_order_price]
         - eq: [content.total, $deposit_order_price]
         - eq: [content.state, '200']
-        - eq: [content.reviewState, '104']
+        - eq: [content.reviewState, '105']
         - eq: [content.paymentState, '200']
         - eq: [content.checkState, '300']
         - eq: [content.shippingState, '400']

@@ -1,0 +1,60 @@
+- config:
+    name: 关闭订单
+    base_url: ${ENV(order_service_host)}
+    variables:
+        - existed_customerPhoneNumber: ${order_customerPhoneNumber_config()}
+        - existed_skuNumber: ${sku_number_config()}
+        - existed_customerId: ${order_customerId_config()}
+        - existed_placedBy: ${order_placedBy_config()}
+        - existed_total_discount: null
+        - existed_handledById: ${order_handledById_config()}
+        - existed_handledByName: ${order_handledByName_config()}
+        - existed_orderPlatform: CODEMAO
+        - unexisted_orderId: 123456
+
+- test:
+    skipIf: ${is_production()}
+    name: 创建普通订单
+    api: api/order_manage_service/create_order.yml
+    variables:
+        - placedMethod: BY_ADMIN
+        - orderPlatform: $existed_orderPlatform
+        - customer_phone_number: $existed_customerPhoneNumber
+        - customer_id: 1000845917
+        - sku_number: $existed_skuNumber
+        - total_discount: $existed_total_discount
+    validate:
+        - eq: [status_code, 200]
+        - length_equals: [content.orderId, 20]
+    extract:
+        - create_order_status: status_code
+        - create_order_orderId: content.orderId
+
+- test:
+    skipIf: ${is_production()}
+    name: 关闭订单-orderId存在
+    skipUnless: ${eval_equal($create_order_status, 200)}
+    request:
+        method: PATCH
+        url: /orders/$create_order_orderId/close
+        json:
+            handledById: $existed_handledById
+            handledBy: $existed_handledByName
+            closedReason: 手动关闭订单
+            closedReasonId: 3    
+    validate:
+        - eq: [status_code, 200]
+
+- test:
+    name: 关闭订单-orderId不存在
+    request:
+        method: PATCH
+        url: /orders/$unexisted_orderId/close
+        json:
+            handledById: $existed_handledById
+            handledBy: $existed_handledByName
+            closedReason: 手动关闭订单
+            closedReasonId: 3    
+    validate:
+        - eq: [status_code, 422]
+        - eq: [content.error_code, "10017006"]

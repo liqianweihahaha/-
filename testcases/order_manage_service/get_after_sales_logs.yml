@@ -1,0 +1,46 @@
+- config:
+    name: 获取售后单日志
+    base_url: ${ENV(order_service_host)}
+    variables:
+        - existed_customerPhoneNumber: ${order_customerPhoneNumber_config()}
+        - existed_customerId: ${order_customerId_config()}
+        - existed_afterSaleType: 2
+        - existed_afterSaleStates: 200
+        - unexisted_customerId: 11111111111
+        - unexisted_customerPhoneNumber: 155111111111
+        - unexisted_afterSaleIds: 123456
+        - unexisted_orderIds: 12345678
+
+
+- test:
+    name: 获取售后单日志-不带任何参数
+    request:
+        method: GET
+        url: /after_sales/logs
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, object]
+        - type_match: [content.items, list]
+        - length_equals: [content.items.0, 10]
+
+- test:
+    name: 获取售后单日志-afterSaleIds参数不存在
+    request:
+        method: GET
+        url: /after_sales/logs?afterSaleIds=$unexisted_afterSaleIds
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, object]
+        - type_match: [content.items, list]
+        - length_equals: [content.items, 0]
+
+- test:
+    name: 获取售后单日志-orderIds参数不存在
+    request:
+        method: GET
+        url: /after_sales/logs?orderIds=$unexisted_orderIds
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, object]
+        - type_match: [content.items, list]
+        - length_equals: [content.items, 0]
