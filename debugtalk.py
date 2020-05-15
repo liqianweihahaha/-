@@ -109,7 +109,7 @@ def is_dev_or_test():
 
 # 判断是否是正式环境
 def is_production():
-    return True if TEST_ENV == 'staging' else False
+    return True if TEST_ENV == 'production' else False
 
 # 因为test中None会被解析为字符串，所以这里增加此函数
 def is_none(source):

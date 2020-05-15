@@ -1,9 +1,9 @@
 - config:
-    name: 接口组合测试：创建普通订单-上传支付凭证-业务审核通过-财务审核通过
+    name: service组合测试：创建普通订单-上传支付凭证-业务审核通过-财务审核通过
     base_url: ${ENV(order_service_host)}
     variables:
         - existed_customerPhoneNumber: ${order_customerPhoneNumber_config()}
-        - existed_skuNumber: 205323000001
+        - existed_skuNumber: ${sku_number_config()}
         - existed_customerId: ${order_customerId_config()}
         - existed_placedBy: ${order_placedBy_config()}
         - existed_total_discount: null
@@ -34,7 +34,7 @@
 
 - test:
     skipIf: ${is_production()}
-    name: 创建订金订单后上传支付凭证-orderPlatform为TMALL
+    name: 创建普通订单后上传支付凭证-orderPlatform为ALIPAY
     skipUnless: ${eval_equal($create_order_status, 200)}
     api: api/order_manage_service/upload_payment.yml
     variables:

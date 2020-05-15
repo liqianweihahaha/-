@@ -1,8 +1,8 @@
-name: 售后api:创建售后单(普通订单)
+name: 售后api:编辑售后单(普通订单)
 base_url: ${ENV(transaction_admin_api_host)}
 request:
-    method: POST
-    url: /after_sales
+    method: PUT
+    url: /after_sales/$afterSaleId
     headers:
         Authorization: $login_token
     json:

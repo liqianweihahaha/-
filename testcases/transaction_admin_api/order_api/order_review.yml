@@ -1,19 +1,23 @@
 - config:
-    name: 订单优惠审核
+    name: 订单api:订单优惠审核
     base_url: ${ENV(transaction_admin_api_host)}
     verify: False
     variables:
         - existed_customerPhoneNumber: ${order_customerPhoneNumber_config()}
         - existed_skuNumber: ${sku_number_config()}
         - existed_total_discount: 0.02
+        - existed_orderPlatform: ALIPAY
         - existed_customerId: ${order_customerId_config()}
         - unexisted_order_orderId: 123456
-        - existed_total_discount1: null
 
 - test:
-    name: 创建普通订单-用于人工审核通过
+    skipIf: ${is_production()}
+    name: 已登录内部账号系统-创建普通订单-用于人工审核通过
+    base_url: ${ENV(order_service_host)}
     api: api/order_manage_service/create_order.yml
     variables:
+        - placedMethod: BY_ADMIN
+        - orderPlatform: $existed_orderPlatform
         - customer_phone_number: $existed_customerPhoneNumber
         - customer_id: $existed_customerId
         - sku_number: $existed_skuNumber
@@ -36,7 +40,7 @@
              remark: '人工审核通过'
     validate:
         - eq: [status_code, 403]
-        - eq: [content.error_code, '10020004']
+        - eq: [content.error_code, '10020005']
 
 - test:
     name: 已登录内部账号系统-订单优惠审批-待人工审核-订单编号存在-人工审核通过
@@ -62,7 +66,7 @@
             Authorization: ${internal_source_user_login_token()}
     validate:
         - eq: [status_code, 200]
-        - eq: [content.items.0.reviewState, 'REVIEW_PASSED']
+        - eq: [content.items.0.reviewState, 'SYSTEM_REVIEW_FAILED']
 
 - test:
     name: 已登录内部账号系统-订单优惠审批-已审核通过-订单状态检
@@ -77,9 +81,13 @@
         - eq: [content.items.0.state, 'AWAITING_PAYMENT']
 
 - test:
-    name: 创建普通订单-用于人工审核不通过
+    skipIf: ${is_production()}
+    name: 已登录内部账号系统-创建普通订单-用于人工审核不通过
+    base_url: ${ENV(order_service_host)}
     api: api/order_manage_service/create_order.yml
     variables:
+        - placedMethod: BY_ADMIN
+        - orderPlatform: $existed_orderPlatform
         - customer_phone_number: $existed_customerPhoneNumber
         - customer_id: $existed_customerId
         - sku_number: $existed_skuNumber
@@ -115,7 +123,7 @@
             Authorization: ${internal_source_user_login_token()}
     validate:
         - eq: [status_code, 200]
-        - eq: [content.items.0.reviewState, 'MANUAL_REVIEW_FAILED']
+        - eq: [content.items.0.reviewState, 'SYSTEM_REVIEW_FAILED']
 
 - test:
     name: 已登录内部账号系统-订单优惠审批-已人工审核不通过-订单状态检查
@@ -131,13 +139,17 @@
 
 
 - test:
-    name: 创建普通订单-用于系统自动审核通过
+    skipIf: ${is_production()}
+    name: 已登录内部账号系统-创建普通订单-用于系统自动审核通过
+    base_url: ${ENV(order_service_host)}
     api: api/order_manage_service/create_order.yml
     variables:
+        - placedMethod: BY_ADMIN
+        - orderPlatform: $existed_orderPlatform
         - customer_phone_number: $existed_customerPhoneNumber
         - customer_id: $existed_customerId
         - sku_number: $existed_skuNumber
-        - total_discount: $existed_total_discount1
+        - total_discount: null
     validate:
         - eq: [status_code, 200]
         - length_equals: [content.orderId, 20]
@@ -145,17 +157,6 @@
         - create_order_status3: status_code
         - create_order_orderId3: content.orderId
 
-- test:
-    name: 已登录内部账号系统-订单优惠审批-系统自动审核通过-订单优惠审核列表无此记录
-    skipUnless: ${eval_equal($create_order_status3, 200)}
-    request:
-        method: GET
-        url: orders/reviews?orderId=$create_order_orderId3
-        headers:
-            Authorization: ${internal_source_user_login_token()}
-    validate:
-        - eq: [status_code, 200]
-        - eq: [content.total, 0]
 
 - test:
     name: 已登录内部账号系统-订单优惠审批-系统自动审核通过-订单状态检查
@@ -188,7 +189,7 @@
     skipUnless: ${eval_equal($create_order_status1, 200)}
     request:
         method: PATCH
-        url: /orders/$create_order_orderId1/review
+        url: /orders/$create_order_orderId3/review
         headers:
             Authorization: ${internal_source_user_login_token()}
         json:

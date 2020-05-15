@@ -21,7 +21,7 @@
         - placedMethod: BY_ADMIN
         - orderPlatform: $existed_orderPlatform
         - customer_phone_number: $existed_customerPhoneNumber
-        - customer_id: 1000845917
+        - customer_id: $existed_customerId
         - sku_number: $existed_skuNumber
         - total_discount: $existed_total_discount
     validate:

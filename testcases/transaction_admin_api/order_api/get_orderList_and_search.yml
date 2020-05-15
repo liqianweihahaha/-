@@ -1,11 +1,12 @@
 - config:
-    name: 订单列表&查询
+    name: 订单api:订单列表&查询
     base_url: ${ENV(transaction_admin_api_host)}
     verify: False
     variables:
         - existed_customerPhoneNumber: ${order_customerPhoneNumber_config()}
         - existed_skuNumber: ${sku_number_config()}
         - existed_total_discount: null
+        - existed_orderPlatform: ALIPAY
         - unexisted_customerPhoneNumber: 15511111111
         - existed_orderState: COMPLETED
         - existed_orderType1: DEPOSIT
@@ -21,11 +22,14 @@
     export:
         - create_order_status
 
-
 - test:
-    name: 创建普通订单
+    skipIf: ${is_production()}
+    name: 已登录内部账号系统-创建普通订单(数据准备1)
+    base_url: ${ENV(order_service_host)}
     api: api/order_manage_service/create_order.yml
     variables:
+        - placedMethod: BY_ADMIN
+        - orderPlatform: $existed_orderPlatform
         - customer_phone_number: $existed_customerPhoneNumber
         - customer_id: $existed_customerId
         - sku_number: $existed_skuNumber
@@ -74,7 +78,7 @@
     validate:
         - eq: [status_code, 200]
         - type_match: [content.items, list]
-        - length_equals: [content.items.0, 36]
+        - length_equals: [content.items.0, 38]
 
 - test:
     name: 已登录内部账号系统-获取订单列表-客户手机号查询-手机号不存在
@@ -100,7 +104,7 @@
     validate:
         - eq: [status_code, 200]
         - type_match: [content.items, list]
-        - length_equals: [content.items.0, 36]
+        - length_equals: [content.items.0, 38]
         - eq: [content.items.0.state, COMPLETED]
 
 
@@ -114,7 +118,7 @@
     validate:
         - eq: [status_code, 200]
         - type_match: [content.items, list]
-        - length_equals: [content.items.0, 36]
+        - length_equals: [content.items.0, 38]
         - eq: [content.items.0.orderType, DEPOSIT]
 
 - test:
@@ -127,7 +131,7 @@
     validate:
         - eq: [status_code, 200]
         - type_match: [content.items, list]
-        - length_equals: [content.items.0, 36]
+        - length_equals: [content.items.0, 38]
         - eq: [content.items.0.orderType, NORMAL]
 
 - test:
@@ -140,7 +144,7 @@
     validate:
         - eq: [status_code, 200]
         - type_match: [content.items, list]
-        - length_equals: [content.items.0, 36]
+        - length_equals: [content.items.0, 38]
         - eq: [content.items.0.paymentOption, FULL]
 
 
@@ -154,7 +158,7 @@
     validate:
         - eq: [status_code, 200]
         - type_match: [content.items, list]
-        - length_equals: [content.items.0, 36]
+        - length_equals: [content.items.0, 38]
         - eq: [content.items.0.renewed, 1]
 
 - test:
@@ -167,7 +171,7 @@
     validate:
         - eq: [status_code, 200]
         - type_match: [content.items, list]
-        - length_equals: [content.items.0, 36]
+        - length_equals: [content.items.0, 38]
         - eq: [content.items.0.platform, JD]
 
 - test:
@@ -180,7 +184,7 @@
     validate:
         - eq: [status_code, 200]
         - type_match: [content.items, list]
-        - length_equals: [content.items.0, 36]
+        - length_equals: [content.items.0, 38]
         - eq: [content.items.0.customerId, $existed_customerId]
 
 - test:
@@ -206,7 +210,7 @@
     validate:
         - eq: [status_code, 200]
         - type_match: [content.items, list]
-        - length_equals: [content.items.0, 36]
+        - length_equals: [content.items.0, 38]
         - eq: [content.items.0.placedBy, $existed_placedBy]
 
 - test:
@@ -227,4 +231,4 @@
         url: /orders?page=1&limit=10
     validate:
         - eq: [status_code, 403]
-        - eq: [content.error_code, '10020004']
+        - eq: [content.error_code, '10020005']

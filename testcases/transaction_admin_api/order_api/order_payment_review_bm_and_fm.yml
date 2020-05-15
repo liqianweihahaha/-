@@ -1,5 +1,5 @@
 - config:
-    name: 组合测试：线下转账-业务经理审核&财务经理审核-订单状态检查-发货状态检查
+    name: 订单api组合测试：线下转账-业务经理审核&财务经理审核-订单状态检查-发货状态检查
     base_url: ${ENV(transaction_admin_api_host)}
     verify: False
     variables:
@@ -7,31 +7,36 @@
         - existed_skuNumber: ${sku_number_config()}
         - existed_customerId: ${order_customerId_config()}
         - existed_placedBy: ${order_placedBy_config()}
+        - existed_orderPlatform: ALIPAY
         - existed_total_discount: null
         - existed_handledById: ${order_handledById_config()}
-        - existed_transactionNumber: ${random_transaction_number()}
+        - existed_transactionNumber: ${gen_random_string(20)}
         - existed_orderPlatform: TMALL
         - existed_actualPayment: 0.03
 
 
 - test:
-    name: 创建普通订单
+    skipIf: ${is_production()}
+    name: 已登录内部账号系统-创建普通订单(数据准备1)
+    base_url: ${ENV(order_service_host)}
     api: api/order_manage_service/create_order.yml
     variables:
+        - placedMethod: BY_ADMIN
+        - orderPlatform: $existed_orderPlatform
         - customer_phone_number: $existed_customerPhoneNumber
-        - customer_id: 1000845917
+        - customer_id: $existed_customerId
         - sku_number: $existed_skuNumber
         - total_discount: $existed_total_discount
     validate:
         - eq: [status_code, 200]
         - length_equals: [content.orderId, 20]
     extract:
-        - create_order_status1: status_code
+        - create_order_status: status_code
         - create_order_orderId: content.orderId
 
 - test:
     name: 线下转账-上传支付凭证
-    skipUnless: ${eval_equal($create_order_status1, 200)}
+    skipUnless: ${eval_equal($create_order_status, 200)}
     api: api/order_manage_service/upload_payment.yml
     variables:
         - order_id: $create_order_orderId
@@ -46,7 +51,7 @@
 
 - test:
     name: 已登录内部账号系统-线下转账-订单付款业务审核列表-订单id查询-订单id存在
-    skipUnless: ${eval_equal($create_order_status1, 200)}
+    skipUnless: ${eval_equal($create_order_status, 200)}
     request:
         method: GET
         url: /orders/payments/reviews/bm?orderIds=$create_order_orderId
@@ -62,7 +67,7 @@
         - paymentReviewId: content.items.0.paymentReviewId
 
 - test:
-    name: 未登录-线下转账-业务经理审核-通过
+    name: 未登录内部账号系统-线下转账-业务经理审核-通过
     skipUnless: ${eval_equal($search_status_code, 200)}
     request:
         method: PATCH
@@ -72,7 +77,7 @@
             remark: '业务经理审核通过'
     validate:
         - eq: [status_code, 403]
-        - eq: [content.error_code, '10020004']
+        - eq: [content.error_code, '10020005']
 
 - test:
     name: 已登录内部账号系统-线下转账-业务经理审核-通过

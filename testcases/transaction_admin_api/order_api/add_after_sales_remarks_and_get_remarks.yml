@@ -1,6 +1,6 @@
 - config:
-    name: 售后单业务经理审核-业务负责人审核-会计审核-财务主管审核流程
-    base_url: ${ENV(order_service_host)}
+    name: 售后api测试组合：创建售后单-添加售后单备注-获取售后单备注列表
+    base_url: ${ENV(transaction_admin_api_host)}
     variables:
         - existed_customerPhoneNumber: ${order_customerPhoneNumber_config()}
         - existed_skuNumber: ${sku_number_config()}
@@ -8,15 +8,17 @@
         - existed_placedBy: ${order_placedBy_config()}
         - existed_total_discount: null
         - existed_handledById: ${order_handledById_config()}
-        - existed_handledByName: ${order_handledByName_config()}
         - existed_transactionNumber: ${gen_random_string(20)}
         - existed_orderPlatform: ALIPAY
         - existed_actualPayment: 0.03
         - existed_afterSaleType: 'RETURN_REFUND'
+        - existed_issued: false
+        - unexisted_afterSaleId: 123456
 
 - test:
     skipIf: ${is_production()}
-    name: 创建普通订单(数据准备1)
+    name: 已登录内部账号系统-创建普通订单(数据准备1)
+    base_url: ${ENV(order_service_host)}
     api: api/order_manage_service/create_order.yml
     variables:
         - placedMethod: BY_ADMIN
@@ -34,7 +36,8 @@
 
 - test:
     skipIf: ${is_production()}
-    name: 上传支付凭证(数据准备2)
+    name: 已登录内部账号系统-上传支付凭证(数据准备2)
+    base_url: ${ENV(order_service_host)}
     skipUnless: ${eval_equal($create_order_status, 200)}
     api: api/order_manage_service/upload_payment.yml
     variables:
@@ -50,27 +53,30 @@
 
 - test:
     skipIf: ${is_production()}
-    name: 付款业务审核列表-订单id查询-获取paymentReviewId(数据准备3)
-    skipUnless: ${eval_equal($create_order_status, 200)}
-    api: api/order_manage_service/get_payments_reviews_list.yml
-    variables:
-        - orderIds: $create_order_orderId
+    name: 已登录内部账号系统-业务审核付款审核单列表-获取paymentReviewId（数据准备3）
+    skipUnless: ${eval_equal($upload_payment_status, 200)}
+    request:
+        method: GET
+        url: /orders/payments/reviews/bm?orderIds=$create_order_orderId
+        headers:
+            Authorization: ${internal_source_user_login_token()}
     validate:
         - eq: [status_code, 200]
     extract:
-        - search_status_code: status_code
         - paymentReviewId: content.items.0.paymentReviewId
+        - search_status_code: status_code
+
 
 - test:
     skipIf: ${is_production()}
-    name: 业务经理审核通过(数据准备4)
+    name: 已登录内部账号系统-业务审核通过(数据准备4)
     skipUnless: ${eval_equal($search_status_code, 200)}
-    api: api/order_manage_service/bm_review_payment_reviews.yml
+    api: api/transaction_admin_api/bm_review_payment_reviews.yml
     variables:
         - orderId: $create_order_orderId
         - paymentReviewId: $paymentReviewId
         - reviewPassed: true
-        - reviewedById: $existed_handledById
+        - login_token: ${internal_source_user_login_token()}
     validate:
         - eq: [status_code, 200]
     extract:
@@ -78,34 +84,35 @@
 
 - test:
     skipIf: ${is_production()}
-    name: 财务经理审核通过（数据准备5）
+    name: 已登录内部账号系统-财务经理审核通过（数据准备5）
     skipUnless: ${eval_equal($bm_review_status_code, 200)}
-    api: api/order_manage_service/fm_review_payment_reviews.yml
+    api: api/transaction_admin_api/fm_review_payment_reviews.yml
     variables:
         - orderId: $create_order_orderId
         - paymentReviewId: $paymentReviewId
         - reviewPassed: true
-        - reviewedById: $existed_handledById
         - receivedAt: ${get_timestamp(10)}
+        - login_token: ${internal_source_user_login_token()}
     validate:
         - eq: [status_code, 200]
     extract:
         - fm_review_status_code: status_code
 
 - test:
-    skipIf: ${is_production()}
     setup_hooks:
-        - ${sleep_N_secs(10)}
-    name: 售后申请预览-获取物料发货单等信息（数据准备6）
+        - ${sleep_N_secs(8)}
+    skipIf: ${is_production()}    
+    name: 已登录内部账号系统-售后申请预览-获取物料发货单等信息（数据准备6）
     skipUnless: ${eval_equal($fm_review_status_code, 200)}
     request:
         method: GET
-        url: ${ENV(transaction_admin_api_host)}/after_sales/previews/issuing?orderId=$create_order_orderId
+        url: /after_sales/previews/issuing?orderId=$create_order_orderId
         headers:
             Authorization: ${internal_source_user_login_token()}
     validate:
         - eq: [status_code, 200]
     extract:
+        - issuing_status_code: status_code
         - shipmentId_1: content.items.0.shippingId
         - material_id_1: content.items.0.materialNumber
         - material_count_1: content.items.0.returnableCount
@@ -113,18 +120,17 @@
         - material_id_2: content.items.1.materialNumber
         - material_count_2: content.items.1.returnableCount
 
-
 - test:
     skipIf: ${is_production()}
-    name: 创建售后单（普通订单）-所有必填参数都填写正确-提交成功
-    skipUnless: ${eval_equal($fm_review_status_code, 200)}
-    api: api/order_manage_service/create_after_sales.yml
+    name: 已登录内部账号系统-创建售后单（普通订单）-所有必填参数都填写正确-提交成功(数据准备7)
+    skipUnless: ${eval_equal($order_state, "COMPLETED")}
+    api: api/transaction_admin_api/create_after_sale_normal.yml
     variables:
+        - login_token: ${internal_source_user_login_token()}
         - actualRefundAmount: $existed_actualPayment
         - afterSaleType: $existed_afterSaleType
         - issued: true
         - orderId: $create_order_orderId
-        - ownerId: $existed_handledById
         - materialNumber_1: $material_id_1
         - returnsCount_1: $material_count_1
         - shippingId_1: $shipmentId_1
@@ -136,100 +142,105 @@
     validate:
         - eq: [status_code, 200]
     extract:
-        - afterSaleId: content.afterSaleId
+        - afterSale_Id: content.afterSaleId
         - afterSale_status: status_code
 
 - test:
     skipIf: ${is_production()}
-    name: 售后单-业务经理审核通过
+    name: 未登录内部账号系统-添加售后单备注-售后单ID存在-添加成功
     skipUnless: ${eval_equal($afterSale_status, 200)}
-    api: api/order_manage_service/after_sales_review.yml
-    variables:
-        - afterSaleId: $afterSaleId
-        - remark: "业务经理审核通过"
-        - reviewPassed: true
-        - reviewedBy: $existed_handledByName
-        - reviewedById: $existed_handledById
+    request:
+        method: POST
+        url: /after_sales/$afterSale_Id/remarks
+        json:
+            remark: 售后添加备注-自动化测试
     validate:
-        - eq: [status_code, 200]
+        - eq: [status_code, 403]
+        - eq: [content.error_code, '10020005']
 
 - test:
     skipIf: ${is_production()}
-    name: 获取最近的售后审核-检查业务经理审核通过后的状态是否为1002
+    name: 已登录内部账号系统-添加售后单备注-售后单ID存在-添加成功
+    skipUnless: ${eval_equal($afterSale_status, 200)}
+    request:
+        method: POST
+        url: /after_sales/$afterSale_Id/remarks
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+        json:
+            remark: 售后添加备注-自动化测试
+    validate:
+        - eq: [status_code, 200]
+
+
+- test:
+    skipIf: ${is_production()}
+    name: 已登录内部账号系统-添加售后单备注-售后单ID不存在-添加失败
+    skipUnless: ${eval_equal($afterSale_status, 200)}
+    request:
+        method: POST
+        url: /after_sales/$unexisted_afterSaleId/remarks
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+        json:
+            remark: 售后添加备注-自动化测试
+    validate:
+        - eq: [status_code, 422]
+        - eq: [content.error_code, "10017031"]
+
+- test:
+    skipIf: ${is_production()}
+    name: 未登录内部账号系统-获取售后单备注-不带任何查询条件
     skipUnless: ${eval_equal($afterSale_status, 200)}
     request:
         method: GET
-        url: /after_sales/reviews/latest?afterSaleIds=$afterSaleId
+        url: /after_sales/remarks
     validate:
-        - eq: [status_code, 200]
-        - type_match: [content, list]
-        - eq: [content.0.reviewState, 1002]
-
-- test:
-    setup_hooks:
-        - ${sleep_N_secs(1)}
-    skipIf: ${is_production()}
-    name: 售后单-业务负责人审核通过
-    skipUnless: ${eval_equal($afterSale_status, 200)}
-    api: api/order_manage_service/after_sales_review.yml
-    variables:
-        - afterSaleId: $afterSaleId
-        - remark: "业务负责人审核通过"
-        - reviewPassed: true
-        - reviewedBy: $existed_handledByName
-        - reviewedById: $existed_handledById
-    validate:
-        - eq: [status_code, 200]
+        - eq: [status_code, 403]
+        - eq: [content.error_code, '10020005']
 
 - test:
     skipIf: ${is_production()}
-    name: 获取最近的售后审核-检查业务负责人审核通过后的状态是否为1102
+    name: 已登录内部账号系统-获取售后单备注-不带任何查询条件
     skipUnless: ${eval_equal($afterSale_status, 200)}
     request:
         method: GET
-        url: /after_sales/reviews/latest?afterSaleIds=$afterSaleId
+        url: /after_sales/remarks
+        headers:
+            Authorization: ${internal_source_user_login_token()}
     validate:
         - eq: [status_code, 200]
-        - type_match: [content, list]
-        - eq: [content.0.reviewState, 1102]
+        - type_match: [content, object]
+        - type_match: [content.items, list]
+        - length_equals: [content.items.0, 7]
 
 - test:
-    setup_hooks:
-        - ${sleep_N_secs(2)}
     skipIf: ${is_production()}
-    name: 售后单-财务主管审核通过
-    skipUnless: ${eval_equal($afterSale_status, 200)}
-    api: api/order_manage_service/after_sales_review.yml
-    variables:
-        - afterSaleId: $afterSaleId
-        - remark: "财务主管审核通过"
-        - reviewPassed: true
-        - reviewedBy: $existed_handledByName
-        - reviewedById: $existed_handledById
-    validate:
-        - eq: [status_code, 200]
-
-- test:
-    setup_hooks:
-        - ${sleep_N_secs(2)}
-    skipIf: ${is_production()}
-    name: 获取最近的售后审核-检查财务主管审核通过后的状态是否为7002
+    name: 已登录内部账号系统-获取售后单备注-通过售后单Id查询-ID存在
     skipUnless: ${eval_equal($afterSale_status, 200)}
     request:
         method: GET
-        url: /after_sales/reviews/latest?afterSaleIds=$afterSaleId
+        url: /after_sales/remarks?afterSaleId=$afterSale_Id
+        headers:
+            Authorization: ${internal_source_user_login_token()}
     validate:
         - eq: [status_code, 200]
-        - type_match: [content, list]
-        - eq: [content.0.reviewState, 7002]
+        - type_match: [content, object]
+        - type_match: [content.items, list]
+        - length_equals: [content.items.0, 7]
+        - eq: [content.items.0.afterSaleId, $afterSale_Id]
 
 - test:
     skipIf: ${is_production()}
-    name: 获取售后详情页-检查售后单的状态是否为待退款(20000)
+    name: 已登录内部账号系统-获取售后单备注-通过售后单Id查询-ID不存在
     skipUnless: ${eval_equal($afterSale_status, 200)}
     request:
         method: GET
-        url: /after_sales/$afterSaleId
+        url: /after_sales/remarks?afterSaleId=$unexisted_afterSaleId
+        headers:
+            Authorization: ${internal_source_user_login_token()}
     validate:
         - eq: [status_code, 200]
-        - eq: [content.state, "20000"]
+        - type_match: [content, object]
+        - type_match: [content.items, list]
+        - length_equals: [content.items, 0]

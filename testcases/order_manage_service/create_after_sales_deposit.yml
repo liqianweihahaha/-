@@ -99,6 +99,8 @@
 
 
 - test:
+    setup_hooks:
+        - ${sleep_N_secs(10)}
     skipIf: ${is_production()}
     name: 能否申请售后-订单存在/已完成/没有有未完成的售后单/剩余可退金额大于0
     skipUnless: ${eval_equal($order_state, "COMPLETED")}

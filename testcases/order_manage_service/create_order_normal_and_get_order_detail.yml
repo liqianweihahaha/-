@@ -1,0 +1,212 @@
+- config:
+    name: service测试组合：代下单全款订单-获取订单详情
+    base_url: ${ENV(order_service_host)}
+    variables:
+        - test_phone_number: ${test_phone_number()}
+        - existed_customerPhoneNumber: ${order_customerPhoneNumber_config()}
+        - existed_skuNumber: ${sku_number_config()}
+        - existed_customerId: ${order_customerId_config()}
+        - existed_placedBy: ${order_placedBy_config()}
+        - existed_total_discount: null
+        - existed_handledById: ${order_handledById_config()}
+        - existed_handledByName: ${order_handledByName_config()}
+        - existed_orderPlatform: CODEMAO
+        - unexisted_skuNumber: 12345678
+        - unexisted_existed_customerId: 11111111111
+        - unexisted_existed_customerPhoneNumber: 15111111111
+        - unexisted_total_discount: 100
+
+- test:
+    skipIf: ${is_production()}
+    name: 创建代下单全款订单-sku_number不存在-创建失败
+    api: api/order_manage_service/create_order.yml
+    variables:
+        - placedMethod: BY_ADMIN
+        - orderPlatform: $existed_orderPlatform
+        - customer_phone_number: $existed_customerPhoneNumber
+        - customer_id: $existed_customerId
+        - sku_number: $unexisted_skuNumber
+        - total_discount: $existed_total_discount
+    validate:
+        - eq: [status_code, 422]
+        - eq: [content.error_code, "10017005"]
+
+- test:
+    skipIf: ${is_production()}
+    name: 创建代下单全款订单-customer_id不存在-创建失败
+    api: api/order_manage_service/create_order.yml
+    variables:
+        - placedMethod: BY_ADMIN
+        - orderPlatform: $existed_orderPlatform
+        - customer_phone_number: $existed_customerPhoneNumber
+        - customer_id: $unexisted_existed_customerId
+        - sku_number: $existed_skuNumber
+        - total_discount: $existed_total_discount
+    validate:
+        - eq: [status_code, 422]
+        - eq: [content.error_code, "10001000"]
+
+- test:
+    skipIf: ${is_production()}
+    name: 创建代下单全款订单-customer_phone_number不存在-创建成功
+    api: api/order_manage_service/create_order.yml
+    variables:
+        - placedMethod: BY_ADMIN
+        - orderPlatform: $existed_orderPlatform
+        - customer_phone_number: $unexisted_existed_customerPhoneNumber
+        - customer_id: $existed_customerId
+        - sku_number: $existed_skuNumber
+        - total_discount: $existed_total_discount
+    validate:
+        - eq: [status_code, 200]
+        - contains: [content, orderId]
+        - length_equals: [content.orderId, 20]
+
+- test:
+    skipIf: ${is_production()}
+    name: 创建代下单全款订单-customer_phone_number格式不正确-创建失败
+    api: api/order_manage_service/create_order.yml
+    variables:
+        - placedMethod: BY_ADMIN
+        - orderPlatform: $existed_orderPlatform
+        - customer_phone_number: 155111
+        - customer_id: $existed_customerId
+        - sku_number: $existed_skuNumber
+        - total_discount: $existed_total_discount
+    validate:
+        - eq: [status_code, 400]
+
+- test:
+    skipIf: ${is_production()}
+    name: 创建代下单全款订单-优惠金额大于商品金额-创建失败
+    api: api/order_manage_service/create_order.yml
+    variables:
+        - placedMethod: BY_ADMIN
+        - orderPlatform: $existed_orderPlatform
+        - customer_phone_number: $existed_customerPhoneNumber
+        - customer_id: $existed_customerId
+        - sku_number: $existed_skuNumber
+        - total_discount: $unexisted_total_discount
+    validate:
+        - eq: [status_code, 422]
+        - eq: [content.error_code, "10017003"]
+
+- test:
+    skipIf: ${is_production()}
+    name: 创建代下单全款订单-不传customerId参数-创建失败
+    request:
+        method: POST
+        url: /orders/admin
+        json:
+            placedById: 1
+            renewed: 0
+            placedMethod: BY_ADMIN
+            paymentOption: FULL
+            customerInfo:
+                customerPhoneNumber: $existed_customerPhoneNumber
+            productInfo:
+                - 
+                    skuNumber: $existed_skuNumber
+                    quantity: 1
+            totalDiscount: $existed_total_discount
+            businessTypeId: 1
+            businessUnitId: 1
+            shippingInfo:
+                consigneeId: $existed_customerId
+            remark: 测试创建订单
+    validate:
+        - eq: [status_code, 400]
+
+
+- test:
+    skipIf: ${is_production()}
+    name: 创建代下单全款订单-不传consigneeId参数-创建失败
+    request:
+        method: POST
+        url: /orders/admin
+        json:
+            placedById: 1
+            renewed: 0
+            placedMethod: BY_ADMIN
+            paymentOption: FULL
+            customerInfo:
+                customerId: $existed_customerId
+                customerPhoneNumber: $existed_customerPhoneNumber
+            productInfo:
+                - 
+                    skuNumber: $existed_skuNumber
+                    quantity: 1
+            totalDiscount: $existed_total_discount
+            businessTypeId: 1
+            businessUnitId: 1
+            shippingInfo:
+            remark: 测试创建订单
+    validate:
+        - eq: [status_code, 400]
+
+
+- test:
+    skipIf: ${is_production()}
+    name: 创建代下单全款订单-consigneeId不存在-创建成功
+    request:
+        method: POST
+        url: /orders/admin
+        json:
+            placedById: 1
+            renewed: 0
+            placedMethod: BY_ADMIN
+            paymentOption: FULL
+            customerInfo:
+                customerId: $existed_customerId
+                customerPhoneNumber: $existed_customerPhoneNumber
+            productInfo:
+                - 
+                    skuNumber: $existed_skuNumber
+                    quantity: 1
+            totalDiscount: $existed_total_discount
+            businessTypeId: 1
+            businessUnitId: 1
+            shippingInfo:
+                consigneeId: $unexisted_existed_customerId
+            remark: 测试创建订单
+    validate:
+        - eq: [status_code, 200]
+        - contains: [content, orderId]
+
+- test:
+    skipIf: ${is_production()}
+    name: 创建代下单全款订单-所有参数都正确-创建成功
+    api: api/order_manage_service/create_order.yml
+    variables:
+        - placedMethod: BY_ADMIN
+        - orderPlatform: $existed_orderPlatform
+        - customer_phone_number: $existed_customerPhoneNumber
+        - customer_id: $existed_customerId
+        - sku_number: $existed_skuNumber
+        - total_discount: $existed_total_discount
+    validate:
+        - eq: [status_code, 200]
+        - contains: [content, orderId]
+        - length_equals: [content.orderId, 20]
+    extract:
+        - create_order_orderId: content.orderId
+
+- test:
+    skipIf: ${is_production()}
+    name: 获取订单详情-订单ID存在
+    request:
+        method: GET
+        url: /orders/$create_order_orderId
+    validate:
+        - eq: [status_code, 200]
+        - length_equals: [content, 42]
+        - eq: [content.orderId, $create_order_orderId]
+        - eq: [content.placedMethod, '2']
+        - eq: [content.paymentOption, '3']
+        - eq: [content.renewed, 0]
+        - eq: [content.customerPhoneNumber, $existed_customerPhoneNumber']
+        - eq: [content.totalDiscount, 0.00]
+        - eq: [content.originalTotal, '${sku_price_config()}']
+        - eq: [content.subtotal, '${sku_price_config()}']
+        - eq: [content.total, '${sku_price_config()}']
+

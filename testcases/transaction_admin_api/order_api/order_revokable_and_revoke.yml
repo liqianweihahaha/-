@@ -1,39 +1,43 @@
 - config:
-    name: 组合测试：创建订单-上传支付凭证-业务经理审核-订单是否可作废-订单作废-订单状态检查-付款单审核状态检查
+    name: 订单api组合测试：创建订单-上传支付凭证-业务经理审核-订单是否可作废-订单作废-订单状态检查-付款单审核状态检查
     base_url: ${ENV(transaction_admin_api_host)}
     verify: False
     variables:
         - existed_customerPhoneNumber: ${order_customerPhoneNumber_config()}
         - existed_skuNumber: ${sku_number_config()}
         - existed_customerId: ${order_customerId_config()}
+        - existed_orderPlatform: ALIPAY
         - existed_placedBy: ${order_placedBy_config()}
         - existed_total_discount: null
         - existed_handledById: ${order_handledById_config()}
-        - existed_transactionNumber: ${random_transaction_number()}
+        - existed_transactionNumber: ${gen_random_string(20)}
         - existed_orderPlatform: TMALL
         - existed_actualPayment: 0.03
 
 
 - test:
     skipIf: ${is_production()}
-    name: 创建普通订单
+    name: 已登录内部账号系统-创建普通订单-用于人工审核通过
+    base_url: ${ENV(order_service_host)}
     api: api/order_manage_service/create_order.yml
     variables:
+        - placedMethod: BY_ADMIN
+        - orderPlatform: $existed_orderPlatform
         - customer_phone_number: $existed_customerPhoneNumber
-        - customer_id: 1000845917
+        - customer_id: $existed_customerId
         - sku_number: $existed_skuNumber
         - total_discount: $existed_total_discount
     validate:
         - eq: [status_code, 200]
         - length_equals: [content.orderId, 20]
     extract:
-        - create_order_status1: status_code
+        - create_order_status: status_code
         - create_order_orderId: content.orderId
 
 - test:
     skipIf: ${is_production()}
     name: 线下转账-上传支付凭证
-    skipUnless: ${eval_equal($create_order_status1, 200)}
+    skipUnless: ${eval_equal($create_order_status, 200)}
     api: api/order_manage_service/upload_payment.yml
     variables:
         - order_id: $create_order_orderId
@@ -49,7 +53,7 @@
 - test:
     skipIf: ${is_production()}
     name: 已登录内部账号系统-线下转账-订单付款业务审核列表-订单id查询-获取paymentReviewId
-    skipUnless: ${eval_equal($create_order_status1, 200)}
+    skipUnless: ${eval_equal($create_order_status, 200)}
     request:
         method: GET
         url: /orders/payments/reviews/bm?orderIds=$create_order_orderId
@@ -90,7 +94,7 @@
         url: /orders/$create_order_orderId/revokable
     validate:
         - eq: [status_code, 403]
-        - eq: [content.error_code, '10020004']
+        - eq: [content.error_code, '10020005']
 
 - test:
     skipIf: ${is_production()}
@@ -117,7 +121,7 @@
             revokedBy: "管理台"
     validate:
         - eq: [status_code, 403]
-        - eq: [content.error_code, '10020004']
+        - eq: [content.error_code, '10020005']
 
 - test:
     skipIf: ${is_production()}

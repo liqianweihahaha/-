@@ -1,5 +1,5 @@
 - config:
-    name: 线下转账-订单付款财务审核列表&查询
+    name: 订单api:线下转账-财务审核付款单列表&查询
     base_url: ${ENV(transaction_admin_api_host)}
     verify: False
     variables:
@@ -93,4 +93,4 @@
         url: /orders/payments/reviews/fm
     validate:
         - eq: [status_code, 403]
-        - eq: [content.error_code, '10020004']
+        - eq: [content.error_code, '10020005']

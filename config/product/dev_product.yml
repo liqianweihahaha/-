@@ -1,7 +1,7 @@
 # 普通商品
 sku:
   sku_number: '198806140001'
-  price: 1
+  price: 0.03
   lowest_price: 0
   spu_number: 'G198806140'
 # 订金商品

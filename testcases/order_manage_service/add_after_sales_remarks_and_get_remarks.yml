@@ -100,7 +100,7 @@
 - test:
     skipIf: ${is_production()}
     setup_hooks:
-        - ${sleep_N_secs(5)}
+        - ${sleep_N_secs(20)}
     name: 售后申请预览-获取物料发货单等信息（数据准备6）
     skipUnless: ${eval_equal($fm_review_status_code, 200)}
     request:

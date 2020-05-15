@@ -1,4 +1,4 @@
-name: 编辑售后单
+name: 售后service:编辑售后单
 base_url: ${ENV(order_service_host)}
 
 request:
