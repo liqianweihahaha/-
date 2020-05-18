@@ -330,7 +330,7 @@
 
 - test:
     skipIf: ${is_production()}
-    name: 编辑售后单（普通订单）-申请售后数量等于0-保存失败
+    name: 编辑售后单（普通订单）-申请售后数量等于0-保存成功
     skipUnless: ${eval_equal($create_after_sales_status, 200)}
     api: api/order_manage_service/edit_after_sales.yml
     variables:
@@ -348,8 +348,7 @@
         - shippingId_2: $shipmentId_2
         - skuNumber_2: $existed_skuNumber
     validate:
-        - eq: [status_code, 400]
-        - eq: [content.error_code, "Param-Invalid@Common"]
+        - eq: [status_code, 200]
 
 - test:
     skipIf: ${is_production()}

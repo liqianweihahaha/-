@@ -2,7 +2,7 @@
 sku:
   sku_number: '198806140001'
   price: 0.03
-  lowest_price: 0
+  lowest_price: 0.02
   spu_number: 'G198806140'
 # 订金商品
 sku_deposit:

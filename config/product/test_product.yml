@@ -1,8 +1,8 @@
 # 普通商品
 sku:
   sku_number: '207202000001'
-  price: 1
-  lowest_price: 0
+  price: 0.03
+  lowest_price: 0.02
   spu_number: 'G207202000'
 # 订金商品
 sku_deposit:

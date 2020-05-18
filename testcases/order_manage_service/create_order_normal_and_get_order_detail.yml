@@ -4,6 +4,7 @@
     variables:
         - test_phone_number: ${test_phone_number()}
         - existed_customerPhoneNumber: ${order_customerPhoneNumber_config()}
+        - existed_sku_price: ${sku_price_config()}
         - existed_skuNumber: ${sku_number_config()}
         - existed_customerId: ${order_customerId_config()}
         - existed_placedBy: ${order_placedBy_config()}
@@ -204,9 +205,9 @@
         - eq: [content.placedMethod, '2']
         - eq: [content.paymentOption, '3']
         - eq: [content.renewed, 0]
-        - eq: [content.customerPhoneNumber, $existed_customerPhoneNumber']
+        - eq: [content.customerPhoneNumber, '$existed_customerPhoneNumber']
         - eq: [content.totalDiscount, 0.00]
-        - eq: [content.originalTotal, '${sku_price_config()}']
-        - eq: [content.subtotal, '${sku_price_config()}']
-        - eq: [content.total, '${sku_price_config()}']
+        - eq: [content.originalTotal, $existed_sku_price]
+        - eq: [content.subtotal, $existed_sku_price]
+        - eq: [content.total, $existed_sku_price]
 
