@@ -91,6 +91,8 @@
         - bm_review_status_code: status_code
 
 - test:
+    setup_hooks:
+        - ${sleep_N_secs(2)}
     skipIf: ${is_production()}
     name: 财务经理审核通过（数据准备5）
     skipUnless: ${eval_equal($bm_review_status_code, 200)}

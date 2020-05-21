@@ -1,30 +1,35 @@
-- config:
-    name: 订单service组合测试：创建普通订单-上传支付凭证-业务审核通过-财务审核通过
+- config:  
+    name: 订单service测试组合：创建订金订单-上传支付凭证-业务审核-财务审核
     base_url: ${ENV(order_service_host)}
     variables:
         - existed_customerPhoneNumber: ${order_customerPhoneNumber_config()}
-        - existed_skuNumber: ${sku_number_config()}
+        - existed_skuNumber: ${sku_number_deposit()}
         - existed_customerId: ${order_customerId_config()}
-        - existed_placedBy: ${order_placedBy_config()}
-        - existed_total_discount: null
+        - existed_placedById: ${order_handledById_config()}
+        - existed_deposit: 0.01
         - existed_handledById: ${order_handledById_config()}
         - existed_transactionNumber: ${gen_random_string(20)}
         - existed_orderPlatform: ALIPAY
-        - existed_actualPayment: 0.1
-        - existed_afterSaleType: 'RETURN_REFUND'
+        - existed_afterSaleType: 'REFUND'
         - existed_handledById: ${order_handledById_config()}
+        - existed_issued: false
+        - unexisted_actualPayment: 100
+        - unexisted_orderId: 123456
+        - unexisted_afterSaleType: "aaaaa"
+        - unexisted_ownerId: ""
+        - unexisted_skuNumber: "1111111111111"
 
 - test:
     skipIf: ${is_production()}
-    name: 创建普通订单(数据准备1)
-    api: api/order_manage_service/create_order.yml
+    name: 创建订金订单(数据准备1)
+    api: api/order_manage_service/create_order_deposit.yml
     variables:
         - placedMethod: BY_ADMIN
         - orderPlatform: $existed_orderPlatform
-        - customer_phone_number: $existed_customerPhoneNumber
-        - customer_id: $existed_customerId
-        - sku_number: $existed_skuNumber
-        - total_discount: $existed_total_discount
+        - placedById: $existed_placedById
+        - customerId: $existed_customerId
+        - skuNumber: $existed_skuNumber
+        - deposit: $existed_deposit
     validate:
         - eq: [status_code, 200]
         - length_equals: [content.orderId, 20]
@@ -34,24 +39,24 @@
 
 - test:
     skipIf: ${is_production()}
-    name: 创建普通订单后上传支付凭证-orderPlatform为ALIPAY
+    name: 上传支付凭证(数据准备2)
     skipUnless: ${eval_equal($create_order_status, 200)}
     api: api/order_manage_service/upload_payment.yml
     variables:
         - order_id: $create_order_orderId
-        - handledById: ${internal_source_user_id()}
-        - transactionNumber: ${gen_random_string(20)}
+        - handledById: $existed_handledById
+        - transactionNumber: $existed_transactionNumber
         - orderPlatform: $existed_orderPlatform
-        - actualPayment: $existed_actualPayment
+        - actualPayment: $existed_deposit
     validate:
         - eq: [status_code, 200]
     extract:
-        - upload_status_code: status_code
+        - upload_payment_status: status_code
 
 - test:
     skipIf: ${is_production()}
-    name: 获取付款审核单ID(paymentReviewId)
-    skipUnless: ${eval_equal($upload_status_code, 200)}
+    name: 付款业务审核列表-订单id查询-获取paymentReviewId(数据准备3)
+    skipUnless: ${eval_equal($create_order_status, 200)}
     api: api/order_manage_service/get_payments_reviews_list.yml
     variables:
         - orderIds: $create_order_orderId
@@ -63,25 +68,31 @@
 
 - test:
     skipIf: ${is_production()}
+    name: 业务经理审核通过(数据准备4)
     skipUnless: ${eval_equal($search_status_code, 200)}
-    name: 业务审核付款审核单：审核通过
     api: api/order_manage_service/bm_review_payment_reviews.yml
     variables:
         - orderId: $create_order_orderId
         - paymentReviewId: $paymentReviewId
         - reviewPassed: true
-        - reviewedById: ${internal_source_user_id()}
+        - reviewedById: $existed_handledById
+    validate:
+        - eq: [status_code, 200]
     extract:
-        - bm_review_status_code: status_code   
+        - bm_review_status_code: status_code
 
 - test:
     skipIf: ${is_production()}
-    name: 财务审核付款审核单：审核通过
+    name: 财务经理审核通过（数据准备5）
     skipUnless: ${eval_equal($bm_review_status_code, 200)}
     api: api/order_manage_service/fm_review_payment_reviews.yml
     variables:
         - orderId: $create_order_orderId
         - paymentReviewId: $paymentReviewId
         - reviewPassed: true
-        - reviewedById: ${internal_source_user_id()}
+        - reviewedById: $existed_handledById
         - receivedAt: ${get_timestamp(10)}
+    validate:
+        - eq: [status_code, 200]
+    extract:
+        - fm_review_status_code: status_code

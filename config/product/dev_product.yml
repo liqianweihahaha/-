@@ -1,9 +1,17 @@
-# 普通商品
+# 普通虚拟商品
 sku:
   sku_number: '198806140001'
   price: 0.03
   lowest_price: 0.02
   spu_number: 'G198806140'
+
+#普通虚拟+实物商品
+sku_physical:
+  sku_number: '204538000001'
+  price: 0.03
+  lowest_price: 0
+  spu_number: 'G204538000'
+
 # 订金商品
 sku_deposit:
   sku_number: '198831000001'

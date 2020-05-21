@@ -57,10 +57,15 @@ def read_config_product(env, file_dir=conf_dir):
         data = yaml.load(f)
         return data
 
-# 获取普通商品信息
+# 获取虚拟商品信息
 def sku(env):
     sku_info = read_config_product(env)['sku']
     return sku_info
+
+# 获取虚拟&实物商品信息
+def sku_physical(env):
+    sku_physical_info = read_config_product(env)['sku_physical']
+    return sku_physical_info
 
 # 获取订金商品配置信息
 def sku_deposit(env):

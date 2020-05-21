@@ -4,6 +4,14 @@ sku:
   price: 0.03
   lowest_price: 0.02
   spu_number: 'G207202000'
+
+#普通虚拟+实物商品
+sku_physical:
+  sku_number: '201511000001'
+  price: 0.03
+  lowest_price: 0
+  spu_number: 'G201511000'
+  
 # 订金商品
 sku_deposit:
   sku_number: '196919000001'

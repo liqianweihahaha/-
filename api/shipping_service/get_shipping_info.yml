@@ -1,0 +1,7 @@
+name: 发货服务Service：获取单个发货单详情
+base_url: ${ENV(shipping_service_host)}
+request:
+    method: GET
+    url: /operation/shipping/$shippingId
+validate:
+    - eq: [status_code, 200]

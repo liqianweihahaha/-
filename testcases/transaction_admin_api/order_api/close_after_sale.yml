@@ -17,7 +17,7 @@
 
 - test:
     skipIf: ${is_production()}
-    name: 创建普通订单(数据准备1)
+    name: 已登录内部账号系统-创建普通订单(数据准备1)
     base_url: ${ENV(order_service_host)}
     api: api/order_manage_service/create_order.yml
     variables:
@@ -36,7 +36,7 @@
 
 - test:
     skipIf: ${is_production()}
-    name: 上传支付凭证(数据准备2)
+    name: 已登录内部账号系统-上传支付凭证(数据准备2)
     base_url: ${ENV(order_service_host)}
     skipUnless: ${eval_equal($create_order_status, 200)}
     api: api/order_manage_service/upload_payment.yml
@@ -53,7 +53,7 @@
 
 - test:
     skipIf: ${is_production()}
-    name: 业务审核付款审核单列表-获取paymentReviewId（数据准备3）
+    name: 已登录内部账号系统-业务审核付款审核单列表-获取paymentReviewId（数据准备3）
     skipUnless: ${eval_equal($upload_payment_status, 200)}
     request:
         method: GET
@@ -69,7 +69,7 @@
 
 - test:
     skipIf: ${is_production()}
-    name: 业务审核通过(数据准备4)
+    name: 已登录内部账号系统-业务审核通过(数据准备4)
     skipUnless: ${eval_equal($search_status_code, 200)}
     api: api/transaction_admin_api/bm_review_payment_reviews.yml
     variables:
@@ -84,7 +84,7 @@
 
 - test:
     skipIf: ${is_production()}
-    name: 财务经理审核通过（数据准备5）
+    name: 已登录内部账号系统-财务经理审核通过（数据准备5）
     skipUnless: ${eval_equal($bm_review_status_code, 200)}
     api: api/transaction_admin_api/fm_review_payment_reviews.yml
     variables:
@@ -97,6 +97,7 @@
         - eq: [status_code, 200]
     extract:
         - fm_review_status_code: status_code
+
 
 - test:
     setup_hooks:

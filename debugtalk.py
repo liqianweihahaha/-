@@ -18,6 +18,7 @@ EZBUY_API_HOST = os.environ['ezbuy_api_host']
 TRANSACTION_ADMIN_API_HOST = os.environ['transaction_admin_api_host']
 ORDER_SERVICE_HOST = os.environ['order_service_host']
 PRODUCT_SERVICE_HOST = os.environ['product_service_host']
+SHIPPING_SERVICE_HOST = os.environ['shipping_service_host']
 
 # 获取config配置文件：源用户信息
 source_user = read_config.source_user(TEST_ENV)
@@ -115,7 +116,7 @@ def is_production():
 def is_none(source):
     return True if source == None else False
 
-# 读取sku配置信息
+# 读获取虚拟商品配置信息
 sku_config = read_config.sku(TEST_ENV)
 
 def sku_number_config():
@@ -126,6 +127,19 @@ def spu_number_config():
 
 def sku_price_config():
     return sku_config.get('price')
+
+
+# 读获取虚拟&实物商品配置信息
+sku_physical_config = read_config.sku_physical(TEST_ENV)
+
+def sku_physical_number_config():
+    return sku_physical_config.get('sku_number')
+
+def spu_physical_number_config():
+    return sku_physical_config.get('spu_number')
+
+def sku_physical_price_config():
+    return sku_physical_config.get('price')
 
 
 # 获取订金商品配置信息
