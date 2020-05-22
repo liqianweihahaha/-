@@ -1,0 +1,16 @@
+- config:
+    name: 钉钉通知service：获取Access Token
+    base_url: ${ENV(dingtalk_service_host)}
+    variables:
+        - existed_appKey: dingy9qnole11a5waynd
+        - existed_appSecret: Er2b-qzXA2ngyoZxIclx9KZCMY9TmRaMxUwyTUJWJJXuyOcs8WFESwVdgIwieGws
+
+- test:
+    skipIf: ${is_production()}
+    name: 获取Access Token
+    request:
+        method: GET
+        url: /ding_talk/access_tokens?appKey=$existed_appKey&appSecret=$existed_appSecret
+    validate:
+        - eq: [status_code, 200]
+        - contains: [content, accessToken]

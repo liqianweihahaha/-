@@ -19,6 +19,8 @@ TRANSACTION_ADMIN_API_HOST = os.environ['transaction_admin_api_host']
 ORDER_SERVICE_HOST = os.environ['order_service_host']
 PRODUCT_SERVICE_HOST = os.environ['product_service_host']
 SHIPPING_SERVICE_HOST = os.environ['shipping_service_host']
+DINGTALK_SERVICE_HOST = os.environ['dingtalk_service_host']
+
 
 # 获取config配置文件：源用户信息
 source_user = read_config.source_user(TEST_ENV)

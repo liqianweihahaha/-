@@ -1,0 +1,65 @@
+- config:
+    name: 钉钉通知service测试组合：
+    base_url: ${ENV(dingtalk_service_host)}
+    variables:
+        - existed_appKey: dingy9qnole11a5waynd
+        - existed_appSecret: Er2b-qzXA2ngyoZxIclx9KZCMY9TmRaMxUwyTUJWJJXuyOcs8WFESwVdgIwieGws
+        - existed_phoneNumber: ${order_customerPhoneNumber_config()}
+        - existed_agentId: 500691587
+
+- test:
+    skipIf: ${is_production()}
+    name: 获取Access Token1
+    request:
+        method: GET
+        url: /ding_talk/access_tokens?appKey=$existed_appKey&appSecret=$existed_appSecret
+    validate:
+        - eq: [status_code, 200]
+        - contains: [content, accessToken]
+    extract:
+        - get_accessToken1: content.accessToken
+
+
+- test:
+    skipIf: ${is_production()}
+    name: 根据手机号获取钉钉User ID
+    request:
+        method: GET
+        url: /ding_talk/users/ids/phone_number?accessToken=$get_accessToken1&phoneNumber=$existed_phoneNumber
+    validate:
+        - eq: [status_code, 200]
+        - contains: [content, 'userid']
+    extract:
+        - user_id: content.userid    
+
+- test:
+    skipIf: ${is_production()}
+    name: 获取Access Token2
+    request:
+        method: GET
+        url: /ding_talk/access_tokens?appKey=$existed_appKey&appSecret=$existed_appSecret
+    validate:
+        - eq: [status_code, 200]
+        - contains: [content, 'accessToken']
+    extract:
+        - get_accessToken2: content.accessToken
+
+
+- test:
+    skipIf: ${is_production()}
+    name: 发送钉钉通知消息
+    request:
+        method: POST
+        url: /ding_talk/notifications/async
+        json:
+            accessToken: $get_accessToken2
+            agentId: $existed_agentId
+            message:
+                  msgtype: "text"
+                  text:
+                        content: 'hello，自动化测试钉钉通知2'
+            userIds: 
+                  - $user_id
+    validate:
+        - eq: [status_code, 200]
+        - contains: [content, 'taskId']

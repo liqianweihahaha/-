@@ -1,5 +1,5 @@
 - config:
-    name: 获取订单关闭原因列表
+    name: 获取全部订单关闭原因
     base_url: ${ENV(order_service_host)}
 
 - test:

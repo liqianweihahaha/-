@@ -1,0 +1,59 @@
+- config:
+    name: 钉钉通知service测试组合：根据手机号获取钉钉UserID-获取用户详情
+    base_url: ${ENV(dingtalk_service_host)}
+    variables:
+        - existed_appKey: dingy9qnole11a5waynd
+        - existed_appSecret: Er2b-qzXA2ngyoZxIclx9KZCMY9TmRaMxUwyTUJWJJXuyOcs8WFESwVdgIwieGws
+        - existed_phoneNumber: ${order_customerPhoneNumber_config()}
+
+- test:
+    skipIf: ${is_production()}
+    name: 获取Access Token1
+    request:
+        method: GET
+        url: /ding_talk/access_tokens?appKey=$existed_appKey&appSecret=$existed_appSecret
+    validate:
+        - eq: [status_code, 200]
+        - contains: [content, accessToken]
+    extract:
+        - get_accessToken1: content.accessToken
+
+
+- test:
+    skipIf: ${is_production()}
+    name: 根据手机号获取钉钉User ID
+    request:
+        method: GET
+        url: /ding_talk/users/ids/phone_number?accessToken=$get_accessToken1&phoneNumber=$existed_phoneNumber
+    validate:
+        - eq: [status_code, 200]
+        - contains: [content, userid]
+    extract:
+        - user_id: content.userid    
+
+- test:
+    skipIf: ${is_production()}
+    name: 获取Access Token2
+    request:
+        method: GET
+        url: /ding_talk/access_tokens?appKey=$existed_appKey&appSecret=$existed_appSecret
+    validate:
+        - eq: [status_code, 200]
+        - contains: [content, accessToken]
+    extract:
+        - get_accessToken2: content.accessToken
+
+
+- test:
+    skipIf: ${is_production()}
+    name: 获取用户详情
+    request:
+        method: GET
+        url: /ding_talk/users/$user_id/profiles?accessToken=$get_accessToken2
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, object]
+        - type_match: [content.dingTalkLeaderInDepartments, object]
+        - type_match: [content.departmentIds, list]
+        - length_equals: [content, 16]
+        - eq: [content.userId, $user_id]
