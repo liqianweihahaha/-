@@ -9,7 +9,7 @@
         - existed_deposit: 0.01
         - existed_handledById: ${order_handledById_config()}
         - existed_transactionNumber: ${gen_random_string(20)}
-        - existed_orderPlatform: ALIPAY
+        - existed_orderPlatform: CODECAMP_REDEEM_CODE
         - existed_afterSaleType: 'REFUND'
         - existed_handledById: ${order_handledById_config()}
         - existed_issued: false

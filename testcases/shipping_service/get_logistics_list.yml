@@ -1,0 +1,14 @@
+- config:
+    name: service:获取物流公司列表
+    base_url: ${ENV(shipping_service_host)}
+
+- test:
+    name: 获取物流公司列表
+    request:
+        method: GET
+        url: /logistics
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, list]
+        - type_match: [content.items.0, object]
+        - length_equals: [content.items.0, 3]

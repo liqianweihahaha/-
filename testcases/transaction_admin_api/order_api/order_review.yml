@@ -30,6 +30,7 @@
         - create_order_orderId1: content.orderId
 
 - test:
+    skipIf: ${is_production()}
     name: 未登录-订单优惠审批-待人工审核-订单编号存在-人工审核通过
     skipUnless: ${eval_equal($create_order_status1, 200)}
     request:
@@ -43,6 +44,7 @@
         - eq: [content.error_code, '10020005']
 
 - test:
+    skipIf: ${is_production()}
     name: 已登录内部账号系统-订单优惠审批-待人工审核-订单编号存在-人工审核通过
     skipUnless: ${eval_equal($create_order_status1, 200)}
     request:
@@ -57,6 +59,7 @@
         - eq: [status_code, 200]
 
 - test:
+    skipIf: ${is_production()}
     name: 已登录内部账号系统-订单优惠审批-已人工审核通过-审核状态检查
     skipUnless: ${eval_equal($create_order_status1, 200)}
     request:
@@ -69,6 +72,7 @@
         - eq: [content.items.0.reviewState, 'SYSTEM_REVIEW_FAILED']
 
 - test:
+    skipIf: ${is_production()}
     name: 已登录内部账号系统-订单优惠审批-已审核通过-订单状态检
     skipUnless: ${eval_equal($create_order_status1, 200)}
     request:
@@ -100,6 +104,7 @@
         - create_order_orderId2: content.orderId
 
 - test:
+    skipIf: ${is_production()}
     name: 已登录内部账号系统-订单优惠审批-待人工审核-订单编号存在-人工审核不通过
     skipUnless: ${eval_equal($create_order_status2, 200)}
     request:
@@ -114,6 +119,7 @@
         - eq: [status_code, 200]
 
 - test:
+    skipIf: ${is_production()}
     name: 已登录内部账号系统-订单优惠审批-已人工审核不通过-审核状态检查
     skipUnless: ${eval_equal($create_order_status2, 200)}
     request:
@@ -126,6 +132,7 @@
         - eq: [content.items.0.reviewState, 'SYSTEM_REVIEW_FAILED']
 
 - test:
+    skipIf: ${is_production()}
     name: 已登录内部账号系统-订单优惠审批-已人工审核不通过-订单状态检查
     skipUnless: ${eval_equal($create_order_status2, 200)}
     request:
@@ -159,6 +166,7 @@
 
 
 - test:
+    skipIf: ${is_production()}
     name: 已登录内部账号系统-订单优惠审批-系统自动审核通过-订单状态检查
     skipUnless: ${eval_equal($create_order_status3, 200)}
     request:
@@ -171,6 +179,7 @@
         - eq: [content.items.0.state, 'AWAITING_PAYMENT']
 
 - test:
+    skipIf: ${is_production()}
     name: 已登录内部账号系统-订单优惠审批-待人工审核-订单编号不存在
     request:
         method: PATCH
@@ -185,6 +194,7 @@
         - eq: [content.error_code, '10017006']
 
 - test:
+    skipIf: ${is_production()}
     name: 已登录内部账号系统-订单优惠审批-已人工审核通过-再次审核
     skipUnless: ${eval_equal($create_order_status1, 200)}
     request:

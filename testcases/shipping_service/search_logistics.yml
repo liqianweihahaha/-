@@ -1,0 +1,33 @@
+- config:
+    name: service:通过name搜索物流公司
+    base_url: ${ENV(shipping_service_host)}
+
+- test:
+    name: 通过name搜索物流公司-name存在-有查询到物流公司数据
+    request:
+        method: GET
+        url: /logistics/search?name=通
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, list]
+        - type_match: [content.items.0, object]
+        - length_equals: [content.items.0, 3]
+
+- test:
+    name: 通过name搜索物流公司-name不存在-未查询到物流公司数据
+    request:
+        method: GET
+        url: /logistics/search?name=通12343
+    validate:
+        - eq: [status_code, 200]
+        - length_equals: [content, 0]
+
+
+- test:
+    name: 通过name搜索物流公司-未带name参数
+    request:
+        method: GET
+        url: /logistics/search
+    validate:
+        - eq: [status_code, 400]
+        - eq: [content.error_code, "Param-Invalid@Common"]

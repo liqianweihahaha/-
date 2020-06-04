@@ -3,14 +3,14 @@
     base_url: ${ENV(order_service_host)}
     variables:
         - existed_customerPhoneNumber: ${order_customerPhoneNumber_config()}
-        - existed_skuNumber: 201511000001
+        - existed_skuNumber: ${sku_physical_number_config()}
         - existed_customerId: ${order_customerId_config()}
         - existed_placedBy: ${order_placedBy_config()}
         - existed_total_discount: null
         - existed_handledById: ${order_handledById_config()}
         - existed_transactionNumber: ${gen_random_string(20)}
         - existed_orderPlatform: ALIPAY
-        - existed_actualPayment: 0.1
+        - existed_actualPayment: 0.03
         - existed_afterSaleType: 'RETURN_REFUND'
         - existed_handledById: ${order_handledById_config()}
         - unexisted_shippingId: 123456

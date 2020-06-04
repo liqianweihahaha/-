@@ -1,0 +1,26 @@
+- config:
+    name: api:获取物流公司列表
+    base_url: ${ENV(transaction_admin_api_host)}
+
+- test:
+    name: 未登录内部账号系统-获取物流公司列表
+    request:
+        method: GET
+        url: /shipping/logistics
+    validate:
+        - eq: [status_code, 403]
+        - eq: [content.error_code, '10020005']
+
+- test:
+    name: 已登录内部账号系统-获取物流公司列表
+    request:
+        method: GET
+        url: /shipping/logistics
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, object]
+        - type_match: [content.items, list]
+        - type_match: [content.items.0, object]
+        - length_equals: [content.items.0, 3]

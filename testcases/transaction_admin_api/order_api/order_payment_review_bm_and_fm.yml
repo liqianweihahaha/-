@@ -35,6 +35,7 @@
         - create_order_orderId: content.orderId
 
 - test:
+    skipIf: ${is_production()}
     name: 线下转账-上传支付凭证
     skipUnless: ${eval_equal($create_order_status, 200)}
     api: api/order_manage_service/upload_payment.yml
@@ -50,6 +51,7 @@
         - upload_payment_status: status_code
 
 - test:
+    skipIf: ${is_production()}
     name: 已登录内部账号系统-线下转账-订单付款业务审核列表-订单id查询-订单id存在
     skipUnless: ${eval_equal($create_order_status, 200)}
     request:
@@ -67,6 +69,7 @@
         - paymentReviewId: content.items.0.paymentReviewId
 
 - test:
+    skipIf: ${is_production()}
     name: 未登录内部账号系统-线下转账-业务经理审核-通过
     skipUnless: ${eval_equal($search_status_code, 200)}
     request:
@@ -80,6 +83,7 @@
         - eq: [content.error_code, '10020005']
 
 - test:
+    skipIf: ${is_production()}
     name: 已登录内部账号系统-线下转账-业务经理审核-通过
     skipUnless: ${eval_equal($search_status_code, 200)}
     request:
@@ -96,6 +100,7 @@
         - bm_review_status_code: status_code
 
 - test:
+    skipIf: ${is_production()}
     name: 已登录内部账号系统-线下转账-业务经理审核通过-查看-审核状态检查
     skipUnless: ${eval_equal($bm_review_status_code, 200)}
     request:
@@ -109,6 +114,7 @@
         - eq: [content.reviewState, BM_REVIEW_PASSED]
 
 - test:
+    skipIf: ${is_production()}
     setup_hooks:
         - ${sleep_N_secs(1)}
     name: 已登录内部账号系统-线下转账-业务经理审核通过-订单状态&支付状态检查
@@ -126,6 +132,9 @@
 
 
 - test:
+    skipIf: ${is_production()}
+    setup_hooks:
+        - ${sleep_N_secs(3)}
     name: 已登录内部账号系统-线下转账-财务经理审核-通过
     skipUnless: ${eval_equal($bm_review_status_code, 200)}
     request:
@@ -143,6 +152,7 @@
         - fm_review_status_code: status_code
 
 - test:
+    skipIf: ${is_production()}
     name: 已登录内部账号系统-线下转账-财务经理审核通过-查看-审核状态检查
     skipUnless: ${eval_equal($fm_review_status_code, 200)}
     request:
@@ -156,6 +166,7 @@
         - eq: [content.reviewState, FM_REVIEW_PASSED]
 
 - test:
+    skipIf: ${is_production()}
     setup_hooks:
         - ${sleep_N_secs(1)}
     name: 已登录内部账号系统-线下转账-财务经理审核通过-订单状态检查
@@ -171,6 +182,7 @@
         - eq: [content.state, COMPLETED]
 
 - test:
+    skipIf: ${is_production()}
     setup_hooks:
         - ${sleep_N_secs(1)}
     name: 已登录内部账号系统-线下转账-财务经理审核通过-发货状态检查

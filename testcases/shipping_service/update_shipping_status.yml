@@ -10,7 +10,7 @@
         - existed_handledById: ${order_handledById_config()}
         - existed_transactionNumber: ${gen_random_string(20)}
         - existed_orderPlatform: ALIPAY
-        - existed_actualPayment: 0.1
+        - existed_actualPayment: 0.03
         - existed_afterSaleType: 'RETURN_REFUND'
         - existed_handledById: ${order_handledById_config()}
         - existed_logistics_bill_id: 'test1234567890'
@@ -96,7 +96,7 @@
 
 - test:
     setup_hooks:
-        - ${sleep_N_secs(3)}
+        - ${sleep_N_secs(6)}
     skipIf: ${is_production()}
     name: 通过订单ID查找发货单-订单ID存在
     base_url: ${ENV(shipping_service_host)}

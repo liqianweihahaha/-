@@ -306,28 +306,6 @@
         - eq: [status_code, 422]
         - eq: [content.error_code, "10017029"]
 
-# - test:
-#     skipIf: ${is_production()}
-#     name: 创建售后单（普通订单）-申请售后数量等于0-保存失败
-#     skipUnless: ${eval_equal($order_state, "COMPLETED")}
-#     api: api/order_manage_service/create_after_sales.yml
-#     variables:
-#         - actualRefundAmount: $existed_actualPayment
-#         - afterSaleType: $existed_afterSaleType
-#         - issued: false
-#         - orderId: $create_order_orderId
-#         - ownerId: $existed_handledById
-#         - materialNumber_1: $material_id_1
-#         - returnsCount_1: 0
-#         - shippingId_1: $shipmentId_1
-#         - skuNumber_1: $existed_skuNumber
-#         - materialNumber_2: $material_id_2
-#         - returnsCount_2: $material_count_2
-#         - shippingId_2: $shipmentId_2
-#         - skuNumber_2: $existed_skuNumber
-#     validate:
-#         - eq: [status_code, 400]
-#         - eq: [content.error_code, "Param-Invalid@Common"]
 
 - test:
     skipIf: ${is_production()}
@@ -509,7 +487,7 @@
     validate:
         - eq: [status_code, 200]
         - type_match: [content, object]
-        - length_equals: [content, 26]
+        - length_equals: [content, 27]
 
 
 - test:

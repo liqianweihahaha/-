@@ -78,7 +78,7 @@
     validate:
         - eq: [status_code, 200]
         - type_match: [content.items, list]
-        - length_equals: [content.items.0, 38]
+        - length_equals: [content.items.0, 39]
 
 - test:
     name: 已登录内部账号系统-获取订单列表-客户手机号查询-手机号不存在
@@ -104,7 +104,7 @@
     validate:
         - eq: [status_code, 200]
         - type_match: [content.items, list]
-        - length_equals: [content.items.0, 38]
+        - length_equals: [content.items.0, 39]
         - eq: [content.items.0.state, COMPLETED]
 
 
@@ -118,7 +118,6 @@
     validate:
         - eq: [status_code, 200]
         - type_match: [content.items, list]
-        - length_equals: [content.items.0, 38]
         - eq: [content.items.0.orderType, DEPOSIT]
 
 - test:
@@ -131,7 +130,6 @@
     validate:
         - eq: [status_code, 200]
         - type_match: [content.items, list]
-        - length_equals: [content.items.0, 38]
         - eq: [content.items.0.orderType, NORMAL]
 
 - test:
@@ -144,7 +142,6 @@
     validate:
         - eq: [status_code, 200]
         - type_match: [content.items, list]
-        - length_equals: [content.items.0, 38]
         - eq: [content.items.0.paymentOption, FULL]
 
 
@@ -158,7 +155,6 @@
     validate:
         - eq: [status_code, 200]
         - type_match: [content.items, list]
-        - length_equals: [content.items.0, 38]
         - eq: [content.items.0.renewed, 1]
 
 - test:
@@ -171,7 +167,6 @@
     validate:
         - eq: [status_code, 200]
         - type_match: [content.items, list]
-        - length_equals: [content.items.0, 38]
         - eq: [content.items.0.platform, JD]
 
 - test:
@@ -184,7 +179,6 @@
     validate:
         - eq: [status_code, 200]
         - type_match: [content.items, list]
-        - length_equals: [content.items.0, 38]
         - eq: [content.items.0.customerId, $existed_customerId]
 
 - test:
@@ -210,7 +204,6 @@
     validate:
         - eq: [status_code, 200]
         - type_match: [content.items, list]
-        - length_equals: [content.items.0, 38]
         - eq: [content.items.0.placedBy, $existed_placedBy]
 
 - test:
