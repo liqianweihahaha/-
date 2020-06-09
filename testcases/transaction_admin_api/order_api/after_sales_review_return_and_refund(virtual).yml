@@ -1,5 +1,5 @@
 - config:
-    name: 售后api测试组合：创建售后单-业务经理审核-业务负责人审核-财务主管审核
+    name: 售后虚拟退货退款api组合：创建订单-创建售后单-业务经理审核-业务负责人审核-财务主管审核
     base_url: ${ENV(transaction_admin_api_host)}
     variables:
         - existed_customerPhoneNumber: ${order_customerPhoneNumber_config()}

@@ -1,5 +1,5 @@
 - config:
-    name: 发货service组合测试：创建普通订单-上传支付凭证-审核通过-通过订单id搜索发货单-更新发货单状态-检查发货单状态
+    name: 发货service组合测试：创建发货单-通过订单id搜索发货单-更新发货单状态-检查发货单状态
     base_url: ${ENV(order_service_host)}
     variables:
         - existed_customerPhoneNumber: ${order_customerPhoneNumber_config()}

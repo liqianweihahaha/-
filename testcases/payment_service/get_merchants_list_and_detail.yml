@@ -1,0 +1,56 @@
+- config:
+    name: 测试组合：获取merchants列表-获取merchants详情
+    base_url: ${ENV(payment_service_host)}
+    variables:
+        exsited_payment_method: WXPAY
+        unexsited_merchant_id: 1000
+
+- test:
+    skipIf: ${is_production()}
+    name: 获取merchants列表-不带任何参数
+    request:
+        method: GET
+        url: /merchants/search
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, object]
+        - type_match: [content.items, list]
+        - type_match: [content.items.0, object]
+        - length_equals: [content.items.0, 12]
+    extract:
+        - merchantsId: content.items.0.id
+
+- test:
+    skipIf: ${is_production()}
+    name: 获取merchants列表-通过payment_method搜索-payment_method存在
+    request:
+        method: GET
+        url: /merchants/search?payment_method=$exsited_payment_method
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, object]
+        - type_match: [content.items, list]
+        - type_match: [content.items.0, object]
+        - length_equals: [content.items.0, 12]
+
+
+- test:
+    skipIf: ${is_production()}
+    name: 获取merchants详情-merchant_id存在
+    request:
+        method: GET
+        url: /merchants/$merchantsId
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, object]
+        - length_equals: [content, 12]
+
+- test:
+    skipIf: ${is_production()}
+    name: 获取merchants详情-merchant_id不存在
+    request:
+        method: GET
+        url: /merchants/$unexsited_merchant_id
+    validate:
+        - eq: [status_code, 422]
+        - eq: [content.error_code, "10022001"]

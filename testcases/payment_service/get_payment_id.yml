@@ -1,0 +1,15 @@
+- config:
+    name: 获取payment_id
+    base_url: ${ENV(payment_service_host)}
+
+- test:
+    skipIf: ${is_production()}
+    name: 获取payment_id
+    request:
+        method: GET
+        url: /pay/generated-id
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, object]
+        - contains: [content, payment_id]
+        - length_equals: [content.payment_id, 13]

@@ -1,0 +1,227 @@
+- config:
+    name: 支付service组合测试：创建普通订单-上传支付凭证-审核通过-查询付款单列表-搜索付款单-第三方支付状态查询
+    base_url: ${ENV(payment_service_host)}
+    variables:
+        - existed_customerPhoneNumber: ${order_customerPhoneNumber_config()}
+        - existed_skuNumber: ${sku_number_config()}
+        - existed_customerId: ${order_customerId_config()}
+        - existed_placedBy: ${order_placedBy_config()}
+        - existed_total_discount: null
+        - existed_handledById: ${order_handledById_config()}
+        - existed_transactionNumber: ${gen_random_string(20)}
+        - existed_orderPlatform: ALIPAY
+        - existed_actualPayment: 0.1
+        - existed_afterSaleType: 'RETURN_REFUND'
+        - existed_handledById: ${order_handledById_config()}
+        - unexisted_paymentId: 123456
+
+- test:
+    skipIf: ${is_production()}
+    name: 创建普通订单(数据准备1)
+    base_url: ${ENV(order_service_host)}
+    api: api/order_manage_service/create_order.yml
+    variables:
+        - placedMethod: BY_ADMIN
+        - orderPlatform: $existed_orderPlatform
+        - customer_phone_number: $existed_customerPhoneNumber
+        - customer_id: $existed_customerId
+        - sku_number: $existed_skuNumber
+        - total_discount: $existed_total_discount
+    validate:
+        - eq: [status_code, 200]
+        - length_equals: [content.orderId, 20]
+    extract:
+        - create_order_status: status_code
+        - create_order_orderId: content.orderId
+
+- test:
+    skipIf: ${is_production()}
+    name: 创建普通订单后上传支付凭证-orderPlatform为ALIPAY(数据准备2)
+    base_url: ${ENV(order_service_host)}
+    skipUnless: ${eval_equal($create_order_status, 200)}
+    api: api/order_manage_service/upload_payment.yml
+    variables:
+        - order_id: $create_order_orderId
+        - handledById: ${internal_source_user_id()}
+        - transactionNumber: ${gen_random_string(20)}
+        - orderPlatform: $existed_orderPlatform
+        - actualPayment: $existed_actualPayment
+    validate:
+        - eq: [status_code, 200]
+    extract:
+        - upload_status_code: status_code
+
+- test:
+    skipIf: ${is_production()}
+    name: 获取付款审核单ID(paymentReviewId)(数据准备3)
+    base_url: ${ENV(order_service_host)}
+    skipUnless: ${eval_equal($upload_status_code, 200)}
+    api: api/order_manage_service/get_payments_reviews_list.yml
+    variables:
+        - orderIds: $create_order_orderId
+    validate:
+        - eq: [status_code, 200]
+    extract:
+        - search_status_code: status_code
+        - paymentReviewId: content.items.0.paymentReviewId
+
+- test:
+    skipIf: ${is_production()}
+    skipUnless: ${eval_equal($search_status_code, 200)}
+    name: 业务审核付款审核单：审核通过(数据准备4)
+    base_url: ${ENV(order_service_host)}
+    api: api/order_manage_service/bm_review_payment_reviews.yml
+    variables:
+        - orderId: $create_order_orderId
+        - paymentReviewId: $paymentReviewId
+        - reviewPassed: true
+        - reviewedById: ${internal_source_user_id()}
+    extract:
+        - bm_review_status_code: status_code   
+
+- test:
+    skipIf: ${is_production()}
+    name: 财务审核付款审核单：审核通过(数据准备5)
+    base_url: ${ENV(order_service_host)}
+    skipUnless: ${eval_equal($bm_review_status_code, 200)}
+    api: api/order_manage_service/fm_review_payment_reviews.yml
+    variables:
+        - orderId: $create_order_orderId
+        - paymentReviewId: $paymentReviewId
+        - reviewPassed: true
+        - reviewedById: ${internal_source_user_id()}
+        - receivedAt: ${get_timestamp(10)}
+
+- test:
+    skipIf: ${is_production()}
+    name: 通过订单id查询付款单列表
+    request:
+        method: GET
+        url: /pay/payments?order_ids=$create_order_orderId
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, list]
+        - eq: [content.0.order_id, $create_order_orderId]
+        - length_equals: [content, 1]
+        - length_equals: [content.0, 28]
+    extract:
+        - paymentId: content.0.payment_id 
+
+- test:
+    skipIf: ${is_production()}
+    name: 通过付款单id查询付款单列表
+    request:
+        method: GET
+        url: /pay/payments?payment_ids=$paymentId
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, list]
+        - length_equals: [content, 1]
+        - length_equals: [content.0, 28]
+    extract:
+        - paymentId: content.0.payment_id 
+
+- test:
+    skipIf: ${is_production()}
+    name: 搜索付款单-不带任何参数
+    request:
+        method: GET
+        url: /pay/payments/search
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, object]
+        - type_match: [content.items, list]
+        - type_match: [content.items.0, object]
+        - length_equals: [content.items.0, 28]
+
+- test:
+    skipIf: ${is_production()}
+    name: 搜索付款单-通过orderid查询-orderid存在
+    request:
+        method: GET
+        url: /pay/payments/search?order_id=$create_order_orderId
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, object]
+        - type_match: [content.items, list]
+        - type_match: [content.items.0, object]
+        - length_equals: [content.items, 1]
+        - length_equals: [content.items.0, 28]
+
+- test:
+    skipIf: ${is_production()}
+    name: 搜索付款单-通过paymentid查询-paymentid存在
+    request:
+        method: GET
+        url: /pay/payments/search?payment_id=$paymentId
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, object]
+        - type_match: [content.items, list]
+        - type_match: [content.items.0, object]
+
+- test:
+    skipIf: ${is_production()}
+    name: 搜索付款单-通过state查询-state存在
+    request:
+        method: GET
+        url: /pay/payments/search?state=SUCCESS
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, object]
+        - type_match: [content.items, list]
+        - type_match: [content.items.0, object]
+
+- test:
+    skipIf: ${is_production()}
+    name: 搜索付款单-通过order_type查询-order_type存在
+    request:
+        method: GET
+        url: /pay/payments/search?order_type=NORMAL
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, object]
+        - type_match: [content.items, list]
+        - type_match: [content.items.0, object]
+
+- test:
+    skipIf: ${is_production()}
+    name: 搜索付款单-通过user_id查询-user_id存在
+    request:
+        method: GET
+        url: /pay/payments/search?user_id=$existed_customerId
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, object]
+        - type_match: [content.items, list]
+        - type_match: [content.items.0, object]
+
+- test:
+    skipIf: ${is_production()}
+    name: 获取付款单详情-paymentId存在
+    request:
+        method: GET
+        url: /pay/payments/$paymentId
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, object]
+        - length_equals: [content, 28]
+
+- test:
+    skipIf: ${is_production()}
+    name: 获取付款单详情-paymentId不存在
+    request:
+        method: GET
+        url: /pay/payments/$unexisted_paymentId
+    validate:
+        - eq: [status_code, 422]
+        - eq: [content.error_code, "10022006"]
+
+- test:
+    skipIf: ${is_production()}
+    name: 第三方支付状态查询-paymentId存在(线下支付)
+    request:
+        method: GET
+        url: /pay/payments/$paymentId
+    validate:
+        - eq: [status_code, 200]

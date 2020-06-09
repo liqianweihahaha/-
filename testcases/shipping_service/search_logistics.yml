@@ -10,8 +10,8 @@
     validate:
         - eq: [status_code, 200]
         - type_match: [content, list]
-        - type_match: [content.items.0, object]
-        - length_equals: [content.items.0, 3]
+        - type_match: [content.0, object]
+        - length_equals: [content.0, 3]
 
 - test:
     name: 通过name搜索物流公司-name不存在-未查询到物流公司数据

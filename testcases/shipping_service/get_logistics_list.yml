@@ -9,6 +9,6 @@
         url: /logistics
     validate:
         - eq: [status_code, 200]
-        - type_match: [content, list]
-        - type_match: [content.items.0, object]
+        - type_match: [content, object]
+        - type_match: [content.items, list]
         - length_equals: [content.items.0, 3]

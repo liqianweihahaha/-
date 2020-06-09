@@ -1,0 +1,20 @@
+- config:
+    name: 获取PaymentType列表
+    base_url: ${ENV(payment_service_host)}
+    variables:
+        exsited_payment_method: WXPAY
+
+
+- test:
+    skipIf: ${is_production()}
+    name: 获取PaymentType列表-不带任何参数
+    request:
+        method: GET
+        url: /merchants/payment-type/list?payment_method=$exsited_payment_method
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, list]
+        - contains: [content, 'WX_H5']
+        - contains: [content, 'WX_APP']
+        - contains: [content, 'WX_MP']
+        - contains: [content, 'WX_JS']
