@@ -1,0 +1,311 @@
+- config:
+    name: 测试组合：创建订单-新增订单礼品-获取存在礼品的订单ids-获取订单礼品
+    base_url: ${ENV(order_service_host)}
+    variables:
+        - existed_customerPhoneNumber: ${order_customerPhoneNumber_config()}
+        - existed_skuNumber: ${sku_number_config()}
+        - existed_customerId: ${order_customerId_config()}
+        - existed_placedBy: ${order_placedBy_config()}
+        - existed_total_discount: null
+        - existed_handledById: ${order_handledById_config()}
+        - existed_handledByName: ${order_handledByName_config()}
+        - existed_transactionNumber: ${gen_random_string(20)}
+        - existed_orderPlatform: ALIPAY
+        - existed_actualPayment: 0.03
+        - existed_afterSaleType: 'RETURN_REFUND'
+        - existed_issued: false
+        - unexisted_orderId: 123456
+
+- test:
+    skipIf: ${is_production()}
+    name: 创建普通订单(数据准备1)
+    api: api/order_manage_service/create_order.yml
+    variables:
+        - placedMethod: BY_ADMIN
+        - orderPlatform: $existed_orderPlatform
+        - customer_phone_number: $existed_customerPhoneNumber
+        - customer_id: $existed_customerId
+        - sku_number: $existed_skuNumber
+        - total_discount: $existed_total_discount
+    validate:
+        - eq: [status_code, 200]
+        - length_equals: [content.orderId, 20]
+    extract:
+        - create_order_status: status_code
+        - create_order_orderId: content.orderId
+
+- test:
+    skipIf: ${is_production()}
+    name: 新增订单礼品-orderId为空
+    base_url: ${ENV(order_service_host)}
+    skipUnless: ${eval_equal($create_order_status, 200)}
+    request:
+        method: POST
+        url: /orders/gifts
+        json:
+            handledById: $existed_handledById
+            handledBy: $existed_handledByName
+            orderFreeGifts: 
+                   -
+                    orderId: ''
+                    giftItems: '教材*1、本子*1、台灯*1'
+                    giftItemCosts: '教材59元、本子41元、台灯24.25元、XXX39元、YYY 33元教材*1、本子*1、台'
+                    status: 1
+                    total: 0.01
+                    shippingInfo: '广东省深圳市南山区前海湾信利康大厦888楼'
+                    shippingAddressInfo: '教材 京东物流：8401842018420、本子、台灯 圆通快递：740218409184'
+                    activities: '五一大促销'
+                    remark: '备注'
+    validate:
+        - eq: [status_code, 400]       
+
+
+- test:
+    skipIf: ${is_production()}
+    name: 新增订单礼品-giftItems为空
+    base_url: ${ENV(order_service_host)}
+    skipUnless: ${eval_equal($create_order_status, 200)}
+    request:
+        method: POST
+        url: /orders/gifts
+        json:
+            handledById: $existed_handledById
+            handledBy: $existed_handledByName
+            orderFreeGifts: 
+                   -
+                    orderId: $create_order_orderId
+                    giftItems: ''
+                    giftItemCosts: '教材59元、本子41元、台灯24.25元、XXX39元、YYY 33元教材*1、本子*1、台'
+                    status: 1
+                    total: 0.01
+                    shippingInfo: '广东省深圳市南山区前海湾信利康大厦888楼'
+                    shippingAddressInfo: '教材 京东物流：8401842018420、本子、台灯 圆通快递：740218409184'
+                    activities: '五一大促销'
+                    remark: '备注'
+    validate:
+        - eq: [status_code, 400]
+
+- test:
+    skipIf: ${is_production()}
+    name: 新增订单礼品-giftItemCosts为空
+    base_url: ${ENV(order_service_host)}
+    skipUnless: ${eval_equal($create_order_status, 200)}
+    request:
+        method: POST
+        url: /orders/gifts
+        json:
+            handledById: $existed_handledById
+            handledBy: $existed_handledByName
+            orderFreeGifts: 
+                   -
+                    orderId: $create_order_orderId
+                    giftItems: '教材*1、本子*1、台灯*1'
+                    giftItemCosts: ''
+                    status: 1
+                    total: 0.01
+                    shippingInfo: '广东省深圳市南山区前海湾信利康大厦888楼'
+                    shippingAddressInfo: '教材 京东物流：8401842018420、本子、台灯 圆通快递：740218409184'
+                    activities: '五一大促销'
+                    remark: '备注'
+    validate:
+        - eq: [status_code, 400]
+
+- test:
+    skipIf: ${is_production()}
+    name: 新增订单礼品-status不是0或1
+    base_url: ${ENV(order_service_host)}
+    skipUnless: ${eval_equal($create_order_status, 200)}
+    request:
+        method: POST
+        url: /orders/gifts
+        json:
+            handledById: $existed_handledById
+            handledBy: $existed_handledByName
+            orderFreeGifts: 
+                   -
+                    orderId: $create_order_orderId
+                    giftItems: '教材*1、本子*1、台灯*1'
+                    giftItemCosts: '教材59元、本子41元、台灯24.25元、XXX39元、YYY 33元教材*1、本子*1、台'
+                    status: 8
+                    total: 0.01
+                    shippingInfo: '广东省深圳市南山区前海湾信利康大厦888楼'
+                    shippingAddressInfo: '教材 京东物流：8401842018420、本子、台灯 圆通快递：740218409184'
+                    activities: '五一大促销'
+                    remark: '备注'
+    validate:
+        - eq: [status_code, 400]
+
+- test:
+    skipIf: ${is_production()}
+    name: 新增订单礼品-shippingInfo为空
+    base_url: ${ENV(order_service_host)}
+    skipUnless: ${eval_equal($create_order_status, 200)}
+    request:
+        method: POST
+        url: /orders/gifts
+        json:
+            handledById: $existed_handledById
+            handledBy: $existed_handledByName
+            orderFreeGifts: 
+                   -
+                    orderId: $create_order_orderId
+                    giftItems: '教材*1、本子*1、台灯*1'
+                    giftItemCosts: '教材59元、本子41元、台灯24.25元、XXX39元、YYY 33元教材*1、本子*1、台'
+                    status: 1
+                    total: 0.01
+                    shippingInfo: ''
+                    shippingAddressInfo: '教材 京东物流：8401842018420、本子、台灯 圆通快递：740218409184'
+                    activities: '五一大促销'
+                    remark: '备注'
+    validate:
+        - eq: [status_code, 400]
+
+- test:
+    skipIf: ${is_production()}
+    name: 新增订单礼品-shippingAddressInfo为空
+    base_url: ${ENV(order_service_host)}
+    skipUnless: ${eval_equal($create_order_status, 200)}
+    request:
+        method: POST
+        url: /orders/gifts
+        json:
+            handledById: $existed_handledById
+            handledBy: $existed_handledByName
+            orderFreeGifts: 
+                   -
+                    orderId: $create_order_orderId
+                    giftItems: '教材*1、本子*1、台灯*1'
+                    giftItemCosts: '教材59元、本子41元、台灯24.25元、XXX39元、YYY 33元教材*1、本子*1、台'
+                    status: 1
+                    total: 0.01
+                    shippingInfo: '广东省深圳市南山区前海湾信利康大厦888楼'
+                    shippingAddressInfo: ''
+                    activities: '五一大促销'
+                    remark: '备注'
+    validate:
+        - eq: [status_code, 400]
+
+- test:
+    skipIf: ${is_production()}
+    name: 新增订单礼品-activities为空
+    base_url: ${ENV(order_service_host)}
+    skipUnless: ${eval_equal($create_order_status, 200)}
+    request:
+        method: POST
+        url: /orders/gifts
+        json:
+            handledById: $existed_handledById
+            handledBy: $existed_handledByName
+            orderFreeGifts: 
+                   -
+                    orderId: $create_order_orderId
+                    giftItems: '教材*1、本子*1、台灯*1'
+                    giftItemCosts: '教材59元、本子41元、台灯24.25元、XXX39元、YYY 33元教材*1、本子*1、台'
+                    status: 1
+                    total: 0.01
+                    shippingInfo: '广东省深圳市南山区前海湾信利康大厦888楼'
+                    shippingAddressInfo: '教材 京东物流：8401842018420、本子、台灯 圆通快递：740218409184'
+                    activities: ''
+                    remark: '备注'
+    validate:
+        - eq: [status_code, 400]
+
+
+- test:
+    skipIf: ${is_production()}
+    name: 新增订单礼品-orderId存在
+    base_url: ${ENV(order_service_host)}
+    skipUnless: ${eval_equal($create_order_status, 200)}
+    request:
+        method: POST
+        url: /orders/gifts
+        json:
+            handledById: $existed_handledById
+            handledBy: $existed_handledByName
+            orderFreeGifts: 
+                   -
+                    orderId: $create_order_orderId
+                    giftItems: '教材*1、本子*1、台灯*1'
+                    giftItemCosts: '教材59元、本子41元、台灯24.25元、XXX39元、YYY 33元教材*1、本子*1、台'
+                    status: 1
+                    total: 0.01
+                    shippingInfo: '广东省深圳市南山区前海湾信利康大厦888楼'
+                    shippingAddressInfo: '教材 京东物流：8401842018420、本子、台灯 圆通快递：740218409184'
+                    activities: '五一大促销'
+                    remark: '备注'
+    validate:
+        - eq: [status_code, 200]
+
+
+- test:
+    skipIf: ${is_production()}
+    name:  获取存在礼品的订单ids-orderId存在
+    base_url: ${ENV(order_service_host)}
+    skipUnless: ${eval_equal($create_order_status, 200)}
+    request:
+        method: GET
+        url: /orders/gifts/available?orderIds=$create_order_orderId
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, list]
+        - length_equals: [content, 1]
+
+- test:
+    skipIf: ${is_production()}
+    name:  获取存在礼品的订单ids-orderId不存在
+    base_url: ${ENV(order_service_host)}
+    skipUnless: ${eval_equal($create_order_status, 200)}
+    request:
+        method: GET
+        url: /orders/gifts/available?orderIds=$unexisted_orderId
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, list]
+        - length_equals: [content, 0]
+
+- test:
+    skipIf: ${is_production()}
+    name:  获取订单礼品-orderId存在
+    base_url: ${ENV(order_service_host)}
+    skipUnless: ${eval_equal($create_order_status, 200)}
+    request:
+        method: GET
+        url: /orders/$create_order_orderId/gifts
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, object]
+        - length_equals: [content, 15]
+
+- test:
+    skipIf: ${is_production()}
+    name:  获取订单礼品-orderId不存在
+    base_url: ${ENV(order_service_host)}
+    skipUnless: ${eval_equal($create_order_status, 200)}
+    request:
+        method: GET
+        url: /orders/$unexisted_orderId/gifts
+    validate:
+        - eq: [status_code, 200]
+
+
+- test:
+    name: 已登录内部账号系统-查看普通订单详情页-订单号存在
+    skipUnless: ${eval_equal($create_order_status, 200)}
+    base_url: ${ENV(transaction_admin_api_host)}
+    request:
+        method: GET
+        url: orders/$create_order_orderId/details
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.orderId, $create_order_orderId]
+        - type_match: [content.normalOrderInfo, object]
+        - type_match: [content.normalOrderInfo.customerInfo, object]
+        - eq: [content.normalOrderInfo.customerInfo.customerId, $existed_customerId]
+        - type_match: [content.normalOrderInfo.productInfo, list]
+        - type_match: [content.normalOrderInfo.paymentInfo, list]
+        - type_match: [content.normalOrderInfo.shippingInfo, list]
+        - type_match: [content.normalOrderInfo.shippingAddressInfo, object]
+        - type_match: [content.orderFreeGift, object]
+        - length_equals: [content.orderFreeGift, 15]

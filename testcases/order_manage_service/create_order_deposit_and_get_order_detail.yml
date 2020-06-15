@@ -26,7 +26,7 @@
         - orderId: $new_created_order_deposit
     validate:
         - eq: [status_code, 200]
-        - length_equals: [content, 43]
+        - length_equals: [content, 44]
         - eq: [content.orderId, $new_created_order_deposit]
         - eq: [content.orderType, '1']
         - eq: [content.renewed, 0]

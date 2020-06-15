@@ -12,4 +12,4 @@
     validate:
         - eq: [status_code, 200]
         - type_match: [content, list]
-        - length_equals: [content, 11]
+        - length_equals: [content, 15]

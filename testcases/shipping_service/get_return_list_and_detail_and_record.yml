@@ -1,0 +1,155 @@
+- config:
+    name: 退货service:搜索退货单-获取退货单列表-获取售后单详情-获取退货单信息
+    base_url: ${ENV(shipping_service_host)}
+    variables:
+        - existed_customerPhoneNumber: ${order_customerPhoneNumber_config()}
+        - existed_shippingType: REAL
+        - unexisted_return_id: 123456
+
+- test:
+    name: 搜索退货单-不带任何参数
+    request:
+        method: GET
+        url: /return/search
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, object]
+        - type_match: [content.items, list]
+        - type_match: [content.items.0.returnBill, object]
+        - type_match: [content.items.0.returnResult, object]
+        - type_match: [content.items.0.materials, object]
+        - length_equals: [content.items.0.returnBill, 19]
+        - length_equals: [content.items.0.returnResult, 11]
+        - length_equals: [content.items.0.materials.0, 4]
+    extract:
+        - return_id: content.items.0.returnBill.returnId
+        - order_id: content.items.0.returnBill.orderId
+        - afterSale_id: content.items.0.returnBill.afterSaleId
+        - shipping_id: content.items.0.returnBill.shippingId
+
+- test:
+    name: 搜索退货单-通过orderId查询-orderId存在
+    request:
+        method: GET
+        url: /return/search?orderId=$order_id
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, object]
+        - type_match: [content.items, list]
+        - type_match: [content.items.0.returnBill, object]
+        - type_match: [content.items.0.returnResult, object]
+        - type_match: [content.items.0.materials, object]
+
+- test:
+    name: 搜索退货单-通过afterSaleId查询-afterSaleId存在
+    request:
+        method: GET
+        url: /return/search?afterSaleId=$afterSale_id
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, object]
+        - type_match: [content.items, list]
+        - type_match: [content.items.0.returnBill, object]
+        - type_match: [content.items.0.returnResult, object]
+        - type_match: [content.items.0.materials, object]
+
+- test:
+    name: 搜索退货单-通过shippingId查询-shippingId存在
+    request:
+        method: GET
+        url: /return/search?shippingId=$shipping_id
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, object]
+        - type_match: [content.items, list]
+        - type_match: [content.items.0.returnBill, object]
+        - type_match: [content.items.0.returnResult, object]
+        - type_match: [content.items.0.materials, object]
+
+
+
+- test:
+    name: 获取退货单列表-通过orderId查询-orderId存在
+    request:
+        method: GET
+        url: /return/list?orderId=$order_id
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, list]
+        - type_match: [content.0, object]
+
+
+- test:
+    name: 获取退货单列表-通过afterSaleId查询-afterSaleId存在
+    request:
+        method: GET
+        url: /return/list?afterSaleId=$afterSale_id
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, list]
+        - type_match: [content.0, object]
+
+- test:
+    name: 获取退货单列表-通过shippingId查询-shippingId存在
+    request:
+        method: GET
+        url: /return/list?shippingId=$shipping_id
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, list]
+        - type_match: [content.0, object]
+
+
+- test:
+    name: 获取退货单详情-returnId存在
+    request:
+        method: GET
+        url: /return/$return_id/detail
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, object]
+        - type_match: [content.returnBill, object]
+        - type_match: [content.returnResult, object]
+        - type_match: [content.materials, list]
+        - length_equals: [content.returnBill, 19]
+        - length_equals: [content.returnResult, 11]
+        - length_equals: [content.materials.0, 4]
+
+
+- test:
+    name: 获取退货单详情-returnId不存在
+    request:
+        method: GET
+        url: /return/$unexisted_return_id/detail
+    validate:
+        - eq: [status_code, 200]
+
+
+- test:
+    name: 获取退货单信息-returnId存在
+    request:
+        method: GET
+        url: /return/$return_id/info
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, object]
+        - length_equals: [content, 19]
+
+- test:
+    name: 获取退货单信息-returnId不存在
+    request:
+        method: GET
+        url: /return/$unexisted_return_id/info
+    validate:
+        - eq: [status_code, 200]
+
+
+- test:
+    name: 获取退货单轨迹-returnId存在
+    request:
+        method: GET
+        url: /return/$return_id/record
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, object]
+        - type_match: [content.items, list]

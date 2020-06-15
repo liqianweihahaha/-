@@ -1,0 +1,196 @@
+- config:
+    name: 售后虚拟退货退款api组合：创建订金订单-创建售后单（仅退款）-业务经理审核-业务负责人审核-财务主管审核
+    base_url: ${ENV(transaction_admin_api_host)}
+    variables:
+        - existed_customerPhoneNumber: ${order_customerPhoneNumber_config()}
+        - existed_skuNumber: ${sku_number_deposit()}
+        - existed_customerId: ${order_customerId_config()}
+        - existed_placedById: ${order_handledById_config()}
+        - existed_deposit: 0.01
+        - existed_handledById: ${order_handledById_config()}
+        - existed_handledByName: ${order_handledByName_config()}
+        - existed_transactionNumber: ${gen_random_string(20)}
+        - existed_orderPlatform: ALIPAY
+        - existed_afterSaleType: 'REFUND'
+        - existed_handledById: ${order_handledById_config()}
+        - existed_issued: false
+
+- test:
+    skipIf: ${is_production()}
+    name: 创建订金订单(数据准备1)
+    base_url: ${ENV(order_service_host)}
+    api: api/order_manage_service/create_order_deposit.yml
+    variables:
+        - placedMethod: BY_ADMIN
+        - orderPlatform: $existed_orderPlatform
+        - placedById: $existed_placedById
+        - customerId: $existed_customerId
+        - skuNumber: $existed_skuNumber
+        - deposit: $existed_deposit
+    validate:
+        - eq: [status_code, 200]
+        - length_equals: [content.orderId, 20]
+    extract:
+        - create_order_status: status_code
+        - create_order_orderId: content.orderId
+
+
+- test:
+    skipIf: ${is_production()}
+    name: 已登录内部账号系统-上传支付凭证(数据准备2)
+    base_url: ${ENV(order_service_host)}
+    skipUnless: ${eval_equal($create_order_status, 200)}
+    api: api/order_manage_service/upload_payment.yml
+    variables:
+        - order_id: $create_order_orderId
+        - handledById: $existed_handledById
+        - transactionNumber: $existed_transactionNumber
+        - orderPlatform: $existed_orderPlatform
+        - actualPayment: $existed_deposit
+    validate:
+        - eq: [status_code, 200]
+    extract:
+        - upload_payment_status: status_code
+
+- test:
+    skipIf: ${is_production()}
+    name: 已登录内部账号系统-业务审核付款审核单列表-获取paymentReviewId（数据准备3）
+    skipUnless: ${eval_equal($upload_payment_status, 200)}
+    request:
+        method: GET
+        url: /orders/payments/reviews/bm?orderIds=$create_order_orderId
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+    extract:
+        - paymentReviewId: content.items.0.paymentReviewId
+        - search_status_code: status_code
+
+
+- test:
+    skipIf: ${is_production()}
+    name: 已登录内部账号系统-业务审核通过(数据准备4)
+    skipUnless: ${eval_equal($search_status_code, 200)}
+    api: api/transaction_admin_api/bm_review_payment_reviews.yml
+    variables:
+        - orderId: $create_order_orderId
+        - paymentReviewId: $paymentReviewId
+        - reviewPassed: true
+        - login_token: ${internal_source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+    extract:
+        - bm_review_status_code: status_code
+
+- test:
+    skipIf: ${is_production()}
+    name: 已登录内部账号系统-财务经理审核通过（数据准备5）
+    skipUnless: ${eval_equal($bm_review_status_code, 200)}
+    api: api/transaction_admin_api/fm_review_payment_reviews.yml
+    variables:
+        - login_token: ${internal_source_user_login_token()}
+        - orderId: $create_order_orderId
+        - paymentReviewId: $paymentReviewId
+        - reviewPassed: true
+        - receivedAt: ${get_timestamp(10)}
+    validate:
+        - eq: [status_code, 200]
+    extract:
+        - fm_review_status_code: status_code
+
+
+- test:
+    skipIf: ${is_production()}
+    name: 创建售后单（订金订单）-所有必填参数都填写正确-提交成功
+    skipUnless: ${eval_equal($fm_review_status_code, "200")}
+    api: api/transaction_admin_api/create_after_sales_deposit.yml
+    variables:
+        - login_token: ${internal_source_user_login_token()}
+        - actualRefundAmount: $existed_deposit
+        - afterSaleType: $existed_afterSaleType
+        - issued: true
+        - orderId: $create_order_orderId
+        - ownerId: $existed_handledById
+        - returnsCount: 1
+        - skuNumber: $existed_skuNumber
+    validate:
+        - eq: [status_code, 200]
+    extract:
+        - afterSale_Id: content.afterSaleId
+        - create_after_sales_status: status_code
+
+
+- test:
+    skipIf: ${is_production()}
+    name: 未登录内部账号系统-售后单-业务经理审核通过
+    skipUnless: ${eval_equal($create_after_sales_status, 200)}
+    request:
+        method: PATCH
+        url: /after_sales/$afterSale_Id/review?afterSaleState=AWAITING_BM_REVIEW
+    json:
+        remark: "业务经理审核通过"
+        reviewPassed: true
+    validate:
+        - eq: [status_code, 403]
+        - eq: [content.error_code, '10020005']
+
+
+- test:
+    skipIf: ${is_production()}
+    name: 已登录内部账号系统-售后单-业务经理审核通过
+    skipUnless: ${eval_equal($create_after_sales_status, 200)}
+    api: api/transaction_admin_api/after_sales_review.yml
+    variables:
+        - afterSaleState: AWAITING_BM_REVIEW
+        - afterSaleId: $afterSale_Id
+        - remark: "业务经理审核通过"
+        - reviewPassed: true
+        - login_token: ${internal_source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+
+
+
+- test:
+    skipIf: ${is_production()}
+    name: 已登录内部账号系统-售后单-业务负责人审核通过
+    skipUnless: ${eval_equal($create_after_sales_status, 200)}
+    api: api/transaction_admin_api/after_sales_review.yml
+    variables:
+        - afterSaleState: AWAITING_BD_REVIEW
+        - afterSaleId: $afterSale_Id
+        - remark: "业务负责人审核通过"
+        - reviewPassed: true
+        - login_token: ${internal_source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+
+
+- test:
+    skipIf: ${is_production()}
+    name: 已登录内部账号系统-售后单-财务主管审核通过
+    skipUnless: ${eval_equal($create_after_sales_status, 200)}
+    api: api/transaction_admin_api/after_sales_review.yml
+    variables:
+        - afterSaleState: AWAITING_FD_REVIEW
+        - afterSaleId: $afterSale_Id
+        - remark: "财务主管审核通过"
+        - reviewPassed: true
+        - login_token: ${internal_source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+
+- test:
+    setup_hooks:
+        - ${sleep_N_secs(1)}
+    skipIf: ${is_production()}
+    name: 已登录内部账号系统-通过id获取售后单详情-检查售后单状态为AWAITING_REFUND
+    skipUnless: ${eval_equal($create_after_sales_status, 200)}
+    api: api/transaction_admin_api/get_after_sales_detail.yml
+    variables:
+        - afterSaleId: $afterSale_Id
+        - login_token: ${internal_source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.state, "AWAITING_REFUND"]

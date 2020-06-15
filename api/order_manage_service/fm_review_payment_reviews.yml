@@ -5,7 +5,7 @@ request:
     json:
         reviewPassed: $reviewPassed
         reviewedById: $reviewedById
-        reviewedBy: autotester
+        reviewedBy: 聂亚运
         receivedAt: $receivedAt
         remark: 测试财务审核转账审核单
 validate:

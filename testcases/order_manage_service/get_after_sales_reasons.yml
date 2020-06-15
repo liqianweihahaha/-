@@ -10,7 +10,7 @@
     validate:
         - eq: [status_code, 200]
         - type_match: [content, list]
-        - length_equals: [content, 11]
+        - length_equals: [content, 15]
 
 - test:
     name: 通过ID获取售后原因-ID存在

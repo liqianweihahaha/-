@@ -10,7 +10,7 @@
         - existed_handledById: ${order_handledById_config()}
         - existed_transactionNumber: ${gen_random_string(20)}
         - existed_orderPlatform: ALIPAY
-        - existed_actualPayment: 0.1
+        - existed_actualPayment: 0.03
         - existed_afterSaleType: 'RETURN_REFUND'
         - existed_handledById: ${order_handledById_config()}
 
@@ -75,6 +75,8 @@
         - bm_review_status_code: status_code   
 
 - test:
+    setup_hooks:
+        - ${sleep_N_secs(3)}
     skipIf: ${is_production()}
     name: 财务审核付款审核单：审核通过
     skipUnless: ${eval_equal($bm_review_status_code, 200)}

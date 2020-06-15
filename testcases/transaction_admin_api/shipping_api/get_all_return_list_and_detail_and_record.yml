@@ -163,7 +163,7 @@
     name: 未登录内部账号系统-获取退货单轨迹-returnId存在
     request:
         method: GET
-        url: /return/$return_id/info
+        url: /return/$return_id/record
     validate:
         - eq: [status_code, 403]
         - eq: [content.error_code, '10020005']

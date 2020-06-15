@@ -8,6 +8,7 @@
         - existed_placedById: ${order_handledById_config()}
         - existed_deposit: 0.01
         - existed_handledById: ${order_handledById_config()}
+        - existed_handledByName: ${order_handledByName_config()}
         - existed_transactionNumber: ${gen_random_string(20)}
         - existed_orderPlatform: ALIPAY
         - existed_afterSaleType: 'REFUND'
@@ -246,14 +247,75 @@
         - eq: [status_code, 200]
     extract:
         - afterSaleId: content.afterSaleId
+        - afterSale_status: status_code
 
 - test:
     skipIf: ${is_production()}
     name: 查看售后单详情-检查售后状态
-    skipUnless: ${eval_equal($order_state, "COMPLETED")}
     api: api/order_manage_service/get_after_sales_detail.yml
     variables:
         - afterSaleId: $afterSaleId
     validate:
         - eq: [status_code, 200]
         - eq: [content.state, "1000"]
+
+
+- test:
+    skipIf: ${is_production()}
+    name: 售后单-业务经理审核通过
+    skipUnless: ${eval_equal($afterSale_status, 200)}
+    api: api/order_manage_service/after_sales_review.yml
+    variables:
+        - afterSaleId: $afterSaleId
+        - remark: "业务经理审核通过"
+        - reviewPassed: true
+        - reviewedBy: $existed_handledByName
+        - reviewedById: $existed_handledById
+    validate:
+        - eq: [status_code, 200]
+
+
+- test:
+    setup_hooks:
+        - ${sleep_N_secs(1)}
+    skipIf: ${is_production()}
+    name: 售后单-业务负责人审核通过
+    skipUnless: ${eval_equal($afterSale_status, 200)}
+    api: api/order_manage_service/after_sales_review.yml
+    variables:
+        - afterSaleId: $afterSaleId
+        - remark: "业务负责人审核通过"
+        - reviewPassed: true
+        - reviewedBy: $existed_handledByName
+        - reviewedById: $existed_handledById
+    validate:
+        - eq: [status_code, 200]
+
+
+- test:
+    setup_hooks:
+        - ${sleep_N_secs(2)}
+    skipIf: ${is_production()}
+    name: 售后单-财务主管审核通过
+    skipUnless: ${eval_equal($afterSale_status, 200)}
+    api: api/order_manage_service/after_sales_review.yml
+    variables:
+        - afterSaleId: $afterSaleId
+        - remark: "财务主管审核通过"
+        - reviewPassed: true
+        - reviewedBy: $existed_handledByName
+        - reviewedById: $existed_handledById
+    validate:
+        - eq: [status_code, 200]
+
+
+- test:
+    skipIf: ${is_production()}
+    name: 获取售后详情页-检查售后单的状态是否为待退款(20000)
+    skipUnless: ${eval_equal($afterSale_status, 200)}
+    request:
+        method: GET
+        url: /after_sales/$afterSaleId
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.state, "20000"]

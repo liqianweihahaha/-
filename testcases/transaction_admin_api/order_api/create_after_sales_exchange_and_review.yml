@@ -1,0 +1,335 @@
+- config:
+    name: 售后换货api组合：创建订单-创建售后单（换货）-业务经理审核-业务负责人审核-财务会计审核通过-财务主管审核
+    base_url: ${ENV(transaction_admin_api_host)}
+    variables:
+        - existed_customerPhoneNumber: ${order_customerPhoneNumber_config()}
+        - existed_skuNumber: ${sku_number_config()}
+        - existed_customerId: ${order_customerId_config()}
+        - existed_placedBy: ${order_placedBy_config()}
+        - existed_total_discount: null
+        - existed_handledById: ${order_handledById_config()}
+        - existed_transactionNumber: ${gen_random_string(20)}
+        - existed_orderPlatform: ALIPAY
+        - existed_actualPayment: 0.03
+        - existed_afterSaleType: 'EXCHANGE'
+        - existed_issued: true
+
+
+- test:
+    skipIf: ${is_production()}
+    name: 已登录内部账号系统-创建普通订单(数据准备1)
+    base_url: ${ENV(order_service_host)}
+    api: api/order_manage_service/create_order.yml
+    variables:
+        - placedMethod: BY_ADMIN
+        - orderPlatform: $existed_orderPlatform
+        - customer_phone_number: $existed_customerPhoneNumber
+        - customer_id: $existed_customerId
+        - sku_number: $existed_skuNumber
+        - total_discount: $existed_total_discount
+    validate:
+        - eq: [status_code, 200]
+        - length_equals: [content.orderId, 20]
+    extract:
+        - create_order_status: status_code
+        - create_order_orderId: content.orderId
+
+- test:
+    skipIf: ${is_production()}
+    name: 已登录内部账号系统-上传支付凭证(数据准备2)
+    base_url: ${ENV(order_service_host)}
+    skipUnless: ${eval_equal($create_order_status, 200)}
+    api: api/order_manage_service/upload_payment.yml
+    variables:
+        - order_id: $create_order_orderId
+        - handledById: $existed_handledById
+        - transactionNumber: $existed_transactionNumber
+        - orderPlatform: $existed_orderPlatform
+        - actualPayment: $existed_actualPayment
+    validate:
+        - eq: [status_code, 200]
+    extract:
+        - upload_payment_status: status_code
+
+- test:
+    skipIf: ${is_production()}
+    name: 已登录内部账号系统-业务审核付款审核单列表-获取paymentReviewId（数据准备3）
+    skipUnless: ${eval_equal($upload_payment_status, 200)}
+    request:
+        method: GET
+        url: /orders/payments/reviews/bm?orderIds=$create_order_orderId
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+    extract:
+        - paymentReviewId: content.items.0.paymentReviewId
+        - search_status_code: status_code
+
+
+- test:
+    skipIf: ${is_production()}
+    name: 已登录内部账号系统-业务审核通过(数据准备4)
+    skipUnless: ${eval_equal($search_status_code, 200)}
+    api: api/transaction_admin_api/bm_review_payment_reviews.yml
+    variables:
+        - orderId: $create_order_orderId
+        - paymentReviewId: $paymentReviewId
+        - reviewPassed: true
+        - login_token: ${internal_source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+    extract:
+        - bm_review_status_code: status_code
+
+- test:
+    skipIf: ${is_production()}
+    name: 已登录内部账号系统-财务经理审核通过（数据准备5）
+    skipUnless: ${eval_equal($bm_review_status_code, 200)}
+    api: api/transaction_admin_api/fm_review_payment_reviews.yml
+    variables:
+        - orderId: $create_order_orderId
+        - paymentReviewId: $paymentReviewId
+        - reviewPassed: true
+        - receivedAt: ${get_timestamp(10)}
+        - login_token: ${internal_source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+    extract:
+        - fm_review_status_code: status_code
+
+- test:
+    skipIf: ${is_production()}
+    setup_hooks:
+        - ${sleep_N_secs(15)}  
+    name: 已登录内部账号系统-售后申请预览-获取物料发货单等信息（数据准备6）
+    skipUnless: ${eval_equal($fm_review_status_code, 200)}
+    request:
+        method: GET
+        url: /after_sales/previews/issuing?orderId=$create_order_orderId
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+    extract:
+        - issuing_status_code: status_code
+        - shipmentId_1: content.items.0.shippingId
+        - material_id_1: content.items.0.materialNumber
+        - material_count_1: content.items.0.returnableCount
+        - shipmentId_2: content.items.1.shippingId
+        - material_id_2: content.items.1.materialNumber
+        - material_count_2: content.items.1.returnableCount
+
+- test:
+    skipIf: ${is_production()}
+    name: 已登录内部账号系统-创建售后单（普通订单）-所有必填参数都填写正确-提交成功(数据准备7)
+    skipUnless: ${eval_equal($issuing_status_code, 200)}
+    request:
+        method: POST
+        url: /after_sales
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+        json:
+            actualRefundAmount: 0.01
+            afterSaleReasonId: 1
+            afterSaleType: $existed_afterSaleType
+            issued: $existed_issued
+            orderId: $create_order_orderId
+            refundMethod: "ORIGINAL"
+            detailedReason: "测试售后单详细原因"
+            remarks:
+                  -
+                   remark: "自动化测试申请售后"         
+            items:
+                  -
+                   materialNumber: $material_id_1
+                   returnsCount: $material_count_1
+                   shippingId: $shipmentId_1
+                   skuNumber: $existed_skuNumber
+                  -
+                   materialNumber: $material_id_2
+                   returnsCount: $material_count_2
+                   shippingId: $shipmentId_2
+                   skuNumber: $existed_skuNumber
+            replacementItems:
+                  -
+                   skuNumber: $existed_skuNumber
+                   quantity: 1
+            shippingInfo:
+                orderId: $create_order_orderId
+                consigneeId: $existed_customerId
+                consignee: '聂亚运'
+                phoneNumber: $existed_customerPhoneNumber
+                province: '广东省'
+                provinceId: 19
+                city:  '深圳市'
+                cityId: 202
+                district: '南山区'
+                districtId: 1859
+                streetAddress: '前海湾信利康大厦30楼'   
+
+    validate:
+        - eq: [status_code, 200]
+    extract:
+        - afterSale_Id: content.afterSaleId
+        - create_after_sales_status: status_code
+
+- test:
+    skipIf: ${is_production()}
+    name: 未登录内部账号系统-售后单-业务经理审核通过
+    skipUnless: ${eval_equal($create_after_sales_status, 200)}
+    request:
+        method: PATCH
+        url: /after_sales/$afterSale_Id/review?afterSaleState=AWAITING_BM_REVIEW
+    json:
+        remark: "业务经理审核通过"
+        reviewPassed: true
+    validate:
+        - eq: [status_code, 403]
+        - eq: [content.error_code, '10020005']
+
+
+- test:
+    skipIf: ${is_production()}
+    name: 已登录内部账号系统-售后单-业务经理审核通过
+    skipUnless: ${eval_equal($create_after_sales_status, 200)}
+    api: api/transaction_admin_api/after_sales_review.yml
+    variables:
+        - afterSaleState: AWAITING_BM_REVIEW
+        - afterSaleId: $afterSale_Id
+        - remark: "业务经理审核通过"
+        - reviewPassed: true
+        - login_token: ${internal_source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+
+- test:
+    skipIf: ${is_production()}
+    name: 已登录内部账号系统-通过id获取售后单详情-检查售后单状态为AWAITING_BD_REVIEW
+    skipUnless: ${eval_equal($create_after_sales_status, 200)}
+    api: api/transaction_admin_api/get_after_sales_detail.yml
+    variables:
+        - afterSaleId: $afterSale_Id
+        - login_token: ${internal_source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.state, "AWAITING_BD_REVIEW"]
+
+
+- test:
+    skipIf: ${is_production()}
+    name: 已登录内部账号系统-售后单-业务负责人审核通过
+    skipUnless: ${eval_equal($create_after_sales_status, 200)}
+    api: api/transaction_admin_api/after_sales_review.yml
+    variables:
+        - afterSaleState: AWAITING_BD_REVIEW
+        - afterSaleId: $afterSale_Id
+        - remark: "业务负责人审核通过"
+        - reviewPassed: true
+        - login_token: ${internal_source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+
+- test:
+    setup_hooks:
+        - ${sleep_N_secs(1)}
+    skipIf: ${is_production()}
+    name: 已登录内部账号系统-通过id获取售后单详情-检查售后单状态为AWAITING_FD_REVIEW
+    skipUnless: ${eval_equal($create_after_sales_status, 200)}
+    api: api/transaction_admin_api/get_after_sales_detail.yml
+    variables:
+        - afterSaleId: $afterSale_Id
+        - login_token: ${internal_source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.state, "AWAITING_ACCOUNTANT_REVIEW"]
+
+- test:
+    skipIf: ${is_production()}
+    name: 已登录内部账号系统-售后单-财务会计审核通过
+    skipUnless: ${eval_equal($create_after_sales_status, 200)}
+    api: api/transaction_admin_api/after_sales_review.yml
+    variables:
+        - afterSaleState: AWAITING_ACCOUNTANT_REVIEW
+        - afterSaleId: $afterSale_Id
+        - remark: "财务主管审核通过"
+        - reviewPassed: true
+        - login_token: ${internal_source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+
+- test:
+    skipIf: ${is_production()}
+    name: 已登录内部账号系统-售后单-财务主管审核通过
+    skipUnless: ${eval_equal($create_after_sales_status, 200)}
+    api: api/transaction_admin_api/after_sales_review.yml
+    variables:
+        - afterSaleState: AWAITING_FD_REVIEW
+        - afterSaleId: $afterSale_Id
+        - remark: "财务主管审核通过"
+        - reviewPassed: true
+        - login_token: ${internal_source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+
+- test:
+    setup_hooks:
+        - ${sleep_N_secs(1)}
+    skipIf: ${is_production()}
+    name: 已登录内部账号系统-通过id获取售后单详情-检查售后单状态为COMPLETED
+    skipUnless: ${eval_equal($create_after_sales_status, 200)}
+    api: api/transaction_admin_api/get_after_sales_detail.yml
+    variables:
+        - afterSaleId: $afterSale_Id
+        - login_token: ${internal_source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.state, "COMPLETED"]
+
+
+- test:
+    skipIf: ${is_production()}
+    name: 已登录-通过id获取售后单详情-afterSaleId存在-获取新订单id
+    api: api/transaction_admin_api/get_after_sales_detail.yml
+    variables:
+        - afterSaleId: $afterSale_Id
+        - login_token: ${internal_source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, object]
+        - type_match: [content.orderInfo, object]
+        - type_match: [content.customerInfo, object]
+        - type_match: [content.afterSaleInfo, list]
+        - type_match: [content.afterSaleProductInfo, list]
+        - type_match: [content.items, list]
+        - type_match: [content.amountInfo, object]
+        - type_match: [content.balanceCarryforwardInfo, object]
+        - type_match: [content.carriedForwardOrderInfo, object]
+        - type_match: [content.replacementShippingAddressInfo, object]
+        - type_match: [content.replacementShippingAddressInfo.sourceShippingAddress, object]
+        - type_match: [content.replacementShippingAddressInfo.targetShippingAddress, object]
+        - length_equals: [content.orderInfo, 4]
+        - length_equals: [content.customerInfo, 4]
+        - length_equals: [content.afterSaleProductInfo.0, 9]
+        - length_equals: [content.items.0, 15]
+        - length_equals: [content.amountInfo, 4]
+        - length_equals: [content.balanceCarryforwardInfo, 3]
+        - length_equals: [content.carriedForwardOrderInfo, 4]
+        - length_equals: [content.replacementShippingAddressInfo.sourceShippingAddress, 15]
+        - length_equals: [content.replacementShippingAddressInfo.targetShippingAddress, 15]
+    extract:
+        - new_order_id: content.carriedForwardOrderInfo.orderId
+
+- test:
+    setup_hooks:
+        - ${sleep_N_secs(5}
+    name: 已登录内部账号系统-查看新订单详情页-检查订单状态是否为COMPLETED
+    request:
+        method: GET
+        url: orders/$new_order_id/details
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.state, 'COMPLETED']
+        - eq: [content.exchanged, true]

@@ -172,7 +172,7 @@
     skipIf: ${is_production()}
     name: 已登录内部账号系统-创建售后单（普通订单）-申请售后金额>可退金额-保存失败
     skipUnless: ${eval_equal($order_state, "COMPLETED")}
-    api: api/transaction_admin_api/create_after_sale_normal.yml
+    api: api/transaction_admin_api/create_after_sales_normal.yml
     variables:
         - login_token: ${internal_source_user_login_token()}
         - actualRefundAmount: $unexisted_actualPayment
@@ -195,7 +195,7 @@
     skipIf: ${is_production()}
     name: 已登录-创建售后单（普通订单）-订单ID不存在-保存失败
     skipUnless: ${eval_equal($order_state, "COMPLETED")}
-    api: api/transaction_admin_api/create_after_sale_normal.yml
+    api: api/transaction_admin_api/create_after_sales_normal.yml
     variables:
         - login_token: ${internal_source_user_login_token()}
         - actualRefundAmount: $existed_actualPayment
@@ -218,7 +218,7 @@
     skipIf: ${is_production()}
     name: 已登录-创建售后单（普通订单）-售后类型不存在-保存失败
     skipUnless: ${eval_equal($order_state, "COMPLETED")}
-    api: api/transaction_admin_api/create_after_sale_normal.yml
+    api: api/transaction_admin_api/create_after_sales_normal.yml
     variables:
         - login_token: ${internal_source_user_login_token()}
         - actualRefundAmount: $existed_actualPayment
@@ -242,7 +242,7 @@
     skipIf: ${is_production()}
     name: 已登录-创建售后单（普通订单）-materialNumber不存在-保存失败
     skipUnless: ${eval_equal($order_state, "COMPLETED")}
-    api: api/transaction_admin_api/create_after_sale_normal.yml
+    api: api/transaction_admin_api/create_after_sales_normal.yml
     variables:
         - login_token: ${internal_source_user_login_token()}
         - actualRefundAmount: $existed_actualPayment
@@ -265,7 +265,7 @@
     skipIf: ${is_production()}
     name: 已登录-创建售后单（普通订单）-申请售后数量>可退数量-保存失败
     skipUnless: ${eval_equal($order_state, "COMPLETED")}
-    api: api/transaction_admin_api/create_after_sale_normal.yml
+    api: api/transaction_admin_api/create_after_sales_normal.yml
     variables:
         - login_token: ${internal_source_user_login_token()}
         - actualRefundAmount: $existed_actualPayment
@@ -288,7 +288,7 @@
     skipIf: ${is_production()}
     name: 已登录-创建售后单（普通订单）-shippingId不存在-保存失败
     skipUnless: ${eval_equal($order_state, "COMPLETED")}
-    api: api/transaction_admin_api/create_after_sale_normal.yml
+    api: api/transaction_admin_api/create_after_sales_normal.yml
     variables:
         - login_token: ${internal_source_user_login_token()}
         - actualRefundAmount: $existed_actualPayment
@@ -311,7 +311,7 @@
     skipIf: ${is_production()}
     name: 已登录-创建售后单（普通订单）-skuNumber不存在-保存失败
     skipUnless: ${eval_equal($order_state, "COMPLETED")}
-    api: api/transaction_admin_api/create_after_sale_normal.yml
+    api: api/transaction_admin_api/create_after_sales_normal.yml
     variables:
         - login_token: ${internal_source_user_login_token()}
         - actualRefundAmount: $existed_actualPayment
@@ -334,7 +334,7 @@
     skipIf: ${is_production()}
     name: 已登录-创建售后单（普通订单）-所有必填参数都填写正确-提交成功
     skipUnless: ${eval_equal($order_state, "COMPLETED")}
-    api: api/transaction_admin_api/create_after_sale_normal.yml
+    api: api/transaction_admin_api/create_after_sales_normal.yml
     variables:
         - login_token: ${internal_source_user_login_token()}
         - actualRefundAmount: $existed_actualPayment
@@ -439,7 +439,6 @@
         - type_match: [content.items, list]
         - eq: [content.items.0.orderId, $create_order_orderId]
         - length_equals: [content.items, 1]
-
 
 
 - test:

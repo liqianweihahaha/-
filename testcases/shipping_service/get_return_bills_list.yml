@@ -1,0 +1,76 @@
+- config:
+    name: 获取退货单清单列表
+    base_url: ${ENV(shipping_service_host)}
+    variables:
+        - existed_customerPhoneNumber: ${order_customerPhoneNumber_config()}
+        - existed_shippingType: REAL
+        - unexisted_return_id: 123456
+
+- test:
+    name: 获取退货单清单列表-不带任何参数
+    request:
+        method: GET
+        url: /return/bills
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, list]
+        - type_match: [content.0.returnBill, object]
+        - type_match: [content.0.returnResult, object]
+        - type_match: [content.0.materials, object]
+        - length_equals: [content.0.returnBill, 19]
+        - length_equals: [content.0.returnResult, 11]
+        - length_equals: [content.0.materials.0, 4]
+    extract:
+        - return_id: content.0.returnBill.returnId
+        - order_id: content.0.returnBill.orderId
+        - afterSale_id: content.0.returnBill.afterSaleId
+        - shipping_id: content.0.returnBill.shippingId
+
+
+- test:
+    name: 获取退货单清单列表-通过afterSaleIds查询-afterSaleIds存在
+    request:
+        method: GET
+        url: /return/bills?afterSaleIds=$afterSale_id
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, list]
+        - type_match: [content.0.returnBill, object]
+        - type_match: [content.0.returnResult, object]
+        - type_match: [content.0.materials, object]
+
+- test:
+    name: 获取退货单清单列表-通过returnId查询-returnId存在
+    request:
+        method: GET
+        url: /return/bills?returnId=$return_id
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, list]
+        - type_match: [content.0.returnBill, object]
+        - type_match: [content.0.returnResult, object]
+        - type_match: [content.0.materials, object]
+
+- test:
+    name: 获取退货单清单列表-通过orderId查询-orderId存在
+    request:
+        method: GET
+        url: /return/bills?orderId=$order_id
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, list]
+        - type_match: [content.0.returnBill, object]
+        - type_match: [content.0.returnResult, object]
+        - type_match: [content.0.materials, object]
+
+- test:
+    name: 获取退货单清单列表-通过shippingType查询-shippingType存在
+    request:
+        method: GET
+        url: /return/bills?shippingType=VIRTUAL
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, list]
+        - type_match: [content.0.returnBill, object]
+        - type_match: [content.0.returnResult, object]
+        - type_match: [content.0.materials, object]

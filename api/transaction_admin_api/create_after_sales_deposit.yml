@@ -1,22 +1,21 @@
-name: 订单service:创建售后单(订金订单)
-base_url: ${ENV(order_service_host)}
-
+name: 售后api:创建售后单(订金订单)
+base_url: ${ENV(transaction_admin_api_host)}
 request:
     method: POST
     url: /after_sales
+    headers:
+        Authorization: $login_token
     json:
         actualRefundAmount: $actualRefundAmount
         afterSaleReasonId: 1
         afterSaleType: $afterSaleType
         issued: $issued
         orderId: $orderId
-        owner: '聂亚运'
-        ownerId: $ownerId
         refundMethod: "ORIGINAL"
-        detailedReason: "测试订单"
+        detailedReason: "测试售后单详细原因"
         remarks:
               -
-               remark: "自动化测试申请售后"
+               remark: "自动化测试申请售后"         
         items:
               -
                materialNumber: ""

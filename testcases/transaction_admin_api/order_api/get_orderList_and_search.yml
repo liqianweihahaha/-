@@ -78,7 +78,7 @@
     validate:
         - eq: [status_code, 200]
         - type_match: [content.items, list]
-        - length_equals: [content.items.0, 39]
+        - length_equals: [content.items.0, 40]
 
 - test:
     name: 已登录内部账号系统-获取订单列表-客户手机号查询-手机号不存在
@@ -104,7 +104,7 @@
     validate:
         - eq: [status_code, 200]
         - type_match: [content.items, list]
-        - length_equals: [content.items.0, 39]
+        - length_equals: [content.items.0, 40]
         - eq: [content.items.0.state, COMPLETED]
 
 

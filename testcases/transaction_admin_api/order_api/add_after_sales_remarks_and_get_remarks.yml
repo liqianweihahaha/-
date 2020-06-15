@@ -124,7 +124,7 @@
     skipIf: ${is_production()}
     name: 已登录内部账号系统-创建售后单（普通订单）-所有必填参数都填写正确-提交成功(数据准备7)
     skipUnless: ${eval_equal($order_state, "COMPLETED")}
-    api: api/transaction_admin_api/create_after_sale_normal.yml
+    api: api/transaction_admin_api/create_after_sales_normal.yml
     variables:
         - login_token: ${internal_source_user_login_token()}
         - actualRefundAmount: $existed_actualPayment
