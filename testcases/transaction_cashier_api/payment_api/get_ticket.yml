@@ -1,0 +1,75 @@
+- config:
+    name: 通过orderid获取ticket
+    base_url: ${ENV(ezbuy_api_host)}
+    variables:
+        - existed_customerPhoneNumber: ${test_phone_number()}
+        - existed_skuNumber: ${sku_number_config()}
+        - existed_customerId: ${source_user_id()}
+        - existed_placedBy: ${order_placedBy_config()}
+        - existed_total_discount: null
+        - existed_handledById: ${order_handledById_config()}
+        - existed_transactionNumber: ${gen_random_string(20)}
+        - existed_orderPlatform: ALIPAY
+        - unexisted_orderId: 123456
+
+
+- test:
+    skipIf: ${is_production()}
+    name: 创建普通订单(数据准备1)
+    api: api/order_manage_service/create_order.yml
+    variables:
+        - placedMethod: BY_ADMIN
+        - orderPlatform: $existed_orderPlatform
+        - customer_phone_number: $existed_customerPhoneNumber
+        - customer_id: $existed_customerId
+        - sku_number: $existed_skuNumber
+        - total_discount: $existed_total_discount
+    validate:
+        - eq: [status_code, 200]
+        - length_equals: [content.orderId, 20]
+    extract:
+        - create_order_status: status_code
+        - create_order_orderId: content.orderId
+
+
+- test:
+    name: 未登录：获取ticket-orderid存在
+    skipIf: ${is_production()}
+    request:
+        method: POST
+        url: /pay/invoices
+        json:
+            order_id: $create_order_orderId
+    validate:
+        - eq: [status_code, 403]
+        - eq: [content.error_code, '10020004']
+
+
+- test:
+    name: 已登录：获取ticket-orderid存在
+    skipIf: ${is_production()}
+    request:
+        method: POST
+        url: /pay/invoices
+        json:
+            order_id: $create_order_orderId
+        headers:
+            Authorization: ${source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, object]
+        - contains: [content, 'ticket']
+
+- test:
+    name: 已登录：获取ticket-orderid不存在
+    skipIf: ${is_production()}
+    request:
+        method: POST
+        url: /pay/invoices
+        json:
+            order_id: $unexisted_orderId
+        headers:
+            Authorization: ${source_user_login_token()}
+    validate:
+        - eq: [status_code, 422]
+        - eq: [content.error_code, '10020002']

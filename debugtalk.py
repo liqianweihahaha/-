@@ -131,6 +131,9 @@ def spu_number_config():
 def sku_price_config():
     return sku_config.get('price')
 
+def spu_term_config():
+    return sku_config.get('term_id')
+
 
 # 读获取虚拟&实物商品配置信息
 sku_physical_config = read_config.sku_physical(TEST_ENV)

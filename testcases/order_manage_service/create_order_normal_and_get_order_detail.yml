@@ -13,13 +13,13 @@
         - existed_handledByName: ${order_handledByName_config()}
         - existed_orderPlatform: CODEMAO
         - unexisted_skuNumber: 12345678
-        - unexisted_existed_customerId: 11111111111
-        - unexisted_existed_customerPhoneNumber: 15111111111
+        - unexisted_customerId: 11111111111
+        - unexisted_customerPhoneNumber: 15111111111
         - unexisted_total_discount: 100
 
 - test:
     skipIf: ${is_production()}
-    name: 创建代下单全款订单-sku_number不存在-创建失败
+    name: 创建全款订单-sku_number不存在-创建失败
     api: api/order_manage_service/create_order.yml
     variables:
         - placedMethod: BY_ADMIN
@@ -34,13 +34,13 @@
 
 - test:
     skipIf: ${is_production()}
-    name: 创建代下单全款订单-customer_id不存在-创建失败
+    name: 创建全款订单-customer_id不存在-创建失败
     api: api/order_manage_service/create_order.yml
     variables:
         - placedMethod: BY_ADMIN
         - orderPlatform: $existed_orderPlatform
         - customer_phone_number: $existed_customerPhoneNumber
-        - customer_id: $unexisted_existed_customerId
+        - customer_id: $unexisted_customerId
         - sku_number: $existed_skuNumber
         - total_discount: $existed_total_discount
     validate:
@@ -49,7 +49,7 @@
 
 - test:
     skipIf: ${is_production()}
-    name: 创建代下单全款订单-customer_phone_number不存在-创建成功
+    name: 创建全款订单-customer_phone_number不存在-创建成功
     api: api/order_manage_service/create_order.yml
     variables:
         - placedMethod: BY_ADMIN
@@ -65,7 +65,7 @@
 
 - test:
     skipIf: ${is_production()}
-    name: 创建代下单全款订单-customer_phone_number格式不正确-创建失败
+    name: 创建全款订单-customer_phone_number格式不正确-创建失败
     api: api/order_manage_service/create_order.yml
     variables:
         - placedMethod: BY_ADMIN
@@ -79,7 +79,7 @@
 
 - test:
     skipIf: ${is_production()}
-    name: 创建代下单全款订单-优惠金额大于商品金额-创建失败
+    name: 创建全款订单-优惠金额大于商品金额-创建失败
     api: api/order_manage_service/create_order.yml
     variables:
         - placedMethod: BY_ADMIN
@@ -94,7 +94,7 @@
 
 - test:
     skipIf: ${is_production()}
-    name: 创建代下单全款订单-不传customerId参数-创建失败
+    name: 创建全款订单-不传customerId参数-创建失败
     request:
         method: POST
         url: /orders/admin
@@ -121,7 +121,7 @@
 
 - test:
     skipIf: ${is_production()}
-    name: 创建代下单全款订单-不传consigneeId参数-创建失败
+    name: 创建全款订单-不传consigneeId参数-创建失败
     request:
         method: POST
         url: /orders/admin
@@ -148,7 +148,7 @@
 
 - test:
     skipIf: ${is_production()}
-    name: 创建代下单全款订单-consigneeId不存在-创建成功
+    name: 创建全款订单-consigneeId不存在-创建成功
     request:
         method: POST
         url: /orders/admin
@@ -168,7 +168,7 @@
             businessTypeId: 1
             businessUnitId: 1
             shippingInfo:
-                consigneeId: $unexisted_existed_customerId
+                consigneeId: $unexisted_customerId
             remark: 测试创建订单
     validate:
         - eq: [status_code, 200]
@@ -176,7 +176,7 @@
 
 - test:
     skipIf: ${is_production()}
-    name: 创建代下单全款订单-所有参数都正确-创建成功
+    name: 创建全款订单-所有参数都正确-创建成功
     api: api/order_manage_service/create_order.yml
     variables:
         - placedMethod: BY_ADMIN

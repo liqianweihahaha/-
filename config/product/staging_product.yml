@@ -4,6 +4,7 @@ sku:
   price: 0.03
   lowest_price: 0.02
   spu_number: 'G192151000'
+  term_id: 2
 
 #普通虚拟+实物商品
 sku_physical:

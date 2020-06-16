@@ -1,0 +1,29 @@
+
+- config:
+    name: 获取某SPU详情（Public）
+    base_url: ${ENV(ezbuy_api_host)}
+    variables:
+        - existed_term_id: ${spu_term_config()}
+        - unexisted_term_id: 1000000
+
+
+- test:
+    name: 未登录：term_id存在
+    skipIf: ${is_production()}
+    request:
+        method: GET
+        url: /terms/$existed_term_id?version=1
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, object]
+        - length_equals: [content, 5]
+
+
+- test:
+    name: 未登录：term_id不存在
+    skipIf: ${is_production()}
+    request:
+        method: GET
+        url: /terms/$unexisted_term_id?version=1
+    validate:
+        - eq: [status_code, 200]

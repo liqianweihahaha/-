@@ -1,0 +1,130 @@
+- config:
+    name: 测试组合：创建订单-获取用户订单列表-获取属于用户的订单详情-获取不属于用户的订单详情
+    base_url: ${ENV(ezbuy_api_host)}
+    variables:
+        - existed_customerPhoneNumber: ${test_phone_number()}
+        - existed_skuNumber: ${sku_number_config()}
+        - existed_customerId: ${source_user_id()}
+        - existed_placedBy: ${order_placedBy_config()}
+        - existed_total_discount: null
+        - existed_handledById: ${order_handledById_config()}
+        - existed_transactionNumber: ${gen_random_string(20)}
+        - existed_orderPlatform: ALIPAY
+        - unexisted_orderId: 123456
+
+
+- test:
+    skipIf: ${is_production()}
+    name: 创建普通订单(数据准备1)
+    api: api/order_manage_service/create_order.yml
+    variables:
+        - placedMethod: BY_ADMIN
+        - orderPlatform: $existed_orderPlatform
+        - customer_phone_number: $existed_customerPhoneNumber
+        - customer_id: $existed_customerId
+        - sku_number: $existed_skuNumber
+        - total_discount: $existed_total_discount
+    validate:
+        - eq: [status_code, 200]
+        - length_equals: [content.orderId, 20]
+    extract:
+        - create_order_status: status_code
+        - create_order_orderId: content.orderId
+
+- test:
+    name: 未登录：获取用户订单列表
+    skipIf: ${is_production()}
+    request:
+        method: GET
+        url: /orders
+    validate:
+        - eq: [status_code, 403]
+        - eq: [content.error_code, '10020004']
+
+
+- test:
+    name: 已登录：获取用户订单列表-有订单数据
+    skipIf: ${is_production()}
+    request:
+        method: GET
+        url: /orders
+        headers:
+            Authorization: ${source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, object]
+        - type_match: [content.items, list]
+        - type_match: [content.items.0.products, list]
+        - length_equals: [content.items.0, 6]
+        - length_equals: [content.items.0.products.0, 7]
+
+- test:
+    name: 未登录：获取订单详情
+    skipIf: ${is_production()}
+    request:
+        method: GET
+        url: /orders/$create_order_orderId/details
+    validate:
+        - eq: [status_code, 403]
+        - eq: [content.error_code, '10020004']
+
+
+- test:
+    name: 已登录：获取属于用户的订单详情-orderId存在
+    skipIf: ${is_production()}
+    request:
+        method: GET
+        url: /orders/$create_order_orderId/details
+        headers:
+            Authorization: ${source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.orderId, $create_order_orderId]
+        - type_match: [content, object]
+        - type_match: [content.normalOrder, object]
+        - type_match: [content.normalOrder.shippingInfo, object]
+        - type_match: [content.products, list]
+        - length_equals: [content, 11]
+        - length_equals: [content.normalOrder, 3]
+        - length_equals: [content.normalOrder.shippingInfo, 3]
+        - length_equals: [content.products.0, 7]
+
+- test:
+    name: 已登录：获取属于用户的订单详情-orderId不存在
+    skipIf: ${is_production()}
+    request:
+        method: GET
+        url: /orders/$unexisted_orderId/details
+        headers:
+            Authorization: ${source_user_login_token()}
+    validate:
+        - eq: [status_code, 422]
+        - eq: [content.error_code, '10020005']
+
+- test:
+    name: 批量获取订单列表-通过customerPhoneNumber查询-customerPhoneNumber存在
+    base_url: ${ENV(order_service_host)}
+    request:
+        method: GET
+        url: /orders?customerPhoneNumber=15558193399
+    validate:
+        - eq: [status_code, 200]
+        - contains: [content, items]
+        - contains: [content, total]
+        - type_match: [content, object]
+        - type_match: [content.items, list]
+    extract:
+        - other_orderId: content.items.0.orderId
+
+
+- test:
+    name: 已登录：获取不属于用户的订单详情-orderId存在
+    skipIf: ${is_production()}
+    request:
+        method: GET
+        url: /orders/$other_orderId/details
+        headers:
+            Authorization: ${source_user_login_token()}
+    validate:
+        - eq: [status_code, 422]
+        - eq: [content.error_code, '10020005']

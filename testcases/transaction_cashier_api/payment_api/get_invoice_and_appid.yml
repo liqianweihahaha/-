@@ -1,0 +1,94 @@
+- config:
+    name: 测试组合：获取invoices(商品名称和金额信息)-获取appid
+    base_url: ${ENV(ezbuy_api_host)}
+    variables:
+        - existed_customerPhoneNumber: ${test_phone_number()}
+        - existed_skuNumber: ${sku_number_config()}
+        - existed_customerId: ${source_user_id()}
+        - existed_placedBy: ${order_placedBy_config()}
+        - existed_total_discount: null
+        - existed_handledById: ${order_handledById_config()}
+        - existed_transactionNumber: ${gen_random_string(20)}
+        - existed_orderPlatform: ALIPAY
+        - unexisted_orderId: 123456
+        - unexisted_ticket: r1mRUF-QUEFmOgsBv8Jyz11EdW1QrOZK1
+
+
+- test:
+    skipIf: ${is_production()}
+    name: 创建普通订单(数据准备1)
+    api: api/order_manage_service/create_order.yml
+    variables:
+        - placedMethod: BY_ADMIN
+        - orderPlatform: $existed_orderPlatform
+        - customer_phone_number: $existed_customerPhoneNumber
+        - customer_id: $existed_customerId
+        - sku_number: $existed_skuNumber
+        - total_discount: $existed_total_discount
+    validate:
+        - eq: [status_code, 200]
+        - length_equals: [content.orderId, 20]
+    extract:
+        - create_order_status: status_code
+        - create_order_orderId: content.orderId
+
+
+- test:
+    name: 已登录：获取ticket-orderid存在
+    skipIf: ${is_production()}
+    request:
+        method: POST
+        url: /pay/invoices
+        json:
+            order_id: $create_order_orderId
+        headers:
+            Authorization: ${source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, object]
+        - contains: [content, 'ticket']
+    extract:
+        - ticketId: content.ticket
+
+- test:
+    name: 已登录：获取invoice-ticket存在
+    skipIf: ${is_production()}
+    request:
+        method: GET
+        url: /pay/invoice?ticket=$ticketId
+        headers:
+            Authorization: ${source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+        - contains: [content, 'titles']
+        - contains: [content, 'amount']
+        - type_match: [content, object]
+        - type_match: [content.titles, list]
+        - length_equals: [content, 2]
+
+
+- test:
+    name: 已登录：获取invoice-ticket不存在
+    skipIf: ${is_production()}
+    request:
+        method: GET
+        url: /pay/invoice?ticket=$unexisted_ticket
+        headers:
+            Authorization: ${source_user_login_token()}
+    validate:
+        - eq: [status_code, 422]
+        - eq: [content.error_code, '10022004']
+    
+- test:
+    name: 已登录：获取appid
+    skipIf: ${is_production()}
+    request:
+        method: GET
+        url: /pay/appid?ticket=$ticketId&payment_type=WX_H5
+        headers:
+            Authorization: ${source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+        - contains: [content, 'appid']
+        - type_match: [content, object]
+        - length_equals: [content.appid, 18]

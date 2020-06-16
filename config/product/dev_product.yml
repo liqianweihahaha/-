@@ -4,6 +4,8 @@ sku:
   price: 0.03
   lowest_price: 0.02
   spu_number: 'G198806140'
+  term_id: 9
+
 
 #普通虚拟+实物商品
 sku_physical:

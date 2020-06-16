@@ -5,6 +5,8 @@
     variables:
         - existed_category_id: 1
         - existed_department_id: 1
+        - existed_spu_number: ${spu_number_config()}
+        - unexisted_spu_number: 123456
 
 - test:
     name: 已登录内部账号：只传递必选参数-type为VIRTUAL
@@ -23,7 +25,7 @@
         - created_spu_number: content
 
 - test:
-    name: 未登录：spu存在状态为已下架
+    name: 未登录：spu存在-状态为已下架
     skipIf: ${is_production()}
     request:
         method: GET
@@ -33,3 +35,30 @@
         - length_equals: [content, 14]
         - eq: [content.spu_number, $created_spu_number]
         - contains: [content, sku]
+
+
+- test:
+    name: 未登录：spu存在-状态为已上架
+    skipIf: ${is_production()}
+    request:
+        method: GET
+        url: /products/spu/public/$existed_spu_number/details
+    validate:
+        - eq: [status_code, 200]
+        - length_equals: [content, 14]
+        - eq: [content.spu_number, $existed_spu_number]
+        - type_match: [content, object]
+        - type_match: [content.sku, list]
+        - type_match: [content.sku.0.attributes, list]
+        - length_equals: [content.sku.0, 7]
+        - length_equals: [content.sku.0.attributes.0, 5]
+
+
+- test:
+    name: 未登录：spu不存在
+    skipIf: ${is_production()}
+    request:
+        method: GET
+        url: /products/spu/public/$unexisted_spu_number/details
+    validate:
+        - eq: [status_code, 200]

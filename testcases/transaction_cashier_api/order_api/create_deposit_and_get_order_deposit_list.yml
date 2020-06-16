@@ -1,0 +1,161 @@
+- config:
+    name: 获取订单订金列表
+    base_url: ${ENV(ezbuy_api_host)}
+    variables:
+        - existed_customerPhoneNumber: ${test_phone_number()}
+        - existed_deposit_skuNumber: ${sku_number_deposit()}
+        - existed_skuNumber: ${sku_number_config()}
+        - existed_customerId: ${source_user_id()}
+        - existed_placedById: ${order_handledById_config()}
+        - existed_deposit: 0.01
+        - existed_handledById: ${order_handledById_config()}
+        - existed_transactionNumber: ${gen_random_string(20)}
+        - existed_orderPlatform: ALIPAY
+        - existed_afterSaleType: 'REFUND'
+        - existed_handledById: ${order_handledById_config()}
+        - existed_total_discount: null
+        - unexisted_orderId: 123456
+
+- test:
+    skipIf: ${is_production()}
+    name: 创建订金订单(数据准备1)
+    base_url: ${ENV(order_service_host)}
+    api: api/order_manage_service/create_order_deposit.yml
+    variables:
+        - placedMethod: BY_ADMIN
+        - orderPlatform: $existed_orderPlatform
+        - placedById: $existed_placedById
+        - customerId: $existed_customerId
+        - skuNumber: $existed_deposit_skuNumber
+        - deposit: $existed_deposit
+    validate:
+        - eq: [status_code, 200]
+        - length_equals: [content.orderId, 20]
+    extract:
+        - create_order_status: status_code
+        - create_order_orderId: content.orderId
+
+- test:
+    skipIf: ${is_production()}
+    name: 上传支付凭证(数据准备2)
+    base_url: ${ENV(order_service_host)}
+    skipUnless: ${eval_equal($create_order_status, 200)}
+    api: api/order_manage_service/upload_payment.yml
+    variables:
+        - order_id: $create_order_orderId
+        - handledById: $existed_handledById
+        - transactionNumber: $existed_transactionNumber
+        - orderPlatform: $existed_orderPlatform
+        - actualPayment: $existed_deposit
+    validate:
+        - eq: [status_code, 200]
+    extract:
+        - upload_payment_status: status_code
+
+- test:
+    skipIf: ${is_production()}
+    base_url: ${ENV(order_service_host)}
+    name: 付款业务审核列表-订单id查询-获取paymentReviewId(数据准备3)
+    skipUnless: ${eval_equal($create_order_status, 200)}
+    api: api/order_manage_service/get_payments_reviews_list.yml
+    variables:
+        - orderIds: $create_order_orderId
+    validate:
+        - eq: [status_code, 200]
+    extract:
+        - search_status_code: status_code
+        - paymentReviewId: content.items.0.paymentReviewId
+
+- test:
+    skipIf: ${is_production()}
+    name: 业务经理审核通过(数据准备4)
+    base_url: ${ENV(order_service_host)}
+    skipUnless: ${eval_equal($search_status_code, 200)}
+    api: api/order_manage_service/bm_review_payment_reviews.yml
+    variables:
+        - orderId: $create_order_orderId
+        - paymentReviewId: $paymentReviewId
+        - reviewPassed: true
+        - reviewedById: $existed_handledById
+    validate:
+        - eq: [status_code, 200]
+    extract:
+        - bm_review_status_code: status_code
+
+- test:
+    skipIf: ${is_production()}
+    name: 财务经理审核通过（数据准备5）
+    base_url: ${ENV(order_service_host)}
+    skipUnless: ${eval_equal($bm_review_status_code, 200)}
+    api: api/order_manage_service/fm_review_payment_reviews.yml
+    variables:
+        - orderId: $create_order_orderId
+        - paymentReviewId: $paymentReviewId
+        - reviewPassed: true
+        - reviewedById: $existed_handledById
+        - receivedAt: ${get_timestamp(10)}
+    validate:
+        - eq: [status_code, 200]
+    extract:
+        - fm_review_status_code: status_code
+
+- test:
+    skipIf: ${is_production()}
+    name: 创建尾款订单-参数都填写正确-创建成功
+    base_url: ${ENV(order_service_host)}
+    skipUnless: ${eval_equal($fm_review_status_code, 200)}
+    request:
+        method: POST
+        url: /orders/admin
+        json:
+            placedById: 1
+            renewed: 0
+            placedMethod: BY_ADMIN
+            paymentOption: DEPOSIT_FINAL
+            depositOrderIds: 
+                - $create_order_orderId
+            customerInfo:
+                customerId: $existed_customerId
+                customerPhoneNumber: $existed_customerPhoneNumber
+            productInfo:
+                - 
+                    skuNumber: $existed_skuNumber
+                    quantity: 1
+            totalDiscount: $existed_total_discount
+            businessTypeId: 1
+            businessUnitId: 1
+            shippingInfo:
+                consigneeId: $existed_customerId
+            remark: 测试创建订单
+    validate:
+        - eq: [status_code, 200]
+        - contains: [content, orderId]
+    extract: 
+        - deposit_final_order_id: content.orderId
+
+- test:
+    name: 未登录：获取用户订单订金列表
+    skipIf: ${is_production()}
+    request:
+        method: GET
+        url: /orders/$deposit_final_order_id/deposits
+    validate:
+        - eq: [status_code, 403]
+        - eq: [content.error_code, '10020004']
+
+
+- test:
+    name: 已登录：获取用户订单订金列表
+    skipIf: ${is_production()}
+    request:
+        method: GET
+        url: /orders/$deposit_final_order_id/deposits
+        headers:
+            Authorization: ${source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, list]
+        - eq: [content.0.orderId, $create_order_orderId]
+        - eq: [content.0.paymentMethod, 'ALIPAY_TRANSFER']
+        - eq: [content.0.paymentAmount, 0.01]
+        - length_equals: [content.0, 4]

@@ -1,5 +1,5 @@
 - config:
-    name: 获取单个订单项
+    name: 订单service测试组合：获取单个订单项-批量获取订单项
     base_url: ${ENV(order_service_host)}
     variables:
         - unexisted_orderId: 123456
@@ -43,6 +43,31 @@
     request:
         method: GET
         url: /orders/$unexisted_orderId/items
+    validate:
+        - eq: [status_code, 200]
+        - length_equals: [content, 0]
+
+
+- test:
+    skipIf: ${is_production()}
+    name: 批量获取订单项-orderId存在
+    skipUnless: ${eval_equal($create_order_status, 200)}
+    request:
+        method: GET
+        url: /orders/items?orderIds=$create_order_orderId
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, list]
+        - eq: [content.0.orderId, $create_order_orderId]
+        - length_equals: [content.0, 16]
+
+- test:
+    skipIf: ${is_production()}
+    name: 批量获取订单项-orderId不存在
+    skipUnless: ${eval_equal($create_order_status, 200)}
+    request:
+        method: GET
+        url: /orders/items?orderIds=$unexisted_orderId
     validate:
         - eq: [status_code, 200]
         - length_equals: [content, 0]

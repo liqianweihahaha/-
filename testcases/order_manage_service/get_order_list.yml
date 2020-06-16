@@ -1,0 +1,158 @@
+- config:
+    name: 批量获取订单列表
+    base_url: ${ENV(order_service_host)}
+    variables:
+        - existed_state: 10000
+        - existed_customerId: ${order_customerId_config()}
+        - existed_platforms: 1
+        - existed_orderType: 2
+        - existed_customerPhoneNumber: 15558193399
+
+- test:
+    name: 批量获取订单列表-不传递任何参数
+    request:
+        method: GET
+        url: /orders
+    validate:
+        - eq: [status_code, 200]
+        - contains: [content, items]
+        - contains: [content, total]
+        - type_match: [content, object]
+        - type_match: [content.items, list]
+        - length_equals: [content.items.0, 44]
+    extract:
+        - order_id: content.items.0.orderId
+
+
+- test:
+    name: 批量获取订单列表-通过orderIds查询-orderid存在
+    request:
+        method: GET
+        url: /orders?orderIds=$order_id
+    validate:
+        - eq: [status_code, 200]
+        - contains: [content, items]
+        - contains: [content, total]
+        - type_match: [content, object]
+        - type_match: [content.items, list]
+
+- test:
+    name: 批量获取订单列表-通过states查询-states存在
+    request:
+        method: GET
+        url: /orders?states=$existed_state
+    validate:
+        - eq: [status_code, 200]
+        - contains: [content, items]
+        - contains: [content, total]
+        - type_match: [content, object]
+        - type_match: [content.items, list]
+
+
+- test:
+    name: 批量获取订单列表-通过customerIds查询-customerIds存在
+    request:
+        method: GET
+        url: /orders?customerIds=$existed_customerId
+    validate:
+        - eq: [status_code, 200]
+        - contains: [content, items]
+        - contains: [content, total]
+        - type_match: [content, object]
+        - type_match: [content.items, list]
+
+- test:
+    name: 批量获取订单列表-通过platforms查询-platforms存在
+    request:
+        method: GET
+        url: /orders?platforms=$existed_platforms
+    validate:
+        - eq: [status_code, 200]
+        - contains: [content, items]
+        - contains: [content, total]
+        - type_match: [content, object]
+        - type_match: [content.items, list]
+
+- test:
+    name: 批量获取订单列表-通过orderType查询-orderType存在
+    request:
+        method: GET
+        url: /orders?orderType=$existed_orderType
+    validate:
+        - eq: [status_code, 200]
+        - contains: [content, items]
+        - contains: [content, total]
+        - type_match: [content, object]
+        - type_match: [content.items, list]
+
+- test:
+    name: 批量获取订单列表-通过renewed查询-renewed存在
+    request:
+        method: GET
+        url: /orders?renewed=1
+    validate:
+        - eq: [status_code, 200]
+        - contains: [content, items]
+        - contains: [content, total]
+        - type_match: [content, object]
+        - type_match: [content.items, list]
+
+- test:
+    name: 批量获取订单列表-通过hasAfterSale查询-hasAfterSale存在
+    request:
+        method: GET
+        url: /orders?hasAfterSale=1
+    validate:
+        - eq: [status_code, 200]
+        - contains: [content, items]
+        - contains: [content, total]
+        - type_match: [content, object]
+        - type_match: [content.items, list]
+
+- test:
+    name: 批量获取订单列表-通过exchanged查询-exchanged存在
+    request:
+        method: GET
+        url: /orders?exchanged=1
+    validate:
+        - eq: [status_code, 200]
+        - contains: [content, items]
+        - contains: [content, total]
+        - type_match: [content, object]
+        - type_match: [content.items, list]
+
+- test:
+    name: 批量获取订单列表-通过hasGifts查询-hasGifts存在
+    request:
+        method: GET
+        url: /orders?hasGifts=1
+    validate:
+        - eq: [status_code, 200]
+        - contains: [content, items]
+        - contains: [content, total]
+        - type_match: [content, object]
+        - type_match: [content.items, list]
+
+- test:
+    name: 批量获取订单列表-通过customerPhoneNumber查询-customerPhoneNumber存在
+    request:
+        method: GET
+        url: /orders?customerPhoneNumber=$existed_customerPhoneNumber
+    validate:
+        - eq: [status_code, 200]
+        - contains: [content, items]
+        - contains: [content, total]
+        - type_match: [content, object]
+        - type_match: [content.items, list]
+
+- test:
+    name: 批量获取订单列表-通过paymentState查询-paymentState存在
+    request:
+        method: GET
+        url: /orders?paymentState=206
+    validate:
+        - eq: [status_code, 200]
+        - contains: [content, items]
+        - contains: [content, total]
+        - type_match: [content, object]
+        - type_match: [content.items, list]
