@@ -1,3 +1,4 @@
+
 - config:
     name: 发货api组合测试：创建普通订单-上传支付凭证-审核通过-通过订单id搜索发货单-获取发货单详情页-发货单列表
     base_url: ${ENV(order_service_host)}
@@ -137,7 +138,7 @@
         method: GET
         url: /shipping/search?orderId=$create_order_orderId
     validate:
-        - eq: [status_code, 403]
+        - eq: [status_code, 401]
         - eq: [content.error_code, '10020005']
 
 
@@ -178,7 +179,7 @@
         method: GET
         url: /shipping/$shipping_Id
     validate:
-        - eq: [status_code, 403]
+        - eq: [status_code, 401]
         - eq: [content.error_code, '10020005']
 
 
@@ -190,7 +191,7 @@
         method: GET
         url: /shipping/list
     validate:
-        - eq: [status_code, 403]
+        - eq: [status_code, 401]
         - eq: [content.error_code, '10020005']
 
 - test:

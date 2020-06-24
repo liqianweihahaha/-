@@ -101,7 +101,7 @@
         method: GET
         url: /shipping/search?orderId=$create_order_orderId
     validate:
-        - eq: [status_code, 403]
+        - eq: [status_code, 401]
         - eq: [content.error_code, '10020005']
 
 - test:
@@ -140,7 +140,7 @@
             logistics_bill_id: $existed_logistics_bill_id
             logistics_institution_id: $existed_logistics_institution_id
     validate:
-        - eq: [status_code, 403]
+        - eq: [status_code, 401]
         - eq: [content.error_code, '10020005']
 
 - test:

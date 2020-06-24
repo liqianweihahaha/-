@@ -1,3 +1,4 @@
+
 - config:
     name: api:获取物流公司列表
     base_url: ${ENV(transaction_admin_api_host)}
@@ -8,7 +9,7 @@
         method: GET
         url: /shipping/logistics
     validate:
-        - eq: [status_code, 403]
+        - eq: [status_code, 401]
         - eq: [content.error_code, '10020005']
 
 - test:

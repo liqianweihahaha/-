@@ -12,7 +12,7 @@
         method: GET
         url: /return/abnormal/list
     validate:
-        - eq: [status_code, 403]
+        - eq: [status_code, 401]
         - eq: [content.error_code, '10020005']
 
 - test:
@@ -132,7 +132,7 @@
         method: GET
         url: /return/$return_id/info
     validate:
-        - eq: [status_code, 403]
+        - eq: [status_code, 401]
         - eq: [content.error_code, '10020005']
 
 
