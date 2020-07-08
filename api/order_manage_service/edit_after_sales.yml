@@ -6,6 +6,8 @@ request:
     url: /after_sales/$afterSaleId
     json:
         actualRefundAmount: $actualRefundAmount
+        applyExchangeAmount: $applyExchangeAmount
+        final: $final
         afterSaleReasonId: 1
         afterSaleType: $afterSaleType
         issued: $issued

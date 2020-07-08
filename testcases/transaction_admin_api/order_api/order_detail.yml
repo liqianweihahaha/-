@@ -71,5 +71,5 @@
         method: GET
         url: orders/$create_order_orderId/details
     validate:
-        - eq: [status_code, 403]
+        - eq: [status_code, 401]
         - eq: [content.error_code, '10020005']

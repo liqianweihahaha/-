@@ -11,6 +11,8 @@
         - existed_transactionNumber: ${gen_random_string(20)}
         - existed_orderPlatform: ALIPAY
         - existed_actualPayment: 0.03
+        - existed_applyExchangeAmount: 0
+        - exsited_final: 1
         - existed_afterSaleType: 'RETURN_REFUND'
         - existed_handledById: ${order_handledById_config()}
         - existed_issued: false
@@ -128,6 +130,8 @@
     api: api/order_manage_service/create_after_sales.yml
     variables:
         - actualRefundAmount: $existed_actualPayment
+        - applyExchangeAmount: $existed_applyExchangeAmount
+        - final: $exsited_final
         - afterSaleType: $existed_afterSaleType
         - issued: false
         - orderId: $create_order_orderId
@@ -177,6 +181,8 @@
     variables:
         - afterSaleId: $create_afterSaleId
         - actualRefundAmount: $existed_actualPayment
+        - applyExchangeAmount: $existed_applyExchangeAmount
+        - final: $exsited_final
         - afterSaleType: $existed_afterSaleType
         - issued: false
         - ownerId: $existed_handledById
@@ -199,6 +205,8 @@
     variables:
         - afterSaleId: $unexisted_afterSaleId
         - actualRefundAmount: $existed_actualPayment
+        - applyExchangeAmount: $existed_applyExchangeAmount
+        - final: $exsited_final
         - afterSaleType: $existed_afterSaleType
         - issued: false
         - ownerId: $existed_handledById
@@ -222,6 +230,8 @@
     variables:
         - afterSaleId: $create_afterSaleId
         - actualRefundAmount: $unexisted_actualPayment
+        - applyExchangeAmount: $existed_applyExchangeAmount
+        - final: $exsited_final
         - afterSaleType: $existed_afterSaleType
         - issued: false
         - ownerId: $existed_handledById
@@ -245,6 +255,8 @@
     variables:
         - afterSaleId: $create_afterSaleId
         - actualRefundAmount: $existed_actualPayment
+        - applyExchangeAmount: $existed_applyExchangeAmount
+        - final: $exsited_final
         - afterSaleType: $unexisted_afterSaleType
         - issued: false
         - ownerId: $existed_handledById
@@ -268,6 +280,8 @@
     variables:
         - afterSaleId: $create_afterSaleId
         - actualRefundAmount: $existed_actualPayment
+        - applyExchangeAmount: $existed_applyExchangeAmount
+        - final: $exsited_final
         - afterSaleType: $existed_afterSaleType
         - issued: false
         - ownerId: $unexisted_ownerId
@@ -290,6 +304,8 @@
     variables:
         - afterSaleId: $create_afterSaleId
         - actualRefundAmount: $existed_actualPayment
+        - applyExchangeAmount: $existed_applyExchangeAmount
+        - final: $exsited_final
         - afterSaleType: $existed_afterSaleType
         - issued: false
         - ownerId: $existed_handledById
@@ -313,6 +329,8 @@
     variables:
         - afterSaleId: $create_afterSaleId
         - actualRefundAmount: $existed_actualPayment
+        - applyExchangeAmount: $existed_applyExchangeAmount
+        - final: $exsited_final
         - afterSaleType: $existed_afterSaleType
         - issued: false
         - ownerId: $existed_handledById
@@ -336,6 +354,8 @@
     variables:
         - afterSaleId: $create_afterSaleId
         - actualRefundAmount: $existed_actualPayment
+        - applyExchangeAmount: $existed_applyExchangeAmount
+        - final: $exsited_final
         - afterSaleType: $existed_afterSaleType
         - issued: false
         - ownerId: $existed_handledById
@@ -358,6 +378,8 @@
     variables:
         - afterSaleId: $create_afterSaleId
         - actualRefundAmount: $existed_actualPayment
+        - applyExchangeAmount: $existed_applyExchangeAmount
+        - final: $exsited_final
         - afterSaleType: $existed_afterSaleType
         - issued: false
         - ownerId: $existed_handledById
@@ -381,6 +403,8 @@
     variables:
         - afterSaleId: $create_afterSaleId
         - actualRefundAmount: $existed_actualPayment
+        - applyExchangeAmount: $existed_applyExchangeAmount
+        - final: $exsited_final
         - afterSaleType: $existed_afterSaleType
         - issued: false
         - ownerId: $existed_handledById
@@ -404,6 +428,8 @@
     variables:
         - afterSaleId: $create_afterSaleId
         - actualRefundAmount: $existed_actualPayment
+        - applyExchangeAmount: $existed_applyExchangeAmount
+        - final: $exsited_final
         - afterSaleType: $existed_afterSaleType
         - issued: true
         - ownerId: $existed_handledById

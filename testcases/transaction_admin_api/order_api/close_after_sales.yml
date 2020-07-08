@@ -11,6 +11,8 @@
         - existed_transactionNumber: ${gen_random_string(20)}
         - existed_orderPlatform: ALIPAY
         - existed_actualPayment: 0.03
+        - existed_applyExchangeAmount: 0
+        - exsited_final: 1
         - existed_afterSaleType: 'RETURN_REFUND'
         - existed_issued: false
         - unexisted_afterSaleId: 123456
@@ -129,6 +131,8 @@
     variables:
         - login_token: ${internal_source_user_login_token()}
         - actualRefundAmount: $existed_actualPayment
+        - applyExchangeAmount: $existed_applyExchangeAmount
+        - final: $exsited_final
         - afterSaleType: $existed_afterSaleType
         - issued: false
         - orderId: $create_order_orderId
@@ -171,7 +175,7 @@
         json:
             closedReason: 售后单关闭-自动化测试
     validate:
-        - eq: [status_code, 403]
+        - eq: [status_code, 401]
         - eq: [content.error_code, '10020005']
 
 - test:

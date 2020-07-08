@@ -11,6 +11,8 @@
         - existed_transactionNumber: ${gen_random_string(20)}
         - existed_orderPlatform: ALIPAY
         - existed_actualPayment: 0.03
+        - existed_applyExchangeAmount: 0
+        - exsited_final: 1
         - existed_afterSaleType: 'RETURN_REFUND'
         - existed_issued: false
         - unexisted_actualPayment: 100
@@ -138,6 +140,8 @@
     variables:
         - login_token: ${internal_source_user_login_token()}
         - actualRefundAmount: $existed_actualPayment
+        - applyExchangeAmount: $existed_applyExchangeAmount
+        - final: $exsited_final
         - afterSaleType: $existed_afterSaleType
         - issued: false
         - orderId: $create_order_orderId
@@ -163,7 +167,7 @@
         method: GET
         url: /after_sales/$afterSale_Id/editable
     validate:
-        - eq: [status_code, 403]
+        - eq: [status_code, 401]
         - eq: [content.error_code, '10020005']
 
 - test:
@@ -203,6 +207,8 @@
         - afterSaleId: $afterSale_Id
         - orderId: $create_order_orderId
         - actualRefundAmount: $existed_actualPayment
+        - applyExchangeAmount: $existed_applyExchangeAmount
+        - final: $exsited_final
         - afterSaleType: $existed_afterSaleType
         - issued: false
         - materialNumber_1: $material_id_1
@@ -226,6 +232,8 @@
         - afterSaleId: $unexisted_afterSaleId
         - orderId: $create_order_orderId
         - actualRefundAmount: $existed_actualPayment
+        - applyExchangeAmount: $existed_applyExchangeAmount
+        - final: $exsited_final
         - afterSaleType: $existed_afterSaleType
         - issued: false
         - materialNumber_1: $material_id_1
@@ -251,6 +259,8 @@
         - afterSaleId: $afterSale_Id
         - orderId: $create_order_orderId
         - actualRefundAmount: $unexisted_actualPayment
+        - applyExchangeAmount: $existed_applyExchangeAmount
+        - final: $exsited_final
         - afterSaleType: $existed_afterSaleType
         - issued: false
         - materialNumber_1: $material_id_1
@@ -275,6 +285,8 @@
         - afterSaleId: $afterSale_Id
         - orderId: $create_order_orderId
         - actualRefundAmount: $existed_actualPayment
+        - applyExchangeAmount: $existed_applyExchangeAmount
+        - final: $exsited_final
         - afterSaleType: $unexisted_afterSaleType
         - issued: false
         - materialNumber_1: $material_id_1
@@ -299,6 +311,8 @@
         - afterSaleId: $afterSale_Id
         - orderId: $create_order_orderId
         - actualRefundAmount: $existed_actualPayment
+        - applyExchangeAmount: $existed_applyExchangeAmount
+        - final: $exsited_final
         - afterSaleType: $existed_afterSaleType
         - issued: false
         - materialNumber_1: $unexisted_materialNumber
@@ -323,6 +337,8 @@
         - afterSaleId: $afterSale_Id
         - orderId: $create_order_orderId
         - actualRefundAmount: $existed_actualPayment
+        - applyExchangeAmount: $existed_applyExchangeAmount
+        - final: $exsited_final
         - afterSaleType: $existed_afterSaleType
         - issued: false
         - materialNumber_1: $material_id_1
@@ -347,6 +363,8 @@
         - afterSaleId: $afterSale_Id
         - orderId: $create_order_orderId
         - actualRefundAmount: $existed_actualPayment
+        - applyExchangeAmount: $existed_applyExchangeAmount
+        - final: $exsited_final
         - afterSaleType: $existed_afterSaleType
         - issued: false
         - materialNumber_1: $material_id_1
@@ -370,6 +388,8 @@
         - afterSaleId: $afterSale_Id
         - orderId: $create_order_orderId
         - actualRefundAmount: $existed_actualPayment
+        - applyExchangeAmount: $existed_applyExchangeAmount
+        - final: $exsited_final
         - afterSaleType: $existed_afterSaleType
         - issued: false
         - materialNumber_1: $material_id_1
@@ -394,6 +414,8 @@
         - afterSaleId: $afterSale_Id
         - orderId: $create_order_orderId
         - actualRefundAmount: $existed_actualPayment
+        - applyExchangeAmount: $existed_applyExchangeAmount
+        - final: $exsited_final
         - afterSaleType: $existed_afterSaleType
         - issued: false
         - materialNumber_1: $material_id_1

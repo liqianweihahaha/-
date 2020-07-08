@@ -7,6 +7,8 @@ request:
         Authorization: $login_token
     json:
         actualRefundAmount: $actualRefundAmount
+        final: $final
+        applyExchangeAmount: $applyExchangeAmount
         afterSaleReasonId: 1
         afterSaleType: $afterSaleType
         issued: $issued

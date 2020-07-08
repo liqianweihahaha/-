@@ -54,7 +54,7 @@
     variables:
         - placedMethod: BY_ADMIN
         - orderPlatform: $existed_orderPlatform
-        - customer_phone_number: $unexisted_existed_customerPhoneNumber
+        - customer_phone_number: $unexisted_customerPhoneNumber
         - customer_id: $existed_customerId
         - sku_number: $existed_skuNumber
         - total_discount: $existed_total_discount

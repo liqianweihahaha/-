@@ -1,0 +1,67 @@
+- config:
+    name: 获取订单属性
+    base_url: ${ENV(order_service_host)}
+    variables:
+        - existed_customerPhoneNumber: ${order_customerPhoneNumber_config()}
+        - existed_skuNumber: ${sku_number_config()}
+        - existed_customerId: ${order_customerId_config()}
+        - existed_placedBy: ${order_placedBy_config()}
+        - existed_total_discount: null
+        - existed_handledById: ${order_handledById_config()}
+        - existed_transactionNumber: ${gen_random_string(20)}
+        - existed_orderPlatform: ALIPAY
+        - existed_actualPayment: 0.03
+        - existed_handledById: ${order_handledById_config()}
+        - existed_key1: 'pay_type'
+        - existed_value1: '3'
+        - existed_key2: 'source_url'
+        - existed_value2: 'https://ic.codemao.cn/pagegroup/1p9ekj5aib8'
+
+- test:
+    skipIf: ${is_production()}
+    name: 创建全款订单-所有参数都填写正确-创建成功
+    request:
+        method: POST
+        url: /orders/admin
+        json:
+            placedById: 1
+            renewed: 0
+            placedMethod: BY_ADMIN
+            paymentOption: FULL
+            orderAttributes:
+                -
+                   key: $existed_key1
+                   value: $existed_value1
+                -
+                   key: $existed_key2
+                   value: $existed_value2
+            customerInfo:
+                customerId: $existed_customerId
+                customerPhoneNumber: $existed_customerPhoneNumber
+            productInfo:
+                - 
+                    skuNumber: $existed_skuNumber
+                    quantity: 1
+            totalDiscount: $existed_total_discount
+            businessTypeId: 1
+            businessUnitId: 1
+            shippingInfo:
+                consigneeId: $existed_customerId
+            remark: 测试创建订单
+    validate:
+        - eq: [status_code, 200]
+        - contains: [content, orderId]
+    extract:
+        - order_id: content.orderId
+    
+
+- test:
+    name: 获取订单属性列表-通过订单号查询
+    request:
+        method: GET
+        url: /orders/attributes?orderIds=$order_id
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, object]
+        - length_equals: [content.items, 2]
+        - length_equals: [content.items.0, 5]

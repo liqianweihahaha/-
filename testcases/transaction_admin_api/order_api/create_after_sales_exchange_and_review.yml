@@ -11,6 +11,8 @@
         - existed_transactionNumber: ${gen_random_string(20)}
         - existed_orderPlatform: ALIPAY
         - existed_actualPayment: 0.03
+        - existed_applyExchangeAmount: 0.03
+        - exsited_final: 1
         - existed_afterSaleType: 'EXCHANGE'
         - existed_issued: true
 
@@ -131,6 +133,8 @@
             Authorization: ${internal_source_user_login_token()}
         json:
             actualRefundAmount: 0.01
+            applyExchangeAmount: $existed_applyExchangeAmount
+            final: $exsited_final
             afterSaleReasonId: 1
             afterSaleType: $existed_afterSaleType
             issued: $existed_issued
@@ -185,7 +189,7 @@
         remark: "业务经理审核通过"
         reviewPassed: true
     validate:
-        - eq: [status_code, 403]
+        - eq: [status_code, 401]
         - eq: [content.error_code, '10020005']
 
 
@@ -311,9 +315,9 @@
         - length_equals: [content.orderInfo, 4]
         - length_equals: [content.customerInfo, 4]
         - length_equals: [content.afterSaleProductInfo.0, 9]
-        - length_equals: [content.items.0, 15]
+        - length_equals: [content.items.0, 17]
         - length_equals: [content.amountInfo, 4]
-        - length_equals: [content.balanceCarryforwardInfo, 3]
+        - length_equals: [content.balanceCarryforwardInfo, 4]
         - length_equals: [content.carriedForwardOrderInfo, 4]
         - length_equals: [content.replacementShippingAddressInfo.sourceShippingAddress, 15]
         - length_equals: [content.replacementShippingAddressInfo.targetShippingAddress, 15]

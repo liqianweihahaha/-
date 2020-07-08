@@ -9,9 +9,8 @@
         - existed_total_discount: null
         - existed_handledById: ${order_handledById_config()}
         - existed_transactionNumber: ${gen_random_string(20)}
-        - existed_orderPlatform: ALIPAY
+        - existed_orderPlatform: TMALL
         - existed_actualPayment: 0.03
-        - existed_afterSaleType: 'RETURN_REFUND'
         - existed_handledById: ${order_handledById_config()}
 
 - test:
@@ -34,7 +33,7 @@
 
 - test:
     skipIf: ${is_production()}
-    name: 创建普通订单后上传支付凭证-orderPlatform为ALIPAY
+    name: 创建普通订单后上传支付凭证
     skipUnless: ${eval_equal($create_order_status, 200)}
     api: api/order_manage_service/upload_payment.yml
     variables:

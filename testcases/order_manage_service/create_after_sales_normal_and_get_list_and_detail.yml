@@ -11,6 +11,8 @@
         - existed_transactionNumber: ${gen_random_string(20)}
         - existed_orderPlatform: ALIPAY
         - existed_actualPayment: 0.03
+        - existed_applyExchangeAmount: 0
+        - exsited_final: 1
         - existed_afterSaleType: 'RETURN_REFUND'
         - existed_issued: false
         - unexisted_actualPayment: 100
@@ -176,6 +178,8 @@
     api: api/order_manage_service/create_after_sales.yml
     variables:
         - actualRefundAmount: $unexisted_actualPayment
+        - applyExchangeAmount: $existed_applyExchangeAmount
+        - final: $exsited_final
         - afterSaleType: $existed_afterSaleType
         - issued: false
         - orderId: $create_order_orderId
@@ -199,6 +203,8 @@
     api: api/order_manage_service/create_after_sales.yml
     variables:
         - actualRefundAmount: $existed_actualPayment
+        - applyExchangeAmount: $existed_applyExchangeAmount
+        - final: $exsited_final
         - afterSaleType: $existed_afterSaleType
         - issued: false
         - orderId: $unexisted_orderId
@@ -222,6 +228,8 @@
     api: api/order_manage_service/create_after_sales.yml
     variables:
         - actualRefundAmount: $existed_actualPayment
+        - applyExchangeAmount: $existed_applyExchangeAmount
+        - final: $exsited_final
         - afterSaleType: $unexisted_afterSaleType
         - issued: false
         - orderId: $create_order_orderId
@@ -245,6 +253,8 @@
     api: api/order_manage_service/create_after_sales.yml
     variables:
         - actualRefundAmount: $existed_actualPayment
+        - applyExchangeAmount: $existed_applyExchangeAmount
+        - final: $exsited_final
         - afterSaleType: $unexisted_afterSaleType
         - issued: false
         - orderId: $create_order_orderId
@@ -267,6 +277,8 @@
     api: api/order_manage_service/create_after_sales.yml
     variables:
         - actualRefundAmount: $existed_actualPayment
+        - applyExchangeAmount: $existed_applyExchangeAmount
+        - final: $exsited_final
         - afterSaleType: $existed_afterSaleType
         - issued: false
         - orderId: $create_order_orderId
@@ -290,6 +302,8 @@
     api: api/order_manage_service/create_after_sales.yml
     variables:
         - actualRefundAmount: $existed_actualPayment
+        - applyExchangeAmount: $existed_applyExchangeAmount
+        - final: $exsited_final
         - afterSaleType: $existed_afterSaleType
         - issued: false
         - orderId: $create_order_orderId
@@ -314,6 +328,8 @@
     api: api/order_manage_service/create_after_sales.yml
     variables:
         - actualRefundAmount: $existed_actualPayment
+        - applyExchangeAmount: $existed_applyExchangeAmount
+        - final: $exsited_final
         - afterSaleType: $existed_afterSaleType
         - issued: false
         - orderId: $create_order_orderId
@@ -337,6 +353,8 @@
     api: api/order_manage_service/create_after_sales.yml
     variables:
         - actualRefundAmount: $existed_actualPayment
+        - applyExchangeAmount: $existed_applyExchangeAmount
+        - final: $exsited_final
         - afterSaleType: $existed_afterSaleType
         - issued: false
         - orderId: $create_order_orderId
@@ -360,6 +378,8 @@
     api: api/order_manage_service/create_after_sales.yml
     variables:
         - actualRefundAmount: $existed_actualPayment
+        - applyExchangeAmount: $existed_applyExchangeAmount
+        - final: $exsited_final
         - afterSaleType: $existed_afterSaleType
         - issued: true
         - orderId: $create_order_orderId
@@ -487,7 +507,7 @@
     validate:
         - eq: [status_code, 200]
         - type_match: [content, object]
-        - length_equals: [content, 28]
+        - length_equals: [content, 31]
 
 
 - test:

@@ -1,5 +1,5 @@
 - config:
-    name: 测试组合：创建订单-创建售后单（退货退款）-业务经理审核-业务负责人审核-会计审核-财务主管审核流程
+    name: 测试组合：创建订单-创建售后单（换货）-业务经理审核通过-业务负责人审核通过-会计审核通过-财务主管审核通过-检查新订单是否有继承售后单的attributes
     base_url: ${ENV(order_service_host)}
     variables:
         - existed_customerPhoneNumber: ${order_customerPhoneNumber_config()}
@@ -12,7 +12,13 @@
         - existed_transactionNumber: ${gen_random_string(20)}
         - existed_orderPlatform: ALIPAY
         - existed_actualPayment: 0.03
-        - existed_afterSaleType: 'RETURN_REFUND'
+        - existed_afterSaleType: 'EXCHANGE'
+        - existed_issued: true
+        - unexisted_afterId: 123456
+        - existed_key1: 'pay_type'
+        - existed_value1: '3'
+        - existed_key2: 'source_url'
+        - existed_value2: 'https://ic.codemao.cn/pagegroup/1p9ekj5aib8'
 
 - test:
     skipIf: ${is_production()}
@@ -118,26 +124,62 @@
     skipIf: ${is_production()}
     name: 创建售后单（普通订单）-所有必填参数都填写正确-提交成功
     skipUnless: ${eval_equal($fm_review_status_code, 200)}
-    api: api/order_manage_service/create_after_sales.yml
-    variables:
-        - actualRefundAmount: $existed_actualPayment
-        - afterSaleType: $existed_afterSaleType
-        - issued: true
-        - orderId: $create_order_orderId
-        - ownerId: $existed_handledById
-        - materialNumber_1: $material_id_1
-        - returnsCount_1: $material_count_1
-        - shippingId_1: $shipmentId_1
-        - skuNumber_1: $existed_skuNumber
-        - materialNumber_2: $material_id_2
-        - returnsCount_2: $material_count_2
-        - shippingId_2: $shipmentId_2
-        - skuNumber_2: $existed_skuNumber
+    request:
+        method: POST
+        url: /after_sales
+        json:
+            actualRefundAmount: 0.01
+            afterSaleReasonId: 1
+            afterSaleType: $existed_afterSaleType
+            issued: $existed_issued
+            owner: $existed_handledByName
+            ownerId: $existed_handledById   
+            orderId: $create_order_orderId
+            refundMethod: "ORIGINAL"
+            detailedReason: "测试售后单详细原因"
+            afterSaleAttributes:
+                  -
+                   key: $existed_key1
+                   value: $existed_value1
+                  -
+                   key: $existed_key2
+                   value: $existed_value2     
+            remarks:
+                  -
+                   remark: "自动化测试申请售后"         
+            items:
+                  -
+                   materialNumber: $material_id_1
+                   returnsCount: $material_count_1
+                   shippingId: $shipmentId_1
+                   skuNumber: $existed_skuNumber
+                  -
+                   materialNumber: $material_id_2
+                   returnsCount: $material_count_2
+                   shippingId: $shipmentId_2
+                   skuNumber: $existed_skuNumber
+            replacementItems:
+                  -
+                   skuNumber: $existed_skuNumber
+                   quantity: 1
+            shippingInfo:
+                orderId: $create_order_orderId
+                consigneeId: $existed_customerId
+                consignee: '聂亚运'
+                phoneNumber: $existed_customerPhoneNumber
+                province: '广东省'
+                provinceId: 19
+                city:  '深圳市'
+                cityId: 202
+                district: '南山区'
+                districtId: 1859
+                streetAddress: '前海湾信利康大厦30楼'   
     validate:
         - eq: [status_code, 200]
     extract:
-        - afterSaleId: content.afterSaleId
+        - afterSale_Id: content.afterSaleId
         - afterSale_status: status_code
+
 
 - test:
     skipIf: ${is_production()}
@@ -145,7 +187,7 @@
     skipUnless: ${eval_equal($afterSale_status, 200)}
     api: api/order_manage_service/after_sales_review.yml
     variables:
-        - afterSaleId: $afterSaleId
+        - afterSaleId: $afterSale_Id
         - remark: "业务经理审核通过"
         - reviewPassed: true
         - reviewedBy: $existed_handledByName
@@ -153,17 +195,6 @@
     validate:
         - eq: [status_code, 200]
 
-- test:
-    skipIf: ${is_production()}
-    name: 获取最近的售后审核-检查业务经理审核通过后的状态是否为1002
-    skipUnless: ${eval_equal($afterSale_status, 200)}
-    request:
-        method: GET
-        url: /after_sales/reviews/latest?afterSaleIds=$afterSaleId
-    validate:
-        - eq: [status_code, 200]
-        - type_match: [content, list]
-        - eq: [content.0.reviewState, 1002]
 
 - test:
     setup_hooks:
@@ -173,7 +204,7 @@
     skipUnless: ${eval_equal($afterSale_status, 200)}
     api: api/order_manage_service/after_sales_review.yml
     variables:
-        - afterSaleId: $afterSaleId
+        - afterSaleId: $afterSale_Id
         - remark: "业务负责人审核通过"
         - reviewPassed: true
         - reviewedBy: $existed_handledByName
@@ -182,16 +213,21 @@
         - eq: [status_code, 200]
 
 - test:
+    setup_hooks:
+        - ${sleep_N_secs(2)}
     skipIf: ${is_production()}
-    name: 获取最近的售后审核-检查业务负责人审核通过后的状态是否为1102
+    name: 售后单-会计审核通过
     skipUnless: ${eval_equal($afterSale_status, 200)}
-    request:
-        method: GET
-        url: /after_sales/reviews/latest?afterSaleIds=$afterSaleId
+    api: api/order_manage_service/after_sales_review.yml
+    variables:
+        - afterSaleId: $afterSale_Id
+        - remark: "会计审核通过"
+        - reviewPassed: true
+        - reviewedBy: $existed_handledByName
+        - reviewedById: $existed_handledById
     validate:
         - eq: [status_code, 200]
-        - type_match: [content, list]
-        - eq: [content.0.reviewState, 1102]
+
 
 - test:
     setup_hooks:
@@ -201,7 +237,7 @@
     skipUnless: ${eval_equal($afterSale_status, 200)}
     api: api/order_manage_service/after_sales_review.yml
     variables:
-        - afterSaleId: $afterSaleId
+        - afterSaleId: $afterSale_Id
         - remark: "财务主管审核通过"
         - reviewPassed: true
         - reviewedBy: $existed_handledByName
@@ -211,25 +247,49 @@
 
 - test:
     setup_hooks:
-        - ${sleep_N_secs(2)}
+        - ${sleep_N_secs(4)}
     skipIf: ${is_production()}
-    name: 获取最近的售后审核-检查财务主管审核通过后的状态是否为7002
+    name: 获取售后单详情-afterSaleId存在
     skipUnless: ${eval_equal($afterSale_status, 200)}
     request:
         method: GET
-        url: /after_sales/reviews/latest?afterSaleIds=$afterSaleId
+        url: /after_sales/$afterSale_Id
     validate:
         - eq: [status_code, 200]
-        - type_match: [content, list]
-        - eq: [content.0.reviewState, 7002]
+        - type_match: [content, object]
+        - length_equals: [content, 31]
+        - eq: [content.state, '100000']
 
 - test:
     skipIf: ${is_production()}
-    name: 获取售后详情页-检查售后单的状态是否为待退款(20000)
+    name: 获取换货结转信息-afterSaleId存在
     skipUnless: ${eval_equal($afterSale_status, 200)}
     request:
         method: GET
-        url: /after_sales/$afterSaleId
+        url: /after_sales/$afterSale_Id/exchanges
     validate:
         - eq: [status_code, 200]
-        - eq: [content.state, "20000"]
+        - type_match: [content, object]
+        - length_equals: [content, 7]
+        - contains: [content, 'carriedForwardOrderId']
+        - contains: [content, 'balanceCarryforward']
+    extract:
+        - new_orderId: content.carriedForwardOrderId
+
+
+- test:
+    name: 获取订单属性列表
+    request:
+        method: GET
+        url: /orders/attributes?orderIds=$new_orderId 
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, object]
+        - length_equals: [content.items, 2]
+        - length_equals: [content.items.0, 5]
+        - eq: [content.items.0.key, $existed_key1]
+        - eq: [content.items.0.value, $existed_value1]
+        - eq: [content.items.1.key, $existed_key2]
+        - eq: [content.items.1.value, $existed_value2]
+
+

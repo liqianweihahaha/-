@@ -6,9 +6,11 @@ request:
     url: /after_sales
     json:
         actualRefundAmount: $actualRefundAmount
+        applyExchangeAmount: $applyExchangeAmount
         afterSaleReasonId: 1
         afterSaleType: $afterSaleType
         issued: $issued
+        final: $final
         orderId: $orderId
         owner: '聂亚运'
         ownerId: $ownerId

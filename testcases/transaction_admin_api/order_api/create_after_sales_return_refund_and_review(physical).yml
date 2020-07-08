@@ -11,8 +11,10 @@
         - existed_transactionNumber: ${gen_random_string(20)}
         - existed_orderPlatform: ALIPAY
         - existed_actualPayment: 0.03
+        - existed_applyExchangeAmount: 0
         - existed_afterSaleType: 'RETURN_REFUND'
         - existed_issued: false
+        - exsited_final: 1
         - existed_logistics_bill_id: 'test1234567890'
         - existed_logistics_institution_id: '532'
         - unexsited_orderId: 123456
@@ -168,8 +170,10 @@
     variables:
         - login_token: ${internal_source_user_login_token()}
         - actualRefundAmount: $existed_actualPayment
+        - applyExchangeAmount: $existed_applyExchangeAmount
         - afterSaleType: $existed_afterSaleType
         - issued: true
+        - final: $exsited_final
         - orderId: $create_order_orderId
         - materialNumber_1: $material_id_1
         - returnsCount_1: $material_count_1
@@ -239,7 +243,7 @@
         - type_match: [content.items, list]
         - type_match: [content.items.0.materials, list]
         - length_equals: [content.items.0, 11]
-        - length_equals: [content.items.0.materials.0, 4]
+        - length_equals: [content.items.0.materials.0, 5]
 
  
 - test:
@@ -253,7 +257,7 @@
             receivedState: 'PARTIAL'
             state: 'SUCCESS'    
     validate:
-        - eq: [status_code, 403]
+        - eq: [status_code, 401]
         - eq: [content.error_code, '10020005']
 
 

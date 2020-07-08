@@ -6,7 +6,7 @@
 
 - test:
     skipIf: ${is_production()}
-    name: 成功场景：placedById存在-customerId存在-skuNumber为订金商品已上架
+    name: 创建订金订单：placedById存在-customerId存在-skuNumber为订金商品已上架
     api: api/order_manage_service/create_order_deposit.yml
     variables:
         - placedById: ${internal_source_user_id()}

@@ -1,15 +1,15 @@
 - config:  
-    name: 订单service测试组合：创建订金订单-上传支付凭证-业务审核-财务审核
+    name: 订单service测试组合：创建订金订单-上传支付凭证-业务审核通过-财务审核通过
     base_url: ${ENV(order_service_host)}
     variables:
         - existed_customerPhoneNumber: ${order_customerPhoneNumber_config()}
         - existed_skuNumber: ${sku_number_deposit()}
         - existed_customerId: ${order_customerId_config()}
         - existed_placedById: ${order_handledById_config()}
-        - existed_deposit: 25
+        - existed_deposit: 0.01
         - existed_handledById: ${order_handledById_config()}
         - existed_transactionNumber: ${gen_random_string(20)}
-        - existed_orderPlatform: CODECAMP_REDEEM_CODE
+        - existed_orderPlatform: TMALL
         - existed_afterSaleType: 'REFUND'
         - existed_handledById: ${order_handledById_config()}
         - existed_issued: false

@@ -1,0 +1,195 @@
+- config:  
+    name: 订单service测试组合：创建订金订单-创建尾款订单-上传支付凭证-业务审核通过-财务审核通过
+    base_url: ${ENV(order_service_host)}
+    variables:
+        - existed_customerPhoneNumber: ${order_customerPhoneNumber_config()}
+        - existed_deposit_skuNumber: ${sku_number_deposit()}
+        - existed_skuNumber: ${sku_number_config()}
+        - existed_customerId: ${order_customerId_config()}
+        - existed_placedById: ${order_handledById_config()}
+        - existed_total_discount: null
+        - existed_deposit: 0.01
+        - existed_handledById: ${order_handledById_config()}
+        - existed_transactionNumber: ${gen_random_string(20)}
+        - existed_deposit_orderPlatform: BANK_TRANSFER
+        - existed_orderPlatform: TMALL
+        - existed_handledById: ${order_handledById_config()}
+        - existed_actualPayment: 0.02
+        - unexisted_actualPayment: 100
+        - unexisted_orderId: 123456
+        - unexisted_ownerId: ""
+        - unexisted_skuNumber: "1111111111111"
+
+- test:
+    skipIf: ${is_production()}
+    name: 创建订金订单(数据准备1)
+    api: api/order_manage_service/create_order_deposit.yml
+    variables:
+        - placedMethod: BY_ADMIN
+        - orderPlatform: $existed_deposit_orderPlatform
+        - placedById: $existed_placedById
+        - customerId: $existed_customerId
+        - skuNumber: $existed_deposit_skuNumber
+        - deposit: $existed_deposit
+    validate:
+        - eq: [status_code, 200]
+        - length_equals: [content.orderId, 20]
+    extract:
+        - create_order_status: status_code
+        - create_deposit_order_orderId: content.orderId
+
+- test:
+    skipIf: ${is_production()}
+    name: 上传支付凭证(数据准备2)
+    skipUnless: ${eval_equal($create_order_status, 200)}
+    api: api/order_manage_service/upload_payment.yml
+    variables:
+        - order_id: $create_deposit_order_orderId
+        - handledById: $existed_handledById
+        - transactionNumber: $existed_transactionNumber
+        - orderPlatform: $existed_deposit_orderPlatform
+        - actualPayment: $existed_deposit
+    validate:
+        - eq: [status_code, 200]
+    extract:
+        - upload_payment_status: status_code
+
+- test:
+    skipIf: ${is_production()}
+    name: 订金付款审核列表-订单id查询-获取paymentReviewId
+    skipUnless: ${eval_equal($create_order_status, 200)}
+    api: api/order_manage_service/get_payments_reviews_list.yml
+    variables:
+        - orderIds: $create_deposit_order_orderId
+    validate:
+        - eq: [status_code, 200]
+    extract:
+        - search_status_code: status_code
+        - paymentReviewId: content.items.0.paymentReviewId
+
+
+- test:
+    skipIf: ${is_production()}
+    name: 订金付款审核单-业务经理审核通过
+    skipUnless: ${eval_equal($search_status_code, 200)}
+    api: api/order_manage_service/bm_review_payment_reviews.yml
+    variables:
+        - orderId: $create_deposit_order_orderId
+        - paymentReviewId: $paymentReviewId
+        - reviewPassed: true
+        - reviewedById: $existed_handledById
+    validate:
+        - eq: [status_code, 200]
+    extract:
+        - bm_review_status_code: status_code
+
+- test:
+    skipIf: ${is_production()}
+    name: 订金付款审核单-财务经理审核通过
+    skipUnless: ${eval_equal($bm_review_status_code, 200)}
+    api: api/order_manage_service/fm_review_payment_reviews.yml
+    variables:
+        - orderId: $create_deposit_order_orderId
+        - paymentReviewId: $paymentReviewId
+        - reviewPassed: true
+        - reviewedById: $existed_handledById
+        - receivedAt: ${get_timestamp(10)}
+    validate:
+        - eq: [status_code, 200]
+    extract:
+        - fm_review_status_code: status_code
+
+
+- test:
+    skipIf: ${is_production()}
+    name: 创建尾款订单-所有参数都正确-提交成功
+    request:
+        method: POST
+        url: /orders/admin
+        json:
+            placedById: 1
+            renewed: 0
+            placedMethod: BY_ADMIN
+            paymentOption: DEPOSIT_FINAL
+            depositOrderIds: 
+                - 
+                    $create_deposit_order_orderId
+            customerInfo:
+                customerId: $existed_customerId
+                customerPhoneNumber: $existed_customerPhoneNumber
+            productInfo:
+                - 
+                    skuNumber: $existed_skuNumber
+                    quantity: 1
+            totalDiscount: $existed_total_discount
+            businessTypeId: 1
+            businessUnitId: 1
+            shippingInfo:
+                consigneeId: $existed_customerId
+            remark: 测试创建订单
+    validate:
+        - eq: [status_code, 200]
+        - contains: [content, orderId]
+    extract:
+        - create_tail_order_status: status_code
+        - create_order_orderId: content.orderId
+
+
+- test:
+    skipIf: ${is_production()}
+    name: 创建尾款订单后上传支付凭证
+    skipUnless: ${eval_equal($create_tail_order_status, 200)}
+    api: api/order_manage_service/upload_payment.yml
+    variables:
+        - order_id: $create_order_orderId
+        - handledById: ${internal_source_user_id()}
+        - transactionNumber: ${gen_random_string(20)}
+        - orderPlatform: $existed_orderPlatform
+        - actualPayment: $existed_actualPayment
+    validate:
+        - eq: [status_code, 200]
+    extract:
+        - upload_status_code: status_code
+
+- test:
+    skipIf: ${is_production()}
+    name: 尾款-获取付款审核单ID(paymentReviewId)
+    skipUnless: ${eval_equal($create_tail_order_status, 200)}
+    api: api/order_manage_service/get_payments_reviews_list.yml
+    variables:
+        - orderIds: $create_order_orderId
+    validate:
+        - eq: [status_code, 200]
+    extract:
+        - paymentReviewId_deposit_final: content.items.0.paymentReviewId
+
+
+- test:
+    skipIf: ${is_production()}
+    name: 尾款付款审核单-业务审核通过
+    request:
+        method: PATCH
+        url: /orders/$create_order_orderId/payments/reviews/$paymentReviewId_deposit_final/review/bm
+        json:
+            reviewPassed: true
+            reviewedById: ${internal_source_user_id()} 
+            reviewedBy: '聂亚运' 
+            remark: '业务审核通过'
+    validate:
+        - eq: [status_code, 200]
+
+- test:
+    setup_hooks:
+          - ${sleep_N_secs(3)}
+    skipIf: ${is_production()}
+    name: 尾款付款审核单-财务审核通过
+    request:
+        method: PATCH
+        url: /orders/$create_order_orderId/payments/reviews/$paymentReviewId_deposit_final/review/fm
+        json:
+            reviewPassed: true
+            reviewedById: ${internal_source_user_id()} 
+            reviewedBy: '聂亚运'
+            remark: '财务审核通过' 
+    validate:
+        - eq: [status_code, 200]

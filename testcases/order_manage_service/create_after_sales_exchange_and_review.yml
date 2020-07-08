@@ -12,8 +12,10 @@
         - existed_transactionNumber: ${gen_random_string(20)}
         - existed_orderPlatform: ALIPAY
         - existed_actualPayment: 0.03
+        - existed_applyExchangeAmount: 0.03
+        - exsited_final: 1
         - existed_afterSaleType: 'EXCHANGE'
-        - existed_issued: true
+        - existed_issued: false
         - unexisted_afterId: 123456
 
 - test:
@@ -125,6 +127,8 @@
         url: /after_sales
         json:
             actualRefundAmount: 0.01
+            applyExchangeAmount: $existed_applyExchangeAmount
+            final: $exsited_final
             afterSaleReasonId: 1
             afterSaleType: $existed_afterSaleType
             issued: $existed_issued
@@ -149,7 +153,7 @@
                    skuNumber: $existed_skuNumber
             replacementItems:
                   -
-                   skuNumber: $existed_skuNumber
+                   skuNumber: ${sku_number_config()}
                    quantity: 1
             shippingInfo:
                 orderId: $create_order_orderId
@@ -234,8 +238,10 @@
         - eq: [status_code, 200]
 
 - test:
+    setup_hooks:
+        - ${sleep_N_secs(4)}
     skipIf: ${is_production()}
-    name: 获取售后单详情-afterSaleId存在
+    name: 获取售后单详情-afterSaleId存在-检查售后单状态是否为已完成
     skipUnless: ${eval_equal($afterSale_status, 200)}
     request:
         method: GET
@@ -259,6 +265,23 @@
         - length_equals: [content, 7]
         - contains: [content, 'carriedForwardOrderId']
         - contains: [content, 'balanceCarryforward']
+        - eq: [content.balanceCarryforward, 0.03]
+    extract:
+        - new_orderId: content.carriedForwardOrderId
+
+
+- test:
+    setup_hooks:
+        - ${sleep_N_secs(3)}
+    skipIf: ${is_production()}
+    name: 获取订单详情-订单ID存在-检查新订单状态是否为已完成
+    request:
+        method: GET
+        url: /orders/$new_orderId
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.state, '10000']
+
 
 
 - test:
@@ -270,6 +293,7 @@
         url: /after_sales/$unexisted_afterId/exchanges
     validate:
         - eq: [status_code, 200]
+
 
 
 - test:

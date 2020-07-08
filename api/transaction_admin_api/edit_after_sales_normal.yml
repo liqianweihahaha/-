@@ -7,9 +7,12 @@ request:
         Authorization: $login_token
     json:
         actualRefundAmount: $actualRefundAmount
+        applyExchangeAmount: $applyExchangeAmount
+        final: $final
         afterSaleReasonId: 1
         afterSaleType: $afterSaleType
         issued: $issued
+        final: $final
         orderId: $orderId
         refundMethod: "ORIGINAL"
         detailedReason: "测试售后单详细原因"

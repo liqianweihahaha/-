@@ -9,10 +9,12 @@
         - existed_total_discount: null
         - existed_handledById: ${order_handledById_config()}
         - existed_transactionNumber: ${gen_random_string(20)}
-        - existed_orderPlatform: ALIPAY
+        - existed_orderPlatform: TMALL
         - existed_actualPayment: 0.03
+        - existed_applyExchangeAmount: 0
+        - exsited_final: 1
         - existed_afterSaleType: 'RETURN_REFUND'
-        - existed_issued: false
+        - existed_issued: true
 
 
 - test:
@@ -128,8 +130,10 @@
     variables:
         - login_token: ${internal_source_user_login_token()}
         - actualRefundAmount: $existed_actualPayment
+        - applyExchangeAmount: $existed_applyExchangeAmount
+        - final: $exsited_final
         - afterSaleType: $existed_afterSaleType
-        - issued: true
+        - issued: $existed_issued
         - orderId: $create_order_orderId
         - materialNumber_1: $material_id_1
         - returnsCount_1: $material_count_1
@@ -156,7 +160,7 @@
         remark: "业务经理审核通过"
         reviewPassed: true
     validate:
-        - eq: [status_code, 403]
+        - eq: [status_code, 401]
         - eq: [content.error_code, '10020005']
 
 

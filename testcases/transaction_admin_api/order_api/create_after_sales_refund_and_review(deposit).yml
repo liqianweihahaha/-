@@ -12,8 +12,10 @@
         - existed_transactionNumber: ${gen_random_string(20)}
         - existed_orderPlatform: ALIPAY
         - existed_afterSaleType: 'REFUND'
+        - existed_applyExchangeAmount: 0
+        - exsited_final: 1
         - existed_handledById: ${order_handledById_config()}
-        - existed_issued: false
+        - existed_issued: true
 
 - test:
     skipIf: ${is_production()}
@@ -108,6 +110,8 @@
     variables:
         - login_token: ${internal_source_user_login_token()}
         - actualRefundAmount: $existed_deposit
+        - applyExchangeAmount: $existed_applyExchangeAmount
+        - final: $exsited_final
         - afterSaleType: $existed_afterSaleType
         - issued: true
         - orderId: $create_order_orderId
@@ -132,7 +136,7 @@
         remark: "业务经理审核通过"
         reviewPassed: true
     validate:
-        - eq: [status_code, 403]
+        - eq: [status_code, 401]
         - eq: [content.error_code, '10020005']
 
 

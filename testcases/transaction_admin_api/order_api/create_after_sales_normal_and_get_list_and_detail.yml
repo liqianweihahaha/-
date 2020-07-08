@@ -11,6 +11,8 @@
         - existed_transactionNumber: ${gen_random_string(20)}
         - existed_orderPlatform: ALIPAY
         - existed_actualPayment: 0.03
+        - existed_applyExchangeAmount: 0
+        - exsited_final: 1
         - existed_afterSaleType: 'RETURN_REFUND'
         - existed_issued: false
         - unexisted_actualPayment: 100
@@ -136,7 +138,7 @@
         method: GET
         url: /after_sales/issuable?orderId=$create_order_orderId
     validate:
-        - eq: [status_code, 403]
+        - eq: [status_code, 401]
         - eq: [content.error_code, '10020005']
        
 
@@ -176,6 +178,8 @@
     variables:
         - login_token: ${internal_source_user_login_token()}
         - actualRefundAmount: $unexisted_actualPayment
+        - applyExchangeAmount: $existed_applyExchangeAmount
+        - final: $exsited_final
         - afterSaleType: $existed_afterSaleType
         - issued: false
         - orderId: $create_order_orderId
@@ -199,6 +203,8 @@
     variables:
         - login_token: ${internal_source_user_login_token()}
         - actualRefundAmount: $existed_actualPayment
+        - applyExchangeAmount: $existed_applyExchangeAmount
+        - final: $exsited_final
         - afterSaleType: $existed_afterSaleType
         - issued: false
         - orderId: $unexisted_orderId
@@ -221,7 +227,9 @@
     api: api/transaction_admin_api/create_after_sales_normal.yml
     variables:
         - login_token: ${internal_source_user_login_token()}
-        - actualRefundAmount: $existed_actualPayment
+        - actualRefundAmount: $existed_actualPayment\
+        - applyExchangeAmount: $existed_applyExchangeAmount
+        - final: $exsited_final
         - afterSaleType: $unexisted_afterSaleType
         - issued: false
         - orderId: $create_order_orderId
@@ -246,6 +254,8 @@
     variables:
         - login_token: ${internal_source_user_login_token()}
         - actualRefundAmount: $existed_actualPayment
+        - applyExchangeAmount: $existed_applyExchangeAmount
+        - final: $exsited_final
         - afterSaleType: $existed_afterSaleType
         - issued: false
         - orderId: $create_order_orderId
@@ -269,6 +279,8 @@
     variables:
         - login_token: ${internal_source_user_login_token()}
         - actualRefundAmount: $existed_actualPayment
+        - applyExchangeAmount: $existed_applyExchangeAmount
+        - final: $exsited_final
         - afterSaleType: $existed_afterSaleType
         - issued: false
         - orderId: $create_order_orderId
@@ -292,6 +304,8 @@
     variables:
         - login_token: ${internal_source_user_login_token()}
         - actualRefundAmount: $existed_actualPayment
+        - applyExchangeAmount: $existed_applyExchangeAmount
+        - final: $exsited_final
         - afterSaleType: $existed_afterSaleType
         - issued: false
         - orderId: $create_order_orderId
@@ -315,6 +329,8 @@
     variables:
         - login_token: ${internal_source_user_login_token()}
         - actualRefundAmount: $existed_actualPayment
+        - applyExchangeAmount: $existed_applyExchangeAmount
+        - final: $exsited_final
         - afterSaleType: $existed_afterSaleType
         - issued: false
         - orderId: $create_order_orderId
@@ -338,6 +354,8 @@
     variables:
         - login_token: ${internal_source_user_login_token()}
         - actualRefundAmount: $existed_actualPayment
+        - applyExchangeAmount: $existed_applyExchangeAmount
+        - final: $exsited_final
         - afterSaleType: $existed_afterSaleType
         - issued: true
         - orderId: $create_order_orderId
@@ -388,7 +406,7 @@
         method: GET
         url: /after_sales
     validate:
-        - eq: [status_code, 403]
+        - eq: [status_code, 401]
         - eq: [content.error_code, '10020005']
 
 
@@ -461,7 +479,7 @@
         - length_equals: [content.orderInfo, 4]
         - length_equals: [content.customerInfo, 4]
         - length_equals: [content.afterSaleProductInfo.0, 9]
-        - length_equals: [content.items.0, 15]
+        - length_equals: [content.items.0, 17]
         - length_equals: [content.amountInfo, 4]
 
 - test:

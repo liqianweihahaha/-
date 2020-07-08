@@ -93,7 +93,7 @@
         method: GET
         url: /orders/$create_order_orderId/revokable
     validate:
-        - eq: [status_code, 403]
+        - eq: [status_code, 401]
         - eq: [content.error_code, '10020005']
 
 - test:
@@ -120,7 +120,7 @@
             revokedById: $existed_handledById
             revokedBy: "管理台"
     validate:
-        - eq: [status_code, 403]
+        - eq: [status_code, 401]
         - eq: [content.error_code, '10020005']
 
 - test:

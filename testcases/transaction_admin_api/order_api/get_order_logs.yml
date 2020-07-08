@@ -64,5 +64,5 @@
         method: GET
         url: /orders/logs?orderId=$create_order_orderId
     validate:
-        - eq: [status_code, 403]
+        - eq: [status_code, 401]
         - eq: [content.error_code, '10020005']

@@ -1,5 +1,5 @@
 - config:
-    name: 测试组合：申请售后单-添加售后单备注-获取售后单备注
+    name: 测试组合：创建普通订单-创建售后单（退货退款）-业务经理审核通过-业务负责人审核通过-会计审核通过-财务主管审核通过-人工退款-检查售后单状态是否为已完成
     base_url: ${ENV(order_service_host)}
     variables:
         - existed_customerPhoneNumber: ${order_customerPhoneNumber_config()}
@@ -10,16 +10,11 @@
         - existed_handledById: ${order_handledById_config()}
         - existed_handledByName: ${order_handledByName_config()}
         - existed_transactionNumber: ${gen_random_string(20)}
-        - existed_orderPlatform: ALIPAY
+        - existed_orderPlatform: TMALL
         - existed_actualPayment: 0.03
         - existed_applyExchangeAmount: 0
-        - exsited_final: 0
+        - exsited_final: 1
         - existed_afterSaleType: 'RETURN_REFUND'
-        - existed_issued: false
-        - unexisted_actualPayment: 100
-        - unexisted_orderId: 123456
-        - unexisted_afterSaleId: 123456
-
 
 - test:
     skipIf: ${is_production()}
@@ -102,7 +97,7 @@
 - test:
     skipIf: ${is_production()}
     setup_hooks:
-        - ${sleep_N_secs(8)}
+        - ${sleep_N_secs(10)}
     name: 售后申请预览-获取物料发货单等信息（数据准备6）
     skipUnless: ${eval_equal($fm_review_status_code, 200)}
     request:
@@ -120,11 +115,11 @@
         - material_id_2: content.items.1.materialNumber
         - material_count_2: content.items.1.returnableCount
 
+
 - test:
     skipIf: ${is_production()}
-    skipIf: ${is_production()}
     name: 创建售后单（普通订单）-所有必填参数都填写正确-提交成功
-    skipUnless: ${eval_equal($order_state, "COMPLETED")}
+    skipUnless: ${eval_equal($fm_review_status_code, 200)}
     api: api/order_manage_service/create_after_sales.yml
     variables:
         - actualRefundAmount: $existed_actualPayment
@@ -146,112 +141,135 @@
         - eq: [status_code, 200]
     extract:
         - afterSaleId: content.afterSaleId
+        - afterSale_status: status_code
 
 - test:
     skipIf: ${is_production()}
-    name: 添加售后单备注
+    name: 售后单-业务经理审核通过
+    skipUnless: ${eval_equal($afterSale_status, 200)}
+    api: api/order_manage_service/after_sales_review.yml
+    variables:
+        - afterSaleId: $afterSaleId
+        - remark: "业务经理审核通过"
+        - reviewPassed: true
+        - reviewedBy: $existed_handledByName
+        - reviewedById: $existed_handledById
+    validate:
+        - eq: [status_code, 200]
+
+- test:
+    skipIf: ${is_production()}
+    name: 获取最近的售后审核-检查业务经理审核通过后的状态是否为1002
+    skipUnless: ${eval_equal($afterSale_status, 200)}
+    request:
+        method: GET
+        url: /after_sales/reviews/latest?afterSaleIds=$afterSaleId
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, list]
+        - eq: [content.0.reviewState, 1002]
+
+- test:
+    setup_hooks:
+        - ${sleep_N_secs(1)}
+    skipIf: ${is_production()}
+    name: 售后单-业务负责人审核通过
+    skipUnless: ${eval_equal($afterSale_status, 200)}
+    api: api/order_manage_service/after_sales_review.yml
+    variables:
+        - afterSaleId: $afterSaleId
+        - remark: "业务负责人审核通过"
+        - reviewPassed: true
+        - reviewedBy: $existed_handledByName
+        - reviewedById: $existed_handledById
+    validate:
+        - eq: [status_code, 200]
+
+- test:
+    skipIf: ${is_production()}
+    name: 获取最近的售后审核-检查业务负责人审核通过后的状态是否为1102
+    skipUnless: ${eval_equal($afterSale_status, 200)}
+    request:
+        method: GET
+        url: /after_sales/reviews/latest?afterSaleIds=$afterSaleId
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, list]
+        - eq: [content.0.reviewState, 1102]
+
+- test:
+    setup_hooks:
+        - ${sleep_N_secs(2)}
+    skipIf: ${is_production()}
+    name: 售后单-财务主管审核通过
+    skipUnless: ${eval_equal($afterSale_status, 200)}
+    api: api/order_manage_service/after_sales_review.yml
+    variables:
+        - afterSaleId: $afterSaleId
+        - remark: "财务主管审核通过"
+        - reviewPassed: true
+        - reviewedBy: $existed_handledByName
+        - reviewedById: $existed_handledById
+    validate:
+        - eq: [status_code, 200]
+
+- test:
+    setup_hooks:
+        - ${sleep_N_secs(2)}
+    skipIf: ${is_production()}
+    name: 获取最近的售后审核-检查财务主管审核通过后的状态是否为7002
+    skipUnless: ${eval_equal($afterSale_status, 200)}
+    request:
+        method: GET
+        url: /after_sales/reviews/latest?afterSaleIds=$afterSaleId
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, list]
+        - eq: [content.0.reviewState, 7002]
+
+
+- test:
+    skipIf: ${is_production()}
+    name: 查询退款单列表-通过orderid查询-orderid存在-获取退款单id
+    base_url: ${ENV(payment_service_host)}
+    request:
+        method: GET
+        url: /refund/search?orderId=$create_order_orderId
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, object]
+        - type_match: [content.items, list] 
+        - type_match: [content.items.0, object]
+        - length_equals: [content.items.0, 20]
+    extract:
+        - refund_Id: content.items.0.refundId
+
+- test:
+    skipIf: ${is_production()}
+    name: 手动退款-refundId存在
+    base_url: ${ENV(payment_service_host)}
     request:
         method: POST
-        url: /after_sales/$afterSaleId/remarks
+        url: /refund/manual
         json:
-            remarkedById: $existed_handledById
-            remarkedBy: $existed_handledByName
-            remark: 售后单备注
+            refundId: $refund_Id
+            refundState: COMPLETED
+            handlerId: $existed_handledById
+            handler: $existed_handledByName
     validate:
         - eq: [status_code, 200]
+    extract:
+        - refund_status: status_code
+
 
 - test:
+    setup_hooks:
+        - ${sleep_N_secs(2)}
     skipIf: ${is_production()}
-    name: 添加售后单备注--不传remarkedById参数
-    request:
-        method: POST
-        url: /after_sales/$afterSaleId/remarks
-        json:
-            remarkedBy: $existed_handledByName
-            remark: ""
-    validate:
-        - eq: [status_code, 400]
-        - eq: [content.error_code, "Param-Invalid@Common"]
-
-- test:
-    skipIf: ${is_production()}
-    name: 添加售后单备注--不传remarkedBy参数
-    request:
-        method: POST
-        url: /after_sales/$afterSaleId/remarks
-        json:
-            remarkedById: $existed_handledById
-            remark: 售后单备注
-    validate:
-        - eq: [status_code, 400]
-        - eq: [content.error_code, "Message-Unreadable@Common"]
-
-- test:
-    skipIf: ${is_production()}
-    name: 添加售后单备注--remark参数为空
-    request:
-        method: POST
-        url: /after_sales/$afterSaleId/remarks
-        json:
-            remarkedById: $existed_handledById
-            remarkedBy: $existed_handledByName
-            remark: ""
-    validate:
-        - eq: [status_code, 400]
-        - eq: [content.error_code, "Param-Invalid@Common"]
-       
-- test:
-    skipIf: ${is_production()}
-    name: 获取售后单备注-不带参数
+    name: 获取售后详情页-检查售后单的状态是否为已完成(20000)
     request:
         method: GET
-        url: /after_sales/remarks
+        url: /after_sales/$afterSaleId
     validate:
         - eq: [status_code, 200]
-        - type_match: [content, object]
-        - length_equals: [content.items.0, 7]
-
-- test:
-    skipIf: ${is_production()}
-    name: 获取售后单备注-orderId存在
-    request:
-        method: GET
-        url: /after_sales/remarks?orderIds=$create_order_orderId
-    validate:
-        - eq: [status_code, 200]
-        - type_match: [content, object]
-        - length_equals: [content.items.0, 7]
-
-- test:
-    skipIf: ${is_production()}
-    name: 获取售后单备注-orderId不存在
-    request:
-        method: GET
-        url: /after_sales/remarks?orderIds=$unexisted_orderId
-    validate:
-        - eq: [status_code, 200]
-        - type_match: [content, object]
-        - length_equals: [content.items, 0]
-
-- test:
-    skipIf: ${is_production()}
-    name: 获取售后单备注-afterSaleId存在
-    request:
-        method: GET
-        url: /after_sales/remarks?afterSaleIds=$afterSaleId
-    validate:
-        - eq: [status_code, 200]
-        - type_match: [content, object]
-        - length_equals: [content.items.0, 7]
-
-- test:
-    skipIf: ${is_production()}
-    name: 获取售后单备注-afterSaleId不存在
-    request:
-        method: GET
-        url: /after_sales/remarks?afterSaleIds=$unexisted_afterSaleId
-    validate:
-        - eq: [status_code, 200]
-        - type_match: [content, object]
-        - length_equals: [content.items, 0]
-
+        - eq: [content.state, "100000"]
