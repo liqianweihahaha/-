@@ -46,7 +46,7 @@
         - eq: [content.normalOrderInfo.customerInfo.customerId, $existed_customerId]
         - length_equals: [content.normalOrderInfo.customerInfo, 4]
         - type_match: [content.normalOrderInfo.productInfo, list]
-        - length_equals: [content.normalOrderInfo.productInfo.0, 9]
+        - length_equals: [content.normalOrderInfo.productInfo.0, 10]
         - type_match: [content.normalOrderInfo.paymentInfo, list]
         - type_match: [content.normalOrderInfo.shippingInfo, list]
         - type_match: [content.normalOrderInfo.shippingAddressInfo, object]

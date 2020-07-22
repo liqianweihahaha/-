@@ -60,6 +60,8 @@
 
 - test:
     skipIf: ${is_production()}
+    setup_hooks:
+        - ${sleep_N_secs(3)}
     name: 已登录内部账号系统-订单优惠审批-已人工审核通过-审核状态检查
     skipUnless: ${eval_equal($create_order_status1, 200)}
     request:
@@ -69,7 +71,7 @@
             Authorization: ${internal_source_user_login_token()}
     validate:
         - eq: [status_code, 200]
-        - eq: [content.items.0.reviewState, 'SYSTEM_REVIEW_FAILED']
+        - eq: [content.items.0.reviewState, 'REVIEW_PASSED']
 
 - test:
     skipIf: ${is_production()}
@@ -129,7 +131,7 @@
             Authorization: ${internal_source_user_login_token()}
     validate:
         - eq: [status_code, 200]
-        - eq: [content.items.0.reviewState, 'SYSTEM_REVIEW_FAILED']
+        - eq: [content.items.0.reviewState, 'MANUAL_REVIEW_FAILED']
 
 - test:
     skipIf: ${is_production()}
@@ -167,6 +169,8 @@
 
 - test:
     skipIf: ${is_production()}
+    setup_hooks:
+        - ${sleep_N_secs(3)}
     name: 已登录内部账号系统-订单优惠审批-系统自动审核通过-订单状态检查
     skipUnless: ${eval_equal($create_order_status3, 200)}
     request:
