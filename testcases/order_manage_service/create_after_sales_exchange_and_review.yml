@@ -1,5 +1,5 @@
 - config:
-    name: 测试组合：创建订单-创建售后单（换货）-业务经理审核通过-业务负责人审核通过-会计审核通过-财务主管审核通过-检查售后单状态是否是已完成-获取换货结转信息-获取售后换货商品-获取售后地址
+    name: 测试组合：创建订单-创建售后单（换货-不退不补）-业务经理审核通过-业务负责人审核通过-会计审核通过-财务主管审核通过-检查售后单状态是否是已完成-获取换货结转信息-获取售后换货商品-获取售后地址
     base_url: ${ENV(order_service_host)}
     variables:
         - existed_customerPhoneNumber: ${order_customerPhoneNumber_config()}
@@ -12,10 +12,10 @@
         - existed_transactionNumber: ${gen_random_string(20)}
         - existed_orderPlatform: ALIPAY
         - existed_actualPayment: 0.03
-        - existed_applyExchangeAmount: 0.03
-        - exsited_final: 1
+        - existed_applyExchangeAmount: 0.06
+        - exsited_final: 0
         - existed_afterSaleType: 'EXCHANGE'
-        - existed_issued: false
+        - existed_issued: true
         - unexisted_afterId: 123456
 
 - test:
@@ -153,8 +153,8 @@
                    skuNumber: $existed_skuNumber
             replacementItems:
                   -
-                   skuNumber: ${sku_number_config()}
-                   quantity: 1
+                   skuNumber: 207252000004
+                   quantity: 2
             shippingInfo:
                 orderId: $create_order_orderId
                 consigneeId: $existed_customerId
@@ -249,7 +249,7 @@
     validate:
         - eq: [status_code, 200]
         - type_match: [content, object]
-        - length_equals: [content, 28]
+        - length_equals: [content, 31]
         - eq: [content.state, '100000']
 
 - test:
@@ -306,7 +306,7 @@
     validate:
         - eq: [status_code, 200]
         - type_match: [content, list]
-        - length_equals: [content.0, 6]
+        - length_equals: [content.0, 8]
         - contains: [content.0, 'skuNumber']
         - contains: [content.0, 'quantity']
 

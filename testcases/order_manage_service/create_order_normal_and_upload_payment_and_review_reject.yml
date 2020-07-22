@@ -1,22 +1,17 @@
 - config:
-    name: 发货service组合测试：创建发货单-通过订单id搜索发货单-更新发货单状态-检查发货单状态
+    name: 订单service组合测试：创建普通订单-上传支付凭证-业务审核通过-财务审核通过
     base_url: ${ENV(order_service_host)}
     variables:
         - existed_customerPhoneNumber: ${order_customerPhoneNumber_config()}
-        - existed_skuNumber: ${sku_physical_number_config()}
+        - existed_skuNumber: ${sku_number_config()}
         - existed_customerId: ${order_customerId_config()}
         - existed_placedBy: ${order_placedBy_config()}
         - existed_total_discount: null
         - existed_handledById: ${order_handledById_config()}
         - existed_transactionNumber: ${gen_random_string(20)}
-        - existed_orderPlatform: ALIPAY
+        - existed_orderPlatform: TMALL
         - existed_actualPayment: 0.03
-        - existed_afterSaleType: 'RETURN_REFUND'
         - existed_handledById: ${order_handledById_config()}
-        - existed_logistics_bill_id: 'test1234567890'
-        - existed_logistics_institution_id: '532'
-        - unexisted_shippingId: 123456
-
 
 - test:
     skipIf: ${is_production()}
@@ -38,7 +33,7 @@
 
 - test:
     skipIf: ${is_production()}
-    name: 上传支付凭证（数据准备2）
+    name: 创建普通订单后上传支付凭证
     skipUnless: ${eval_equal($create_order_status, 200)}
     api: api/order_manage_service/upload_payment.yml
     variables:
@@ -54,7 +49,7 @@
 
 - test:
     skipIf: ${is_production()}
-    name: 获取付款审核单ID(paymentReviewId)（数据准备3）
+    name: 获取付款审核单ID(paymentReviewId)
     skipUnless: ${eval_equal($upload_status_code, 200)}
     api: api/order_manage_service/get_payments_reviews_list.yml
     variables:
@@ -68,7 +63,7 @@
 - test:
     skipIf: ${is_production()}
     skipUnless: ${eval_equal($search_status_code, 200)}
-    name: 业务审核付款审核单：审核通过（数据准备4）
+    name: 业务审核付款审核单：审核通过
     api: api/order_manage_service/bm_review_payment_reviews.yml
     variables:
         - orderId: $create_order_orderId
@@ -77,77 +72,56 @@
         - reviewedById: ${internal_source_user_id()}
     extract:
         - bm_review_status_code: status_code   
-    validate:
-        - eq: [status_code, 200]
 
 - test:
     skipIf: ${is_production()}
-    name: 财务审核付款审核单：审核通过（数据准备5）
+    name: 通过订单id查询付款单列表
+    base_url:  ${ENV(payment_service_host)}
+    request:
+        method: GET
+        url: /pay/payments?order_ids=$create_order_orderId
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, list]
+        - eq: [content.0.order_id, $create_order_orderId]
+    extract:
+        - paymentId: content.0.payment_id 
+
+- test:
+    setup_hooks:
+        - ${sleep_N_secs(3)}
+    skipIf: ${is_production()}
+    name: 财务审核付款审核单：审核驳回
     skipUnless: ${eval_equal($bm_review_status_code, 200)}
     api: api/order_manage_service/fm_review_payment_reviews.yml
     variables:
         - orderId: $create_order_orderId
         - paymentReviewId: $paymentReviewId
-        - reviewPassed: true
+        - reviewPassed: false
         - reviewedById: ${internal_source_user_id()}
         - receivedAt: ${get_timestamp(10)}
-    validate:
-        - eq: [status_code, 200]
 
 - test:
     setup_hooks:
-        - ${sleep_N_secs(6)}
+        - ${sleep_N_secs(3)}
     skipIf: ${is_production()}
-    name: 通过订单ID查找发货单-订单ID存在
-    base_url: ${ENV(shipping_service_host)}
+    name: 获取订单详情-订单ID存在-检查新订单状态是否为“待财务确认”
     request:
         method: GET
-        url: /operation/shipping/info?order_id=$create_order_orderId
+        url: /orders/$create_order_orderId
     validate:
         - eq: [status_code, 200]
-        - type_match: [content, object]
-        - type_match: [content.items, list]
-        - type_match: [content.items.0.materials, list]
-        - length_equals: [content.items.0, 11]
-        - length_equals: [content.items.0.materials.0, 6]
-        - eq: [content.items.0.order_id, $create_order_orderId]
-    extract:
-        - shipping_Id: content.items.0.shipping_id
-        - search_shippingId_code: status_code
+        - eq: [content.state, '800']
+
 
 - test:
     skipIf: ${is_production()}
-    name: 更新发货单状态
-    skipUnless: ${eval_equal($search_shippingId_code, 200)}
-    base_url: ${ENV(shipping_service_host)}
+    base_url:  ${ENV(payment_service_host)}
+    name: 获取付款单详情-paymentId存在-检查付款单state是否是CLOSE
     request:
-        method: PATCH
-        url: /operation/shipping/state
-        json:
-            shipping_id: $shipping_Id
-            state: 'SUCCESS'
-            logistics_bill_id: $existed_logistics_bill_id
-            logistics_institution_id: $existed_logistics_institution_id
-    validate:
-        - eq: [status_code, 200]
-
-
-- test:
-    setup_hooks:
-        - ${sleep_N_secs(2)}   
-    skipIf: ${is_production()}  
-    name: 获取发货单详情-shippingId存在-检查status是否为SUCCESS
-    skipUnless: ${eval_equal($search_shippingId_code, 200)}
-    api: api/shipping_service/get_shipping_info.yml
-    variables:
-        - shippingId: $shipping_Id
+        method: GET
+        url: /pay/payments/$paymentId
     validate:
         - eq: [status_code, 200]
         - type_match: [content, object]
-        - type_match: [content.materialDetail, list]
-        - type_match: [content.logisticDetail, list]
-        - length_equals: [content, 27]
-        - eq: [content.status, 'SUCCESS']
-        - eq: [content.logisticDetail.0.shippingId, '$shipping_Id']
-        - eq: [content.logisticDetail.0.logisticBillId, $existed_logistics_bill_id]
-        - eq: [content.logisticDetail.0.logisticsInstitutionId, $existed_logistics_institution_id]
+        - eq : [content.state, 'CLOSE']

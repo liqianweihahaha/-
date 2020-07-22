@@ -15,7 +15,7 @@
         - eq: [status_code, 200]
         - type_match: [content, list]
         - type_match: [content.0, object]
-        - length_equals: [content.0, 10]
+        - length_equals: [content.0, 11]
     extract:
         - return_id: content.0.returnId
         - order_id: content.0.orderId
@@ -31,7 +31,7 @@
         - eq: [status_code, 200]
         - type_match: [content, list]
         - type_match: [content.0, object]
-        - length_equals: [content.0, 10]
+
 
 - test:
     name: 获取退货单物料-通过afterSaleId查询-afterSaleIds存在
@@ -42,7 +42,6 @@
         - eq: [status_code, 200]
         - type_match: [content, list]
         - type_match: [content.0, object]
-        - length_equals: [content.0, 10]
 
 - test:
     name: 获取退货单物料-通过orderId查询-orderId存在
@@ -53,7 +52,7 @@
         - eq: [status_code, 200]
         - type_match: [content, list]
         - type_match: [content.0, object]
-        - length_equals: [content.0, 10]
+
 
 - test:
     name: 获取退货单物料-通过shippingId查询-shippingId存在
@@ -64,4 +63,3 @@
         - eq: [status_code, 200]
         - type_match: [content, list]
         - type_match: [content.0, object]
-        - length_equals: [content.0, 10]

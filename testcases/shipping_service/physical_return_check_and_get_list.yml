@@ -11,7 +11,9 @@
         - existed_handledByName: ${order_handledByName_config()}
         - existed_transactionNumber: ${gen_random_string(20)}
         - existed_orderPlatform: ALIPAY
+        - exsited_final: 0
         - existed_actualPayment: 0.03
+        - existed_applyExchangeAmount: 0.03
         - existed_afterSaleType: 'RETURN_REFUND'
         - existed_logistics_bill_id: 'test1234567890'
         - existed_logistics_institution_id: '532'
@@ -109,7 +111,7 @@
         - type_match: [content.items, list]
         - type_match: [content.items.0.materials, list]
         - length_equals: [content.items.0, 11]
-        - length_equals: [content.items.0.materials.0, 5]
+        - length_equals: [content.items.0.materials.0, 6]
         - eq: [content.items.0.order_id, $create_order_orderId]
     extract:
         - shipping_Id: content.items.0.shipping_id
@@ -160,6 +162,8 @@
     api: api/order_manage_service/create_after_sales.yml
     variables:
         - actualRefundAmount: $existed_actualPayment
+        - applyExchangeAmount: $existed_applyExchangeAmount
+        - final: $exsited_final
         - afterSaleType: $existed_afterSaleType
         - issued: true
         - orderId: $create_order_orderId

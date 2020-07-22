@@ -20,7 +20,7 @@
         - type_match: [content.items.0.materials, object]
         - length_equals: [content.items.0.returnBill, 19]
         - length_equals: [content.items.0.returnResult, 11]
-        - length_equals: [content.items.0.materials.0, 4]
+        - length_equals: [content.items.0.materials.0, 5]
     extract:
         - return_id: content.items.0.returnBill.returnId
         - order_id: content.items.0.returnBill.orderId
@@ -113,7 +113,7 @@
         - type_match: [content.materials, list]
         - length_equals: [content.returnBill, 19]
         - length_equals: [content.returnResult, 11]
-        - length_equals: [content.materials.0, 4]
+        - length_equals: [content.materials.0, 5]
 
 
 - test:

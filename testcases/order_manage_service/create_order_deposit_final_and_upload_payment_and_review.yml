@@ -11,8 +11,8 @@
         - existed_deposit: 0.01
         - existed_handledById: ${order_handledById_config()}
         - existed_transactionNumber: ${gen_random_string(20)}
-        - existed_deposit_orderPlatform: BANK_TRANSFER
-        - existed_orderPlatform: TMALL
+        - existed_deposit_orderPlatform: CODECAMP_WECHAT
+        - existed_orderPlatform: CODECAMP_ALIPAY
         - existed_handledById: ${order_handledById_config()}
         - existed_actualPayment: 0.02
         - unexisted_actualPayment: 100

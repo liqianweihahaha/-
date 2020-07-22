@@ -9,7 +9,7 @@ request:
         transactionNumber: $transactionNumber
         orderPlatform: $orderPlatform
         actualPayment: $actualPayment
-        receiptURL: https://www.baidu.com
+        receiptURL: https://static.codemao.cn/transaction/product/Hy5SWe0DI.png
         remark: 自动化测试线下转账
 validate:
     - eq: [status_code, 200]
