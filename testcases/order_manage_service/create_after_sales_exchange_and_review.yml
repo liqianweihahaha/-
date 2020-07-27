@@ -153,8 +153,8 @@
                    skuNumber: $existed_skuNumber
             replacementItems:
                   -
-                   skuNumber: 206420000002
-                   quantity: 2
+                   skuNumber: ${sku_number_config()}
+                   quantity: 1
             shippingInfo:
                 orderId: $create_order_orderId
                 consigneeId: $existed_customerId
