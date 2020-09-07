@@ -164,7 +164,7 @@
 
 - test:
     skipIf: ${is_production()}
-    name: 编辑订单收货地址-订单地址已编辑1次-无法再次编辑
+    name: 编辑订单收货地址-订单地址已编辑1次-可以再次编辑
     request:
         method: PUT
         url: /orders/$create_order_orderId/shipping
@@ -179,8 +179,7 @@
             provinceId: 1
             streetAddress: 宝安大道888号幸福花园1123号
     validate:
-        - eq: [status_code, 422]
-        - eq: [content.error_code, "10017041"]
+        - eq: [status_code, 200]
 
 - test:
     skipIf: ${is_production()}

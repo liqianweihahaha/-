@@ -10,9 +10,9 @@
         - existed_handledById: ${order_handledById_config()}
         - existed_handledByName: ${order_handledByName_config()}
         - existed_transactionNumber: ${gen_random_string(20)}
-        - existed_orderPlatform: TMALL
+        - existed_orderPlatform: JD
         - existed_actualPayment: 0.03
-        - existed_applyExchangeAmount: 0.06
+        - existed_applyExchangeAmount: 0.03
         - exsited_final: 1
         - existed_afterSaleType: 'EXCHANGE'
         - existed_issued: true

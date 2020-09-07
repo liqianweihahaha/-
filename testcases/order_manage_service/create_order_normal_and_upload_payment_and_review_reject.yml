@@ -82,8 +82,6 @@
         url: /pay/payments?order_ids=$create_order_orderId
     validate:
         - eq: [status_code, 200]
-        - type_match: [content, list]
-        - eq: [content.0.order_id, $create_order_orderId]
     extract:
         - paymentId: content.0.payment_id 
 
@@ -113,15 +111,14 @@
         - eq: [status_code, 200]
         - eq: [content.state, '800']
 
-
-- test:
-    skipIf: ${is_production()}
-    base_url:  ${ENV(payment_service_host)}
-    name: 获取付款单详情-paymentId存在-检查付款单state是否是CLOSE
-    request:
-        method: GET
-        url: /pay/payments/$paymentId
-    validate:
-        - eq: [status_code, 200]
-        - type_match: [content, object]
-        - eq : [content.state, 'CLOSE']
+# - test:
+#     skipIf: ${is_production()}
+#     base_url:  ${ENV(payment_service_host)}
+#     name: 获取付款单详情-paymentId存在-检查付款单state是否是CLOSE
+#     request:
+#         method: GET
+#         url: /pay/payments/$paymentId
+#     validate:
+#         - eq: [status_code, 200]
+#         - type_match: [content, object]
+#         - eq : [content.state, 'CLOSE']

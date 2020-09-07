@@ -11,6 +11,8 @@
         - existed_transactionNumber: ${gen_random_string(20)}
         - existed_orderPlatform: ALIPAY
         - existed_actualPayment: 0.03
+        - existed_applyExchangeAmount: 0
+        - exsited_final: 1
         - existed_afterSaleType: 'RETURN_REFUND'
         - existed_issued: false
         - existed_logistics_bill_id: 'test1234567890'
@@ -167,6 +169,8 @@
     variables:
         - login_token: ${internal_source_user_login_token()}
         - actualRefundAmount: $existed_actualPayment
+        - applyExchangeAmount: $existed_applyExchangeAmount
+        - final: $exsited_final
         - afterSaleType: $existed_afterSaleType
         - issued: true
         - orderId: $create_order_orderId
@@ -224,6 +228,8 @@
         - return_id: content.items.0.returnId
 
 - test:
+    setup_hooks:
+        - ${sleep_N_secs(3)}
     name: 已登录内部账号系统-获取实物退货审核单列表
     request:
         method: GET
@@ -236,7 +242,7 @@
         - type_match: [content.items, list]
         - type_match: [content.items.0.materials, list]
         - length_equals: [content.items.0, 11]
-        - length_equals: [content.items.0.materials.0, 4]
+        - length_equals: [content.items.0.materials.0, 5]
 
  
 - test:
