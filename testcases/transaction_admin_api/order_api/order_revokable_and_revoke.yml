@@ -52,6 +52,8 @@
 
 - test:
     skipIf: ${is_production()}
+    setup_hooks:
+        - ${sleep_N_secs(3)}
     name: 已登录内部账号系统-线下转账-订单付款业务审核列表-订单id查询-获取paymentReviewId
     skipUnless: ${eval_equal($create_order_status, 200)}
     request:

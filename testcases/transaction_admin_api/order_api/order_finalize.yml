@@ -58,6 +58,8 @@
 
 - test:
     skipIf: ${is_production()}
+    setup_hooks:
+        - ${sleep_N_secs(3)}
     name: 已登录内部账号系统-业务审核付款审核单列表-获取paymentReviewId（数据准备3）
     skipUnless: ${eval_equal($upload_payment_status, 200)}
     request:
@@ -229,6 +231,8 @@
 
 - test:
     skipIf: ${is_production()}
+    setup_hooks:
+        - ${sleep_N_secs(3)}
     name: 已登录-查询退款单列表-通过orderId查询-orderId存在
     skipUnless: ${eval_equal($afterSalesState, 'AWAITING_REFUND')}
     request:

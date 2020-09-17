@@ -61,7 +61,7 @@
 - test:
     skipIf: ${is_production()}
     setup_hooks:
-        - ${sleep_N_secs(3)}
+        - ${sleep_N_secs(4)}
     name: 已登录内部账号系统-订单优惠审批-已人工审核通过-审核状态检查
     skipUnless: ${eval_equal($create_order_status1, 200)}
     request:
@@ -75,6 +75,8 @@
 
 - test:
     skipIf: ${is_production()}
+    setup_hooks:
+        - ${sleep_N_secs(3)}
     name: 已登录内部账号系统-订单优惠审批-已审核通过-订单状态检
     skipUnless: ${eval_equal($create_order_status1, 200)}
     request:

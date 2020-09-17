@@ -12,6 +12,8 @@
         - existed_transactionNumber: ${gen_random_string(20)}
         - existed_orderPlatform: ALIPAY
         - existed_actualPayment: 0.03
+        - existed_applyExchangeAmount: 0
+        - exsited_final: 0
         - existed_afterSaleType: 'RETURN_REFUND'
         - unexsited_orderId: 123456
         - unexsited_refundId: 12345678
@@ -123,8 +125,10 @@
     api: api/order_manage_service/create_after_sales.yml
     variables:
         - actualRefundAmount: $existed_actualPayment
+        - applyExchangeAmount: $existed_applyExchangeAmount
         - afterSaleType: $existed_afterSaleType
         - issued: true
+        - final: $exsited_final
         - orderId: $create_order_orderId
         - ownerId: $existed_handledById
         - materialNumber_1: $material_id_1

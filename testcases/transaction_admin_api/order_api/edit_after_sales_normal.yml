@@ -63,6 +63,8 @@
 
 - test:
     skipIf: ${is_production()}
+    setup_hooks:
+        - ${sleep_N_secs(3)} 
     name: 业务审核付款审核单列表-获取paymentReviewId（数据准备3）
     skipUnless: ${eval_equal($upload_payment_status, 200)}
     request:
