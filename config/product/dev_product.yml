@@ -5,7 +5,10 @@ sku:
   lowest_price: 0.02
   spu_number: 'G201475000'
   term_id: 9
-
+  material_count_1: 6
+  material_count_2: 2
+  material_number_1: 'SU000007'
+  material_number_2: 'SU000033'
 
 #普通虚拟+实物商品
 sku_physical:

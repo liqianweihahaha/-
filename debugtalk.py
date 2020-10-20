@@ -134,6 +134,19 @@ def sku_price_config():
 def spu_term_config():
     return sku_config.get('term_id')
 
+def material_count_1_config():
+    return sku_config.get('material_count_1')
+
+def material_count_2_config():
+    return sku_config.get('material_count_2')
+
+def material_number_1_config():
+    return sku_config.get('material_number_1')
+
+def material_number_2_config():
+    return sku_config.get('material_number_2')
+
+
 
 # 读获取虚拟&实物商品配置信息
 sku_physical_config = read_config.sku_physical(TEST_ENV)

@@ -100,15 +100,12 @@
         - receivedAt: ${get_timestamp(10)}
     validate:
         - eq: [status_code, 200]
-    extract:
-        - fm_review_status_code: status_code
 
 - test:
     skipIf: ${is_production()}
     setup_hooks:
-        - ${sleep_N_secs(10)}
+        - ${sleep_N_secs(4)}
     name: 售后申请预览-获取物料发货单等信息（数据准备6）
-    skipUnless: ${eval_equal($fm_review_status_code, 200)}
     request:
         method: GET
         url: ${ENV(transaction_admin_api_host)}/after_sales/previews/issuing?orderId=$create_order_orderId
@@ -118,11 +115,7 @@
         - eq: [status_code, 200]
     extract:
         - shipmentId_1: content.items.0.shippingId
-        - material_id_1: content.items.0.materialNumber
-        - material_count_1: content.items.0.returnableCount
         - shipmentId_2: content.items.1.shippingId
-        - material_id_2: content.items.1.materialNumber
-        - material_count_2: content.items.1.returnableCount
 
 - test:
     skipIf: ${is_production()}
@@ -136,12 +129,12 @@
         - issued: false
         - orderId: $create_order_orderId
         - ownerId: $existed_handledById
-        - materialNumber_1: $material_id_1
-        - returnsCount_1: $material_count_1
+        - materialNumber_1: ${material_number_1_config()}
+        - returnsCount_1: ${material_count_1_config()}
         - shippingId_1: $shipmentId_1
         - skuNumber_1: $existed_skuNumber
-        - materialNumber_2: $material_id_2
-        - returnsCount_2: $material_count_2
+        - materialNumber_2: ${material_number_2_config()}
+        - returnsCount_2: ${material_count_2_config()}
         - shippingId_2: $shipmentId_2
         - skuNumber_2: $existed_skuNumber
     validate:
@@ -176,7 +169,6 @@
 - test:
     skipIf: ${is_production()}
     name: 编辑售后单（普通订单）-所有必填参数都填写正确-保存成功
-    skipUnless: ${eval_equal($create_after_sales_status, 200)}
     api: api/order_manage_service/edit_after_sales.yml
     variables:
         - afterSaleId: $create_afterSaleId
@@ -200,7 +192,6 @@
 - test:
     skipIf: ${is_production()}
     name: 编辑售后单（普通订单）-afterSaleId不存在-保存失败
-    skipUnless: ${eval_equal($create_after_sales_status, 200)}
     api: api/order_manage_service/edit_after_sales.yml
     variables:
         - afterSaleId: $unexisted_afterSaleId
@@ -225,7 +216,6 @@
 - test:
     skipIf: ${is_production()}
     name: 编辑售后单（普通订单）-申请售后金额>可退金额-保存失败
-    skipUnless: ${eval_equal($create_after_sales_status, 200)}
     api: api/order_manage_service/edit_after_sales.yml
     variables:
         - afterSaleId: $create_afterSaleId
@@ -250,7 +240,6 @@
 - test:
     skipIf: ${is_production()}
     name: 编辑售后单（普通订单）-售后类型不存在-保存失败
-    skipUnless: ${eval_equal($create_after_sales_status, 200)}
     api: api/order_manage_service/edit_after_sales.yml
     variables:
         - afterSaleId: $create_afterSaleId
@@ -275,7 +264,6 @@
 - test:
     skipIf: ${is_production()}
     name: 编辑售后单（普通订单）-ownerId为空-保存失败
-    skipUnless: ${eval_equal($create_after_sales_status, 200)}
     api: api/order_manage_service/edit_after_sales.yml
     variables:
         - afterSaleId: $create_afterSaleId
@@ -299,7 +287,6 @@
 - test:
     skipIf: ${is_production()}
     name: 编辑售后单（普通订单）-materialNumber不存在-保存失败
-    skipUnless: ${eval_equal($create_after_sales_status, 200)}
     api: api/order_manage_service/edit_after_sales.yml
     variables:
         - afterSaleId: $create_afterSaleId
@@ -324,7 +311,6 @@
 - test:
     skipIf: ${is_production()}
     name: 编辑售后单（普通订单）-申请售后数量>可退数量-保存失败
-    skipUnless: ${eval_equal($create_after_sales_status, 200)}
     api: api/order_manage_service/edit_after_sales.yml
     variables:
         - afterSaleId: $create_afterSaleId
@@ -349,7 +335,6 @@
 - test:
     skipIf: ${is_production()}
     name: 编辑售后单（普通订单）-申请售后数量等于0-保存成功
-    skipUnless: ${eval_equal($create_after_sales_status, 200)}
     api: api/order_manage_service/edit_after_sales.yml
     variables:
         - afterSaleId: $create_afterSaleId
@@ -373,7 +358,6 @@
 - test:
     skipIf: ${is_production()}
     name: 编辑售后单（普通订单）-shippingId不存在-保存失败
-    skipUnless: ${eval_equal($create_after_sales_status, 200)}
     api: api/order_manage_service/edit_after_sales.yml
     variables:
         - afterSaleId: $create_afterSaleId
@@ -398,7 +382,6 @@
 - test:
     skipIf: ${is_production()}
     name: 编辑售后单（普通订单）-skuNumber不存在-保存失败
-    skipUnless: ${eval_equal($create_after_sales_status, 200)}
     api: api/order_manage_service/edit_after_sales.yml
     variables:
         - afterSaleId: $create_afterSaleId
@@ -423,7 +406,6 @@
 - test:
     skipIf: ${is_production()}
     name: 编辑售后单（普通订单）-所以参数填写正确-提交成功
-    skipUnless: ${eval_equal($create_after_sales_status, 200)}
     api: api/order_manage_service/edit_after_sales.yml
     variables:
         - afterSaleId: $create_afterSaleId

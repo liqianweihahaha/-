@@ -93,15 +93,13 @@
         - receivedAt: ${get_timestamp(10)}
     validate:
         - eq: [status_code, 200]
-    extract:
-        - fm_review_status_code: status_code
+
 
 - test:
     skipIf: ${is_production()}
     setup_hooks:
-        - ${sleep_N_secs(10)}
+        - ${sleep_N_secs(4)}
     name: 售后申请预览-获取物料发货单等信息（数据准备6）
-    skipUnless: ${eval_equal($fm_review_status_code, 200)}
     request:
         method: GET
         url: ${ENV(transaction_admin_api_host)}/after_sales/previews/issuing?orderId=$create_order_orderId
@@ -111,17 +109,11 @@
         - eq: [status_code, 200]
     extract:
         - shipmentId_1: content.items.0.shippingId
-        - material_id_1: content.items.0.materialNumber
-        - material_count_1: content.items.0.returnableCount
         - shipmentId_2: content.items.1.shippingId
-        - material_id_2: content.items.1.materialNumber
-        - material_count_2: content.items.1.returnableCount
-
 
 - test:
     skipIf: ${is_production()}
     name: 创建售后单（普通订单）-所有必填参数都填写正确-提交成功
-    skipUnless: ${eval_equal($fm_review_status_code, 200)}
     request:
         method: POST
         url: /after_sales
@@ -142,13 +134,13 @@
                    remark: "自动化测试申请售后"         
             items:
                   -
-                   materialNumber: $material_id_1
-                   returnsCount: $material_count_1
+                   materialNumber: ${material_number_1_config()}
+                   returnsCount: ${material_count_1_config()}
                    shippingId: $shipmentId_1
                    skuNumber: $existed_skuNumber
                   -
-                   materialNumber: $material_id_2
-                   returnsCount: $material_count_2
+                   materialNumber: ${material_number_2_config()}
+                   returnsCount: ${material_count_2_config()}
                    shippingId: $shipmentId_2
                    skuNumber: $existed_skuNumber
             replacementItems:
