@@ -177,13 +177,14 @@
         - final: $exsited_final
         - afterSaleType: $existed_afterSaleType
         - issued: false
+        - orderId: $create_order_orderId
         - ownerId: $existed_handledById
-        - materialNumber_1: $material_id_1
-        - returnsCount_1: $material_count_1
+        - materialNumber_1: ${material_number_1_config()}
+        - returnsCount_1: ${material_count_1_config()}
         - shippingId_1: $shipmentId_1
         - skuNumber_1: $existed_skuNumber
-        - materialNumber_2: $material_id_2
-        - returnsCount_2: $material_count_2
+        - materialNumber_2: ${material_number_2_config()}
+        - returnsCount_2: ${material_count_2_config()}
         - shippingId_2: $shipmentId_2
         - skuNumber_2: $existed_skuNumber
     validate:
@@ -201,12 +202,12 @@
         - afterSaleType: $existed_afterSaleType
         - issued: false
         - ownerId: $existed_handledById
-        - materialNumber_1: $material_id_1
-        - returnsCount_1: $material_count_1
+        - materialNumber_1: ${material_number_1_config()}
+        - returnsCount_1: ${material_count_1_config()}
         - shippingId_1: $shipmentId_1
         - skuNumber_1: $existed_skuNumber
-        - materialNumber_2: $material_id_2
-        - returnsCount_2: $material_count_2
+        - materialNumber_2: ${material_number_2_config()}
+        - returnsCount_2: ${material_count_2_config()}
         - shippingId_2: $shipmentId_2
         - skuNumber_2: $existed_skuNumber
     validate:
@@ -225,12 +226,12 @@
         - afterSaleType: $existed_afterSaleType
         - issued: false
         - ownerId: $existed_handledById
-        - materialNumber_1: $material_id_1
-        - returnsCount_1: $material_count_1
+        - materialNumber_1: ${material_number_1_config()}
+        - returnsCount_1: ${material_count_1_config()}
         - shippingId_1: $shipmentId_1
         - skuNumber_1: $existed_skuNumber
-        - materialNumber_2: $material_id_2
-        - returnsCount_2: $material_count_2
+        - materialNumber_2: ${material_number_2_config()}
+        - returnsCount_2: ${material_count_2_config()}
         - shippingId_2: $shipmentId_2
         - skuNumber_2: $existed_skuNumber
     validate:
@@ -249,12 +250,12 @@
         - afterSaleType: $unexisted_afterSaleType
         - issued: false
         - ownerId: $existed_handledById
-        - materialNumber_1: $material_id_1
-        - returnsCount_1: $material_count_1
+        - materialNumber_1: ${material_number_1_config()}
+        - returnsCount_1: ${material_count_1_config()}
         - shippingId_1: $shipmentId_1
         - skuNumber_1: $existed_skuNumber
-        - materialNumber_2: $material_id_2
-        - returnsCount_2: $material_count_2
+        - materialNumber_2: ${material_number_2_config()}
+        - returnsCount_2: ${material_count_2_config()}
         - shippingId_2: $shipmentId_2
         - skuNumber_2: $existed_skuNumber
     validate:
@@ -273,12 +274,12 @@
         - afterSaleType: $existed_afterSaleType
         - issued: false
         - ownerId: $unexisted_ownerId
-        - materialNumber_1: $material_id_1
-        - returnsCount_1: $material_count_1
+        - materialNumber_1: ${material_number_1_config()}
+        - returnsCount_1: ${material_count_1_config()}
         - shippingId_1: $shipmentId_1
         - skuNumber_1: $existed_skuNumber
-        - materialNumber_2: $material_id_2
-        - returnsCount_2: $material_count_2
+        - materialNumber_2: ${material_number_2_config()}
+        - returnsCount_2: ${material_count_2_config()}
         - shippingId_2: $shipmentId_2
         - skuNumber_2: $existed_skuNumber
     validate:
@@ -297,11 +298,11 @@
         - issued: false
         - ownerId: $existed_handledById
         - materialNumber_1: $unexisted_materialNumber
-        - returnsCount_1: $material_count_1
+        - returnsCount_1: ${material_count_1_config()}
         - shippingId_1: $shipmentId_1
         - skuNumber_1: $existed_skuNumber
-        - materialNumber_2: $material_id_2
-        - returnsCount_2: $material_count_2
+        - materialNumber_2: ${material_number_2_config()}
+        - returnsCount_2: ${material_count_2_config()}
         - shippingId_2: $shipmentId_2
         - skuNumber_2: $existed_skuNumber
     validate:
@@ -320,12 +321,12 @@
         - afterSaleType: $existed_afterSaleType
         - issued: false
         - ownerId: $existed_handledById
-        - materialNumber_1: $material_id_1
+        - materialNumber_1: ${material_number_1_config()}
         - returnsCount_1: $unexisted_returnsCount
         - shippingId_1: $shipmentId_1
         - skuNumber_1: $existed_skuNumber
-        - materialNumber_2: $material_id_2
-        - returnsCount_2: $material_count_2
+        - materialNumber_2: ${material_number_2_config()}
+        - returnsCount_2: ${material_count_2_config()}
         - shippingId_2: $shipmentId_2
         - skuNumber_2: $existed_skuNumber
     validate:
@@ -344,12 +345,12 @@
         - afterSaleType: $existed_afterSaleType
         - issued: false
         - ownerId: $existed_handledById
-        - materialNumber_1: $material_id_1
+        - materialNumber_1: ${material_number_1_config()}
         - returnsCount_1: 0
         - shippingId_1: $shipmentId_1
         - skuNumber_1: $existed_skuNumber
-        - materialNumber_2: $material_id_2
-        - returnsCount_2: $material_count_2
+        - materialNumber_2: ${material_number_2_config()}
+        - returnsCount_2: ${material_count_2_config()}
         - shippingId_2: $shipmentId_2
         - skuNumber_2: $existed_skuNumber
     validate:
@@ -367,12 +368,12 @@
         - afterSaleType: $existed_afterSaleType
         - issued: false
         - ownerId: $existed_handledById
-        - materialNumber_1: $material_id_1
-        - returnsCount_1: $material_count_1
+        - materialNumber_1: ${material_number_1_config()}
+        - returnsCount_1: ${material_count_1_config()}
         - shippingId_1: $unexisted_shippingId
         - skuNumber_1: $existed_skuNumber
-        - materialNumber_2: $material_id_2
-        - returnsCount_2: $material_count_2
+        - materialNumber_2: ${material_number_2_config()}
+        - returnsCount_2: ${material_count_2_config()}
         - shippingId_2: $shipmentId_2
         - skuNumber_2: $existed_skuNumber
     validate:
@@ -391,12 +392,12 @@
         - afterSaleType: $existed_afterSaleType
         - issued: false
         - ownerId: $existed_handledById
-        - materialNumber_1: $material_id_1
-        - returnsCount_1: $material_count_1
+        - materialNumber_1: ${material_number_1_config()}
+        - returnsCount_1: ${material_count_1_config()}
         - shippingId_1: $shipmentId_1
         - skuNumber_1: $unexisted_skuNumber
-        - materialNumber_2: $material_id_2
-        - returnsCount_2: $material_count_2
+        - materialNumber_2: ${material_number_2_config()}
+        - returnsCount_2: ${material_count_2_config()}
         - shippingId_2: $shipmentId_2
         - skuNumber_2: $existed_skuNumber
     validate:
@@ -415,12 +416,12 @@
         - afterSaleType: $existed_afterSaleType
         - issued: true
         - ownerId: $existed_handledById
-        - materialNumber_1: $material_id_1
-        - returnsCount_1: $material_count_1
+        - materialNumber_1: ${material_number_1_config()}
+        - returnsCount_1: ${material_count_1_config()}
         - shippingId_1: $shipmentId_1
         - skuNumber_1: $existed_skuNumber
-        - materialNumber_2: $material_id_2
-        - returnsCount_2: $material_count_2
+        - materialNumber_2: ${material_number_2_config()}
+        - returnsCount_2: ${material_count_2_config()}
         - shippingId_2: $shipmentId_2
         - skuNumber_2: $existed_skuNumber
     validate:
@@ -443,7 +444,6 @@
     skipIf: ${is_production()}
     name: 能否编辑售后-售后单存在，且售后单状态为待业务经理审核
     skipUnless: ${eval_equal($create_after_sales_status, 200)}
-    skipUnless: ${eval_equal($fm_review_status_code, 200)}
     request:
         method: GET
         url: /after_sales/$create_afterSaleId/editable

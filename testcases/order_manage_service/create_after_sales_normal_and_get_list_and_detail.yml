@@ -404,7 +404,6 @@
     skipIf: ${is_production()}
     name: 订单能否申请售后-有未完成的售后单
     skipUnless: ${eval_equal($afterSale_status, 200)}
-    skipUnless: ${eval_equal($fm_review_status_code, 200)}
     request:
         method: GET
         url: /after_sales/issuable?orderId=$create_order_orderId
