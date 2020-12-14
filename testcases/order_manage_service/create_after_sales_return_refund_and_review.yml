@@ -1,6 +1,6 @@
 - config:
     name: 测试组合：创建普通订单-创建售后单（退货退款）-业务经理审核通过-业务负责人审核通过-会计审核通过-财务主管审核通过-人工退款-检查售后单状态是否为已完成
-    base_url: ${ENV(order_service_host)}
+    base_url: ${get_order_service_host()}
     variables:
         - existed_customerPhoneNumber: ${order_customerPhoneNumber_config()}
         - existed_skuNumber: ${sku_number_config()}

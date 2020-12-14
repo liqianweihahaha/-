@@ -1,6 +1,6 @@
 - config:
     name: 获取PaymentType列表
-    base_url: ${ENV(payment_service_host)}
+    base_url: ${get_payment_service_host()}
     variables:
         exsited_payment_method: WXPAY
 

@@ -1,4 +1,5 @@
 name: 订单Service:财务审核转账审核单
+base_url: ${get_order_service_host()}
 request:
     method: PATCH
     url: /orders/$orderId/payments/reviews/$paymentReviewId/review/fm

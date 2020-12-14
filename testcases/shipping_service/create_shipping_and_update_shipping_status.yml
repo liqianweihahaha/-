@@ -1,6 +1,6 @@
 - config:
     name: 发货service组合测试：创建发货单-通过订单id搜索发货单-更新发货单状态-检查发货单状态
-    base_url: ${ENV(order_service_host)}
+    base_url: ${get_shipping_service_host()}
     variables:
         - existed_customerPhoneNumber: ${order_customerPhoneNumber_config()}
         - existed_skuNumber: ${sku_physical_number_config()}
@@ -14,7 +14,7 @@
         - existed_afterSaleType: 'RETURN_REFUND'
         - existed_handledById: ${order_handledById_config()}
         - existed_logistics_bill_id: 'test1234567890'
-        - existed_logistics_institution_id: '532'
+        - existed_logistics_institution_code: 'L000011'
         - unexisted_shippingId: 123456
 
 
@@ -56,6 +56,7 @@
     skipIf: ${is_production()}
     name: 获取付款审核单ID(paymentReviewId)（数据准备3）
     skipUnless: ${eval_equal($upload_status_code, 200)}
+    base_url: ${get_order_service_host()}
     api: api/order_manage_service/get_payments_reviews_list.yml
     variables:
         - orderIds: $create_order_orderId
@@ -69,6 +70,7 @@
     skipIf: ${is_production()}
     skipUnless: ${eval_equal($search_status_code, 200)}
     name: 业务审核付款审核单：审核通过（数据准备4）
+    base_url: ${get_order_service_host()}
     api: api/order_manage_service/bm_review_payment_reviews.yml
     variables:
         - orderId: $create_order_orderId
@@ -84,6 +86,7 @@
     skipIf: ${is_production()}
     name: 财务审核付款审核单：审核通过（数据准备5）
     skipUnless: ${eval_equal($bm_review_status_code, 200)}
+    base_url: ${get_order_service_host()}
     api: api/order_manage_service/fm_review_payment_reviews.yml
     variables:
         - orderId: $create_order_orderId
@@ -99,7 +102,7 @@
         - ${sleep_N_secs(6)}
     skipIf: ${is_production()}
     name: 通过订单ID查找发货单-订单ID存在
-    base_url: ${ENV(shipping_service_host)}
+    base_url: ${get_shipping_service_host()}
     request:
         method: GET
         url: /operation/shipping/info?order_id=$create_order_orderId
@@ -108,7 +111,7 @@
         - type_match: [content, object]
         - type_match: [content.items, list]
         - type_match: [content.items.0.materials, list]
-        - length_equals: [content.items.0, 11]
+        - length_equals: [content.items.0, 19]
         - length_equals: [content.items.0.materials.0, 6]
         - eq: [content.items.0.order_id, $create_order_orderId]
     extract:
@@ -119,7 +122,6 @@
     skipIf: ${is_production()}
     name: 更新发货单状态
     skipUnless: ${eval_equal($search_shippingId_code, 200)}
-    base_url: ${ENV(shipping_service_host)}
     request:
         method: PATCH
         url: /operation/shipping/state
@@ -127,7 +129,7 @@
             shipping_id: $shipping_Id
             state: 'SUCCESS'
             logistics_bill_id: $existed_logistics_bill_id
-            logistics_institution_id: $existed_logistics_institution_id
+            logistics_institution_code: $existed_logistics_institution_code
     validate:
         - eq: [status_code, 200]
 
@@ -146,8 +148,7 @@
         - type_match: [content, object]
         - type_match: [content.materialDetail, list]
         - type_match: [content.logisticDetail, list]
-        - length_equals: [content, 27]
+        - length_equals: [content, 29]
         - eq: [content.status, 'SUCCESS']
         - eq: [content.logisticDetail.0.shippingId, '$shipping_Id']
         - eq: [content.logisticDetail.0.logisticBillId, $existed_logistics_bill_id]
-        - eq: [content.logisticDetail.0.logisticsInstitutionId, $existed_logistics_institution_id]

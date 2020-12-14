@@ -1,6 +1,6 @@
 - config:
     name: 退款service测试组合：创建退款单-查询退款申请单/退款单-通过退款申请单id获取退款单-查询退款申请单/退款单详情-手动退款-检查售后状态和退款状态
-    base_url: ${ENV(order_service_host)}
+    base_url: ${get_order_service_host()}
     variables:
         - existed_customerPhoneNumber: ${order_customerPhoneNumber_config()}
         - existed_skuNumber: ${sku_number_config()}
@@ -244,7 +244,7 @@
     skipIf: ${is_production()}
     name: 查询退款申请单列表-通过orderid查询-orderid存在
     skipUnless: ${eval_equal($afterSalesState, 20000)}
-    base_url: ${ENV(payment_service_host)}
+    base_url: ${get_payment_service_host()}
     request:
         method: GET
         url: /refund/apply/search?orderId=$create_order_orderId
@@ -262,7 +262,7 @@
     skipIf: ${is_production()}
     name: 查询退款申请单列表-通过orderid查询-orderid不存在
     skipUnless: ${eval_equal($afterSalesState, 20000)}
-    base_url: ${ENV(payment_service_host)}
+    base_url: ${get_payment_service_host()}
     request:
         method: GET
         url: /refund/apply/search?orderId=$unexsited_orderId
@@ -276,7 +276,7 @@
     skipIf: ${is_production()}
     name: 查询退款申请单详情-refundApplyId存在
     skipUnless: ${eval_equal($afterSalesState, 20000)}
-    base_url: ${ENV(payment_service_host)}
+    base_url: ${get_payment_service_host()}
     request:
         method: GET
         url: /refund/apply/$refundApply_Id  
@@ -289,7 +289,7 @@
     skipIf: ${is_production()}
     name: 查询退款申请单详情-refundApplyId不存在
     skipUnless: ${eval_equal($afterSalesState, 20000)}
-    base_url: ${ENV(payment_service_host)}
+    base_url: ${get_payment_service_host()}
     request:
         method: GET
         url: /refund/apply/123456  
@@ -300,7 +300,7 @@
     skipIf: ${is_production()}
     name: 通过退款申请单 id 获取相关退款单-refundApplyId存在
     skipUnless: ${eval_equal($afterSalesState, 20000)}
-    base_url: ${ENV(payment_service_host)}
+    base_url: ${get_payment_service_host()}
     request:
         method: POST
         url: /refund/list
@@ -316,7 +316,7 @@
     skipIf: ${is_production()}
     name: 查询退款单列表-通过orderid查询-orderid存在
     skipUnless: ${eval_equal($afterSalesState, 20000)}
-    base_url: ${ENV(payment_service_host)}
+    base_url: ${get_payment_service_host()}
     request:
         method: GET
         url: /refund/search?orderId=$create_order_orderId
@@ -333,7 +333,7 @@
     skipIf: ${is_production()}
     name: 查询退款单详情-refundId存在
     skipUnless: ${eval_equal($afterSalesState, 20000)}
-    base_url: ${ENV(payment_service_host)}
+    base_url: ${get_payment_service_host()}
     request:
         method: GET
         url: /refund/$refund_Id  
@@ -346,7 +346,7 @@
     skipIf: ${is_production()}
     name: 查询退款单详情-refundId不存在
     skipUnless: ${eval_equal($afterSalesState, 20000)}
-    base_url: ${ENV(payment_service_host)}
+    base_url: ${get_payment_service_host()}
     request:
         method: GET
         url: /refund/12345678
@@ -357,7 +357,7 @@
     skipIf: ${is_production()}
     name: 手动退款-refundId存在
     skipUnless: ${eval_equal($afterSalesState, 20000)}
-    base_url: ${ENV(payment_service_host)}
+    base_url: ${get_payment_service_host()}
     request:
         method: POST
         url: /refund/manual
@@ -375,7 +375,7 @@
     skipIf: ${is_production()}
     name: 手动退款-refundId不存在
     skipUnless: ${eval_equal($afterSalesState, 20000)}
-    base_url: ${ENV(payment_service_host)}
+    base_url: ${get_payment_service_host()}
     request:
         method: POST
         url: /refund/manual
@@ -392,7 +392,7 @@
     skipIf: ${is_production()}
     name: 查询售后单详情-售后状态是否为100000，退款状态是否为20004
     skipUnless: ${eval_equal($refund_status, 200)}
-    base_url: ${ENV(order_service_host)}
+    base_url: ${get_order_service_host()}
     request:
         method: GET
         url: /after_sales/$afterSaleId

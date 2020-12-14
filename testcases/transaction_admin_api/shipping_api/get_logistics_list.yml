@@ -24,4 +24,4 @@
         - type_match: [content, object]
         - type_match: [content.items, list]
         - type_match: [content.items.0, object]
-        - length_equals: [content.items.0, 3]
+        - length_equals: [content.items.0, 2]

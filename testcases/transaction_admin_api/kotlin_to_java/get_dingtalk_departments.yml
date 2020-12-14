@@ -1,0 +1,80 @@
+- config:
+    name: 获取钉钉部门
+    base_url: ${ENV(transaction_admin_api_host)}
+    verify: False
+    variables:
+        - existed_department_id: 958232
+        - existed_department_id2: 958242
+        - unexist_existed_department_id: 100000
+
+- test:
+    name: 已登录内部账号系统-获取钉钉部门-未传parentIds参数
+    request:
+        method: GET
+        url: /ding_talk/departments
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+    validate:
+        - eq: [status_code, 400]
+        - eq: [content.error_code, 'Param-Invalid@Common']
+
+- test:
+    name: 已登录内部账号系统-获取钉钉部门-parentIds长度为1（parentIds存在）
+    request:
+        method: GET
+        url: /ding_talk/departments?parentIds=$existed_department_id
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, list]
+        - type_match: [content.0.subDeptList, list]
+        - type_match: [content.0.subDeptList.0, object]
+        - length_equals: [content.0.subDeptList.0, 4]
+
+- test:
+    name: 已登录内部账号系统-获取钉钉部门-parentIds长度为2（2个id都存在）
+    request:
+        method: GET
+        url: /ding_talk/departments?parentIds=$existed_department_id,$existed_department_id2
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, list]
+        - type_match: [content.0.subDeptList, list]
+        - type_match: [content.0.subDeptList.0, object]
+        - length_equals: [content.0.subDeptList.0, 4]
+
+
+- test:
+    name: 已登录内部账号系统-ids传递长度为1(属性值ID为非数字)
+    request:
+        method: GET
+        url: /ding_talk/departments?parentIds=aa
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+    validate:
+        - eq: [status_code, 400]
+
+
+- test:
+    name: 已登录内部账号系统-获取钉钉部门-parentIds长度为1（不存在）
+    request:
+        method: GET
+        url: /ding_talk/departments?parentIds=$unexist_existed_department_id
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, list]
+        - length_equals: [content.0.subDeptList, 0]
+
+- test:
+    name: 未登录内部账号系统-ids传递长度为1(属性值ID存在)
+    request:
+        method: GET
+        url: /ding_talk/departments?parentIds=$existed_department_id
+    validate:
+        - eq: [status_code, 401]
+        - eq: [content.error_code, '10020005']

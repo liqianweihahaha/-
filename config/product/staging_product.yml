@@ -1,19 +1,20 @@
 # 普通商品
 sku:
-  sku_number: '201097030001'
+  sku_number: '205636040001'
   price: 0.03
   lowest_price: 0.02
-  spu_number: 'G201097030'
+  spu_number: 'G205636040'
   term_id: 2
   material_count_1: 6
   material_count_2: 2
   material_number_1: 'SU000001'
-  material_number_2: 'SU000004'
+  material_number_2: 'SU000006'
 
 
 #普通虚拟+实物商品
 sku_physical:
-  sku_number: '202399030001'
+  sku_number: '206231040002'
+  sku_number2: '206231040003'
   price: 0.03
   lowest_price: 0
   spu_number: 'G202399030'

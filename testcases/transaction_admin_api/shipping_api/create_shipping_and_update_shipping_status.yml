@@ -1,6 +1,6 @@
 - config:
     name: 发货api组合测试：创建普通订单-上传支付凭证-审核通过-通过订单id搜索发货单-更新发货单状态-检查发货单状态
-    base_url: ${ENV(order_service_host)}
+    base_url: ${get_order_service_host()}
     variables:
         - existed_customerPhoneNumber: ${order_customerPhoneNumber_config()}
         - existed_skuNumber: ${sku_physical_number_config()}
@@ -14,7 +14,7 @@
         - existed_afterSaleType: 'RETURN_REFUND'
         - existed_handledById: ${order_handledById_config()}
         - existed_logistics_bill_id: 'test1234567890'
-        - existed_logistics_institution_id: '532'
+        - existed_logistics_institution_code: 'L000011'
 
 
 - test:
@@ -120,7 +120,7 @@
         - type_match: [content, object]
         - type_match: [content.items, list]
         - type_match: [content.items.0.materials, list]
-        - length_equals: [content.items.0, 11]
+        - length_equals: [content.items.0, 14]
         - length_equals: [content.items.0.materials.0, 6]
         - eq: [content.items.0.order_id, $create_order_orderId]
     extract:
@@ -138,7 +138,7 @@
             shipping_id: $shipping_Id
             state: 'SUCCESS'
             logistics_bill_id: $existed_logistics_bill_id
-            logistics_institution_id: $existed_logistics_institution_id
+            logistics_institution_code: $existed_logistics_institution_code
     validate:
         - eq: [status_code, 401]
         - eq: [content.error_code, '10020005']
@@ -156,7 +156,7 @@
             shipping_id: $shipping_Id
             state: 'SUCCESS'
             logistics_bill_id: $existed_logistics_bill_id
-            logistics_institution_id: $existed_logistics_institution_id
+            logistics_institution_code: $existed_logistics_institution_code
     validate:
         - eq: [status_code, 200]
 
@@ -176,4 +176,4 @@
         - type_match: [content.materialDetail, list]
         - type_match: [content.logisticDetail, list]
         - type_match: [content.changeLogs, list]
-        - length_equals: [content, 28]
+        - length_equals: [content, 30]

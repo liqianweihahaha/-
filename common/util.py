@@ -96,5 +96,14 @@ def get_wenxuan_token():
     if res1.status_code == 200 and res.headers['Content-Type'] == 'application/json':
         token = res1.json()['data']
 
+#从eureka动态获取地址
+def get_request_host_url(host,applicationName,token):
+    res = requests.get(host+'/eureka/apps/'+applicationName, headers={"Authorization": token, "Accept": 'application/json'})
+    if res.status_code == 200:
+        return res.json()['application']['instance'][0]['homePageUrl']
+    else:
+        print("获取服务地址失败，状态码为：{}".format(res.status_code))
+
+
 if __name__ == '__main__':
     print(get_eduyun_ticket())

@@ -1,6 +1,6 @@
 - config:
     name: service:通过name搜索物流公司
-    base_url: ${ENV(shipping_service_host)}
+    base_url: ${get_shipping_service_host()}
 
 - test:
     name: 通过name搜索物流公司-name存在-有查询到物流公司数据
@@ -11,7 +11,7 @@
         - eq: [status_code, 200]
         - type_match: [content, list]
         - type_match: [content.0, object]
-        - length_equals: [content.0, 3]
+        - length_equals: [content.0, 2]
 
 - test:
     name: 通过name搜索物流公司-name不存在-未查询到物流公司数据

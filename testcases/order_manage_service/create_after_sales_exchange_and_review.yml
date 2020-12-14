@@ -1,6 +1,6 @@
 - config:
     name: 测试组合：创建订单-创建售后单（换货-不退不补）-业务经理审核通过-业务负责人审核通过-会计审核通过-财务主管审核通过-检查售后单状态是否是已完成-获取换货结转信息-获取售后换货商品-获取售后地址
-    base_url: ${ENV(order_service_host)}
+    base_url: ${get_order_service_host()}
     variables:
         - existed_customerPhoneNumber: ${order_customerPhoneNumber_config()}
         - existed_skuNumber: ${sku_number_config()}

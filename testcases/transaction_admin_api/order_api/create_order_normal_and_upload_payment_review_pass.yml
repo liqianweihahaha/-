@@ -18,7 +18,7 @@
 - test:
     skipIf: ${is_production()}
     name: 已登录内部账号系统-创建普通订单(数据准备1)
-    base_url: ${ENV(order_service_host)}
+    base_url: ${get_order_service_host()}
     api: api/order_manage_service/create_order.yml
     variables:
         - placedMethod: BY_ADMIN
@@ -172,7 +172,6 @@
     setup_hooks:
         - ${sleep_N_secs(1)}
     name: 已登录内部账号系统-线下转账-财务经理审核通过-订单状态检查
-    skipUnless: ${eval_equal($fm_review_status_code, 200)}
     request:
         method: GET
         url: /orders/$create_order_orderId/details
@@ -188,7 +187,6 @@
     setup_hooks:
         - ${sleep_N_secs(1)}
     name: 已登录内部账号系统-线下转账-财务经理审核通过-发货状态检查
-    skipUnless: ${eval_equal($fm_review_status_code, 200)}
     request:
         method: GET
         url: /orders/$create_order_orderId/details

@@ -1,6 +1,6 @@
 - config:
     name: service:获取物流公司列表
-    base_url: ${ENV(shipping_service_host)}
+    base_url: ${get_shipping_service_host()}
 
 - test:
     name: 获取物流公司列表
@@ -11,4 +11,4 @@
         - eq: [status_code, 200]
         - type_match: [content, object]
         - type_match: [content.items, list]
-        - length_equals: [content.items.0, 3]
+        - length_equals: [content.items.0, 2]

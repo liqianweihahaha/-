@@ -21,6 +21,40 @@ PRODUCT_SERVICE_HOST = os.environ['product_service_host']
 SHIPPING_SERVICE_HOST = os.environ['shipping_service_host']
 PAYMENT_SERVICE_HOST = os.environ['payment_service_host']
 DINGTALK_SERVICE_HOST = os.environ['dingtalk_service_host']
+REAG_DISCOVERY_CENTER_HOST = os.environ['read_discovery_center_host']
+REAG_DISCOVERY_CENTER_TOKEN = os.environ['read_discovery_center_token']
+
+
+#获取内部账号服务ip地址
+def get_internal_account_service_host():
+    return get_request_host_url(REAG_DISCOVERY_CENTER_HOST,INTERNAL_ACCOUNT_SERVICE_HOST,REAG_DISCOVERY_CENTER_TOKEN)
+
+#获取订单服务ip地址
+def get_order_service_host():
+    return get_request_host_url(REAG_DISCOVERY_CENTER_HOST,ORDER_SERVICE_HOST,REAG_DISCOVERY_CENTER_TOKEN)
+
+
+#获取商品服务ip地址
+def get_product_service_host():
+    return get_request_host_url(REAG_DISCOVERY_CENTER_HOST,PRODUCT_SERVICE_HOST,REAG_DISCOVERY_CENTER_TOKEN)
+
+#获取发货服务ip地址
+def get_shipping_service_host():
+    return get_request_host_url(REAG_DISCOVERY_CENTER_HOST,SHIPPING_SERVICE_HOST,REAG_DISCOVERY_CENTER_TOKEN)
+
+#获取支付服务ip地址
+def get_payment_service_host():
+    return get_request_host_url(REAG_DISCOVERY_CENTER_HOST,PAYMENT_SERVICE_HOST,REAG_DISCOVERY_CENTER_TOKEN)
+
+
+#获取钉钉服务ip地址
+def get_dingtalk_service_host():
+    return get_request_host_url(REAG_DISCOVERY_CENTER_HOST,DINGTALK_SERVICE_HOST,REAG_DISCOVERY_CENTER_TOKEN)
+
+
+print(get_internal_account_service_host())
+print(get_order_service_host())
+print(get_shipping_service_host())
 
 
 # 获取config配置文件：源用户信息
@@ -80,8 +114,8 @@ def internal_source_user_fish_id():
 
 # 获取内部账号系统token
 def internal_source_user_login_token():
-    #login_token= login_token_internal_account(INTERNAL_ACCOUNT_API_HOST, internal_source_user_email(), internal_source_user_password())
-    login_token = generate_internal_account_token(INTERNAL_ACCOUNT_SERVICE_HOST, internal_source_user_id())
+    #login_token= login_token_internal_account(${INTERNAL_ACCOUNT_SERVICE_HOST()}, internal_source_user_email(), internal_source_user_password())
+    login_token = generate_internal_account_token(get_internal_account_service_host(), internal_source_user_id())
     return login_token
 
 # 读取内部账号 mysql 配置
@@ -153,6 +187,9 @@ sku_physical_config = read_config.sku_physical(TEST_ENV)
 
 def sku_physical_number_config():
     return sku_physical_config.get('sku_number')
+
+def sku2_physical_number_config():
+    return sku_physical_config.get('sku_number2')
 
 def spu_physical_number_config():
     return sku_physical_config.get('spu_number')

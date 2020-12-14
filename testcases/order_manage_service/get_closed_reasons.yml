@@ -1,6 +1,6 @@
 - config:
     name: 获取全部订单关闭原因
-    base_url: ${ENV(order_service_host)}
+    base_url: ${get_order_service_host()}
 
 - test:
     name: 关闭原因列表不为空

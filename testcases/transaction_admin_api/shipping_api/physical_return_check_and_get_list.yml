@@ -16,7 +16,7 @@
         - existed_afterSaleType: 'RETURN_REFUND'
         - existed_issued: false
         - existed_logistics_bill_id: 'test1234567890'
-        - existed_logistics_institution_id: '532'
+        - existed_logistics_institution_code: 'L000011'
         - unexsited_orderId: 123456
         - unexsited_refundId: 12345678
 
@@ -24,7 +24,7 @@
 - test:
     skipIf: ${is_production()}
     name: 已登录内部账号系统-创建普通订单(数据准备1)
-    base_url: ${ENV(order_service_host)}
+    base_url: ${get_order_service_host()}
     api: api/order_manage_service/create_order.yml
     variables:
         - placedMethod: BY_ADMIN
@@ -43,7 +43,7 @@
 - test:
     skipIf: ${is_production()}
     name: 已登录内部账号系统-上传支付凭证(数据准备2)
-    base_url: ${ENV(order_service_host)}
+    base_url: ${get_order_service_host()}
     skipUnless: ${eval_equal($create_order_status, 200)}
     api: api/order_manage_service/upload_payment.yml
     variables:
@@ -59,6 +59,8 @@
 
 - test:
     skipIf: ${is_production()}
+    setup_hooks:
+        - ${sleep_N_secs(2)}
     name: 已登录内部账号系统-业务审核付款审核单列表-获取paymentReviewId（数据准备3）
     skipUnless: ${eval_equal($upload_payment_status, 200)}
     request:
@@ -118,7 +120,7 @@
     validate:
         - eq: [status_code, 200]
     extract:
-        - shipping_Id: content.items.0.shipping_id
+        - shipping_Id: content.items.1.shipping_id
         - search_shippingId_code: status_code
 
 
@@ -135,7 +137,7 @@
             shipping_id: $shipping_Id
             state: 'SUCCESS'
             logistics_bill_id: $existed_logistics_bill_id
-            logistics_institution_id: $existed_logistics_institution_id
+            logistics_institution_code: $existed_logistics_institution_code
     validate:
         - eq: [status_code, 200]
 
@@ -240,10 +242,6 @@
         - eq: [status_code, 200]
         - type_match: [content, object]
         - type_match: [content.items, list]
-        - type_match: [content.items.0.materials, list]
-        - length_equals: [content.items.0, 11]
-        - length_equals: [content.items.0.materials.0, 6]
-
  
 - test:
     name: 未登录内部账号系统-实物退货质检
@@ -290,31 +288,31 @@
     validate:
         - eq: [status_code, 200]
 
-# - test:
-#     skipIf: ${is_production()}
-#     name: 已登录内部账号系统-售后单-财务会计审核通过
-#     api: api/transaction_admin_api/after_sales_review.yml
-#     variables:
-#         - afterSaleState: AWAITING_ACCOUNTANT_REVIEW
-#         - afterSaleId: $afterSale_Id
-#         - remark: "财务会计审核通过"
-#         - reviewPassed: true
-#         - login_token: ${internal_source_user_login_token()}
-#     validate:
-#         - eq: [status_code, 200]
-
 - test:
     skipIf: ${is_production()}
-    name: 已登录内部账号系统-售后单-财务主管审核通过
+    name: 已登录内部账号系统-售后单-财务会计审核通过
     api: api/transaction_admin_api/after_sales_review.yml
     variables:
-        - afterSaleState: AWAITING_FD_REVIEW
+        - afterSaleState: AWAITING_ACCOUNTANT_REVIEW
         - afterSaleId: $afterSale_Id
-        - remark: "财务主管审核通过"
+        - remark: "财务会计审核通过"
         - reviewPassed: true
         - login_token: ${internal_source_user_login_token()}
     validate:
         - eq: [status_code, 200]
+
+# - test:
+#     skipIf: ${is_production()}
+#     name: 已登录内部账号系统-售后单-财务主管审核通过
+#     api: api/transaction_admin_api/after_sales_review.yml
+#     variables:
+#         - afterSaleState: AWAITING_FD_REVIEW
+#         - afterSaleId: $afterSale_Id
+#         - remark: "财务主管审核通过"
+#         - reviewPassed: true
+#         - login_token: ${internal_source_user_login_token()}
+#     validate:
+#         - eq: [status_code, 200]
 
 - test:
     setup_hooks:

@@ -1,5 +1,5 @@
 - config:
-    name: 订单api:订单详情页
+    name: 获取订单详情页
     base_url: ${ENV(transaction_admin_api_host)}
     verify: False
     variables:
@@ -8,42 +8,22 @@
         - existed_customerId: ${order_customerId_config()}
         - existed_orderPlatform: ALIPAY
         - existed_total_discount: null
+        - existed_order_orderId: CM201210146994676980
         - unexisted_order_orderId: 123456
-
-- test:
-    skipIf: ${is_production()}
-    name: 已登录内部账号系统-创建普通订单(数据准备1)
-    base_url: ${get_order_service_host()}
-    api: api/order_manage_service/create_order.yml
-    variables:
-        - placedMethod: BY_ADMIN
-        - orderPlatform: $existed_orderPlatform
-        - customer_phone_number: $existed_customerPhoneNumber
-        - customer_id: $existed_customerId
-        - sku_number: $existed_skuNumber
-        - total_discount: $existed_total_discount
-    validate:
-        - eq: [status_code, 200]
-        - length_equals: [content.orderId, 20]
-    extract:
-        - create_order_status: status_code
-        - create_order_orderId: content.orderId
 
 
 - test:
     name: 已登录内部账号系统-查看普通订单详情页-订单号存在
-    skipUnless: ${eval_equal($create_order_status, 200)}
     request:
         method: GET
-        url: orders/$create_order_orderId/details
+        url: orders/$existed_order_orderId/details
         headers:
             Authorization: ${internal_source_user_login_token()}
     validate:
         - eq: [status_code, 200]
-        - eq: [content.orderId, $create_order_orderId]
+        - eq: [content.orderId, $existed_order_orderId]
         - type_match: [content.normalOrderInfo, object]
         - type_match: [content.normalOrderInfo.customerInfo, object]
-        - eq: [content.normalOrderInfo.customerInfo.customerId, $existed_customerId]
         - length_equals: [content.normalOrderInfo.customerInfo, 4]
         - type_match: [content.normalOrderInfo.productInfo, list]
         - length_equals: [content.normalOrderInfo.productInfo.0, 10]
@@ -54,7 +34,6 @@
 
 - test:
     name: 已登录内部账号系统-查看普通订单详情页-订单号不存在
-    skipUnless: ${eval_equal($create_order_status, 200)}
     request:
         method: GET
         url: orders/$unexisted_order_orderId/details
@@ -66,10 +45,9 @@
 
 - test:
     name: 未登录-查看普通订单详情页-订单号存在
-    skipUnless: ${eval_equal($create_order_status, 200)}
     request:
         method: GET
-        url: orders/$create_order_orderId/details
+        url: orders/$existed_order_orderId/details
     validate:
         - eq: [status_code, 401]
         - eq: [content.error_code, '10020005']

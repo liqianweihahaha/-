@@ -215,19 +215,21 @@
         - eq: [status_code, 200]
 
 
+
 - test:
     skipIf: ${is_production()}
-    name: 已登录内部账号系统-售后单-财务主管审核通过
+    name: 已登录内部账号系统-售后单-会计审核通过
     skipUnless: ${eval_equal($create_after_sales_status, 200)}
     api: api/transaction_admin_api/after_sales_review.yml
     variables:
-        - afterSaleState: AWAITING_FD_REVIEW
+        - afterSaleState: AWAITING_ACCOUNTANT_REVIEW
         - afterSaleId: $afterSale_Id
-        - remark: "财务主管审核通过"
+        - remark: "会计审核通过"
         - reviewPassed: true
         - login_token: ${internal_source_user_login_token()}
     validate:
         - eq: [status_code, 200]
+
 
 - test:
     skipIf: ${is_production()}

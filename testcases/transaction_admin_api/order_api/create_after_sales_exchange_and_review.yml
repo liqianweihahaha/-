@@ -1,5 +1,5 @@
 - config:
-    name: 售后换货api组合：创建订单-创建售后单（换货）-业务经理审核-业务负责人审核-财务会计审核通过-财务主管审核
+    name: 售后换货api组合：创建订单-创建售后单（换货）-业务经理审核-业务负责人审核-财务会计审核通过
     base_url: ${ENV(transaction_admin_api_host)}
     variables:
         - existed_customerPhoneNumber: ${order_customerPhoneNumber_config()}
@@ -20,7 +20,7 @@
 - test:
     skipIf: ${is_production()}
     name: 已登录内部账号系统-创建普通订单(数据准备1)
-    base_url: ${ENV(order_service_host)}
+    base_url: ${get_order_service_host()}
     api: api/order_manage_service/create_order.yml
     variables:
         - placedMethod: BY_ADMIN
@@ -39,7 +39,7 @@
 - test:
     skipIf: ${is_production()}
     name: 已登录内部账号系统-上传支付凭证(数据准备2)
-    base_url: ${ENV(order_service_host)}
+    base_url: ${get_order_service_host()}
     skipUnless: ${eval_equal($create_order_status, 200)}
     api: api/order_manage_service/upload_payment.yml
     variables:
@@ -236,6 +236,7 @@
     validate:
         - eq: [status_code, 200]
 
+
 - test:
     setup_hooks:
         - ${sleep_N_secs(1)}
@@ -264,19 +265,6 @@
     validate:
         - eq: [status_code, 200]
 
-- test:
-    skipIf: ${is_production()}
-    name: 已登录内部账号系统-售后单-财务主管审核通过
-    skipUnless: ${eval_equal($create_after_sales_status, 200)}
-    api: api/transaction_admin_api/after_sales_review.yml
-    variables:
-        - afterSaleState: AWAITING_FD_REVIEW
-        - afterSaleId: $afterSale_Id
-        - remark: "财务主管审核通过"
-        - reviewPassed: true
-        - login_token: ${internal_source_user_login_token()}
-    validate:
-        - eq: [status_code, 200]
 
 - test:
     setup_hooks:

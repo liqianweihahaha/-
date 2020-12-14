@@ -22,7 +22,7 @@
         - eq: [status_code, 200]
         - type_match: [content, list]
         - type_match: [content.0, object]
-        - length_equals: [content.0, 3]
+        - length_equals: [content.0, 2]
 
 
 - test:
