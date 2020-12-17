@@ -213,21 +213,21 @@
         - eq: [status_code, 200]
 
 
-- test:
-    setup_hooks:
-        - ${sleep_N_secs(2)}
-    skipIf: ${is_production()}
-    name: 售后单-财务主管审核通过
-    skipUnless: ${eval_equal($afterSale_status, 200)}
-    api: api/order_manage_service/after_sales_review.yml
-    variables:
-        - afterSaleId: $afterSale_Id
-        - remark: "财务主管审核通过"
-        - reviewPassed: true
-        - reviewedBy: $existed_handledByName
-        - reviewedById: $existed_handledById
-    validate:
-        - eq: [status_code, 200]
+# - test:
+#     setup_hooks:
+#         - ${sleep_N_secs(2)}
+#     skipIf: ${is_production()}
+#     name: 售后单-财务主管审核通过
+#     skipUnless: ${eval_equal($afterSale_status, 200)}
+#     api: api/order_manage_service/after_sales_review.yml
+#     variables:
+#         - afterSaleId: $afterSale_Id
+#         - remark: "财务主管审核通过"
+#         - reviewPassed: true
+#         - reviewedBy: $existed_handledByName
+#         - reviewedById: $existed_handledById
+#     validate:
+#         - eq: [status_code, 200]
 
 - test:
     setup_hooks:

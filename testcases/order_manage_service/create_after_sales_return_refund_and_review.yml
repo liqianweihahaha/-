@@ -1,5 +1,5 @@
 - config:
-    name: 测试组合：创建普通订单-创建售后单（退货退款）-业务经理审核通过-业务负责人审核通过-会计审核通过-财务主管审核通过-人工退款-检查售后单状态是否为已完成
+    name: 测试组合：创建普通订单-创建售后单（退货退款）-业务经理审核通过-业务负责人审核通过-会计审核通过-人工退款-检查售后单状态是否为已完成
     base_url: ${get_order_service_host()}
     variables:
         - existed_customerPhoneNumber: ${order_customerPhoneNumber_config()}
@@ -192,12 +192,12 @@
     setup_hooks:
         - ${sleep_N_secs(2)}
     skipIf: ${is_production()}
-    name: 售后单-财务主管审核通过
+    name: 售后单-会计审核通过
     skipUnless: ${eval_equal($afterSale_status, 200)}
     api: api/order_manage_service/after_sales_review.yml
     variables:
         - afterSaleId: $afterSaleId
-        - remark: "财务主管审核通过"
+        - remark: "会计审核通过"
         - reviewPassed: true
         - reviewedBy: $existed_handledByName
         - reviewedById: $existed_handledById
