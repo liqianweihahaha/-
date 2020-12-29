@@ -242,7 +242,7 @@
         - eq: [status_code, 200]
         - type_match: [content, object]
         - length_equals: [content, 31]
-        - eq: [content.state, '100000']
+        - eq: [content.state, 'COMPLETED']
 
 - test:
     skipIf: ${is_production()}
@@ -326,7 +326,7 @@
 
 - test:
     setup_hooks:
-        - ${sleep_N_secs(3)}
+        - ${sleep_N_secs(5)}
     skipIf: ${is_production()}
     name: 获取订单详情-订单ID存在-检查新订单状态是否为已完成
     request:
@@ -334,9 +334,4 @@
         url: /orders/$new_orderId
     validate:
         - eq: [status_code, 200]
-        - eq: [content.state, '10000']
-
-
-
-
-
+        - eq: [content.state, 'COMPLETED']

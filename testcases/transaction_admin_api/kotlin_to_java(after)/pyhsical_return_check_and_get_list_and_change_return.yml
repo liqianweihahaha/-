@@ -1,21 +1,24 @@
 - config:
-    name: 测试组合：创建全款订单-创建售后单(退货退款)-调整订单完结状态
+    name: 退货api测试组合：创建实物退货单-获取虚拟退货单-获取实物退货审核单列表-实物退货质检
     base_url: ${ENV(transaction_admin_api_host)}
     variables:
         - existed_customerPhoneNumber: ${order_customerPhoneNumber_config()}
-        - existed_skuNumber: ${sku_number_config()}
+        - existed_skuNumber: ${sku_physical_number_config()}
         - existed_customerId: ${order_customerId_config()}
         - existed_placedBy: ${order_placedBy_config()}
         - existed_total_discount: null
         - existed_handledById: ${order_handledById_config()}
         - existed_transactionNumber: ${gen_random_string(20)}
-        - existed_orderPlatform: TMALL
+        - existed_orderPlatform: ALIPAY
         - existed_actualPayment: 0.03
         - existed_applyExchangeAmount: 0
         - exsited_final: 1
         - existed_afterSaleType: 'RETURN_REFUND'
-        - existed_issued: true
-        - unexisted_orderId: 123456
+        - existed_issued: false
+        - existed_logistics_bill_id: 'test1234567890'
+        - existed_logistics_institution_code: 'L000011'
+        - unexsited_orderId: 123456
+        - unexsited_refundId: 12345678
 
 
 - test:
@@ -37,8 +40,6 @@
         - create_order_status: status_code
         - create_order_orderId: content.orderId
 
-
-
 - test:
     skipIf: ${is_production()}
     name: 已登录内部账号系统-上传支付凭证(数据准备2)
@@ -59,7 +60,7 @@
 - test:
     skipIf: ${is_production()}
     setup_hooks:
-        - ${sleep_N_secs(3)}
+        - ${sleep_N_secs(2)}
     name: 已登录内部账号系统-业务审核付款审核单列表-获取paymentReviewId（数据准备3）
     skipUnless: ${eval_equal($upload_payment_status, 200)}
     request:
@@ -106,11 +107,46 @@
         - fm_review_status_code: status_code
 
 - test:
+    setup_hooks:
+        - ${sleep_N_secs(6)}
+    skipIf: ${is_production()}
+    name: 已登录内部账号系统-通过订单ID查找发货单-订单ID存在（数据准备6）
+    base_url: ${ENV(transaction_admin_api_host)}
+    request:
+        method: GET
+        url: /shipping/search?orderId=$create_order_orderId
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+    extract:
+        - shipping_Id: content.items.0.shipping_id
+        - search_shippingId_code: status_code
+
+
+- test:
+    skipIf: ${is_production()}
+    name: 已登录内部账号系统-更改发货单状态（数据准备7）
+    base_url: ${ENV(transaction_admin_api_host)}
+    request:
+        method: PATCH
+        url: /shipping/state
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+        json:
+            shipping_id: $shipping_Id
+            state: 'SUCCESS'
+            logistics_bill_id: $existed_logistics_bill_id
+            logistics_institution_code: $existed_logistics_institution_code
+    validate:
+        - eq: [status_code, 200]
+
+
+- test:
     skipIf: ${is_production()}
     setup_hooks:
         - ${sleep_N_secs(8)}  
-    name: 已登录内部账号系统-售后申请预览-获取物料发货单等信息（数据准备6）
-    skipUnless: ${eval_equal($fm_review_status_code, 200)}
+    name: 已登录内部账号系统-售后申请预览-获取物料发货单等信息（数据准备8）
     request:
         method: GET
         url: /after_sales/previews/issuing?orderId=$create_order_orderId
@@ -127,40 +163,9 @@
         - material_id_2: content.items.1.materialNumber
         - material_count_2: content.items.1.returnableCount
 
-
 - test:
     skipIf: ${is_production()}
-    name: 已登录内部账号系统-调整订单完结状态-订单id不存在-调整失败
-    request:
-        method: PATCH
-        url: /orders/$unexisted_orderId/finalize
-        headers:
-            Authorization: ${internal_source_user_login_token()}
-        json:
-            final: 1
-    validate:
-        - eq: [status_code, 422]
-        - eq: [content.error_code, '10017006']
-
-
-- test:
-    skipIf: ${is_production()}
-    name: 已登录内部账号系统-调整订单完结状态-订单状态已完成&不存在售后单-调整失败
-    request:
-        method: PATCH
-        url: /orders/$create_order_orderId/finalize
-        headers:
-            Authorization: ${internal_source_user_login_token()}
-        json:
-            final: 1
-    validate:
-        - eq: [status_code, 422]
-        - eq: [content.error_code, '10017051']
-
-
-- test:
-    skipIf: ${is_production()}
-    name: 已登录内部账号系统-创建售后单（普通订单）-所有必填参数都填写正确-提交成功(数据准备7)
+    name: 已登录内部账号系统-创建售后单（普通订单）-所有必填参数都填写正确-提交成功(数据准备9)
     skipUnless: ${eval_equal($order_state, "COMPLETED")}
     api: api/transaction_admin_api/create_after_sales_normal.yml
     variables:
@@ -169,7 +174,7 @@
         - applyExchangeAmount: $existed_applyExchangeAmount
         - final: $exsited_final
         - afterSaleType: $existed_afterSaleType
-        - issued: $existed_issued
+        - issued: true
         - orderId: $create_order_orderId
         - materialNumber_1: $material_id_1
         - returnsCount_1: $material_count_1
@@ -185,12 +190,12 @@
         - afterSale_Id: content.afterSaleId
         - create_after_sales_status: status_code
 
+
 - test:
     skipIf: ${is_production()}
     name: 已登录内部账号系统-售后单-业务经理审核通过
-    skipUnless: ${eval_equal($create_after_sales_status, 200)}
     api: api/transaction_admin_api/after_sales_review.yml
-    variables:
+    variables:        
         - afterSaleState: AWAITING_BM_REVIEW
         - afterSaleId: $afterSale_Id
         - remark: "业务经理审核通过"
@@ -199,11 +204,9 @@
     validate:
         - eq: [status_code, 200]
 
-
 - test:
     skipIf: ${is_production()}
     name: 已登录内部账号系统-售后单-业务负责人审核通过
-    skipUnless: ${eval_equal($create_after_sales_status, 200)}
     api: api/transaction_admin_api/after_sales_review.yml
     variables:
         - afterSaleState: AWAITING_BD_REVIEW
@@ -214,17 +217,110 @@
     validate:
         - eq: [status_code, 200]
 
+- test:
+    name: 已登录内部账号系统-获取退款单列表-获取退货单id
+    request:
+        method: GET
+        url: /java/return/abnormal/list?orderId=$create_order_orderId&shippingType=REAL
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+    extract:
+        - return_id: content.items.0.returnId
+
+- test:
+    setup_hooks:
+        - ${sleep_N_secs(3)}
+    name: 已登录内部账号系统-获取实物退货审核单列表
+    request:
+        method: GET
+        url: /java/return/physical
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, object]
+        - type_match: [content.items, list]
+ 
+- test:
+    name: 未登录内部账号系统-实物退货质检
+    request:
+        method: PATCH
+        url: /java/return/update
+        json:
+            returnId: $return_id
+            qualityState: 'PARTIAL'
+            receivedState: 'PARTIAL'
+            state: 'SUCCESS'    
+    validate:
+        - eq: [status_code, 401]
+        - eq: [content.error_code, '10020005']
+
+- test:
+    name: 已登录内部账号系统-获取虚拟退货单列表
+    request:
+        method: GET
+        url: /java/return/virtual?afterSaleId=$afterSale_Id
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, object]
+        - type_match: [content.items, list]
+        - type_match: [content.items.0.materials, list]
+        - length_equals: [content.items.0, 10]
+        - length_equals: [content.items.0.materials.0, 5]
+
+- test:
+    name: 已登录内部账号系统-退货单是否可调整-returnId存在
+    request:
+        method: GET
+        url: /java/return/$return_id/canchange
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
 
 
 - test:
+    name: 未登录内部账号系统-实物退货质检(状态变更)
+    request:
+        method: PATCH
+        url: /java/return/update
+        json:
+            returnId: $return_id
+            qualityState: 'ALL'
+            receivedState: 'ALL'
+            state: 'SUCCESS'    
+    validate:
+        - eq: [status_code, 401]
+        - eq: [content.error_code, '10020005']
+        
+
+- test:
+    name: 已登录内部账号系统-实物退货质检(状态变更)
+    request:
+        method: PATCH
+        url: /java/return/update
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+        json:
+            returnId: $return_id
+            qualityState: 'ALL'
+            receivedState: 'ALL'
+            state: 'SUCCESS'    
+    validate:
+        - eq: [status_code, 200]
+
+- test:
     skipIf: ${is_production()}
-    name: 已登录内部账号系统-售后单-会计审核通过
-    skipUnless: ${eval_equal($create_after_sales_status, 200)}
+    name: 已登录内部账号系统-售后单-财务会计审核通过
     api: api/transaction_admin_api/after_sales_review.yml
     variables:
         - afterSaleState: AWAITING_ACCOUNTANT_REVIEW
         - afterSaleId: $afterSale_Id
-        - remark: "会计审核通过"
+        - remark: "财务会计审核通过"
         - reviewPassed: true
         - login_token: ${internal_source_user_login_token()}
     validate:
@@ -232,104 +328,15 @@
 
 
 - test:
-    skipIf: ${is_production()}
     setup_hooks:
-        - ${sleep_N_secs(3)}
-    name: 已登录-查询退款单列表-通过orderId查询-orderId存在
-    skipUnless: ${eval_equal($afterSalesState, 'AWAITING_REFUND')}
-    request:
-        method: GET
-        url: /refund/search?orderId=$create_order_orderId
-        headers:
-            Authorization: ${internal_source_user_login_token()}
-    validate:
-        - eq: [status_code, 200]
-    extract:
-        - refund_Id: content.items.0.refundId
-
-- test:
+        - ${sleep_N_secs(1)}
     skipIf: ${is_production()}
-    name: 已登录-手动退款-refundId存在
-    skipUnless: ${eval_equal($afterSalesState, 'AWAITING_REFUND')}
-    request:
-        method: POST
-        url: /refund/manual
-        headers:
-            Authorization: ${internal_source_user_login_token()}
-        json:
-            refundId: $refund_Id
-            refundState: COMPLETED
-    validate:
-        - eq: [status_code, 200]
-    extract:
-        - refund_status: status_code
-
-- test:
-    skipIf: ${is_production()}
-    name: 已登录内部账号系统-查看订单详情页-系统是否自动完结订单-final状态是1
+    name: 已登录内部账号系统-通过id获取售后单详情-检查售后单状态为AWAITING_REFUND
     skipUnless: ${eval_equal($create_after_sales_status, 200)}
-    request:
-        method: GET
-        url: /orders/$create_order_orderId/details
-        headers:
-            Authorization: ${internal_source_user_login_token()}
+    api: api/transaction_admin_api/get_after_sales_detail.yml
+    variables:
+        - afterSaleId: $afterSale_Id
+        - login_token: ${internal_source_user_login_token()}
     validate:
         - eq: [status_code, 200]
-        - eq: [content.final, 1]
-
-
-- test:
-    skipIf: ${is_production()}
-    name: 未登录内部账号系统-调整订单完结状态
-    skipUnless: ${eval_equal($create_after_sales_status, 200)}
-    request:
-        method: PATCH
-        url: /orders/$create_order_orderId/finalize
-        json:
-            final: 1
-    validate:
-        - eq: [status_code, 401]
-        - eq: [content.error_code, '10020005']
-
-
-
-- test:
-    skipIf: ${is_production()}
-    name: 已登录内部账号系统-调整订单完结状态-订单状态已完成&存在售后单-调整成功
-    skipUnless: ${eval_equal($create_after_sales_status, 200)}
-    request:
-        method: PATCH
-        url: /orders/$create_order_orderId/finalize
-        headers:
-            Authorization: ${internal_source_user_login_token()}
-        json:
-            final: 0
-    validate:
-        - eq: [status_code, 200]
-
-
-- test:
-    skipIf: ${is_production()}
-    name: 已登录内部账号系统-调整完成-查看订单详情页-final状态是0
-    skipUnless: ${eval_equal($create_after_sales_status, 200)}
-    request:
-        method: GET
-        url: /orders/$create_order_orderId/details
-        headers:
-            Authorization: ${internal_source_user_login_token()}
-    validate:
-        - eq: [status_code, 200]
-        - eq: [content.final, 0]
-
-- test:
-    skipIf: ${is_production()}
-    name: 已登录内部账号系统-查看订单轨迹-订单调整完结状态的轨迹已生成
-    skipUnless: ${eval_equal($create_after_sales_status, 200)}
-    request:
-        method: GET
-        url: /orders/logs?orderId=$create_order_orderId&orderLogSorts=ID_DESC
-        headers:
-            Authorization: ${internal_source_user_login_token()}
-    validate:
-        - eq: [status_code, 200]
-        - contains: [content.items.0.remark, '订单被标记为售后未完结, 订单可以继续退券退款或者换货']
+        - eq: [content.state, "AWAITING_REFUND"]

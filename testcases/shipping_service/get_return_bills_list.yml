@@ -17,9 +17,6 @@
         - type_match: [content.0.returnBill, object]
         - type_match: [content.0.returnResult, object]
         - type_match: [content.0.materials, object]
-        - length_equals: [content.0.returnBill, 19]
-        - length_equals: [content.0.returnResult, 11]
-        - length_equals: [content.0.materials.0, 6]
     extract:
         - return_id: content.0.returnBill.returnId
         - order_id: content.0.returnBill.orderId

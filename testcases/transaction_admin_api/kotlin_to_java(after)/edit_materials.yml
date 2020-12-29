@@ -1,0 +1,138 @@
+- config:
+    name: 组合：编辑物料
+    base_url: ${ENV(transaction_admin_api_host)}
+    variables:
+        - exist_name: 圣诞盒子+${gen_random_string(10)}
+        - exist_ship_type: REAL_REPLACE_SEND
+        - exist_type: VIRTUAL
+        - unexisted_name: ${gen_random_string(41)}
+        - unexisted_ship_type: aaa
+        - unexisted_type: bb
+        - unexisted_materialsId: 12345
+
+- test:
+    name: 已登录内部账号系统-新增物料-所有参数都正确-新增成功
+    request:
+        method: POST
+        url: /java/products/materials
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+        json:
+            name: $exist_name
+            ship_type: $exist_ship_type
+            type: $exist_type
+    validate:
+        - eq: [status_code, 200]
+        - contains: [content, 'SU']
+    extract:
+        - materialsId: content
+
+- test:
+    name: 已登录内部账号系统-编辑物料-所有参数都正确-编辑成功
+    request:
+        method: PUT
+        url: /java/products/materials/$materialsId
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+        json:
+            name: ${gen_random_string(40)}
+            ship_type: $exist_ship_type
+            type: $exist_type
+    validate:
+        - eq: [status_code, 200]
+
+- test:
+    name: 已登录内部账号系统-编辑物料-name为空-编辑失败
+    request:
+        method: PUT
+        url: /java/products/materials/$materialsId
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+        json:
+            name: ''
+            ship_type: $exist_ship_type
+            type: $exist_type
+    validate:
+        - eq: [status_code, 400]
+
+- test:
+    name: 已登录内部账号系统-编辑物料-name长度大于40-编辑失败
+    request:
+        method: PUT
+        url: /java/products/materials/$materialsId
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+        json:
+            name: ${gen_random_string(40)}
+            ship_type: $exist_ship_type
+            type: $exist_type
+    validate:
+        - eq: [status_code, 200]
+
+- test:
+    name: 已登录内部账号系统-编辑物料-ship_type不存在-编辑失败
+    request:
+        method: PUT
+        url: /java/products/materials/$materialsId
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+        json:
+            name: ${gen_random_string(40)}
+            ship_type: $unexisted_ship_type
+            type: $exist_type
+    validate:
+        - eq: [status_code, 400]
+
+- test:
+    name: 已登录内部账号系统-编辑物料-type不存在-编辑失败
+    request:
+        method: PUT
+        url: /java/products/materials/$materialsId
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+        json:
+            name: ${gen_random_string(40)}
+            ship_type: $exist_ship_type
+            type: $unexisted_type
+    validate:
+        - eq: [status_code, 400]
+
+- test:
+    name: 已登录内部账号系统-编辑物料-materialsId不存在-编辑失败
+    request:
+        method: PUT
+        url: /java/products/materials/$unexisted_materialsId
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+        json:
+            name: ${gen_random_string(40)}
+            ship_type: $exist_ship_type
+            type: $exist_type
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content, false]
+
+
+- test:
+    name: 未登录内部账号系统-新增物料-所有参数都正确-新增失败
+    request:
+        method: PUT
+        url: /java/products/materials/$materialsId
+        json:
+            name: $exist_name
+            ship_type: $exist_ship_type
+            type: $exist_type
+    validate:
+        - eq: [status_code, 401]
+        - eq: [content.error_code, '10020005']
+
+
+- test:
+    name: 已登录内部账号系统-删除物料-materialsId存在-删除成功
+    request:
+        method: DELETE
+        url: /java/products/materials/$materialsId
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]

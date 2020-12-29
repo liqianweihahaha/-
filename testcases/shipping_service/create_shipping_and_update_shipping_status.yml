@@ -115,7 +115,7 @@
         - length_equals: [content.items.0.materials.0, 6]
         - eq: [content.items.0.order_id, $create_order_orderId]
     extract:
-        - shipping_Id: content.items.0.shipping_id
+        - shipping_Id: content.items.1.shipping_id
         - search_shippingId_code: status_code
 
 - test:

@@ -1,0 +1,109 @@
+- config:
+    name: 组合测试：创建spu-根据SPU编号生成SKU编号-根据SKU编码删除SKU-删除spu
+    base_url: ${ENV(transaction_admin_api_host)}
+    variables:
+        - existed_category_id: 1
+        - existed_department_id: 1
+        - existed_number: 2
+        - existed_status: "DELETED"
+        - existed_name: ${gen_random_string(10)}
+        - existed_type: VIRTUAL
+        - unexisted_spu_number: G11111
+
+
+- test:
+    skipIf: ${is_production()}
+    name: 已登录内部账号-创建spu-type为VIRTUAL-参数正确-创建成功
+    request:
+        method: POST
+        url: /products/spu
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+        json:
+            category_id: $existed_category_id
+            department_id: $existed_department_id
+            type: $existed_type
+            title: $existed_name
+    validate:
+        - eq: [status_code, 200]
+        - startswith: [content, "G"]
+    extract:
+        - spu_number: content
+
+- test:
+    skipIf: ${is_production()}
+    name: 未登录内部账号-创建spu-type为VIRTUAL-参数正确-创建失败
+    request:
+        method: POST
+        url: /products/spu
+        json:
+            category_id: $existed_category_id
+            department_id: $existed_department_id
+            type: $existed_type
+            title: $existed_name
+    validate:
+        - eq: [status_code, 401]
+        - eq: [content.error_code, '10020005']
+
+
+- test:
+    skipIf: ${is_production()}
+    name: 已登录内部账号-根据SPU编号生成SKU编号-spuNumber存在
+    request:
+        method: POST
+        url: /products/spu/$spu_number/sku/number
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, list]
+        - length_equals: [content, 1]
+        - length_equals: [content.0, 12]
+    extract:
+        - sku_number: content.0
+
+- test:
+    skipIf: ${is_production()}
+    name: 未登录内部账号-根据SPU编号生成SKU编号-spuNumber存在
+    request:
+        method: POST
+        url: /products/spu/$spu_number/sku/number
+    validate:
+        - eq: [status_code, 401]
+        - eq: [content.error_code, '10020005']
+
+- test:
+    skipIf: ${is_production()}
+    name: 已登录内部账号-根据SPU编号生成SKU编号-spuNumber不存在
+    request:
+        method: POST
+        url: /products/spu/$unexisted_spu_number/sku/number
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+    validate:
+        - eq: [status_code, 422]
+        - eq: [content.error_code, "10016003"]
+
+
+- test:
+    skipIf: ${is_production()}
+    name: 已登录内部账号-根据SKU编码删除SKU-SKU存在
+    request:
+        method: DELETE
+        url: /products/sku/$sku_number
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+
+
+
+- test:
+    skipIf: ${is_production()}
+    name: 未登录内部账号-根据SKU编码删除SKU-SKU存在
+    request:
+        method: DELETE
+        url: /products/sku/$sku_number
+    validate:
+        - eq: [status_code, 401]
+        - eq: [content.error_code, '10020005']

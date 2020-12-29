@@ -241,7 +241,7 @@
         - eq: [status_code, 200]
         - type_match: [content, object]
         - length_equals: [content, 31]
-        - eq: [content.state, '100000']
+        - eq: [content.state, 'COMPLETED']
 
 - test:
     skipIf: ${is_production()}
@@ -271,7 +271,7 @@
         url: /orders/$new_orderId
     validate:
         - eq: [status_code, 200]
-        - eq: [content.state, '10000']
+        - eq: [content.state, 'COMPLETED']
 
 
 

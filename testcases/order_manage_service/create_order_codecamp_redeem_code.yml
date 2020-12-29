@@ -44,5 +44,5 @@
     validate:
         - eq: [status_code, 200]
         - type_match: [content, object]
-        - eq: [content.state, "10000"]
+        - eq: [content.state, "COMPLETED"]
 

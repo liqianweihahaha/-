@@ -222,8 +222,17 @@ def order_handledById_config():
 def order_handledByName_config():
     return order_config.get('handledByName')
 
+def has_track_shippingId_config():
+    return order_config.get('shippingId')
+
 # 随机生成交易流水号
 def random_transaction_number():
     return "AutoTestTransaction"+str(int(time.time()))
 
+#获取开始时间戳
+def get_start_timestamp():
+    return str(int(time.time())+1000)
 
+#获取开始结束戳
+def get_end_timestamp():
+    return str(int(time.time())+5000)

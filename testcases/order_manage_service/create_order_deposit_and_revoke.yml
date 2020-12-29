@@ -98,7 +98,7 @@
         - orderId: $deposit_order_id
     validate:
         - eq: [status_code, 200]
-        - eq: [content.state, "2000"]
+        - eq: [content.state, "REVOKED"]
 
 
 - test:
@@ -109,5 +109,5 @@
         - orderIds: $deposit_order_id
     validate:
         - eq: [status_code, 200]
-        - eq: [content.items.0.reviewState, "120"]
+        - eq: [content.items.0.reviewState, "CLOSED"]
         - eq: [content.items.0.closedReason, "订单作废"]

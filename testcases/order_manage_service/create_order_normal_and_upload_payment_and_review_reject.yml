@@ -1,5 +1,5 @@
 - config:
-    name: 订单service组合测试：创建普通订单-上传支付凭证-业务审核通过-财务审核通过
+    name: 订单service组合测试：创建普通订单-上传支付凭证-业务审核通过-财务审核驳回
     base_url: ${get_order_service_host()}
     variables:
         - existed_customerPhoneNumber: ${order_customerPhoneNumber_config()}
@@ -76,7 +76,7 @@
 - test:
     skipIf: ${is_production()}
     name: 通过订单id查询付款单列表
-    base_url:  ${ENV(payment_service_host)}
+    base_url:  ${get_payment_service_host()}
     request:
         method: GET
         url: /pay/payments?order_ids=$create_order_orderId
@@ -109,7 +109,7 @@
         url: /orders/$create_order_orderId
     validate:
         - eq: [status_code, 200]
-        - eq: [content.state, '800']
+        - eq: [content.state, 'AWAITING_CONFIRMATION']
 
 # - test:
 #     skipIf: ${is_production()}

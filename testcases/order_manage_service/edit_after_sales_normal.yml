@@ -436,7 +436,7 @@
         - afterSaleId: $create_afterSaleId
     validate:
         - eq: [status_code, 200]
-        - eq: [content.state, "1000"]
+        - eq: [content.state, "AWAITING_BM_REVIEW"]
 
 - test:
     setup_hooks:

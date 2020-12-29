@@ -1,4 +1,3 @@
-
 - config:  
     name: 订单service测试组合：创建订金订单-创建尾款订单-上传支付凭证-业务审核通过-财务审核通过
     base_url: ${get_order_service_host()}

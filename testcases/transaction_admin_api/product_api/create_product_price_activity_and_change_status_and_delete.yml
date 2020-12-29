@@ -1,0 +1,249 @@
+- config:
+    name: 创建商品价格活动
+    base_url: ${ENV(transaction_admin_api_host)}
+    variables:
+        - begin_time: ${get_start_timestamp()}
+        - end_time: ${get_end_timestamp()}
+        - existed_skuNumber: ${sku_physical_number_config()}
+        - unexisted_skuNumber: 123456
+        - unexisted_activityId: 12345678
+
+
+- test:
+    name: 已登录内部账号系统-创建商品价格活动-end_time未传-创建失败
+    request:
+        method: POST
+        url: /products/sku/prices/activities
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+        json:
+            begin_time: $begin_time
+            description: '商品价格活动'
+            activities:
+                  -
+                   sku_number: $existed_skuNumber
+                   lowest_price:  '0'  
+    validate:
+        - eq: [status_code, 400]
+
+
+- test:
+    name: 已登录内部账号系统-创建商品价格活动-sku_number未传-创建失败
+    request:
+        method: POST
+        url: /products/sku/prices/activities
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+        json:
+            begin_time: $begin_time
+            end_time: $end_time
+            description: '商品价格活动'
+            activities:
+                  -
+                   lowest_price:  '0'  
+    validate:
+        - eq: [status_code, 400]
+
+
+- test:
+    name: 已登录内部账号系统-创建商品价格活动-sku_number不存在-创建失败
+    request:
+        method: POST
+        url: /products/sku/prices/activities
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+        json:
+            begin_time: $begin_time
+            end_time: $end_time
+            description: '商品价格活动'
+            activities:
+                  -
+                   sku_number: $unexisted_skuNumber
+                   lowest_price:  '0'  
+    validate:
+        - eq: [status_code, 400]
+
+- test:
+    name: 已登录内部账号系统-创建商品价格活动-lowest_price未传-创建失败
+    request:
+        method: POST
+        url: /products/sku/prices/activities
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+        json:
+            begin_time: $begin_time
+            end_time: $end_time
+            description: '商品价格活动'
+            activities:
+                  -
+                   sku_number: $unexisted_skuNumber 
+    validate:
+        - eq: [status_code, 400]
+
+- test:
+    name: 已登录内部账号系统-创建商品价格活动-lowest_price数据类型不对-创建失败
+    request:
+        method: POST
+        url: /products/sku/prices/activities
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+        json:
+            begin_time: $begin_time
+            end_time: $end_time
+            description: '商品价格活动'
+            activities:
+                  -
+                   sku_number: $unexisted_skuNumber
+                   lowest_price:  'aaa'
+    validate:
+        - eq: [status_code, 400]
+
+
+- test:
+    name: 已登录内部账号系统-创建商品价格活动-lowest_price超过指定长度-创建失败
+    request:
+        method: POST
+        url: /products/sku/prices/activities
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+        json:
+            begin_time: $begin_time
+            end_time: $end_time
+            description: '商品价格活动'
+            activities:
+                  -
+                   sku_number: $unexisted_skuNumber
+                   lowest_price:  '100000000000000000'
+    validate:
+        - eq: [status_code, 400]
+
+
+- test:
+    name: 未登录内部账号系统-创建商品价格活动-所有参数都正确-创建失败
+    request:
+        method: POST
+        url: /products/sku/prices/activities
+        json:
+            begin_time: $begin_time
+            end_time: $end_time
+            description: '商品价格活动'
+            activities:
+                  -
+                   sku_number: $existed_skuNumber
+                   lowest_price:  '0'  
+    validate:
+        - eq: [status_code, 401]
+        - eq: [content.error_code, '10020005']
+
+
+- test:
+    name: 已登录内部账号系统-创建商品价格活动-所有参数都正确-创建成功
+    request:
+        method: POST
+        url: /products/sku/prices/activities
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+        json:
+            begin_time: $begin_time
+            end_time: $end_time
+            description: '商品价格活动'
+            activities:
+                  -
+                   sku_number: $existed_skuNumber
+                   lowest_price:  '0'  
+    validate:
+        - eq: [status_code, 200]
+
+
+- test:
+    name: 已登录内部账号系统-查询商品价格活动列表-不带任何查询条件
+    request:
+        method: GET
+        url: /products/sku/prices/activities/search
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, object]
+        - type_match: [content.items, list]
+        - length_equals: [content.items.0, 11]
+
+
+- test:
+    name: 已登录内部账号系统-查询商品价格活动列表-通过sku_number查询-sku_number存在
+    request:
+        method: GET
+        url: /products/sku/prices/activities/search?sku_number=$existed_skuNumber
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, object]
+        - type_match: [content.items, list]
+        - length_equals: [content.items.0, 11]
+    extract:
+        - activityId: content.items.0.activity_id
+
+
+- test:
+    name: 已登录内部账号系统-更改商品价格活动状态-活动id存在-更改成功
+    request:
+        method: PATCH
+        url: /products/sku/prices/activities/$activityId/status
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+        json:
+            status: 'UNAVAILABLE'
+    validate:
+        - eq: [status_code, 200]
+
+
+- test:
+    name: 已登录内部账号系统-更改商品价格活动状态-活动id不存在
+    request:
+        method: PATCH
+        url: /products/sku/prices/activities/$unexisted_activityId/status
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+        json:
+            status: 'UNAVAILABLE'
+    validate:
+        - eq: [status_code, 200]
+
+- test:
+    name: 未登录内部账号系统-更改商品价格活动状态-活动id存在-更改失败
+    request:
+        method: PATCH
+        url: /products/sku/prices/activities/$activityId/status
+        json:
+            status: 'UNAVAILABLE'
+    validate:
+        - eq: [status_code, 401]
+        - eq: [content.error_code, '10020005']
+
+
+- test:
+    name: 已登录内部账号系统-删除活动-活动id不存在-成功失败
+    request:
+        method: DELETE
+        url: /products/sku/prices/activities/$unexisted_activityId
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+        json:
+            status: 'UNAVAILABLE'
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content, false]
+
+- test:
+    name: 已登录内部账号系统-删除活动-活动id存在-成功成功
+    request:
+        method: DELETE
+        url: /products/sku/prices/activities/$activityId
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+        json:
+            status: 'UNAVAILABLE'
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content, true]

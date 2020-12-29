@@ -292,7 +292,7 @@
         - ${sleep_N_secs(3)}
     skipIf: ${is_production()}
     name: 获取售后详情页-检查售后单的状态是否为待退款(20000)
-    skipUnless: ${eval_equal($afterSale_status, 200)}
+    base_url: ${get_order_service_host()}
     request:
         method: GET
         url: /after_sales/$afterSaleId

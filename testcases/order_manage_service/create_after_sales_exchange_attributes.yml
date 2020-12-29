@@ -252,7 +252,7 @@
         - eq: [status_code, 200]
         - type_match: [content, object]
         - length_equals: [content, 31]
-        - eq: [content.state, '100000']
+        - eq: [content.state, 'COMPLETED']
 
 - test:
     skipIf: ${is_production()}

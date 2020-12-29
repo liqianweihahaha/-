@@ -1,0 +1,183 @@
+- config:
+    name: api:获取退货单列表-获取售后单详情页-获取退货单轨迹
+    base_url: ${ENV(transaction_admin_api_host)}
+    variables:
+        - existed_customerPhoneNumber: ${order_customerPhoneNumber_config()}
+        - existed_shippingType: REAL
+        - unexisted_return_id: 123456
+
+- test:
+    name: 未登录内部账号系统-获取退货单列表
+    request:
+        method: GET
+        url: /return/abnormal/list
+    validate:
+        - eq: [status_code, 401]
+        - eq: [content.error_code, '10020005']
+
+- test:
+    name: 已登录内部账号系统-获取退货单列表-不带任何参数
+    request:
+        method: GET
+        url: /return/abnormal/list
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, object]
+        - type_match: [content.items, list]
+        - type_match: [content.items.0, object]
+        - type_match: [content.items.0.returnMaterials, list]
+        - length_equals: [content.items.0, 17]
+        - length_equals: [content.items.0.returnMaterials.0, 4]
+    extract:
+        - return_id: content.items.0.returnId
+        - order_id: content.items.0.orderId
+        - afterSale_id: content.items.0.afterSaleId
+
+- test:
+    name: 已登录内部账号系统-获取退货单列表-通过returnId查询-returnId存在
+    request:
+        method: GET
+        url: /return/abnormal/list?returnId=$return_id
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, object]
+        - type_match: [content.items, list]
+        - type_match: [content.items.0, object]
+        - type_match: [content.items.0.returnMaterials, list]
+        - length_equals: [content.items.0.returnMaterials.0, 4]
+        - eq: [content.items.0.returnId, $return_id]
+
+- test:
+    name: 已登录内部账号系统-获取退货单列表-通过orderId查询-orderId存在
+    request:
+        method: GET
+        url: /return/abnormal/list?orderId=$order_id
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, object]
+        - type_match: [content.items, list]
+        - type_match: [content.items.0, object]
+        - type_match: [content.items.0.returnMaterials, list]
+        - length_equals: [content.items.0.returnMaterials.0, 4]
+        - eq: [content.items.0.orderId, $order_id]
+
+
+- test:
+    name: 已登录内部账号系统-获取退货单列表-通过afterSaleId查询-afterSaleId存在
+    request:
+        method: GET
+        url: /return/abnormal/list?afterSaleId=$afterSale_id
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, object]
+        - type_match: [content.items, list]
+        - type_match: [content.items.0, object]
+        - type_match: [content.items.0.returnMaterials, list]
+        - length_equals: [content.items.0.returnMaterials.0, 4]
+        - eq: [content.items.0.afterSaleId, $afterSale_id]
+
+- test:
+    name: 已登录内部账号系统-获取退货单列表-通过phoneNumber查询-phoneNumber存在
+    request:
+        method: GET
+        url: /return/abnormal/list?phoneNumber=$existed_customerPhoneNumber
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, object]
+        - type_match: [content.items, list]
+        - type_match: [content.items.0, object]
+        - type_match: [content.items.0.returnMaterials, list]
+
+- test:
+    name: 已登录内部账号系统-获取退货单列表-通过shippingType查询-shippingType存在
+    request:
+        method: GET
+        url: /return/abnormal/list?shippingType=$existed_shippingType
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, object]
+        - type_match: [content.items, list]
+        - type_match: [content.items.0, object]
+        - type_match: [content.items.0.returnMaterials, list]
+
+- test:
+    name: 已登录内部账号系统-获取退货单列表-通过state查询-state存在
+    request:
+        method: GET
+        url: /return/abnormal/list?state=SUCCESS
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, object]
+        - type_match: [content.items, list]
+        - type_match: [content.items.0, object]
+        - type_match: [content.items.0.returnMaterials, list]
+
+- test:
+    name: 未登录内部账号系统-获取退货单详情-returnId存在
+    request:
+        method: GET
+        url: /return/$return_id/info
+    validate:
+        - eq: [status_code, 401]
+        - eq: [content.error_code, '10020005']
+
+
+- test:
+    name: 已登录内部账号系统-获取退货单详情-returnId存在
+    request:
+        method: GET
+        url: /return/$return_id/info
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, object]
+        - type_match: [content.materialDetailModel, list]
+        - length_equals: [content, 31]
+
+- test:
+    name: 已登录内部账号系统-获取退货单详情-returnId不存在
+    request:
+        method: GET
+        url: /return/$unexisted_return_id/info
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+
+- test:
+    name: 未登录内部账号系统-获取退货单轨迹-returnId存在
+    request:
+        method: GET
+        url: /return/$return_id/record
+    validate:
+        - eq: [status_code, 401]
+        - eq: [content.error_code, '10020005']
+
+
+- test:
+    name: 已登录内部账号系统-获取退货单轨迹-returnId存在
+    request:
+        method: GET
+        url: /return/$return_id/record
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, object]
+        - type_match: [content.items, list]
+        - length_equals: [content.items.0, 10]

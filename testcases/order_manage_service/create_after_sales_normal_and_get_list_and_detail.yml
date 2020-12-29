@@ -387,7 +387,7 @@
         - afterSaleId: $afterSaleId
     validate:
         - eq: [status_code, 200]
-        - eq: [content.state, "1000"]
+        - eq: [content.state, "AWAITING_BM_REVIEW"]
 
 - test:
     skipIf: ${is_production()}
