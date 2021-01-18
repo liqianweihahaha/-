@@ -1,0 +1,428 @@
+- config:
+    name: 组合：替换指定SPU下所有SKU-更新SPU的状态-根据SPU编号查询SKU价格
+    base_url: ${ENV(transaction_admin_api_host)}
+    variables:
+        - existed_category_id: 1
+        - existed_department_id: 1
+        - existed_number: 1
+        - existed_status: "DELETED"
+        - existed_title: ${gen_random_string(10)}
+        - existed_type: VIRTUAL
+        - existed_price: 1
+        - existed_lowest_price: 0
+        - existed_ratio: 1
+        - unexisted_spu_number: G11111
+        - unexisted_sku_number: 12345678
+        - unexisted_attribute_id: 1000000
+        - unexisted_attribute_value_id: 100000
+        - unexisted_material_number: SU00000711111
+        - unexisted_price: -1
+        - unexisted_lowest_price: -1
+
+- test:
+    skipIf: ${is_production()}
+    name: 已登录内部账号-创建spu-参数都正确-创建成功
+    request:
+        method: POST
+        url: /products/spu
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+        json:
+            category_id: $existed_category_id
+            department_id: $existed_department_id
+            type: $existed_type
+            title: $existed_title
+    validate:
+        - eq: [status_code, 200]
+        - startswith: [content, "G"]
+    extract:
+        - spu_number: content
+
+
+- test:
+    skipIf: ${is_production()}
+    name: 已登录内部账号-根据SPU编号生成SKU编号-spuNumber存在-number为1-生成成功
+    request:
+        method: POST
+        url: /products/spu/$spu_number/sku/number?number=$existed_number
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, list]
+        - length_equals: [content, 1]
+        - length_equals: [content.0, 12]
+    extract:
+        - sku_number: content.0
+
+- test:
+    skipIf: ${is_production()}
+    name: 已登录内部账号-替换指定SPU下所有SKU-spu_number不存在-更新失败
+    request:
+        method: PUT
+        url: /products/spu/$unexisted_spu_number/sku
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+        json:
+            -
+              sku_number: $sku_number
+              attributes: 
+                    -
+                      id: ${attribute_id()}
+                      value_id: ${attribute_value_id()}
+              materials:
+                    -
+                      material_number: ${material_number_1_config()}
+                      material_unit: 1
+                      ratio: $existed_ratio   
+              price: $existed_price
+              lowest_price: $existed_lowest_price
+    validate:
+        - eq: [status_code, 422]
+
+- test:
+    skipIf: ${is_production()}
+    name: 已登录内部账号-替换指定SPU下所有SKU-sku_number不存在-更新失败
+    request:
+        method: PUT
+        url: /products/spu/$spu_number/sku
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+        json:
+            -
+              sku_number: $unexisted_sku_number
+              attributes: 
+                    -
+                      id: ${attribute_id()}
+                      value_id: ${attribute_value_id()}
+              materials:
+                    -
+                      material_number: ${material_number_1_config()}
+                      material_unit: 1
+                      ratio: $existed_ratio   
+              price: $existed_price
+              lowest_price: $existed_lowest_price
+    validate:
+        - eq: [status_code, 400]
+
+- test:
+    skipIf: ${is_production()}
+    name: 已登录内部账号-替换指定SPU下所有SKU-attribute_id不存在-更新失败
+    request:
+        method: PUT
+        url: /products/spu/$spu_number/sku
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+        json:
+            -
+              sku_number: $sku_number
+              attributes: 
+                    -
+                      id: $unexisted_attribute_id
+                      value_id: ${attribute_value_id()}
+              materials:
+                    -
+                      material_number: ${material_number_1_config()}
+                      material_unit: 1
+                      ratio: $existed_ratio   
+              price: $existed_price
+              lowest_price: $existed_lowest_price
+    validate:
+        - eq: [status_code, 400]
+
+- test:
+    skipIf: ${is_production()}
+    name: 已登录内部账号-替换指定SPU下所有SKU-attribute_value_id不存在-更新失败
+    request:
+        method: PUT
+        url: /products/spu/$spu_number/sku
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+        json:
+            -
+              sku_number: $sku_number
+              attributes: 
+                    -
+                      id: ${attribute_id()}
+                      value_id: $unexisted_attribute_value_id
+              materials:
+                    -
+                      material_number: ${material_number_1_config()}
+                      material_unit: 1
+                      ratio: $existed_ratio   
+              price: $existed_price
+              lowest_price: $existed_lowest_price
+    validate:
+        - eq: [status_code, 200]
+
+- test:
+    skipIf: ${is_production()}
+    name: 已登录内部账号-替换指定SPU下所有SKU-material_number不存在-更新失败
+    request:
+        method: PUT
+        url: /products/spu/$spu_number/sku
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+        json:
+            -
+              sku_number: $sku_number
+              attributes: 
+                    -
+                      id: ${attribute_id()}
+                      value_id: ${attribute_value_id()}
+              materials:
+                    -
+                      material_number: $unexisted_material_number
+                      material_unit: 1
+                      ratio: $existed_ratio   
+              price: $existed_price
+              lowest_price: $existed_lowest_price
+    validate:
+        - eq: [status_code, 200]
+
+- test:
+    skipIf: ${is_production()}
+    name: 已登录内部账号-替换指定SPU下所有SKU-ratio小于1-更新失败
+    request:
+        method: PUT
+        url: /products/spu/$spu_number/sku
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+        json:
+            -
+              sku_number: $sku_number
+              attributes: 
+                    -
+                      id: ${attribute_id()}
+                      value_id: ${attribute_value_id()}
+              materials:
+                    -
+                      material_number: ${material_number_1_config()}
+                      material_unit: 1
+                      ratio: 0.8   
+              price: $existed_price
+              lowest_price: $existed_lowest_price
+    validate:
+        - eq: [status_code, 422]
+
+- test:
+    skipIf: ${is_production()}
+    name: 已登录内部账号-替换指定SPU下所有SKU-price小于0-更新失败
+    request:
+        method: PUT
+        url: /products/spu/$spu_number/sku
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+        json:
+            -
+              sku_number: $sku_number
+              attributes: 
+                    -
+                      id: ${attribute_id()}
+                      value_id: ${attribute_value_id()}
+              materials:
+                    -
+                      material_number: ${material_number_1_config()}
+                      material_unit: 1
+                      ratio: $existed_ratio   
+              price: $unexisted_price
+              lowest_price: $existed_lowest_price
+    validate:
+        - eq: [status_code, 400]
+
+- test:
+    skipIf: ${is_production()}
+    name: 已登录内部账号-替换指定SPU下所有SKU-lowest_price小于0-更新失败
+    request:
+        method: PUT
+        url: /products/spu/$spu_number/sku
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+        json:
+            -
+              sku_number: $sku_number
+              attributes: 
+                    -
+                      id: ${attribute_id()}
+                      value_id: ${attribute_value_id()}
+              materials:
+                    -
+                      material_number: ${material_number_1_config()}
+                      material_unit: 1
+                      ratio: $existed_ratio   
+              price: $existed_price
+              lowest_price: $unexisted_lowest_price
+    validate:
+        - eq: [status_code, 400]
+
+- test:
+    skipIf: ${is_production()}
+    name: 已登录内部账号-替换指定SPU下所有SKU-price小于lowest_price-更新失败
+    request:
+        method: PUT
+        url: /products/spu/$spu_number/sku
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+        json:
+            -
+              sku_number: $sku_number
+              attributes: 
+                    -
+                      id: ${attribute_id()}
+                      value_id: ${attribute_value_id()}
+              materials:
+                    -
+                      material_number: ${material_number_1_config()}
+                      material_unit: 1
+                      ratio: $existed_ratio   
+              price: 1
+              lowest_price: 2
+    validate:
+        - eq: [status_code, 400]
+
+
+- test:
+    skipIf: ${is_production()}
+    name: 未登录内部账号-替换指定SPU下所有SKU-所有参数正确-更新失败
+    request:
+        method: PUT
+        url: /products/spu/$spu_number/sku
+        json:
+            -
+              sku_number: $sku_number
+              attributes: 
+                    -
+                      id: ${attribute_id()}
+                      value_id: ${attribute_value_id()}
+              materials:
+                    -
+                      material_number: ${material_number_1_config()}
+                      material_unit: 1
+                      ratio: $existed_ratio   
+              price: $existed_price
+              lowest_price: $existed_lowest_price
+    validate:
+        - eq: [status_code, 401]
+        - eq: [content.error_code, '10020005']
+
+
+- test:
+    skipIf: ${is_production()}
+    name: 已登录内部账号-替换指定SPU下所有SKU-所有参数正确-更新成功
+    request:
+        method: PUT
+        url: /products/spu/$spu_number/sku
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+        json:
+            -
+              sku_number: $sku_number
+              attributes: 
+                    -
+                      id: ${attribute_id()}
+                      value_id: ${attribute_value_id()}
+              materials:
+                    -
+                      material_number: ${material_number_1_config()}
+                      material_unit: 1
+                      ratio: $existed_ratio   
+              price: $existed_price
+              lowest_price: $existed_lowest_price
+    validate:
+        - eq: [status_code, 200]
+
+- test:
+    skipIf: ${is_production()}
+    name: 已登录内部账号-更新spu状态-spuNumber不存在-更新失败
+    request:
+        method: PATCH
+        url: /products/spu/$unexisted_spu_number/status
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+        json:
+            status: 'VISIBLE'
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content, False]
+
+- test:
+    skipIf: ${is_production()}
+    name: 已登录内部账号-更新spu状态-status不存在-更新成功
+    request:
+        method: PATCH
+        url: /products/spu/$spu_number/status
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+        json:
+            status: 'aaa'
+    validate:
+        - eq: [status_code, 400]
+
+- test:
+    skipIf: ${is_production()}
+    name: 已登录内部账号-更新spu状态-spuNumber存在-更新成功
+    request:
+        method: PATCH
+        url: /products/spu/$spu_number/status
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+        json:
+            status: 'VISIBLE'
+    validate:
+        - eq: [status_code, 200]
+
+- test:
+    skipIf: ${is_production()}
+    name: 已登录内部账号-根据SPU编号查询SKU价格-spu_number存在-未传time_lower参数
+    request:
+        method: GET
+        url: /products/spu/$spu_number/sku/prices
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+    validate:
+        - eq: [status_code, 400]
+
+
+- test:
+    skipIf: ${is_production()}
+    name: 已登录内部账号-根据SPU编号查询SKU价格-spu_number存在-已传time_lower参数
+    request:
+        method: GET
+        url: /products/spu/$spu_number/sku/prices?time_lower=${get_start_timestamp()}&time_upper=${get_end_timestamp()}
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, list]
+        - type_match: [content.0.attributes, list]
+        - length_equals: [content.0, 5] 
+        - length_equals: [content.0.attributes.0, 5] 
+        - contains: [content.0, 'price']
+        - contains: [content.0, 'lowest_price']
+
+- test:
+    skipIf: ${is_production()}
+    name: 已登录内部账号-根据SPU编号查询SKU价格-spu_number不存在-已传time_lower参数
+    request:
+        method: GET
+        url: /products/spu/$unexisted_spu_number/sku/prices?time_lower=${get_start_timestamp()}&time_upper=${get_end_timestamp()}
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+        - length_equals: [content, 0]
+
+
+- test:
+    skipIf: ${is_production()}
+    name: 已登录内部账号-删除spu-spuNumber存在-删除成功
+    request:
+        method: PATCH
+        url: /products/spu/$spu_number/status
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+        json:
+            status: 'DELETED'
+    validate:
+        - eq: [status_code, 200]
+

@@ -2,14 +2,14 @@
     name: 组合：查询物流轨迹
     base_url: ${ENV(transaction_admin_api_host)}
     variables:
-        - exist_shippingId: S200925000001
+        - exist_shippingId: ${has_track_shippingId_config()}
         - unexisted_shippingId: 12345
 
 - test:
     name: 未登录内部账号系统-通过shippingId查询物流轨迹
     request:
         method: GET
-        url: /java/shipping/logistics/track/$exist_shippingId
+        url: /shipping/logistics/track/$exist_shippingId
     validate:
         - eq: [status_code, 401]
         - eq: [content.error_code, '10020005']
@@ -18,7 +18,7 @@
     name: 已登录内部账号系统--通过shippingId查询物流轨迹-shippingId存在-有数据
     request:
         method: GET
-        url: /java/shipping/logistics/track/$exist_shippingId
+        url: /shipping/logistics/track/$exist_shippingId
         headers:
             Authorization: ${internal_source_user_login_token()}
     validate:
@@ -35,7 +35,7 @@
     name: 已登录内部账号系统--通过shippingId查询物流轨迹-shippingId不存在-无数据
     request:
         method: GET
-        url: /java/shipping/logistics/track/$unexisted_shippingId
+        url: /shipping/logistics/track/$unexisted_shippingId
         headers:
             Authorization: ${internal_source_user_login_token()}
     validate:

@@ -21,3 +21,8 @@ sku_physical:
 sku_deposit:
   sku_number: '200379000001'
   spu_number: G200379000
+
+#商品属性
+attribute:
+  id: 7
+  value_id: 14

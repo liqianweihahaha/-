@@ -23,3 +23,8 @@ sku_physical:
 sku_deposit:
   sku_number: '192111000001'
   spu_number: G192111000
+
+#商品属性
+attribute:
+  id: 1
+  value_id: 5

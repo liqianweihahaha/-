@@ -16,8 +16,6 @@
         - type_match: [content, object]
         - type_match: [content.menu_list, list]
         - type_match: [content.menu_list.0, object]
-        - length_equals: [content, 3]
-        - length_equals: [content.menu_list.0, 5]
     extract:
         - menuId: content.menu_list.0.menu_id
 

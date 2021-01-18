@@ -72,5 +72,5 @@
         method: PATCH
         url: /products/spu/$spu_number/status
     validate:
-        - eq: [status_code, 403]
-        - eq: [content.error_code, "10020004"]
+        - eq: [status_code, 401]
+        - eq: [content.error_code, "10020005"]

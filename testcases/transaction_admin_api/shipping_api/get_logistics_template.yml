@@ -1,0 +1,25 @@
+- config:
+    name: 下载实物物流导入模板文件
+    base_url: ${ENV(transaction_admin_api_host)}
+
+
+- test:
+    skipIf: ${is_production()}
+    name: 已登录内部账号-下载实物物流导入模板文件-下载成功
+    request:
+        method: GET
+        url: /shipping/logistics/template
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+
+- test:
+    skipIf: ${is_production()}
+    name: 未登录内部账号-下载实物物流导入模板文件-下载失败
+    request:
+        method: GET
+        url: /shipping/logistics/template
+    validate:
+        - eq: [status_code, 401]
+        - eq: [content.error_code, '10020005']

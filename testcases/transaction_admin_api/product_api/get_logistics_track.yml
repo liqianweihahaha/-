@@ -2,7 +2,7 @@
     name: 组合：查询物流轨迹
     base_url: ${ENV(transaction_admin_api_host)}
     variables:
-        - exist_shippingId: S200925000001
+        - exist_shippingId: ${has_track_shippingId_config()}
         - unexisted_shippingId: 12345
 
 - test:

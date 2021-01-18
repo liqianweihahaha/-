@@ -206,7 +206,7 @@
         - type_match: [content, object]
         - type_match: [content.items, list]
         - type_match: [content.items.0.materials, list]
-        - length_equals: [content.items.0.materials.0, 6]
+        - length_equals: [content.items.0.materials.0, 5]
 
 - test:
     skipIf: ${is_production()}

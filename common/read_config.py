@@ -72,6 +72,11 @@ def sku_deposit(env):
     sku_info = read_config_product(env)['sku_deposit']
     return sku_info
 
+#获取商品属性配置信息
+def attribute(env):
+    attribute_info = read_config_product(env)['attribute']
+    return attribute_info
+
 # 读取订单配置
 def read_config_order(env, file_dir=conf_dir):
     file_name = str(env) + '_order.yml'

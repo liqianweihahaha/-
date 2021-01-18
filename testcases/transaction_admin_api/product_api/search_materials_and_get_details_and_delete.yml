@@ -14,7 +14,7 @@
     name: 已登录内部账号系统-新增物料-所有参数都正确-新增成功
     request:
         method: POST
-        url: /java/products/materials
+        url: /products/materials
         headers:
             Authorization: ${internal_source_user_login_token()}
         json:
@@ -31,7 +31,7 @@
     name: 已登录内部账号系统-查询商品物料-不带任何查询条件
     request:
         method: GET
-        url: /java/products/materials/search
+        url: /products/materials/search
         headers:
             Authorization: ${internal_source_user_login_token()}
     validate:
@@ -44,7 +44,7 @@
     name: 已登录内部账号系统-查询商品物料-通过material_number查询
     request:
         method: GET
-        url: /java/products/materials/search?material_number=$materialsId
+        url: /products/materials/search?material_number=$materialsId
         headers:
             Authorization: ${internal_source_user_login_token()}
     validate:
@@ -58,7 +58,7 @@
     name: 已登录内部账号系统-查询商品物料-通过name查询
     request:
         method: GET
-        url: /java/products/materials/search?name=盒子
+        url: /products/materials/search?name=盒子
         headers:
             Authorization: ${internal_source_user_login_token()}
     validate:
@@ -71,7 +71,7 @@
     name: 已登录内部账号系统-查询商品物料-通过type查询
     request:
         method: GET
-        url: /java/products/materials/search?type=REALITY
+        url: /products/materials/search?type=REALITY
         headers:
             Authorization: ${internal_source_user_login_token()}
     validate:
@@ -84,7 +84,7 @@
     name: 已登录内部账号系统-查询商品物料-通过ship_type查询
     request:
         method: GET
-        url: /java/products/materials/search?ship_type=LOGISTICS
+        url: /products/materials/search?ship_type=LOGISTICS
         headers:
             Authorization: ${internal_source_user_login_token()}
     validate:
@@ -97,7 +97,7 @@
     name: 未登录内部账号系统-查询商品物料-查询失败
     request:
         method: GET
-        url: /java/products/materials
+        url: /products/materials
     validate:
         - eq: [status_code, 401]
         - eq: [content.error_code, '10020005']
@@ -106,7 +106,7 @@
     name: 已登录内部账号系统-查询商品物料详情-materialNumber存在
     request:
         method: GET
-        url: /java/products/materials/$materialsId/details
+        url: /products/materials/$materialsId/details
         headers:
             Authorization: ${internal_source_user_login_token()}
     validate:
@@ -118,7 +118,7 @@
     name: 已登录内部账号系统-查询商品物料详情-materialNumber不存在
     request:
         method: GET
-        url: /java/products/materials/$unexisted_materialsId/details
+        url: /products/materials/$unexisted_materialsId/details
         headers:
             Authorization: ${internal_source_user_login_token()}
     validate:
@@ -128,7 +128,7 @@
     name: 未登录内部账号系统-查询商品物料详情-查询失败
     request:
         method: GET
-        url: /java/products/materials/$materialsId/details
+        url: /products/materials/$materialsId/details
     validate:
         - eq: [status_code, 401]
         - eq: [content.error_code, '10020005']
@@ -138,7 +138,7 @@
     name: 已登录内部账号系统-删除物料-materialsId存在-删除成功
     request:
         method: DELETE
-        url: /java/products/materials/$materialsId
+        url: /products/materials/$materialsId
         headers:
             Authorization: ${internal_source_user_login_token()}
     validate:
@@ -148,7 +148,7 @@
     name: 已登录内部账号系统-删除物料-materialsId不存在-删除失败
     request:
         method: DELETE
-        url: /java/products/materials/$unexisted_materialsId
+        url: /products/materials/$unexisted_materialsId
         headers:
             Authorization: ${internal_source_user_login_token()}
     validate:
@@ -159,7 +159,7 @@
     name: 未登录内部账号系统-删除物料-删除失败
     request:
         method: GET
-        url: /java/products/materials/$materialsId/details
+        url: /products/materials/$materialsId/details
     validate:
         - eq: [status_code, 401]
         - eq: [content.error_code, '10020005']

@@ -1,0 +1,100 @@
+- config:
+    name: 根据SPU编号生成SKU编号
+    base_url: ${ENV(transaction_admin_api_host)}
+    variables:
+        - existed_category_id: 1
+        - existed_department_id: 1
+        - existed_status: "DELETED"
+        - existed_title: ${gen_random_string(10)}
+        - existed_type: VIRTUAL
+        - existed_number: 1
+        - unexisted_type: aaa
+        - unexisted_title: ${gen_random_string(61)}
+        - unexisted_category_id: 11111
+        - unexisted_department_id: 100000
+        - unexisted_spu_number: G11111
+
+
+- test:
+    skipIf: ${is_production()}
+    name: 已登录内部账号-创建spu-参数都正确-创建成功
+    request:
+        method: POST
+        url: /products/spu
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+        json:
+            category_id: $existed_category_id
+            department_id: $existed_department_id
+            type: $existed_type
+            title: $existed_title
+    validate:
+        - eq: [status_code, 200]
+        - startswith: [content, "G"]
+    extract:
+        - spu_number: content
+
+- test:
+    skipIf: ${is_production()}
+    name: 已登录内部账号-根据SPU编号生成SKU编号-spuNumber存在-number为1-生成成功
+    request:
+        method: POST
+        url: /products/spu/$spu_number/sku/number?number=$existed_number
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, list]
+        - length_equals: [content, 1]
+        - length_equals: [content.0, 12]
+    extract:
+        - sku_number: content.0
+
+- test:
+    skipIf: ${is_production()}
+    name: 已登录内部账号-根据SPU编号生成SKU编号-spuNumber不存在-number为1-生成成功
+    request:
+        method: POST
+        url: /products/spu/$unexisted_spu_number/sku/number?number=$existed_number
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+    validate:
+        - eq: [status_code, 422]
+
+
+- test:
+    skipIf: ${is_production()}
+    name: 未登录内部账号-根据SPU编号生成SKU编号-spuNumber存在
+    request:
+        method: POST
+        url: /products/spu/$spu_number/sku/number?number=$existed_number
+    validate:
+        - eq: [status_code, 401]
+        - eq: [content.error_code, '10020005']
+
+- test:
+    skipIf: ${is_production()}
+    name: 已登录内部账号-根据SPU编号生成SKU编号-spuNumber存在-number为2-生成成功
+    request:
+        method: POST
+        url: /products/spu/$spu_number/sku/number?number=2
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, list]
+        - length_equals: [content, 2]
+        - length_equals: [content.0, 12]
+
+- test:
+    skipIf: ${is_production()}
+    name: 已登录内部账号-删除spu-spuNumber存在-删除成功
+    request:
+        method: PATCH
+        url: /products/spu/$spu_number/status
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+        json:
+            status: 'DELETED'
+    validate:
+        - eq: [status_code, 200]

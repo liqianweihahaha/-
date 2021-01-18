@@ -1,0 +1,43 @@
+- config:
+    name: 获取协议详情
+    base_url: ${ENV(transaction_admin_api_host)}
+    variables:
+        - existed_terms_id: 2
+        - existed_terms_version_id: 1
+        - unexisted_terms_id: 1000
+
+- test:
+    name: 已登录内部账号系统-获取协议详情-termId存在
+    request:
+        method: GET
+        url: /products/terms/$existed_terms_id?version=1
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, object]
+        - length_equals: [content, 5]
+        - contains: [content, 'id']
+        - contains: [content, 'name']
+        - contains: [content, 'content_url']
+
+
+- test:
+    name: 已登录内部账号系统-获取协议详情-termId不存在
+    request:
+        method: GET
+        url: /products/terms/$unexisted_terms_id?version=1
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+
+
+- test:
+    name: 未登录内部账号系统-获取协议详情-termId存在
+    request:
+        method: GET
+        url: /products/terms/$existed_terms_id?version=1
+    validate:
+        - eq: [status_code, 401]
+        - eq: [content.error_code, '10020005']

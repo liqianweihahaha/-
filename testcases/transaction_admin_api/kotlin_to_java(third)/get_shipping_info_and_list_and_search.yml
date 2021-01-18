@@ -1,6 +1,7 @@
+
 - config:
-    name: 发货service组合测试：创建发货单-通过订单id搜索发货单-获取发货单详情页-发货单列表
-    base_url: ${get_shipping_service_host()}
+    name: 测试：创建普通订单-上传支付凭证-审核通过-通过订单id搜索发货单-获取发货单详情页-发货单列表
+    base_url: ${get_order_service_host()}
     variables:
         - existed_customerPhoneNumber: ${order_customerPhoneNumber_config()}
         - existed_skuNumber: ${sku_physical_number_config()}
@@ -10,7 +11,7 @@
         - existed_handledById: ${order_handledById_config()}
         - existed_transactionNumber: ${gen_random_string(20)}
         - existed_orderPlatform: ALIPAY
-        - existed_actualPayment: 0.03
+        - existed_actualPayment: 0.1
         - existed_afterSaleType: 'RETURN_REFUND'
         - existed_handledById: ${order_handledById_config()}
         - unexisted_shippingId: 123456
@@ -97,17 +98,18 @@
     setup_hooks:
         - ${sleep_N_secs(3)}
     skipIf: ${is_production()}
-    name: 通过订单ID查找发货单-订单ID存在
-    base_url: ${get_shipping_service_host()}
+    name: 已登录内部账号系统-通过订单ID查找发货单-订单ID存在
+    base_url: ${ENV(transaction_admin_api_host)}
     request:
         method: GET
-        url: /operation/shipping/info?order_id=$create_order_orderId
+        url: /shipping/search?orderId=$create_order_orderId
+        headers:
+            Authorization: ${internal_source_user_login_token()}
     validate:
         - eq: [status_code, 200]
         - type_match: [content, object]
         - type_match: [content.items, list]
         - type_match: [content.items.0.materials, list]
-        - length_equals: [content.items.0, 19]
         - length_equals: [content.items.0.materials.0, 6]
         - eq: [content.items.0.order_id, $create_order_orderId]
     extract:
@@ -116,77 +118,118 @@
 
 - test:
     skipIf: ${is_production()}
-    name: 通过订单ID查找发货单-订单ID不存在
-    base_url: ${get_shipping_service_host()}
+    name: 已登录内部账号系统-通过订单ID查找发货单-订单ID不存在
+    base_url: ${ENV(transaction_admin_api_host)}
     request:
         method: GET
-        url: /operation/shipping/info?order_id=$unexisted_orderId
+        url: /shipping/search?orderId=$unexisted_orderId
+        headers:
+            Authorization: ${internal_source_user_login_token()}
     validate:
         - eq: [status_code, 200]
         - length_equals: [content.items, 0]
 
+- test:
+    skipIf: ${is_production()}
+    name: 未登录内部账号系统-通过订单ID查找发货单-订单ID存在
+    base_url: ${ENV(transaction_admin_api_host)}
+    request:
+        method: GET
+        url: /shipping/search?orderId=$create_order_orderId
+    validate:
+        - eq: [status_code, 401]
+        - eq: [content.error_code, '10020005']
+
+
 - test:   
     skipIf: ${is_production()}
-    name: 获取发货单详情-shippingId存在
-    skipUnless: ${eval_equal($search_shippingId_code, 200)}
-    api: api/shipping_service/get_shipping_info.yml
+    name: 已登录内部账号系统-获取发货单详情-shippingId存在
+    api: api/transaction_admin_api/get_shipping_info.yml
     variables:
         - shippingId: $shipping_Id
+        - login_token: ${internal_source_user_login_token()}
     validate:
         - eq: [status_code, 200]
         - type_match: [content, object]
         - type_match: [content.materialDetail, list]
         - type_match: [content.logisticDetail, list]
-        - length_equals: [content, 29]
+        - type_match: [content.changeLogs, list]
 
 - test:
     skipIf: ${is_production()}
-    name: 获取发货单详情-shippingId不存在
-    skipUnless: ${eval_equal($search_shippingId_code, 200)}
-    api: api/shipping_service/get_shipping_info.yml
+    name: 已登录内部账号系统-获取发货单详情-shippingId不存在
+    api: api/transaction_admin_api/get_shipping_info.yml
     variables:
         - shippingId: $unexisted_shippingId
+        - login_token: ${internal_source_user_login_token()}
     validate:
         - eq: [status_code, 422]
         - eq: [content.error_code, '10018001']
 
+- test:   
+    skipIf: ${is_production()}
+    name: 未登录内部账号系统-获取发货单详情-shippingId存在
+    skipUnless: ${eval_equal($search_shippingId_code, 200)}
+    base_url: ${ENV(transaction_admin_api_host)}
+    request:
+        method: GET
+        url: /shipping/$shipping_Id
+    validate:
+        - eq: [status_code, 401]
+        - eq: [content.error_code, '10020005']
+
+
 - test:
     skipIf: ${is_production()}
-    name: 获取发货单列表-不带任何参数
-    base_url: ${get_shipping_service_host()}
+    name: 未登录内部账号系统-获取发货单列表-不带任何参数
+    base_url: ${ENV(transaction_admin_api_host)}
     request:
         method: GET
         url: /shipping/list
     validate:
+        - eq: [status_code, 401]
+        - eq: [content.error_code, '10020005']
+
+- test:
+    skipIf: ${is_production()}
+    name: 已登录内部账号系统-获取发货单列表-不带任何参数
+    base_url: ${ENV(transaction_admin_api_host)}
+    request:
+        method: GET
+        url: /shipping/list
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+    validate:
         - eq: [status_code, 200]
         - type_match: [content, object]
         - type_match: [content.items, list]
         - type_match: [content.items.0.materials, list]
-        - length_equals: [content.items.0, 19]
-        - length_equals: [content.items.0.materials.0, 5]
+        - length_equals: [content.items.0.materials.0, 6]
 
 - test:
     skipIf: ${is_production()}
-    name: 获取发货单列表-通过订单ID查询-orderId存在
-    base_url: ${get_shipping_service_host()}
+    name: 已登录内部账号系统-获取发货单列表-通过订单ID查询-orderId存在
+    base_url: ${ENV(transaction_admin_api_host)}
     request:
         method: GET
         url: /shipping/list?order_id=$create_order_orderId
+        headers:
+            Authorization: ${internal_source_user_login_token()}
     validate:
         - eq: [status_code, 200]
         - type_match: [content, object]
         - type_match: [content.items, list]
         - type_match: [content.items.0.materials, list]
 
-
-
 - test:
     skipIf: ${is_production()}
-    name: 获取发货单列表-通过订单ID查询-orderId不存在
-    base_url: ${get_shipping_service_host()}
+    name: 已登录内部账号系统-获取发货单列表-通过订单ID查询-orderId不存在
+    base_url: ${ENV(transaction_admin_api_host)}
     request:
         method: GET
         url: /shipping/list?order_id=$unexisted_orderId
+        headers:
+            Authorization: ${internal_source_user_login_token()}
     validate:
         - eq: [status_code, 200]
         - type_match: [content, object]
@@ -196,25 +239,28 @@
 
 - test:
     skipIf: ${is_production()}
-    name: 获取发货单列表-通过发货单ID查询-shippingId存在
-    base_url: ${get_shipping_service_host()}
+    name: 已登录内部账号系统-获取发货单列表-通过发货单ID查询-shippingId存在
+    base_url: ${ENV(transaction_admin_api_host)}
     request:
         method: GET
         url: /shipping/list?shipping_id=$shipping_Id
+        headers:
+            Authorization: ${internal_source_user_login_token()}
     validate:
         - eq: [status_code, 200]
         - type_match: [content, object]
         - type_match: [content.items, list]
         - type_match: [content.items.0.materials, list]
 
-
 - test:
     skipIf: ${is_production()}
-    name: 获取发货单列表-通过发货单ID查询-shippingId不存在
-    base_url: ${get_shipping_service_host()}
+    name: 已登录内部账号系统-获取发货单列表-通过发货单ID查询-shippingId不存在
+    base_url: ${ENV(transaction_admin_api_host)}
     request:
         method: GET
         url: /shipping/list?shipping_id=$unexisted_shippingId
+        headers:
+            Authorization: ${internal_source_user_login_token()}
     validate:
         - eq: [status_code, 200]
         - type_match: [content, object]
@@ -224,25 +270,28 @@
 
 - test:
     skipIf: ${is_production()}
-    name: 获取发货单列表-通过发货类型查询-shipping_modes存在
-    base_url: ${get_shipping_service_host()}
+    name: 已登录内部账号系统-获取发货单列表-通过发货类型查询-shipping_modes存在
+    base_url: ${ENV(transaction_admin_api_host)}
     request:
         method: GET
         url: /shipping/list?shipping_modes=LESSON_TICKET
+        headers:
+            Authorization: ${internal_source_user_login_token()}
     validate:
         - eq: [status_code, 200]
         - type_match: [content, object]
         - type_match: [content.items, list]
         - type_match: [content.items.0.materials, list]
 
-
 - test:
     skipIf: ${is_production()}
-    name: 获取发货单列表-通过发货状态查询-states存在
-    base_url: ${get_shipping_service_host()}
+    name: 已登录内部账号系统-获取发货单列表-通过发货状态查询-states存在
+    base_url: ${ENV(transaction_admin_api_host)}
     request:
         method: GET
         url: /shipping/list?states=SUCCESS
+        headers:
+            Authorization: ${internal_source_user_login_token()}
     validate:
         - eq: [status_code, 200]
         - type_match: [content, object]

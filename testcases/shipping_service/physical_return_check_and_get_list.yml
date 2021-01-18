@@ -298,4 +298,4 @@
         url: /after_sales/$afterSaleId
     validate:
         - eq: [status_code, 200]
-        - eq: [content.state, "20000"]
+        - eq: [content.state, "AWAITING_REFUND"]

@@ -235,7 +235,7 @@
         url: /after_sales/$afterSaleId
     validate:
         - eq: [status_code, 200]
-        - eq: [content.state, "20000"]
+        - eq: [content.state, "AWAITING_REFUND"]
     extract:
         - afterSalesState: content.state
 
@@ -397,5 +397,5 @@
         method: GET
         url: /after_sales/$afterSaleId
     validate:
-        - eq: [content.state, "100000"]
-        - eq: [content.refundState, "20004"]
+        - eq: [content.state, "COMPLETED"]
+        - eq: [content.refundState, "REFUNDED"]

@@ -1,5 +1,5 @@
 - config:
-    name: 退款组合：创建退款单-查询退款申请单/退款单-通过退款申请单id获取退款单-查询退款申请单/退款单详情-手动退款-检查售后状态和退款状态
+    name: 测试组合：创建订单(虚拟)-创建售后单(退货退款)-业务经理审核-业务负责人审核-财务会计审核
     base_url: ${ENV(transaction_admin_api_host)}
     variables:
         - existed_customerPhoneNumber: ${order_customerPhoneNumber_config()}
@@ -9,20 +9,18 @@
         - existed_total_discount: null
         - existed_handledById: ${order_handledById_config()}
         - existed_transactionNumber: ${gen_random_string(20)}
-        - existed_orderPlatform: ALIPAY
+        - existed_orderPlatform: TMALL
         - existed_actualPayment: 0.03
-        - existed_afterSaleType: 'RETURN_REFUND'
         - existed_applyExchangeAmount: 0
         - exsited_final: 1
-        - existed_issued: false
-        - unexsited_orderId: 123456
-        - unexsited_refundId: 12345678
+        - existed_afterSaleType: 'RETURN_REFUND'
+        - existed_issued: true
 
 
 - test:
     skipIf: ${is_production()}
     name: 已登录内部账号系统-创建普通订单(数据准备1)
-    base_url: ${ENV(order_service_host)}
+    base_url: ${get_order_service_host()}
     api: api/order_manage_service/create_order.yml
     variables:
         - placedMethod: BY_ADMIN
@@ -41,7 +39,7 @@
 - test:
     skipIf: ${is_production()}
     name: 已登录内部账号系统-上传支付凭证(数据准备2)
-    base_url: ${ENV(order_service_host)}
+    base_url: ${get_order_service_host()}
     skipUnless: ${eval_equal($create_order_status, 200)}
     api: api/order_manage_service/upload_payment.yml
     variables:
@@ -135,9 +133,9 @@
         - login_token: ${internal_source_user_login_token()}
         - actualRefundAmount: $existed_actualPayment
         - applyExchangeAmount: $existed_applyExchangeAmount
-        - afterSaleType: $existed_afterSaleType
         - final: $exsited_final
-        - issued: true
+        - afterSaleType: $existed_afterSaleType
+        - issued: $existed_issued
         - orderId: $create_order_orderId
         - materialNumber_1: $material_id_1
         - returnsCount_1: $material_count_1
@@ -159,7 +157,7 @@
     skipUnless: ${eval_equal($create_after_sales_status, 200)}
     request:
         method: PATCH
-        url: /after_sales/$afterSale_Id/review
+        url: /after_sales/$afterSale_Id/review?afterSaleState=AWAITING_BM_REVIEW
     json:
         remark: "业务经理审核通过"
         reviewPassed: true
@@ -181,6 +179,18 @@
         - login_token: ${internal_source_user_login_token()}
     validate:
         - eq: [status_code, 200]
+
+- test:
+    skipIf: ${is_production()}
+    name: 已登录内部账号系统-通过id获取售后单详情-检查售后单状态为AWAITING_BD_REVIEW
+    skipUnless: ${eval_equal($create_after_sales_status, 200)}
+    api: api/transaction_admin_api/get_after_sales_detail.yml
+    variables:
+        - afterSaleId: $afterSale_Id
+        - login_token: ${internal_source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.state, "AWAITING_BD_REVIEW"]
 
 
 - test:
@@ -205,11 +215,25 @@
     variables:
         - afterSaleState: AWAITING_ACCOUNTANT_REVIEW
         - afterSaleId: $afterSale_Id
-        - remark: "财务主管审核通过"
+        - remark: "会计审核通过"
         - reviewPassed: true
         - login_token: ${internal_source_user_login_token()}
     validate:
         - eq: [status_code, 200]
+
+- test:
+    setup_hooks:
+        - ${sleep_N_secs(1)}
+    skipIf: ${is_production()}
+    name: 已登录内部账号系统-通过id获取售后单详情-检查售后单状态为AWAITING_FD_REVIEW
+    skipUnless: ${eval_equal($create_after_sales_status, 200)}
+    api: api/transaction_admin_api/get_after_sales_detail.yml
+    variables:
+        - afterSaleId: $afterSale_Id
+        - login_token: ${internal_source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+
 
 - test:
     setup_hooks:
@@ -224,230 +248,3 @@
     validate:
         - eq: [status_code, 200]
         - eq: [content.state, "AWAITING_REFUND"]
-    extract:
-        - afterSalesState: content.state
-
-- test:
-    skipIf: ${is_production()}
-    name: 未登录-查询退款申请单列表
-    request:
-        method: GET
-        url: /refund/apply/search?orderId=$create_order_orderId
-    validate:
-        - eq: [status_code, 401]
-        - eq: [content.error_code, "10020005"]
-       
-
-- test:
-    skipIf: ${is_production()}
-    name: 已登录-查询退款申请单列表-通过orderid查询-orderid存在
-    skipUnless: ${eval_equal($afterSalesState, 'AWAITING_REFUND')}
-    request:
-        method: GET
-        url: /refund/apply/search?orderId=$create_order_orderId
-        headers:
-            Authorization: ${internal_source_user_login_token()}
-    validate:
-        - eq: [status_code, 200]
-        - type_match: [content, object]
-        - type_match: [content.items, list]
-        - type_match: [content.items.0, object]
-        - length_equals: [content.items.0, 13]
-    extract:
-        - refundApply_Id: content.items.0.refundApplyId
-
-
-- test:
-    skipIf: ${is_production()}
-    name: 已登录-查询退款申请单列表-通过orderid查询-orderid不存在
-    skipUnless: ${eval_equal($afterSalesState, 'AWAITING_REFUND')}
-    request:
-        method: GET
-        url: /refund/apply/search?orderId=$unexsited_orderId
-        headers:
-            Authorization: ${internal_source_user_login_token()}
-    validate:
-        - eq: [status_code, 200]
-        - type_match: [content, object]
-        - type_match: [content.items, list]
-        - length_equals: [content.items, 0]
-
-- test:
-    skipIf: ${is_production()}
-    name: 未登录-查询退款申请单详情
-    request:
-        method: GET
-        url: /refund/apply/$refundApply_Id  
-    validate:
-        - eq: [status_code, 401]
-        - eq: [content.error_code, "10020005"]
-
-- test:
-    skipIf: ${is_production()}
-    name: 已登录-查询退款申请单详情-refundApplyId存在
-    skipUnless: ${eval_equal($afterSalesState, 'AWAITING_REFUND')}
-    request:
-        method: GET
-        url: /refund/apply/$refundApply_Id  
-        headers:
-            Authorization: ${internal_source_user_login_token()}
-    validate:
-        - eq: [status_code, 200]
-        - type_match: [content, object]
-        - type_match: [content.consumer, object]
-        - type_match: [content.refunds, list]
-        - length_equals: [content, 8]
-        - length_equals: [content.consumer, 3]
-        - length_equals: [content.refunds.0, 10]
-
-- test:
-    skipIf: ${is_production()}
-    name: 已登录-查询退款申请单详情-refundApplyId不存在
-    skipUnless: ${eval_equal($afterSalesState, 'AWAITING_REFUND')}
-    request:
-        method: GET
-        url: /refund/apply/123456
-        headers:
-            Authorization: ${internal_source_user_login_token()}  
-    validate:
-        - eq: [status_code, 422]
-        - eq: [content.error_code, "10021009"]
-
-- test:
-    skipIf: ${is_production()}
-    name: 未登录-查询退款单列表
-    request:
-        method: GET
-        url: /refund/search?refundApplyIds=$refundApply_Id
-    validate:
-        - eq: [status_code, 401]
-        - eq: [content.error_code, "10020005"]
-
-
-- test:
-    skipIf: ${is_production()}
-    name: 已登录-查询退款单列表-通过refundApplyId查询-refundApplyId存在
-    skipUnless: ${eval_equal($afterSalesState, 'AWAITING_REFUND')}
-    request:
-        method: GET
-        url: /refund/search?refundApplyIds=$refundApply_Id
-        headers:
-            Authorization: ${internal_source_user_login_token()}
-    validate:
-        - eq: [status_code, 200]
-        - type_match: [content, object]
-        - type_match: [content.items, list] 
-        - type_match: [content.items.0, object]
-        - length_equals: [content.items.0, 18]
-    extract:
-        - refund_Id: content.items.0.refundId
-
-- test:
-    skipIf: ${is_production()}
-    name: 未登录-查询退款单详情
-    request:
-        method: GET
-        url: /refund/$refund_Id  
-    validate:
-        - eq: [status_code, 401]
-        - eq: [content.error_code, "10020005"]
-
-- test:
-    skipIf: ${is_production()}
-    name: 已登录-查询退款单详情-refundId存在
-    skipUnless: ${eval_equal($afterSalesState, 'AWAITING_REFUND')}
-    request:
-        method: GET
-        url: /refund/$refund_Id 
-        headers:
-            Authorization: ${internal_source_user_login_token()} 
-    validate:
-        - eq: [status_code, 200]
-        - type_match: [content, object]
-        - type_match: [content.consumer, object] 
-        - type_match: [content.refundInfo, object]
-        - length_equals: [content.consumer, 3]
-        - length_equals: [content.refundInfo, 10]
-
-- test:
-    skipIf: ${is_production()}
-    name: 已登录-查询退款单详情-refundId不存在
-    skipUnless: ${eval_equal($afterSalesState, 'AWAITING_REFUND')}
-    request:
-        method: GET
-        url: /refund/12345678
-        headers:
-            Authorization: ${internal_source_user_login_token()}
-    validate:
-        - eq: [status_code, 422]
-        - eq: [content.error_code, "10021010"]
-
-- test:
-    skipIf: ${is_production()}
-    name: 未登录-手动退款
-    request:
-        method: POST
-        url: /refund/manual
-        json:
-            refundId: $refund_Id
-            refundState: COMPLETED
-    validate:
-        - eq: [status_code, 401]
-        - eq: [content.error_code, "10020005"]
-
-- test:
-    skipIf: ${is_production()}
-    name: 已登录-手动退款-refundId存在
-    skipUnless: ${eval_equal($afterSalesState, 'AWAITING_REFUND')}
-    request:
-        method: POST
-        url: /refund/manual
-        headers:
-            Authorization: ${internal_source_user_login_token()}
-        json:
-            refundId: $refund_Id
-            refundState: COMPLETED
-    validate:
-        - eq: [status_code, 200]
-    extract:
-        - refund_status: status_code
-
-- test:
-    skipIf: ${is_production()}
-    name: 已登录-手动退款-refundId不存在
-    skipUnless: ${eval_equal($afterSalesState, 'AWAITING_REFUND')}
-    request:
-        method: POST
-        url: /refund/manual
-        headers:
-            Authorization: ${internal_source_user_login_token()}
-        json:
-            refundId: $unexsited_refundId
-            refundState: COMPLETED
-    validate:
-        - eq: [status_code, 422]
-        - eq: [content.error_code, "10022020"]
-
-- test:
-    skipIf: ${is_production()}
-    name: 查询售后单详情-售后状态是否为COMPLETED
-    skipUnless: ${eval_equal($refund_status, 200)}
-    request:
-        method: GET
-        url: /after_sales/$afterSale_Id/details
-        headers:
-            Authorization: ${internal_source_user_login_token()}
-    validate:
-        - eq: [content.state, "COMPLETED"]
-
-- test:
-    skipIf: ${is_production()}
-    name: 查询退款单详情-退款单状态是否为COMPLETED
-    skipUnless: ${eval_equal($refund_status, 200)}
-    request:
-        method: GET
-        url: /refund/search?refundApplyIds=$refundApply_Id
-        headers:
-            Authorization: ${internal_source_user_login_token()}
-    validate:
-        - eq: [content.items.0.refundState, "COMPLETED"]

@@ -1,0 +1,82 @@
+- config:
+    name: 新增协议
+    base_url: ${ENV(transaction_admin_api_host)}
+    variables:
+        - existed_name: '编程猫协议'
+        - existed_content_url: 'https://static-platform.codemao.cn/agreements/transaction/services.html'
+        - unexisted_name: ${gen_random_string(41)}
+        - Duplicated_name: '编程猫用户服务协议'
+        - unexisted_content_url: ${gen_random_string(191)}
+
+- test:
+    name: 已登录内部账号系统-新增协议-未传name-新增失败
+    request:
+        method: POST
+        url: /products/terms
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+        json:
+            content_url: $existed_content_url
+    validate:
+        - eq: [status_code, 400]
+
+- test:
+    name: 已登录内部账号系统-新增协议-未传content_url-新增失败
+    request:
+        method: POST
+        url: /products/terms
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+        json:
+            name: '编程猫协议'
+    validate:
+        - eq: [status_code, 400]
+
+- test:
+    name: 已登录内部账号系统-新增协议-name超过40字符-新增失败
+    request:
+        method: POST
+        url: /products/terms
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+        json:
+            name: $unexisted_name
+            content_url: $existed_content_url
+    validate:
+        - eq: [status_code, 400]
+
+- test:
+    name: 已登录内部账号系统-新增协议-name已存在-新增失败
+    request:
+        method: POST
+        url: /products/terms
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+        json:
+            name: $Duplicated_name
+            content_url: $existed_content_url
+    validate:
+        - eq: [status_code, 400]
+
+- test:
+    name: 已登录内部账号系统-新增协议-content_url字符超过190-新增失败
+    request:
+        method: POST
+        url: /products/terms
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+        json:
+            name: $existed_name
+            content_url: $unexisted_content_url
+    validate:
+        - eq: [status_code, 400]
+
+- test:
+    name: 未登录内部账号系统-获取协议列表
+    request:
+        method: GET
+        url: /products/terms/all
+        headers:
+    validate:
+        - eq: [status_code, 401]
+        - eq: [content.error_code, '10020005']

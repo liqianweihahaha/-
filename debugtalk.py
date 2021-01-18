@@ -204,6 +204,16 @@ sku_deposit_config = read_config.sku_deposit(TEST_ENV)
 def sku_number_deposit():
     return sku_deposit_config.get('sku_number')
 
+# 获取商品属性配置信息
+attribute_config = read_config.attribute(TEST_ENV)
+
+def attribute_id():
+    return attribute_config.get('id')
+
+def attribute_value_id():
+    return attribute_config.get('value_id')
+    
+
 # 读取order配置信息
 order_config = read_config.order(TEST_ENV)
 
@@ -225,14 +235,17 @@ def order_handledByName_config():
 def has_track_shippingId_config():
     return order_config.get('shippingId')
 
+def firstdepartmentId():
+    return order_config.get('firstDepartmentId')
+
 # 随机生成交易流水号
 def random_transaction_number():
     return "AutoTestTransaction"+str(int(time.time()))
 
 #获取开始时间戳
 def get_start_timestamp():
-    return str(int(time.time())+1000)
+    return str(int(time.time())-5000)
 
-#获取开始结束戳
+#获取结束时间戳
 def get_end_timestamp():
     return str(int(time.time())+5000)

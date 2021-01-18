@@ -22,3 +22,8 @@ sku_physical:
 sku_deposit:
   sku_number: '196919000001'
   spu_number: G196919000
+
+#商品属性
+attribute:
+  id: 1
+  value_id: 2

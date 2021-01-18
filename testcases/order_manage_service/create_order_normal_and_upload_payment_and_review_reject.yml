@@ -74,6 +74,8 @@
         - bm_review_status_code: status_code   
 
 - test:
+    setup_hooks:
+        - ${sleep_N_secs(2)}
     skipIf: ${is_production()}
     name: 通过订单id查询付款单列表
     base_url:  ${get_payment_service_host()}

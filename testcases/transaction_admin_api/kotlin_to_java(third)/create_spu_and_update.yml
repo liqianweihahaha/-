@@ -1,0 +1,241 @@
+- config:
+    name: 组合：创建spu-编辑spu
+    base_url: ${ENV(transaction_admin_api_host)}
+    variables:
+        - existed_category_id: 1
+        - existed_department_id: 1
+        - existed_number: 2
+        - existed_status: "DELETED"
+        - existed_title: ${gen_random_string(10)}
+        - existed_type: VIRTUAL
+        - unexisted_type: aaa
+        - unexisted_title: ${gen_random_string(61)}
+        - unexisted_category_id: 11111
+        - unexisted_department_id: 100000
+        - unexisted_spu_number: G11111
+
+
+- test:
+    skipIf: ${is_production()}
+    name: 已登录内部账号-创建spu-type不存在-创建失败
+    request:
+        method: POST
+        url: /products/spu
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+        json:
+            category_id: $existed_category_id
+            department_id: $existed_department_id
+            type: $unexisted_type
+            title: $existed_title
+    validate:
+        - eq: [status_code, 400]
+
+- test:
+    skipIf: ${is_production()}
+    name: 已登录内部账号-创建spu-title超过60字符-创建失败
+    request:
+        method: POST
+        url: /products/spu
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+        json:
+            category_id: $existed_category_id
+            department_id: $existed_department_id
+            type: $existed_type
+            title: $unexisted_title
+    validate:
+        - eq: [status_code, 400]
+
+- test:
+    skipIf: ${is_production()}
+    name: 已登录内部账号-创建spu-category_id不存在-创建失败
+    request:
+        method: POST
+        url: /products/spu
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+        json:
+            category_id: $unexisted_category_id
+            department_id: $existed_department_id
+            type: $existed_type
+            title: $existed_title
+    validate:
+        - eq: [status_code, 422]
+        - eq: [content.error_code, '10016005']
+
+- test:
+    skipIf: ${is_production()}
+    name: 已登录内部账号-创建spu-department_id不存在-创建失败
+    request:
+        method: POST
+        url: /products/spu
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+        json:
+            category_id: $existed_category_id
+            department_id: $unexisted_department_id
+            type: $existed_type
+            title: $existed_title
+    validate:
+        - eq: [status_code, 400]
+
+
+- test:
+    skipIf: ${is_production()}
+    name: 未登录内部账号-创建spu-参数都正确-创建失败
+    request:
+        method: POST
+        url: /products/spu
+        json:
+            category_id: $existed_category_id
+            department_id: $existed_department_id
+            type: $existed_type
+            title: $existed_title
+    validate:
+        - eq: [status_code, 401]
+        - eq: [content.error_code, '10020005']
+
+- test:
+    skipIf: ${is_production()}
+    name: 已登录内部账号-创建spu-参数都正确-创建成功
+    request:
+        method: POST
+        url: /products/spu
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+        json:
+            category_id: $existed_category_id
+            department_id: $existed_department_id
+            type: $existed_type
+            title: $existed_title
+    validate:
+        - eq: [status_code, 200]
+        - startswith: [content, "G"]
+    extract:
+        - spu_number: content
+
+- test:
+    skipIf: ${is_production()}
+    name: 已登录内部账号-编辑spu-参数都正确-更新成功
+    request:
+        method: PUT
+        url: /products/spu/$spu_number
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+        json:
+            category_id: $existed_category_id
+            department_id: $existed_department_id
+            type: $existed_type
+            title: $existed_title
+    validate:
+        - eq: [status_code, 200]
+
+
+- test:
+    skipIf: ${is_production()}
+    name: 已登录内部账号-编辑spu-spu_number不存在-更新失败
+    request:
+        method: PUT
+        url: /products/spu/$unexisted_spu_number
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+        json:
+            category_id: $existed_category_id
+            department_id: $existed_department_id
+            type: $existed_type
+            title: $existed_title
+    validate:
+        - eq: [status_code, 200]
+
+- test:
+    skipIf: ${is_production()}
+    name: 已登录内部账号-编辑spu-category_id不存在-更新失败
+    request:
+        method: PUT
+        url: /products/spu/$spu_number
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+        json:
+            category_id: $unexisted_category_id
+            department_id: $existed_department_id
+            type: $existed_type
+            title: $existed_title
+    validate:
+        - eq: [status_code, 422]
+
+- test:
+    skipIf: ${is_production()}
+    name: 已登录内部账号-编辑spu-department_id不存在-更新失败
+    request:
+        method: PUT
+        url: /products/spu/$spu_number
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+        json:
+            category_id: $existed_category_id
+            department_id: $unexisted_department_id
+            type: $existed_type
+            title: $existed_title
+    validate:
+        - eq: [status_code, 400]
+
+- test:
+    skipIf: ${is_production()}
+    name: 已登录内部账号-编辑spu-type不存在-更新失败
+    request:
+        method: PUT
+        url: /products/spu/$spu_number
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+        json:
+            category_id: $existed_category_id
+            department_id: $existed_department_id
+            type: $unexisted_type
+            title: $existed_title
+    validate:
+        - eq: [status_code, 400]
+
+- test:
+    skipIf: ${is_production()}
+    name: 已登录内部账号-编辑spu-title超过60字符-更新失败
+    request:
+        method: PUT
+        url: /products/spu/$spu_number
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+        json:
+            category_id: $existed_category_id
+            department_id: $existed_department_id
+            type: $existed_type
+            title: $unexisted_title
+    validate:
+        - eq: [status_code, 400]
+
+- test:
+    skipIf: ${is_production()}
+    name: 未登录内部账号-编辑spu-参数都正确-更新失败
+    request:
+        method: PUT
+        url: /products/spu/$spu_number
+        json:
+            category_id: $existed_category_id
+            department_id: $existed_department_id
+            type: $existed_type
+            title: $existed_title
+    validate:
+        - eq: [status_code, 401]
+        - eq: [content.error_code, '10020005']
+
+- test:
+    skipIf: ${is_production()}
+    name: 已登录内部账号-删除spu-spuNumber存在-删除成功
+    request:
+        method: PATCH
+        url: /products/spu/$spu_number/status
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+        json:
+            status: 'DELETED'
+    validate:
+        - eq: [status_code, 200]

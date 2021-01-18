@@ -1,0 +1,237 @@
+- config:
+    name: 获取售后单列表
+    base_url: ${ENV(transaction_admin_api_host)}
+    variables:
+        - existed_customerPhoneNumber: ${order_customerPhoneNumber_config()}
+        - existed_skuNumber: ${sku_number_config()}
+        - existed_customerId: ${order_customerId_config()}
+        - existed_placedBy: ${order_placedBy_config()}
+        - existed_total_discount: null
+        - existed_handledById: ${order_handledById_config()}
+        - existed_orderPlatform: ALIPAY
+        - existed_afterSaleType: 'RETURN_REFUND'
+        - existed_issued: false
+        - existed_orderType: NORMAL
+        - existed_owner: '聂亚运'
+        - unexisted_afterSaleStates: 'COMPLETED'
+        - unexisted_actualPayment: 100
+        - unexisted_orderId: 123456
+        - unexisted_afterSaleType: "aaaaa"
+        - unexisted_afterSaleId: 123456
+        - unexisted_ownerId: ""
+        - unexisted_materialNumber: "SU000000"
+        - unexisted_returnsCount: 10000
+        - unexisted_shippingId: "S191200000000000"
+        - unexisted_skuNumber: "1111111111111"
+        - unexisted_customerId: 123456
+        - unexisted_customerPhoneNumber: 15511111111
+        - unexisted_owner: 'testtest'
+
+- test:
+    skipIf: ${is_production()}
+    name: 未登录内部账号系统-获取售后单列表-不带任何参数
+    request:
+        method: GET
+        url: /after_sales
+    validate:
+        - eq: [status_code, 401]
+        - eq: [content.error_code, '10020005']
+
+
+- test:
+    skipIf: ${is_production()}
+    name: 已登录-获取售后单列表-不带任何参数
+    request:
+        method: GET
+        url: /after_sales
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, object]
+        - type_match: [content.items, list]
+        - length_equals: [content.items.0, 20]
+    extract:
+        - afterSale_Id: content.items.0.afterSaleId
+        - order_Id: content.items.0.orderId
+
+
+- test:
+    skipIf: ${is_production()}
+    name: 已登录-获取售后单列表-售后ID查询-ID存在
+    request:
+        method: GET
+        url: /after_sales?afterSaleId=$afterSale_Id
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, object]
+        - type_match: [content.items, list]
+        - eq: [content.items.0.afterSaleId, $afterSale_Id]
+        - length_equals: [content.items, 1]
+
+
+- test:
+    skipIf: ${is_production()}
+    name: 已登录-获取售后单列表-订单ID查询-ID存在
+    request:
+        method: GET
+        url: /after_sales?orderId=$order_Id
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, object]
+        - type_match: [content.items, list]
+        - eq: [content.items.0.orderId, $order_Id]
+        - length_equals: [content.items, 1]
+
+
+- test:
+    skipIf: ${is_production()}
+    name: 已登录-获取售后单列表-customerId查询-customerId存在
+    request:
+        method: GET
+        url: /after_sales?customerId=$existed_customerId
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, object]
+        - type_match: [content.items, list]
+
+
+- test:
+    skipIf: ${is_production()}
+    name: 已登录-获取售后单列表-customerId查询-customerId不存在
+    request:
+        method: GET
+        url: /after_sales?customerId=$unexisted_customerId
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, object]
+        - type_match: [content.items, list]
+        - length_equals: [content.items, 0]
+
+- test:
+    skipIf: ${is_production()}
+    name: 已登录-获取售后单列表-orderType查询-orderType存在
+    request:
+        method: GET
+        url: /after_sales?orderType=$existed_orderType
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, object]
+        - type_match: [content.items, list]
+
+- test:
+    skipIf: ${is_production()}
+    name: 已登录-获取售后单列表-afterSaleType查询-afterSaleType存在
+    request:
+        method: GET
+        url: /after_sales?afterSaleType=$existed_afterSaleType
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, object]
+        - type_match: [content.items, list]
+
+- test:
+    skipIf: ${is_production()}
+    name: 已登录-获取售后单列表-customerPhoneNumber查询-customerPhoneNumber存在
+    request:
+        method: GET
+        url: /after_sales?customerPhoneNumber=$existed_customerPhoneNumber
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, object]
+        - type_match: [content.items, list]
+
+- test:
+    skipIf: ${is_production()}
+    name: 已登录-获取售后单列表-customerPhoneNumber查询-customerPhoneNumber不存在
+    request:
+        method: GET
+        url: /after_sales?customerPhoneNumber=$unexisted_customerPhoneNumber
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, object]
+        - type_match: [content.items, list]
+        - length_equals: [content.items, 0]
+
+- test:
+    skipIf: ${is_production()}
+    name: 已登录-获取售后单列表-afterSaleStates查询-afterSaleStates存在
+    request:
+        method: GET
+        url: /after_sales?afterSaleStates=$unexisted_afterSaleStates
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, object]
+        - type_match: [content.items, list]
+
+
+- test:
+    skipIf: ${is_production()}
+    name: 已登录-获取售后单列表-owner查询-owner存在
+    request:
+        method: GET
+        url: /after_sales?owner=$existed_owner
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, object]
+        - type_match: [content.items, list]
+
+- test:
+    skipIf: ${is_production()}
+    name: 已登录-获取售后单列表-owner查询-owner不存在
+    request:
+        method: GET
+        url: /after_sales?owner=$unexisted_owner
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, object]
+        - type_match: [content.items, list]
+        - length_equals: [content.items, 0]
+
+- test:
+    skipIf: ${is_production()}
+    name: 已登录-获取售后单列表-firstDepartmentId查询-firstDepartmentId存在
+    request:
+        method: GET
+        url: /after_sales?firstDepartmentId=${firstdepartmentId()}
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, object]
+        - type_match: [content.items, list]
+
+- test:
+    skipIf: ${is_production()}
+    name: 已登录-获取售后单列表-申请时间段查询-issuedAtLowerBound、issuedAtUpperBound存在
+    request:
+        method: GET
+        url: /after_sales?issuedAtLowerBound=${get_start_timestamp()}&issuedAtUpperBound=${get_end_timestamp()}
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, object]
+        - type_match: [content.items, list]

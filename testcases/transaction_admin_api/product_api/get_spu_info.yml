@@ -62,5 +62,5 @@
         method: GET
         url: /products/spu/$created_virtual_spu_number/details
     validate:
-        - eq: [status_code, 403]
-        - eq: [content.error_code, '10020004']
+        - eq: [status_code, 401]
+        - eq: [content.error_code, '10020005']

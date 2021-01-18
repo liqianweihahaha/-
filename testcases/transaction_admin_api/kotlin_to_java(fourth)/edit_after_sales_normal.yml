@@ -1,0 +1,461 @@
+- config:
+    name: 测试组合：创建售后单-能否编辑售后单-售后单编辑预览-售后单编辑
+    base_url: ${ENV(transaction_admin_api_host)}
+    variables:
+        - existed_customerPhoneNumber: ${order_customerPhoneNumber_config()}
+        - existed_skuNumber: ${sku_number_config()}
+        - existed_customerId: ${order_customerId_config()}
+        - existed_placedBy: ${order_placedBy_config()}
+        - existed_total_discount: null
+        - existed_handledById: ${order_handledById_config()}
+        - existed_transactionNumber: ${gen_random_string(20)}
+        - existed_orderPlatform: ALIPAY
+        - existed_actualPayment: 0.03
+        - existed_applyExchangeAmount: 0
+        - exsited_final: 1
+        - existed_afterSaleType: 'RETURN_REFUND'
+        - existed_issued: false
+        - unexisted_actualPayment: 100
+        - unexisted_afterSaleId: 123456
+        - unexisted_orderId: 12345678
+        - unexisted_afterSaleType: "aaaaa"
+        - unexisted_ownerId: ""
+        - unexisted_materialNumber: "SU000000"
+        - unexisted_returnsCount: 10000
+        - unexisted_shippingId: "S191200000000000"
+        - unexisted_skuNumber: "1111111111111"
+
+- test:
+    skipIf: ${is_production()}
+    name: 创建普通订单(数据准备1)
+    base_url: ${get_order_service_host()}
+    api: api/order_manage_service/create_order.yml
+    variables:
+        - placedMethod: BY_ADMIN
+        - orderPlatform: $existed_orderPlatform
+        - customer_phone_number: $existed_customerPhoneNumber
+        - customer_id: $existed_customerId
+        - sku_number: $existed_skuNumber
+        - total_discount: $existed_total_discount
+    validate:
+        - eq: [status_code, 200]
+        - length_equals: [content.orderId, 20]
+    extract:
+        - create_order_status: status_code
+        - create_order_orderId: content.orderId
+
+- test:
+    skipIf: ${is_production()}
+    name: 上传支付凭证(数据准备2)
+    base_url: ${get_order_service_host()}
+    skipUnless: ${eval_equal($create_order_status, 200)}
+    api: api/order_manage_service/upload_payment.yml
+    variables:
+        - order_id: $create_order_orderId
+        - handledById: $existed_handledById
+        - transactionNumber: $existed_transactionNumber
+        - orderPlatform: $existed_orderPlatform
+        - actualPayment: $existed_actualPayment
+    validate:
+        - eq: [status_code, 200]
+    extract:
+        - upload_payment_status: status_code
+
+- test:
+    skipIf: ${is_production()}
+    setup_hooks:
+        - ${sleep_N_secs(3)} 
+    name: 业务审核付款审核单列表-获取paymentReviewId（数据准备3）
+    skipUnless: ${eval_equal($upload_payment_status, 200)}
+    request:
+        method: GET
+        url: /orders/payments/reviews/bm?orderIds=$create_order_orderId
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+    extract:
+        - paymentReviewId: content.items.0.paymentReviewId
+        - search_status_code: status_code
+
+
+- test:
+    skipIf: ${is_production()}
+    name: 业务审核通过(数据准备4)
+    skipUnless: ${eval_equal($search_status_code, 200)}
+    api: api/transaction_admin_api/bm_review_payment_reviews.yml
+    variables:
+        - orderId: $create_order_orderId
+        - paymentReviewId: $paymentReviewId
+        - reviewPassed: true
+        - login_token: ${internal_source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+    extract:
+        - bm_review_status_code: status_code
+
+- test:
+    skipIf: ${is_production()}
+    setup_hooks:
+        - ${sleep_N_secs(2)}
+    name: 财务经理审核通过（数据准备5）
+    skipUnless: ${eval_equal($bm_review_status_code, 200)}
+    api: api/transaction_admin_api/fm_review_payment_reviews.yml
+    variables:
+        - orderId: $create_order_orderId
+        - paymentReviewId: $paymentReviewId
+        - reviewPassed: true
+        - receivedAt: ${get_timestamp(10)}
+        - login_token: ${internal_source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+    extract:
+        - fm_review_status_code: status_code
+
+- test:
+    skipIf: ${is_production()} 
+    setup_hooks:
+        - ${sleep_N_secs(8)}   
+    name: 售后申请预览-获取物料发货单等信息（数据准备6）
+    skipUnless: ${eval_equal($fm_review_status_code, 200)}
+    request:
+        method: GET
+        url: /after_sales/previews/issuing?orderId=$create_order_orderId
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+    extract:
+        - issuing_status_code: status_code
+        - shipmentId_1: content.items.0.shippingId
+        - material_id_1: content.items.0.materialNumber
+        - material_count_1: content.items.0.returnableCount
+        - shipmentId_2: content.items.1.shippingId
+        - material_id_2: content.items.1.materialNumber
+        - material_count_2: content.items.1.returnableCount
+
+- test:
+    skipIf: ${is_production()}
+    name: 创建售后单（普通订单）-所有必填参数都填写正确-保存成功(数据准备7)
+    skipUnless: ${eval_equal($order_state, "COMPLETED")}
+    api: api/transaction_admin_api/create_after_sales_normal.yml
+    variables:
+        - login_token: ${internal_source_user_login_token()}
+        - actualRefundAmount: $existed_actualPayment
+        - applyExchangeAmount: $existed_applyExchangeAmount
+        - final: $exsited_final
+        - afterSaleType: $existed_afterSaleType
+        - issued: false
+        - orderId: $create_order_orderId
+        - materialNumber_1: $material_id_1
+        - returnsCount_1: $material_count_1
+        - shippingId_1: $shipmentId_1
+        - skuNumber_1: $existed_skuNumber
+        - materialNumber_2: $material_id_2
+        - returnsCount_2: $material_count_2
+        - shippingId_2: $shipmentId_2
+        - skuNumber_2: $existed_skuNumber
+    validate:
+        - eq: [status_code, 200]
+    extract:
+        - afterSale_Id: content.afterSaleId
+        - create_after_sales_status: status_code
+
+- test:
+    skipIf: ${is_production()}
+    name: 未登录-能否编辑售后单-售后单存在/且售后单状态为待处理-可以编辑
+    skipUnless: ${eval_equal($create_after_sales_status, 200)}
+    request:
+        method: GET
+        url: /after_sales/$afterSale_Id/editable
+    validate:
+        - eq: [status_code, 401]
+        - eq: [content.error_code, '10020005']
+
+- test:
+    skipIf: ${is_production()}
+    name: 已登录-能否编辑售后单-售后单存在/且售后单状态为待处理-可以编辑
+    skipUnless: ${eval_equal($create_after_sales_status, 200)}
+    request:
+        method: GET
+        url: /after_sales/$afterSale_Id/editable
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+        - eq: [content.editable, true]
+
+- test:
+    skipIf: ${is_production()}
+    name: 已登录-能否编辑售后单-售后单不存在-不可以编辑
+    skipUnless: ${eval_equal($create_after_sales_status, 200)}
+    request:
+        method: GET
+        url: /after_sales/$unexisted_afterSaleId/editable
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+    validate:
+        - eq: [status_code, 422]
+        - eq: [content.error_code, "10017031"]
+
+- test:
+    skipIf: ${is_production()}
+    name: 已登录-售后编辑预览-afterSaleId存在-可以预览
+    request:
+        method: GET
+        url: /after_sales/$afterSale_Id/previews/editing
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, object]
+        - type_match: [content.items, list]
+        - length_equals: [content, 17]
+        - length_equals: [content.afterSaleReason, 3]
+        - length_equals: [content.items.0, 17]
+
+- test:
+    skipIf: ${is_production()}
+    name: 已登录-售后编辑预览-afterSaleId不存在-可以预览
+    request:
+        method: GET
+        url: /after_sales/$unexisted_afterSaleId/previews/editing
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+    validate:
+        - eq: [status_code, 422]
+        - eq: [content.error_code, '10021007']
+
+
+- test:
+    skipIf: ${is_production()}
+    name: 已登录-编辑售后单（普通订单）-所有必填参数都填写正确-保存成功
+    skipUnless: ${eval_equal($create_after_sales_status, 200)}
+    api: api/transaction_admin_api/edit_after_sales_normal.yml
+    variables:
+        - login_token: ${internal_source_user_login_token()}
+        - afterSaleId: $afterSale_Id
+        - orderId: $create_order_orderId
+        - actualRefundAmount: $existed_actualPayment
+        - applyExchangeAmount: $existed_applyExchangeAmount
+        - final: $exsited_final
+        - afterSaleType: $existed_afterSaleType
+        - issued: false
+        - materialNumber_1: $material_id_1
+        - returnsCount_1: $material_count_1
+        - shippingId_1: $shipmentId_1
+        - skuNumber_1: $existed_skuNumber
+        - materialNumber_2: $material_id_2
+        - returnsCount_2: $material_count_2
+        - shippingId_2: $shipmentId_2
+        - skuNumber_2: $existed_skuNumber
+    validate:
+        - eq: [status_code, 200]
+
+- test:
+    skipIf: ${is_production()}
+    name: 已登录-编辑售后单（普通订单）-afterSaleId不存在-保存失败
+    skipUnless: ${eval_equal($create_after_sales_status, 200)}
+    api: api/transaction_admin_api/edit_after_sales_normal.yml
+    variables:
+        - login_token: ${internal_source_user_login_token()}
+        - afterSaleId: $unexisted_afterSaleId
+        - orderId: $create_order_orderId
+        - actualRefundAmount: $existed_actualPayment
+        - applyExchangeAmount: $existed_applyExchangeAmount
+        - final: $exsited_final
+        - afterSaleType: $existed_afterSaleType
+        - issued: false
+        - materialNumber_1: $material_id_1
+        - returnsCount_1: $material_count_1
+        - shippingId_1: $shipmentId_1
+        - skuNumber_1: $existed_skuNumber
+        - materialNumber_2: $material_id_2
+        - returnsCount_2: $material_count_2
+        - shippingId_2: $shipmentId_2
+        - skuNumber_2: $existed_skuNumber
+    validate:
+        - eq: [status_code, 422]
+        - eq: [content.error_code, "10017031"]
+
+
+- test:
+    skipIf: ${is_production()}
+    name: 已登录-编辑售后单（普通订单）-申请售后金额>可退金额-保存失败
+    skipUnless: ${eval_equal($create_after_sales_status, 200)}
+    api: api/transaction_admin_api/edit_after_sales_normal.yml
+    variables:
+        - login_token: ${internal_source_user_login_token()}
+        - afterSaleId: $afterSale_Id
+        - orderId: $create_order_orderId
+        - actualRefundAmount: $unexisted_actualPayment
+        - applyExchangeAmount: $existed_applyExchangeAmount
+        - final: $exsited_final
+        - afterSaleType: $existed_afterSaleType
+        - issued: false
+        - materialNumber_1: $material_id_1
+        - returnsCount_1: $material_count_1
+        - shippingId_1: $shipmentId_1
+        - skuNumber_1: $existed_skuNumber
+        - materialNumber_2: $material_id_2
+        - returnsCount_2: $material_count_2
+        - shippingId_2: $shipmentId_2
+        - skuNumber_2: $existed_skuNumber
+    validate:
+        - eq: [status_code, 422]
+        - eq: [content.error_code, "10017028"]
+
+- test:
+    skipIf: ${is_production()}
+    name: 已登录-编辑售后单（普通订单）-售后类型不存在-保存失败
+    skipUnless: ${eval_equal($create_after_sales_status, 200)}
+    api: api/transaction_admin_api/edit_after_sales_normal.yml
+    variables:
+        - login_token: ${internal_source_user_login_token()}
+        - afterSaleId: $afterSale_Id
+        - orderId: $create_order_orderId
+        - actualRefundAmount: $existed_actualPayment
+        - applyExchangeAmount: $existed_applyExchangeAmount
+        - final: $exsited_final
+        - afterSaleType: $unexisted_afterSaleType
+        - issued: false
+        - materialNumber_1: $material_id_1
+        - returnsCount_1: $material_count_1
+        - shippingId_1: $shipmentId_1
+        - skuNumber_1: $existed_skuNumber
+        - materialNumber_2: $material_id_2
+        - returnsCount_2: $material_count_2
+        - shippingId_2: $shipmentId_2
+        - skuNumber_2: $existed_skuNumber
+    validate:
+        - eq: [status_code, 400]
+        - eq: [content.error_code, "Message-Unreadable@Common"]
+
+- test:
+    skipIf: ${is_production()}
+    name: 已登录-编辑售后单（普通订单）-materialNumber不存在-保存失败
+    skipUnless: ${eval_equal($create_after_sales_status, 200)}
+    api: api/transaction_admin_api/edit_after_sales_normal.yml
+    variables:
+        - login_token: ${internal_source_user_login_token()}
+        - afterSaleId: $afterSale_Id
+        - orderId: $create_order_orderId
+        - actualRefundAmount: $existed_actualPayment
+        - applyExchangeAmount: $existed_applyExchangeAmount
+        - final: $exsited_final
+        - afterSaleType: $existed_afterSaleType
+        - issued: false
+        - materialNumber_1: $unexisted_materialNumber
+        - returnsCount_1: $material_count_1
+        - shippingId_1: $shipmentId_1
+        - skuNumber_1: $existed_skuNumber
+        - materialNumber_2: $material_id_2
+        - returnsCount_2: $material_count_2
+        - shippingId_2: $shipmentId_2
+        - skuNumber_2: $existed_skuNumber
+    validate:
+        - eq: [status_code, 422]
+        - eq: [content.error_code, "10017027"]
+
+- test:
+    skipIf: ${is_production()}
+    name: 已登录-编辑售后单（普通订单）-申请售后数量>可退数量-保存失败
+    skipUnless: ${eval_equal($create_after_sales_status, 200)}
+    api: api/transaction_admin_api/edit_after_sales_normal.yml
+    variables:
+        - login_token: ${internal_source_user_login_token()}
+        - afterSaleId: $afterSale_Id
+        - orderId: $create_order_orderId
+        - actualRefundAmount: $existed_actualPayment
+        - applyExchangeAmount: $existed_applyExchangeAmount
+        - final: $exsited_final
+        - afterSaleType: $existed_afterSaleType
+        - issued: false
+        - materialNumber_1: $material_id_1
+        - returnsCount_1: $unexisted_returnsCount
+        - shippingId_1: $shipmentId_1
+        - skuNumber_1: $existed_skuNumber
+        - materialNumber_2: $material_id_2
+        - returnsCount_2: $material_count_2
+        - shippingId_2: $shipmentId_2
+        - skuNumber_2: $existed_skuNumber
+    validate:
+        - eq: [status_code, 422]
+        - eq: [content.error_code, "10017029"]
+
+- test:
+    skipIf: ${is_production()}
+    name: 已登录-编辑售后单（普通订单）-申请售后数量等于0-保存成功
+    skipUnless: ${eval_equal($create_after_sales_status, 200)}
+    api: api/transaction_admin_api/edit_after_sales_normal.yml
+    variables:
+        - login_token: ${internal_source_user_login_token()}
+        - afterSaleId: $afterSale_Id
+        - orderId: $create_order_orderId
+        - actualRefundAmount: $existed_actualPayment
+        - applyExchangeAmount: $existed_applyExchangeAmount
+        - final: $exsited_final
+        - afterSaleType: $existed_afterSaleType
+        - issued: false
+        - materialNumber_1: $material_id_1
+        - returnsCount_1: 0
+        - shippingId_1: $shipmentId_1
+        - skuNumber_1: $existed_skuNumber
+        - materialNumber_2: $material_id_2
+        - returnsCount_2: $material_count_2
+        - shippingId_2: $shipmentId_2
+        - skuNumber_2: $existed_skuNumber
+    validate:
+        - eq: [status_code, 200]
+
+- test:
+    skipIf: ${is_production()}
+    name: 已登录-编辑售后单（普通订单）-shippingId不存在-保存失败
+    skipUnless: ${eval_equal($create_after_sales_status, 200)}
+    api: api/transaction_admin_api/edit_after_sales_normal.yml
+    variables:
+        - login_token: ${internal_source_user_login_token()}
+        - afterSaleId: $afterSale_Id
+        - orderId: $create_order_orderId
+        - actualRefundAmount: $existed_actualPayment
+        - applyExchangeAmount: $existed_applyExchangeAmount
+        - final: $exsited_final
+        - afterSaleType: $existed_afterSaleType
+        - issued: false
+        - materialNumber_1: $material_id_1
+        - returnsCount_1: $material_count_1
+        - shippingId_1: $unexisted_shippingId
+        - skuNumber_1: $existed_skuNumber
+        - materialNumber_2: $material_id_2
+        - returnsCount_2: $material_count_2
+        - shippingId_2: $shipmentId_2
+        - skuNumber_2: $existed_skuNumber
+    validate:
+        - eq: [status_code, 422]
+        - eq: [content.error_code, "10017026"]
+
+- test:
+    skipIf: ${is_production()}
+    name: 已登录-编辑售后单（普通订单）-skuNumber不存在-保存失败
+    skipUnless: ${eval_equal($create_after_sales_status, 200)}
+    api: api/transaction_admin_api/edit_after_sales_normal.yml
+    variables:
+        - login_token: ${internal_source_user_login_token()}
+        - afterSaleId: $afterSale_Id
+        - orderId: $create_order_orderId
+        - actualRefundAmount: $existed_actualPayment
+        - applyExchangeAmount: $existed_applyExchangeAmount
+        - final: $exsited_final
+        - afterSaleType: $existed_afterSaleType
+        - issued: false
+        - materialNumber_1: $material_id_1
+        - returnsCount_1: $material_count_1
+        - shippingId_1: $shipmentId_1
+        - skuNumber_1: $unexisted_skuNumber
+        - materialNumber_2: $material_id_2
+        - returnsCount_2: $material_count_2
+        - shippingId_2: $shipmentId_2
+        - skuNumber_2: $existed_skuNumber
+    validate:
+        - eq: [status_code, 422]
+        - eq: [content.error_code, "10017007"]
