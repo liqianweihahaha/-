@@ -52,7 +52,7 @@
         url: /products/spu/$spu_number/sku/number?number=$existed_number
     validate:
         - eq: [status_code, 401]
-        - eq: [content.error_code, "10020004"]
+        - eq: [content.error_code, "10020005"]
 
 - test:
     skipIf: ${is_production()}
@@ -86,8 +86,8 @@
         method: DELETE
         url: /products/sku/$sku_number
     validate:
-        - eq: [status_code, 403]
-        - eq: [content.error_code, "10020004"]
+        - eq: [status_code, 401]
+        - eq: [content.error_code, "10020005"]
 
 - test:
     skipIf: ${is_production()}

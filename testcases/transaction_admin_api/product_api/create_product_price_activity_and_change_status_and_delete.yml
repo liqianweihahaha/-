@@ -223,7 +223,7 @@
 
 
 - test:
-    name: 已登录内部账号系统-删除活动-活动id不存在-成功失败
+    name: 已登录内部账号系统-删除活动-活动id不存在-删除失败
     request:
         method: DELETE
         url: /products/sku/prices/activities/$unexisted_activityId
@@ -236,7 +236,7 @@
         - eq: [content, false]
 
 - test:
-    name: 已登录内部账号系统-删除活动-活动id存在-成功成功
+    name: 已登录内部账号系统-删除活动-活动id存在-删除成功
     request:
         method: DELETE
         url: /products/sku/prices/activities/$activityId
