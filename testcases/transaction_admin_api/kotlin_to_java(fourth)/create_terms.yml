@@ -56,7 +56,7 @@
             name: $Duplicated_name
             content_url: $existed_content_url
     validate:
-        - eq: [status_code, 400]
+        - eq: [status_code, 500]
 
 - test:
     name: 已登录内部账号系统-新增协议-content_url字符超过190-新增失败

@@ -40,8 +40,6 @@
         - type_match: [content, object]
         - type_match: [content.resources, list]
         - type_match: [content.resources.0, object]
-        - length_equals: [content, 4]
-        - length_equals: [content.resources.0, 6]
 
 - test:
     name: 已登录内部账号系统-通过菜单ID获取所有资源权限-菜单id不存在

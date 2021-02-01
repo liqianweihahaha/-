@@ -110,7 +110,7 @@
         - type_match: [content, object]
         - type_match: [content.items, list]
         - type_match: [content.items.0.materials, list]
-        - length_equals: [content.items.0.materials.0, 6]
+        - length_equals: [content.items.0.materials.0, 7]
         - eq: [content.items.0.order_id, $create_order_orderId]
     extract:
         - shipping_Id: content.items.0.shipping_id

@@ -108,7 +108,6 @@
         - type_match: [content.items, list]
         - type_match: [content.items.0.materials, list]
         - length_equals: [content.items.0, 19]
-        - length_equals: [content.items.0.materials.0, 6]
         - eq: [content.items.0.order_id, $create_order_orderId]
     extract:
         - shipping_Id: content.items.0.shipping_id
@@ -163,7 +162,6 @@
         - type_match: [content.items, list]
         - type_match: [content.items.0.materials, list]
         - length_equals: [content.items.0, 19]
-        - length_equals: [content.items.0.materials.0, 5]
 
 - test:
     skipIf: ${is_production()}
