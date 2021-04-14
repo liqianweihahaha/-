@@ -1,0 +1,63 @@
+- config:
+    name: 查询仓库优先级配置列表-查询仓库优先级配置详情
+    base_url: ${get_shipping_service_host()}
+    variables:
+        - existed_departmentNumber: 5
+        - unexisted_departmentNumber: 10000
+
+
+- test:
+    skipIf: ${is_production()}
+    name: 查询仓库优先级配置列表-不带任何参数
+    request:
+        method: GET
+        url: /department/warehouse/rule/all
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, object]
+        - type_match: [content.list, list]
+        - length_equals: [content, 5]
+        - length_equals: [content.list.0, 8]
+
+- test:
+    skipIf: ${is_production()}
+    name: 查询仓库优先级配置列表-通过部门id查询-部门id存在
+    request:
+        method: GET
+        url: /department/warehouse/rule/all?departmentNumber=$existed_departmentNumber
+    validate:
+        - eq: [status_code, 200]
+        - length_equals: [content.list, 1]
+
+- test:
+    skipIf: ${is_production()}
+    name: 查询仓库优先级配置列表-通过部门id查询-部门id不存在
+    request:
+        method: GET
+        url: /department/warehouse/rule/all?departmentNumber=$unexisted_departmentNumber
+    validate:
+        - eq: [status_code, 200]
+        - length_equals: [content.list, 0]
+
+
+- test:
+    skipIf: ${is_production()}
+    name: 查询仓库优先级配置下详情-部门id存在
+    request:
+        method: GET
+        url: /department/$existed_departmentNumber/warehouse/config
+    validate:
+        - eq: [status_code, 200]
+        - type_match: [content, list]
+        - length_equals: [content.0, 4]
+        - length_equals: [content, 2]
+
+- test:
+    skipIf: ${is_production()}
+    name: 查询仓库优先级配置下详情-部门id不存在
+    request:
+        method: GET
+        url: /department/$unexisted_departmentNumber/warehouse/config
+    validate:
+        - eq: [status_code, 200]
+        - length_equals: [content, 0]

@@ -89,6 +89,19 @@ def order(env):
     orderList = read_config_order(env)['orderList']
     return orderList
 
+
+# 读取发货单信息配置
+def read_config_shipping(env, file_dir=conf_dir):
+    file_name = str(env) + '_shipping.yml'
+    file_path = os.path.join(file_dir, 'shipping', file_name)
+    with open(file_path, 'r', encoding='utf-8') as f:
+        data = yaml.load(f)
+        return data
+
+def shipping(env):
+    shippingInfo = read_config_shipping(env)['shippingInfo']
+    return shippingInfo
+
 # 读取fish账号配置
 def read_config_fish_account(env, file_dir=conf_dir):
     file_name = str(env) + '_user.yml'

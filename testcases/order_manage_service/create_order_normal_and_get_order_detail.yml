@@ -200,7 +200,7 @@
         url: /orders/$create_order_orderId
     validate:
         - eq: [status_code, 200]
-        - length_equals: [content, 45]
+        - length_equals: [content, 47]
         - eq: [content.orderId, $create_order_orderId]
         - eq: [content.placedMethod, 'BY_ADMIN']
         - eq: [content.paymentOption, 'FULL']

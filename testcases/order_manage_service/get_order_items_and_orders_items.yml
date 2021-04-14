@@ -36,7 +36,7 @@
     validate:
         - eq: [status_code, 200]
         - eq: [content.0.orderId, $create_order_orderId]
-        - length_equals: [content.0, 16]
+        - length_equals: [content.0, 17]
 
 - test:
     name: 订单orderId不存在
@@ -59,8 +59,7 @@
         - eq: [status_code, 200]
         - type_match: [content, list]
         - eq: [content.0.orderId, $create_order_orderId]
-        - length_equals: [content.0, 16]
-
+        
 - test:
     skipIf: ${is_production()}
     name: 批量获取订单项-orderId不存在

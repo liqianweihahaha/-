@@ -238,6 +238,20 @@ def has_track_shippingId_config():
 def firstdepartmentId():
     return order_config.get('firstDepartmentId')
 
+
+# 读取shippingInfo配置信息
+shipping_config = read_config.shipping(TEST_ENV)
+
+def shipping_departmentNumber_config():
+    return shipping_config.get('departmentNumber')
+
+def shipping_internal_userId_config():
+    return shipping_config.get('internal_userId')
+
+def order_warehouseCode_config():
+    return shipping_config.get('warehouseCode')
+
+
 # 随机生成交易流水号
 def random_transaction_number():
     return "AutoTestTransaction"+str(int(time.time()))

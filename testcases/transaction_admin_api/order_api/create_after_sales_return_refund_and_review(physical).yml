@@ -114,13 +114,13 @@
     base_url: ${ENV(transaction_admin_api_host)}
     request:
         method: GET
-        url: /shipping/search?orderId=$create_order_orderId
+        url: /shipping/list?order_id=$create_order_orderId&shipping_modes=REAL_REPLACE_SEND
         headers:
             Authorization: ${internal_source_user_login_token()}
     validate:
         - eq: [status_code, 200]
     extract:
-        - shipping_Id: content.items.1.shipping_id
+        - shipping_Id: content.items.0.shipping_id
         - search_shippingId_code: status_code
 
 

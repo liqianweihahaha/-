@@ -148,7 +148,7 @@
         - type_match: [content, object]
         - type_match: [content.materialDetail, list]
         - type_match: [content.logisticDetail, list]
-        - length_equals: [content, 25]
+        - length_equals: [content, 26]
         - eq: [content.status, 'SUCCESS']
         - eq: [content.logisticDetail.0.shippingId, '$shipping_Id']
         - eq: [content.logisticDetail.0.logisticBillId, $existed_logistics_bill_id]

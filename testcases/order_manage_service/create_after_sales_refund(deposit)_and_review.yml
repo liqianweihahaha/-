@@ -336,6 +336,8 @@
 
 
 - test:
+    setup_hooks:
+        - ${sleep_N_secs(3)}
     skipIf: ${is_production()}
     name: 查询退款单列表-通过orderid查询-orderid存在-获取退款单id
     base_url: ${get_payment_service_host()}
@@ -347,7 +349,7 @@
         - type_match: [content, object]
         - type_match: [content.items, list] 
         - type_match: [content.items.0, object]
-        - length_equals: [content.items.0, 20]
+        - length_equals: [content.items.0, 29]
     extract:
         - refund_Id: content.items.0.refundId
 

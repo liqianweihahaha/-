@@ -99,7 +99,7 @@
     base_url: ${ENV(transaction_admin_api_host)}
     request:
         method: GET
-        url: /shipping/search?orderId=$create_order_orderId
+        url: /shipping/list?order_id=$create_order_orderId&shipping_modes=REAL_REPLACE_SEND
     validate:
         - eq: [status_code, 401]
         - eq: [content.error_code, '10020005']
@@ -112,7 +112,7 @@
     base_url: ${ENV(transaction_admin_api_host)}
     request:
         method: GET
-        url: /shipping/search?orderId=$create_order_orderId
+        url: /shipping/list?order_id=$create_order_orderId&shipping_modes=REAL_REPLACE_SEND
         headers:
             Authorization: ${internal_source_user_login_token()}
     validate:
@@ -176,4 +176,4 @@
         - type_match: [content.materialDetail, list]
         - type_match: [content.logisticDetail, list]
         - type_match: [content.changeLogs, list]
-        - length_equals: [content, 30]
+        - length_equals: [content, 27]

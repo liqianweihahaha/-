@@ -253,7 +253,7 @@
         - type_match: [content, object]
         - type_match: [content.items, list]
         - type_match: [content.items.0, object]
-        - length_equals: [content.items.0, 14]
+        - length_equals: [content.items.0, 17]
     extract:
         - refundApply_Id: content.items.0.refundApplyId
 
@@ -283,7 +283,7 @@
     validate:
         - eq: [status_code, 200]
         - type_match: [content, object]
-        - length_equals: [content, 14]
+        - length_equals: [content, 17]
 
 - test:
     skipIf: ${is_production()}
@@ -294,7 +294,7 @@
         method: GET
         url: /refund/apply/123456  
     validate:
-        - eq: [status_code, 200]
+        - eq: [status_code, 422]
 
 - test:
     skipIf: ${is_production()}
@@ -310,7 +310,7 @@
     validate:
         - eq: [status_code, 200]
         - type_match: [content, list]
-        - length_equals: [content.0, 20]
+        - length_equals: [content.0, 29]
 
 - test:
     skipIf: ${is_production()}
@@ -325,7 +325,6 @@
         - type_match: [content, object]
         - type_match: [content.items, list] 
         - type_match: [content.items.0, object]
-        - length_equals: [content.items.0, 20]
     extract:
         - refund_Id: content.items.0.refundId
 
@@ -340,7 +339,7 @@
     validate:
         - eq: [status_code, 200]
         - type_match: [content, object]
-        - length_equals: [content, 20]
+        - length_equals: [content, 29]
 
 - test:
     skipIf: ${is_production()}

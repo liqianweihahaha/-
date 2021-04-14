@@ -19,7 +19,7 @@
         - contains: [content, total]
         - type_match: [content, object]
         - type_match: [content.items, list]
-        - length_equals: [content.items.0, 45]
+        - length_equals: [content.items.0, 47]
     extract:
         - order_id: content.items.0.orderId
 

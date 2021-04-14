@@ -136,7 +136,7 @@
         - type_match: [content, object]
         - type_match: [content.materialDetail, list]
         - type_match: [content.logisticDetail, list]
-        - length_equals: [content, 29]
+        - length_equals: [content, 26]
 
 - test:
     skipIf: ${is_production()}
@@ -161,7 +161,7 @@
         - type_match: [content, object]
         - type_match: [content.items, list]
         - type_match: [content.items.0.materials, list]
-        - length_equals: [content.items.0, 19]
+        - length_equals: [content.items.0, 20]
 
 - test:
     skipIf: ${is_production()}

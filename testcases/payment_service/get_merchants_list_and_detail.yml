@@ -3,7 +3,7 @@
     base_url: ${get_payment_service_host()}
     variables:
         exsited_payment_method: WXPAY
-        unexsited_merchant_id: 1000
+        unexsited_merchant_id: 1000000
 
 - test:
     skipIf: ${is_production()}

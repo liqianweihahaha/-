@@ -20,7 +20,7 @@
         - eq: [status_code, 200]
         - type_match: [content, object]
         - type_match: [content.items, list]
-        - length_equals: [content.items.0, 31]
+        - length_equals: [content.items.0, 32]
 
 - test:
     name: 获取售后单列表-客户ID查询-存在

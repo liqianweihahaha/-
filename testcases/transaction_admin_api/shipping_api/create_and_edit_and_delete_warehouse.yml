@@ -1,0 +1,383 @@
+- config:
+    name: 新增仓库优先级配置-编辑仓库优先级配置-删除仓库优先级配置
+    base_url: ${ENV(transaction_admin_api_host)}
+    variables:
+        - existed_departmentNumber: ${shipping_departmentNumber_config()}
+        - existed_userId: ${shipping_internal_userId_config()}
+        - existed_priority: 1
+        - existed_warehouseCode: ${order_warehouseCode_config()}
+        - unexisted_departmentNumber: 10000
+        - unexisted_warehouseCode: 123456
+
+
+- test:
+    skipIf: ${is_production()}
+    name: 新增仓库优先级配置-departmentNumber未传-新增失败
+    request:
+        method: POST
+        url: /shipping/department/warehouse/rule
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+        json:
+            userId: $existed_userId
+            warehouses:
+                -
+                 priority: $existed_priority
+                 shortageWarehouse: TRUE
+                 warehouseCode: $existed_warehouseCode
+    validate:
+        - eq: [status_code, 400]
+
+
+- test:
+    skipIf: ${is_production()}
+    name: 新增仓库优先级配置-departmentNumber不存在-新增失败
+    request:
+        method: POST
+        url: /shipping/department/warehouse/rule
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+        json:
+            departmentNumber: $unexisted_departmentNumber
+            userId: $existed_userId
+            warehouses:
+                -
+                 priority: $existed_priority
+                 shortageWarehouse: TRUE
+                 warehouseCode: $existed_warehouseCode
+    validate:
+        - eq: [status_code, 422]
+        - eq: [content.error_code, '10018017']
+
+
+- test:
+    skipIf: ${is_production()}
+    name: 新增仓库优先级配置-userId未传-新增失败
+    request:
+        method: POST
+        url: /shipping/department/warehouse/rule
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+        json:
+            departmentNumber: $existed_departmentNumber
+            warehouses:
+                -
+                 priority: $existed_priority
+                 shortageWarehouse: TRUE
+                 warehouseCode: $existed_warehouseCode
+    validate:
+        - eq: [status_code, 400]
+
+
+- test:
+    skipIf: ${is_production()}
+    name: 新增仓库优先级配置-priority都是0-添加失败
+    request:
+        method: POST
+        url: /shipping/department/warehouse/rule
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+        json:
+            departmentNumber: $existed_departmentNumber
+            userId: $existed_userId
+            warehouses:
+                -
+                 priority: 0
+                 shortageWarehouse: TRUE
+                 warehouseCode: $existed_warehouseCode
+    validate:
+        - eq: [status_code, 400]
+
+
+- test:
+    skipIf: ${is_production()}
+    name: 新增仓库优先级配置-warehouseCode不存在-添加失败
+    request:
+        method: POST
+        url: /shipping/department/warehouse/rule
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+        json:
+            departmentNumber: $existed_departmentNumber
+            userId: $existed_userId
+            warehouses:
+                -
+                 priority: 1
+                 shortageWarehouse: TRUE
+                 warehouseCode: $unexisted_warehouseCode
+    validate:
+        - eq: [status_code, 422]
+        - eq: [content.error_code, '10018015']
+
+- test:
+    skipIf: ${is_production()}
+    name: 新增仓库优先级配置-未传shortageWarehouse-添加失败
+    request:
+        method: POST
+        url: /shipping/department/warehouse/rule
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+        json:
+            departmentNumber: $existed_departmentNumber
+            userId: $existed_userId
+            warehouses:
+                -
+                 priority: 1
+                 warehouseCode: $existed_warehouseCode
+    validate:
+        - eq: [status_code, 400]
+
+- test:
+    skipIf: ${is_production()}
+    name: 新增仓库优先级配置-未传warehouseCode-添加失败
+    request:
+        method: POST
+        url: /shipping/department/warehouse/rule
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+        json:
+            departmentNumber: $existed_departmentNumber
+            userId: $existed_userId
+            warehouses:
+                -
+                 priority: 1
+                 shortageWarehouse: TRUE
+    validate:
+        - eq: [status_code, 400]
+
+- test:
+    skipIf: ${is_production()}
+    name: 新增仓库优先级配置-未传priority-添加失败
+    request:
+        method: POST
+        url: /shipping/department/warehouse/rule
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+        json:
+            departmentNumber: $existed_departmentNumber
+            userId: $existed_userId
+            warehouses:
+                -
+                 shortageWarehouse: TRUE
+                 warehouseCode: $existed_warehouseCode
+    validate:
+        - eq: [status_code, 400]
+
+
+- test:
+    skipIf: ${is_production()}
+    name: 新增仓库优先级配置-所有参数正确-添加成功
+    request:
+        method: POST
+        url: /shipping/department/warehouse/rule
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+        json:
+            departmentNumber: $existed_departmentNumber
+            userId: $existed_userId
+            warehouses:
+                -
+                 priority: 1
+                 shortageWarehouse: TRUE
+                 warehouseCode: $existed_warehouseCode
+    validate:
+        - eq: [status_code, 200]
+
+
+- test:
+    skipIf: ${is_production()}
+    name: 新增仓库优先级配置-该部门下已经配置规则-添加失败
+    request:
+        method: POST
+        url: /shipping/department/warehouse/rule
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+        json:
+            departmentNumber: $existed_departmentNumber
+            userId: $existed_userId
+            warehouses:
+                -
+                 priority: 1
+                 shortageWarehouse: TRUE
+                 warehouseCode: $existed_warehouseCode
+    validate:
+        - eq: [status_code, 422]
+
+
+
+- test:
+    skipIf: ${is_production()}
+    name: 编辑仓库优先级配置-参数都正确-编辑成功
+    request:
+        method: PUT
+        url: /shipping/department/$existed_departmentNumber/warehouse/rule/edit
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+        json:
+            departmentNumber: $existed_departmentNumber
+            userId: $existed_userId
+            warehouses:
+                -
+                 priority: 1
+                 shortageWarehouse: TRUE
+                 warehouseCode: $existed_warehouseCode
+    validate:
+        - eq: [status_code, 200]
+
+- test:
+    skipIf: ${is_production()}
+    name: 编辑仓库优先级配置-departmentNumber不存在-编辑失败
+    request:
+        method: PUT
+        url: /shipping/department/$unexisted_departmentNumber/warehouse/rule/edit
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+        json:
+            departmentNumber: $existed_departmentNumber
+            userId: $existed_userId
+            warehouses:
+                -
+                 priority: 1
+                 shortageWarehouse: TRUE
+                 warehouseCode: $existed_warehouseCode
+    validate:
+        - eq: [status_code, 422]
+
+
+- test:
+    skipIf: ${is_production()}
+    name: 编辑仓库优先级配置-未传departmentNumber-编辑失败
+    request:
+        method: PUT
+        url: /shipping/department/$existed_departmentNumber/warehouse/rule/edit
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+        json:
+            userId: $existed_userId
+            warehouses:
+                -
+                 priority: 1
+                 shortageWarehouse: TRUE
+                 warehouseCode: $existed_warehouseCode
+    validate:
+        - eq: [status_code, 400]
+
+
+- test:
+    skipIf: ${is_production()}
+    name: 编辑仓库优先级配置-departmentNumber不存在-编辑失败
+    request:
+        method: PUT
+        url: /shipping/department/$existed_departmentNumber/warehouse/rule/edit
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+        json:
+            departmentNumber: $unexisted_departmentNumber
+            userId: $existed_userId
+            warehouses:
+                -
+                 priority: 1
+                 shortageWarehouse: TRUE
+                 warehouseCode: $existed_warehouseCode
+    validate:
+        - eq: [status_code, 422]
+
+
+- test:
+    skipIf: ${is_production()}
+    name: 编辑仓库优先级配置-未传userId-编辑失败
+    request:
+        method: PUT
+        url: /shipping/department/$existed_departmentNumber/warehouse/rule/edit
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+        json:
+            departmentNumber: $existed_departmentNumber
+            warehouses:
+                -
+                 priority: 1
+                 shortageWarehouse: TRUE
+                 warehouseCode: $existed_warehouseCode
+    validate:
+        - eq: [status_code, 400]
+
+
+- test
+    skipIf: ${is_production()}
+    name: 编辑仓库优先级配置-未传warehouseCode-编辑失败
+    request:
+        method: PUT
+        url: /shipping/department/$existed_departmentNumber/warehouse/rule/edit
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+        json:
+            departmentNumber: $existed_departmentNumber
+            userId: $existed_userId
+            warehouses:
+                -
+                 priority: 1
+                 shortageWarehouse: TRUE
+    validate:
+        - eq: [status_code, 400]
+
+- test:
+    skipIf: ${is_production()}
+    name: 编辑仓库优先级配置-warehouseCode不存在-编辑失败
+    request:
+        method: PUT
+        url: /shipping/department/$existed_departmentNumber/warehouse/rule/edit
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+        json:
+            departmentNumber: $existed_departmentNumber
+            userId: $existed_userId
+            warehouses:
+                -
+                 priority: 1
+                 shortageWarehouse: TRUE
+                 warehouseCode: $unexisted_warehouseCode
+    validate:
+        - eq: [status_code, 422]
+
+
+- test:
+    skipIf: ${is_production()}
+    name: 编辑仓库优先级配置-未传shortageWarehouse-编辑失败
+    request:
+        method: PUT
+        url: /shipping/department/$existed_departmentNumber/warehouse/rule/edit
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+        json:
+            departmentNumber: $existed_departmentNumber
+            userId: $existed_userId
+            warehouses:
+                -
+                 priority: 1
+                 warehouseCode: $existed_warehouseCode
+    validate:
+        - eq: [status_code, 400]
+
+- test:
+    skipIf: ${is_production()}
+    name: 删除仓库优先级配置-部门id不存在-删除成功
+    request:
+        method: DELETE
+        url: /shipping/department/$unexisted_departmentNumber/warehouse/rule
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+    validate:
+        - eq: [status_code, 422]
+        - eq: [content.error_code, "10018024"]
+
+
+- test:
+    skipIf: ${is_production()}
+    name: 删除仓库优先级配置-部门id存在-删除成功
+    request:
+        method: DELETE
+        url: /shipping/department/$existed_departmentNumber/warehouse/rule
+        headers:
+            Authorization: ${internal_source_user_login_token()}
+    validate:
+        - eq: [status_code, 200]

@@ -241,7 +241,7 @@
     validate:
         - eq: [status_code, 200]
         - type_match: [content, object]
-        - length_equals: [content, 31]
+        - length_equals: [content, 32]
         - eq: [content.state, 'COMPLETED']
 
 - test:
