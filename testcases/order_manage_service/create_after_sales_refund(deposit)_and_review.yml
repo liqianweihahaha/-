@@ -164,7 +164,7 @@
         - skuNumber: $existed_skuNumber
     validate:
         - eq: [status_code, 422]
-        - eq: [content.error_code, "10017028"]
+        - eq: [content.error_code, "10017067"]
 
 - test:
     skipIf: ${is_production()}

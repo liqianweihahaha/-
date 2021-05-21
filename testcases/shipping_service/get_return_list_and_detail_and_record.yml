@@ -20,7 +20,7 @@
         - type_match: [content.items.0.materials, object]
         - length_equals: [content.items.0.returnBill, 19]
         - length_equals: [content.items.0.returnResult, 11]
-        - length_equals: [content.items.0.materials.0, 5]
+        - length_equals: [content.items.0.materials.0, 7]
     extract:
         - return_id: content.items.0.returnBill.returnId
         - order_id: content.items.0.returnBill.orderId

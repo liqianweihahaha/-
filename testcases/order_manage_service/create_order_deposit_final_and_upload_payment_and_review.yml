@@ -102,7 +102,7 @@
 
 - test:
     setup_hooks:
-          - ${sleep_N_secs(3)}
+          - ${sleep_N_secs(4)}
     skipIf: ${is_production()}
     name: 创建尾款订单-所有参数都正确-提交成功
     request:

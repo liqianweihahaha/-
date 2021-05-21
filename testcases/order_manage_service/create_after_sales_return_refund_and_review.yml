@@ -95,7 +95,7 @@
 - test:
     skipIf: ${is_production()}
     setup_hooks:
-        - ${sleep_N_secs(4)}
+        - ${sleep_N_secs(5)}
     name: 售后申请预览-获取物料发货单等信息（数据准备6）
     request:
         method: GET

@@ -182,7 +182,7 @@
         - skuNumber_2: $existed_skuNumber
     validate:
         - eq: [status_code, 422]
-        - eq: [content.error_code, "10017028"]
+        - eq: [content.error_code, "10017067"]
 
 - test:
     skipIf: ${is_production()}
@@ -277,7 +277,7 @@
         - skuNumber_2: $existed_skuNumber
     validate:
         - eq: [status_code, 422]
-        - eq: [content.error_code, "10017027"]
+        - eq: [content.error_code, "10017071"]
 
 - test:
     skipIf: ${is_production()}
@@ -301,7 +301,7 @@
         - skuNumber_2: $existed_skuNumber
     validate:
         - eq: [status_code, 422]
-        - eq: [content.error_code, "10017029"]
+        - eq: [content.error_code, "10017070"]
 
 
 - test:
@@ -326,7 +326,7 @@
         - skuNumber_2: $existed_skuNumber
     validate:
         - eq: [status_code, 422]
-        - eq: [content.error_code, "10017026"]
+        - eq: [content.error_code, "10017071"]
 
 - test:
     skipIf: ${is_production()}
@@ -350,7 +350,7 @@
         - skuNumber_2: $existed_skuNumber
     validate:
         - eq: [status_code, 422]
-        - eq: [content.error_code, "10017007"]
+        - eq: [content.error_code, "10017071"]
 
 - test:
     skipIf: ${is_production()}
@@ -408,8 +408,8 @@
         method: GET
         url: /after_sales/issuable?orderId=$create_order_orderId
     validate:
-        - eq: [status_code, 200]
-        - eq: [content.issuable, false]
+        - eq: [status_code, 422]
+        - eq: [content.error_code, "10017064"]
 
 - test:
     skipIf: ${is_production()}

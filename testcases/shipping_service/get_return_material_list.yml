@@ -15,7 +15,7 @@
         - eq: [status_code, 200]
         - type_match: [content, list]
         - type_match: [content.0, object]
-        - length_equals: [content.0, 11]
+        - length_equals: [content.0, 13]
     extract:
         - return_id: content.0.returnId
         - order_id: content.0.orderId
