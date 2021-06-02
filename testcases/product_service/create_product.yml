@@ -1,0 +1,574 @@
+- config:
+    name: 创建商品
+    base_url: ${get_product_service_host()}
+    variables:
+      - existed_categoryNumber: 1
+      - existed_departmentNumber: 1
+      - existed_lessonProject: 自动化测试1
+      - existed_mainImageURL: https://dev-static.codemao.cn/transaction/product/rJEIOFORU.png
+      - existed_mainVideoURL: https://dev-static.codemao.cn/transaction/product/HyEBbqTeD.mp4
+      - existed_type: 1
+      - unexisted_categoryNumber: 99
+      - unexisted_type: 10
+      - unexisted_departmentNumber: 50
+      - unmatch_title: 一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十哈
+      - unmatch_lessonProject: 一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十哈
+      - unmatched_subtitle: 一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十哈
+      - unexisted_termsId: 50
+
+- test:
+    skip: 调试用例，先跳过
+    name: 创建商品，不传sku，创建成功
+    request:
+      method: POST
+      url: /spu/product
+      headers:
+        Content-Type: application/json
+      json:
+        categoryNumber: $existed_categoryNumber
+        departmentNumber: $existed_departmentNumber
+        lessonProject: $existed_lessonProject
+        mainImageURL: $existed_mainImageURL
+        mainVideoURL: $existed_mainVideoURL
+        pageContent: 自动化测试1
+        subtitle: 自动化测试1
+        termsId: null
+        title: 自动化测试1
+        type: $existed_type
+        userId: 1
+    validata:
+      - eq: [ status_code,200 ]
+
+- test:
+    skip: 调试用例，先跳过
+    name: 创建商品，传sku，所有参数正常填写，创建成功
+    request:
+      method: POST
+      url: /spu/product
+      headers:
+        Content-Type: application/json
+      json:
+        categoryNumber: $existed_categoryNumber
+        departmentNumber: $existed_departmentNumber
+        lessonProject: $existed_lessonProject
+        mainImageURL: $existed_mainImageURL
+        mainVideoURL: $existed_mainVideoURL
+        sku:
+            -
+              attributes:
+                -
+                  id: 1
+                  valueId: 1
+              materials:
+                -
+                  materialNumber: SU001552
+                  materialUnit: 1
+                  ratio: 1
+              prices:
+                -
+                  currency: CNY
+                  guidePrice: 2
+                  lowestPrice: 2
+                  originalPrice: 2
+              skuVersion: 0
+        pageContent: 自动化测试1
+        subtitle: 自动化测试1
+        termsId: null
+        title: 自动化测试1
+        type: $existed_type
+        userId: 1
+    validata:
+      - eq: [ status_code,200 ]
+
+- test:
+    skip: 调试用例，先跳过
+    name: 创建商品，商品分类为空，创建失败
+    request:
+      method: POST
+      url: /spu/product
+      headers:
+        Content-Type: application/json
+      json:
+        categoryNumber: $unexisted_categoryNumber
+        departmentNumber: $existed_departmentNumber
+        lessonProject: $existed_lessonProject
+        mainImageURL: $existed_mainImageURL
+        mainVideoURL: $existed_mainVideoURL
+        sku:
+            -
+              attributes:
+                -
+                  id: 1
+                  valueId: 1
+              materials:
+                -
+                  materialNumber: SU001552
+                  materialUnit: 1
+                  ratio: 1
+              prices:
+                -
+                  currency: CNY
+                  guidePrice: 2
+                  lowestPrice: 2
+                  originalPrice: 2
+              skuVersion: 0
+        pageContent: 自动化测试1
+        subtitle: 自动化测试1
+        termsId: null
+        title: 自动化测试1
+        type: $existed_type
+        userId: 1
+    validata:
+      - eq: [ status_code,400 ]
+
+- test:
+    skip: 调试用例，先跳过
+    name: 创建商品，商品分类不存在，创建失败
+    request:
+      method: POST
+      url: /spu/product
+      headers:
+        Content-Type: application/json
+      json:
+        categoryNumber:
+        departmentNumber: $existed_departmentNumber
+        lessonProject: $existed_lessonProject
+        mainImageURL: $existed_mainImageURL
+        mainVideoURL: $existed_mainVideoURL
+        sku:
+            -
+              attributes:
+                -
+                  id: 1
+                  valueId: 1
+              materials:
+                -
+                  materialNumber: SU001552
+                  materialUnit: 1
+                  ratio: 1
+              prices:
+                -
+                  currency: CNY
+                  guidePrice: 2
+                  lowestPrice: 2
+                  originalPrice: 2
+              skuVersion: 0
+        pageContent: 自动化测试1
+        subtitle: 自动化测试1
+        termsId: null
+        title: 自动化测试1
+        type: $existed_type
+        userId: 1
+    validata:
+      - eq: [ status_code,400 ]
+
+- test:
+    skip: 调试用例，先跳过
+    name: 创建商品，商品类型传null，创建失败
+    request:
+      method: POST
+      url: /spu/product
+      headers:
+        Content-Type: application/json
+      json:
+        categoryNumber: $existed_categoryNumber
+        departmentNumber: $existed_departmentNumber
+        lessonProject: $existed_lessonProject
+        mainImageURL: $existed_mainImageURL
+        mainVideoURL: $existed_mainVideoURL
+        sku:
+            -
+              attributes:
+                -
+                  id: 1
+                  valueId: 1
+              materials:
+                -
+                  materialNumber: SU001552
+                  materialUnit: 1
+                  ratio: 1
+              prices:
+                -
+                  currency: CNY
+                  guidePrice: 2
+                  lowestPrice: 2
+                  originalPrice: 2
+              skuVersion: 0
+        pageContent: 自动化测试1
+        subtitle: 自动化测试1
+        termsId: null
+        title: 自动化测试1
+        type: null
+        userId: 1
+    validata:
+      - eq: [ status_code,400 ]
+
+- test:
+    skip: 调试用例，先跳过
+    name: 创建商品，商品类型为空，创建失败
+    request:
+      method: POST
+      url: /spu/product
+      headers:
+        Content-Type: application/json
+      json:
+        categoryNumber: $existed_categoryNumber
+        departmentNumber: $existed_departmentNumber
+        lessonProject: $existed_lessonProject
+        mainImageURL: $existed_mainImageURL
+        mainVideoURL: $existed_mainVideoURL
+        sku:
+            -
+              attributes:
+                -
+                  id: 1
+                  valueId: 1
+              materials:
+                -
+                  materialNumber: SU001552
+                  materialUnit: 1
+                  ratio: 1
+              prices:
+                -
+                  currency: CNY
+                  guidePrice: 2
+                  lowestPrice: 2
+                  originalPrice: 2
+              skuVersion: 0
+        pageContent: 自动化测试1
+        subtitle: 自动化测试1
+        termsId: null
+        title: 自动化测试1
+        type:
+        userId: 1
+    validata:
+      - eq: [ status_code,400 ]
+
+- test:
+    skip: 调试用例，先跳过
+    name: 创建商品，商品类型不存在，创建失败
+    request:
+      method: POST
+      url: /spu/product
+      headers:
+        Content-Type: application/json
+      json:
+        categoryNumber: $existed_categoryNumber
+        departmentNumber: $existed_departmentNumber
+        lessonProject: $existed_lessonProject
+        mainImageURL: $existed_mainImageURL
+        mainVideoURL: $existed_mainVideoURL
+        sku:
+            -
+              attributes:
+                -
+                  id: 1
+                  valueId: 1
+              materials:
+                -
+                  materialNumber: SU001552
+                  materialUnit: 1
+                  ratio: 1
+              prices:
+                -
+                  currency: CNY
+                  guidePrice: 2
+                  lowestPrice: 2
+                  originalPrice: 2
+              skuVersion: 0
+        pageContent: 自动化测试1
+        subtitle: 自动化测试1
+        termsId: null
+        title: 自动化测试1
+        type: $unexisted_type
+        userId: 1
+    validata:
+      - eq: [ status_code,400 ]
+
+- test:
+    skip: 调试用例，先跳过
+    name: 创建商品，所属业务部门为空，创建失败
+    request:
+      method: POST
+      url: /spu/product
+      headers:
+        Content-Type: application/json
+      json:
+        categoryNumber: $existed_categoryNumber
+        departmentNumber:
+        lessonProject: $existed_lessonProject
+        mainImageURL: $existed_mainImageURL
+        mainVideoURL: $existed_mainVideoURL
+        sku:
+            -
+              attributes:
+                -
+                  id: 1
+                  valueId: 1
+              materials:
+                -
+                  materialNumber: SU001552
+                  materialUnit: 1
+                  ratio: 1
+              prices:
+                -
+                  currency: CNY
+                  guidePrice: 2
+                  lowestPrice: 2
+                  originalPrice: 2
+              skuVersion: 0
+        pageContent: 自动化测试1
+        subtitle: 自动化测试1
+        termsId: null
+        title: 自动化测试1
+        type: $existed_type
+        userId: 1
+    validata:
+      - eq: [ status_code,400 ]
+
+- test:
+    skip: 调试用例，先跳过
+    name: 创建商品，所属业务部门不存在，创建失败
+    request:
+      method: POST
+      url: /spu/product
+      headers:
+        Content-Type: application/json
+      json:
+        categoryNumber: $existed_categoryNumber
+        departmentNumber: $unexisted_departmentNumber
+        lessonProject: $existed_lessonProject
+        mainImageURL: $existed_mainImageURL
+        mainVideoURL: $existed_mainVideoURL
+        sku:
+            -
+              attributes:
+                -
+                  id: 1
+                  valueId: 1
+              materials:
+                -
+                  materialNumber: SU001552
+                  materialUnit: 1
+                  ratio: 1
+              prices:
+                -
+                  currency: CNY
+                  guidePrice: 2
+                  lowestPrice: 2
+                  originalPrice: 2
+              skuVersion: 0
+        pageContent: 自动化测试1
+        subtitle: 自动化测试1
+        termsId: null
+        title: 自动化测试1
+        type: $existed_type
+        userId: 1
+    validata:
+      - eq: [ status_code,422 ]
+
+- test:
+    skip: 调试用例，先跳过
+    name: 创建商品，商品标题为空，创建失败
+    request:
+      method: POST
+      url: /spu/product
+      headers:
+        Content-Type: application/json
+      json:
+        categoryNumber: $existed_categoryNumber
+        departmentNumber: $existed_departmentNumber
+        lessonProject: $existed_lessonProject
+        mainImageURL: $existed_mainImageURL
+        mainVideoURL: $existed_mainVideoURL
+        sku:
+            -
+              attributes:
+                -
+                  id: 1
+                  valueId: 1
+              materials:
+                -
+                  materialNumber: SU001552
+                  materialUnit: 1
+                  ratio: 1
+              prices:
+                -
+                  currency: CNY
+                  guidePrice: 2
+                  lowestPrice: 2
+                  originalPrice: 2
+              skuVersion: 0
+        pageContent: 自动化测试1
+        subtitle: 自动化测试1
+        termsId: null
+        title:
+        type: $existed_type
+        userId: 1
+    validata:
+      - eq: [ status_code,400 ]
+
+- test:
+    skip: 调试用例，先跳过
+    name: 创建商品，商品标题大于60字，创建失败
+    request:
+      method: POST
+      url: /spu/product
+      headers:
+        Content-Type: application/json
+      json:
+        categoryNumber: $existed_categoryNumber
+        departmentNumber: $existed_departmentNumber
+        lessonProject: $existed_lessonProject
+        mainImageURL: $existed_mainImageURL
+        mainVideoURL: $existed_mainVideoURL
+        sku:
+            -
+              attributes:
+                -
+                  id: 1
+                  valueId: 1
+              materials:
+                -
+                  materialNumber: SU001552
+                  materialUnit: 1
+                  ratio: 1
+              prices:
+                -
+                  currency: CNY
+                  guidePrice: 2
+                  lowestPrice: 2
+                  originalPrice: 2
+              skuVersion: 0
+        pageContent: 自动化测试1
+        subtitle: 自动化测试1
+        termsId: null
+        title: $unmatch_title
+        type: $existed_type
+        userId: 1
+    validata:
+      - eq: [ status_code,400 ]
+
+- test:
+    skip: 调试用例，先跳过
+    name: 创建商品，课程系列大于120字，创建失败
+    request:
+      method: POST
+      url: /spu/product
+      headers:
+        Content-Type: application/json
+      json:
+        categoryNumber: $existed_categoryNumber
+        departmentNumber: $existed_departmentNumber
+        lessonProject: $unmatch_lessonProject
+        mainImageURL: $existed_mainImageURL
+        mainVideoURL: $existed_mainVideoURL
+        sku:
+            -
+              attributes:
+                -
+                  id: 1
+                  valueId: 1
+              materials:
+                -
+                  materialNumber: SU001552
+                  materialUnit: 1
+                  ratio: 1
+              prices:
+                -
+                  currency: CNY
+                  guidePrice: 2
+                  lowestPrice: 2
+                  originalPrice: 2
+              skuVersion: 0
+        pageContent: 自动化测试1
+        subtitle: 自动化测试1
+        termsId: null
+        title: 自动化测试1
+        type: $existed_type
+        userId: 1
+    validata:
+      - eq: [ status_code,400 ]
+
+- test:
+    skip: 调试用例，先跳过
+    name: 创建商品，课程副标题大于80字，创建失败
+    request:
+      method: POST
+      url: /spu/product
+      headers:
+        Content-Type: application/json
+      json:
+        categoryNumber: $existed_categoryNumber
+        departmentNumber: $existed_departmentNumber
+        lessonProject: $existed_lessonProject
+        mainImageURL: $existed_mainImageURL
+        mainVideoURL: $existed_mainVideoURL
+        sku:
+            -
+              attributes:
+                -
+                  id: 1
+                  valueId: 1
+              materials:
+                -
+                  materialNumber: SU001552
+                  materialUnit: 1
+                  ratio: 1
+              prices:
+                -
+                  currency: CNY
+                  guidePrice: 2
+                  lowestPrice: 2
+                  originalPrice: 2
+              skuVersion: 0
+        pageContent: 自动化测试1
+        subtitle: $unmatched_subtitle
+        termsId: null
+        title: 自动化测试1
+        type: $existed_type
+        userId: 1
+    validata:
+      - eq: [ status_code,400 ]
+
+- test:
+    skip: 调试用例，先跳过
+    name: 创建商品，付款模板协议不存在，创建失败
+    request:
+      method: POST
+      url: /spu/product
+      headers:
+        Content-Type: application/json
+      json:
+        categoryNumber: $existed_categoryNumber
+        departmentNumber: $existed_departmentNumber
+        lessonProject: $existed_lessonProject
+        mainImageURL: $existed_mainImageURL
+        mainVideoURL: $existed_mainVideoURL
+        sku:
+            -
+              attributes:
+                -
+                  id: 1
+                  valueId: 1
+              materials:
+                -
+                  materialNumber: SU001552
+                  materialUnit: 1
+                  ratio: 1
+              prices:
+                -
+                  currency: CNY
+                  guidePrice: 2
+                  lowestPrice: 2
+                  originalPrice: 2
+              skuVersion: 0
+        pageContent: 自动化测试1
+        subtitle: 自动化测试1
+        termsId: $unexisted_termsId
+        title: 自动化测试1
+        type: $existed_type
+        userId: 1
+    validata:
+      - eq: [ status_code,422 ]
+

@@ -1,0 +1,27 @@
+- config:
+    name: 查询商品列表
+    base_url: ${get_product_service_host()}
+
+- test:
+    name: 查询商品，不带任何参数
+    request:
+        method: GET
+        url: /spu/product
+    validata:
+        - eq: [ status_code,200 ]
+
+- test:
+    name: 查询前十条数据
+    request:
+        method: GET
+        url: /spu/product?offset=0&limit=10
+    validata:
+        - eq: [ status_code,200 ]
+
+- test:
+    name: offset的数据类型不对
+    request:
+        method: GET
+        url: /spu/product?offset=‘43243’&limit=10
+    validata:
+        - eq: [ status_code,400 ]
