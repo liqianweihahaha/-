@@ -7,7 +7,7 @@
     request:
         method: GET
         url: /spu/product
-    validata:
+    validate:
         - eq: [ status_code,200 ]
 
 - test:
@@ -15,13 +15,37 @@
     request:
         method: GET
         url: /spu/product?offset=0&limit=10
+    validate:
+        - eq: [ status_code,200 ]
+
+- test:
+    name: 起始值offset传负数-查询失败
+    request:
+        method: GET
+        url: /spu/product?offset=-1&limit=10
+    validate:
+        - eq: [ status_code,400 ]
+
+- test:
+    name: 起始值limit传负数-查询失败
+    request:
+        method: GET
+        url: /spu/product?offset=1&limit=-10
+    validate:
+        - eq: [ status_code,400 ]
+
+- test:
+    name: 根据spuNumber查询，spuNumber已存在，查询成功
+    request:
+        method: GET
+        url: /spu/product?spuNumber=G200151040
     validata:
         - eq: [ status_code,200 ]
 
 - test:
-    name: offset的数据类型不对
+    name: 根据spuNumber查询，spuNumber不存在，返回空
     request:
         method: GET
-        url: /spu/product?offset=‘43243’&limit=10
+        url: /spu/product?spuNumber=aaa
     validata:
-        - eq: [ status_code,400 ]
+        - eq: [ status_code,200 ]
